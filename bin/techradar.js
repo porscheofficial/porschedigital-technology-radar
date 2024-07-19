@@ -253,10 +253,7 @@ if (PARAMETER === "dev") {
       // Now rebuild the json files, so that the next.js server can pick up the changes
       execSync("npm run build:data", { stdio: "inherit" });
     } catch (error) {
-      console.error(
-        "Unable to rebuild data. Please restart the server.",
-        error,
-      );
+      error("Unable to rebuild data. Please restart the server.", error);
     }
   }, 1000);
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## Version v4.4.0.4 PDig (2024-09-24)
+
+### Features
+
+- filter by team is now available on the front page
+
 ## Version v4.4.0.3 PDig (2024-09-18)
 
 ### Features

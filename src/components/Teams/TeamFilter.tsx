@@ -1,5 +1,9 @@
+import Link, { LinkProps } from "next/link";
+import { ComponentPropsWithoutRef } from "react";
+
 import styles from "./TeamFilter.module.css";
 
+import IconRemove from "@/components/Icons/Close";
 import IconTeam from "@/components/Icons/Team";
 import { getLabel, getTeams } from "@/lib/data";
 import { cn } from "@/lib/utils";
@@ -7,32 +11,29 @@ import { cn } from "@/lib/utils";
 type TeamProps = {
   team: string;
   isActive?: boolean;
-  onClick: () => void;
-};
+} & Omit<LinkProps, "href"> &
+  ComponentPropsWithoutRef<"a">;
 
-function Team({ team, isActive, onClick }: TeamProps) {
+function Team({ team, isActive, ...props }: TeamProps) {
+  const Icon = isActive ? IconRemove : IconTeam;
   return (
-    <button
+    <Link
+      {...props}
       className={cn(styles.team, isActive && styles.active)}
-      onClick={onClick}
+      href={isActive ? "/" : `/?team=${team}`}
     >
-      <IconTeam className={cn(styles.icon)} />
+      <Icon className={cn(styles.icon)} />
       <span className={styles.label}>{team}</span>
-    </button>
+    </Link>
   );
 }
 
 interface TeamFilterProps {
   activeTeam?: string;
-  onChange: (team: string) => void;
   className?: string;
 }
 
-export function TeamFilter({
-  activeTeam,
-  onChange,
-  className,
-}: TeamFilterProps) {
+export function TeamFilter({ activeTeam, className }: TeamFilterProps) {
   const label = getLabel("filterByTeam");
   const teams = getTeams();
 
@@ -44,7 +45,7 @@ export function TeamFilter({
           key={team}
           team={team}
           isActive={activeTeam === team}
-          onClick={() => onChange(activeTeam === team ? "" : team)}
+          scroll={false}
         />
       ))}
     </div>

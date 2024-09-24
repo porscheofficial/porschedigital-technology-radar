@@ -9,12 +9,10 @@
   height: 16px;
   display: inline-block;
   vertical-align: middle;
-  margin: -2px 6px 0 -5px;
+  margin: 0 4px 0 0;
 }
 
 .team {
-  position: relative;
-  display: inline-block;
   position: relative;
   display: inline-block;
   vertical-align: middle;

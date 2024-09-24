@@ -1,17 +1,14 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useCallback } from "react";
 
 import { QuadrantList } from "@/components/QuadrantList/QuadrantList";
 import { Radar } from "@/components/Radar/Radar";
 import { Tags } from "@/components/Tags/Tags";
 import { TeamFilter } from "@/components/Teams/TeamFilter";
-import { Teams } from "@/components/Teams/Teams";
 import {
   getAppName,
   getChartConfig,
   getFilteredItems,
-  getItems,
   getLabel,
   getQuadrants,
   getReleases,
@@ -37,13 +34,6 @@ const Home: CustomPage = () => {
   const tags = getTags();
   const teams = getTeams();
   const items = getFilteredItems(tag, team);
-
-  const onTeamChange = useCallback(
-    (team: string) => {
-      router.push({ query: { ...router.query, team } });
-    },
-    [router],
-  );
 
   return (
     <>
@@ -89,13 +79,7 @@ const Home: CustomPage = () => {
           case "teams":
             return (
               getToggle("showTeamFilter") &&
-              teams.length > 0 && (
-                <TeamFilter
-                  key={section}
-                  activeTeam={team}
-                  onChange={onTeamChange}
-                />
-              )
+              teams.length > 0 && <TeamFilter key={section} activeTeam={team} />
             );
           default:
             return null;

@@ -126,13 +126,7 @@ async function parseDirectory(dirPath: string): Promise<Item[]> {
   return Object.values(items).sort((a, b) => a.title.localeCompare(b.title));
 }
 
-function compareArrays({
-  arr1 = [],
-  arr2 = [],
-}: {
-  arr1?: any[];
-  arr2?: any[];
-}) {
+function compareArrays(arr1: any[], arr2: any[]) {
   return (
     arr1.length === arr2.length &&
     arr1.every((element, index) => element === arr2[index])
@@ -235,10 +229,7 @@ function postProcessItems(items: Item[]): {
           const { ring, body, teams } = revision;
           return (
             ring !== item.ring ||
-            !compareArrays({
-              arr1: teams,
-              arr2: item.teams,
-            }) ||
+            !compareArrays(teams ?? [], item.teams ?? []) ||
             (body != "" &&
               body != item.body &&
               body !== revisions[index - 1]?.body)

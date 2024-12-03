@@ -135,12 +135,8 @@ function compareArrays(arr1: any[] = [], arr2: any[] = []) {
 
 function getOrderedTeams(listOfTeams: Item["teams"]): Item["teams"] {
   if (!listOfTeams) return undefined;
-
-  const teams = new Set<string>();
-  for (const team of listOfTeams) {
-    teams.add(team);
-  }
-
+  // We use a Set to remove potentially duplicated entries
+  const teams = new Set<string>(listOfTeams);
   return Array.from(teams).sort();
 }
 

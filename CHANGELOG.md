@@ -1,5 +1,11 @@
 # Changelog
 
+## Version v4.4.0.5 PDig (2024-12-05)
+
+### Fixes
+
+- order team tags by name and fix revision detection for team changes ([8b54eec](https://github.com/porscheofficial/porschedigital-technology-radar/commit/35f2f121befe027d4ec5283668634fc408b54eec))
+
 ## Version v4.4.0.4 PDig (2024-09-24)
 
 ### Features

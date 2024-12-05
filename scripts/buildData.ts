@@ -96,7 +96,7 @@ async function parseDirectory(dirPath: string): Promise<Item[]> {
             tags: data.tags || [],
             revisions: [],
             position: [0, 0],
-            teams: data.teams || [],
+            teams: getOrderedTeams(data.teams) || [],
           };
         } else {
           items[id].release = releaseDate;
@@ -105,7 +105,7 @@ async function parseDirectory(dirPath: string): Promise<Item[]> {
           items[id].ring = data.ring || items[id].ring;
           items[id].quadrant = data.quadrant || items[id].quadrant;
           items[id].tags = data.tags || items[id].tags;
-          items[id].teams = data.teams || [];
+          items[id].teams = getOrderedTeams(data.teams) || [];
           items[id].featured =
             typeof data.featured === "boolean"
               ? data.featured
@@ -116,7 +116,7 @@ async function parseDirectory(dirPath: string): Promise<Item[]> {
           release: releaseDate,
           ring: data.ring,
           body,
-          teams: data.teams,
+          teams: getOrderedTeams(data.teams),
         });
       }
     }
@@ -124,6 +124,20 @@ async function parseDirectory(dirPath: string): Promise<Item[]> {
 
   await readDir(dirPath);
   return Object.values(items).sort((a, b) => a.title.localeCompare(b.title));
+}
+
+function compareArrays(arr1: any[] = [], arr2: any[] = []) {
+  return (
+    arr1.length === arr2.length &&
+    arr1.every((element, index) => element === arr2[index])
+  );
+}
+
+function getOrderedTeams(listOfTeams: Item["teams"]): Item["teams"] {
+  if (!listOfTeams) return undefined;
+  // We use a Set to remove potentially duplicated entries
+  const teams = new Set<string>(listOfTeams);
+  return Array.from(teams).sort();
 }
 
 function getUniqueReleases(items: Item[]): string[] {
@@ -205,12 +219,13 @@ function postProcessItems(items: Item[]): {
       ...item,
       position: positioner.getNextPosition(item.quadrant, item.ring),
       flag: getFlag(item, releases),
-      // only keep revision which ring or body is different
+      // only keep revision which ring, body or team is different
       revisions: item.revisions
         ?.filter((revision, index, revisions) => {
-          const { ring, body } = revision;
+          const { ring, body, teams } = revision;
           return (
             ring !== item.ring ||
+            !compareArrays(teams, item.teams) ||
             (body != "" &&
               body != item.body &&
               body !== revisions[index - 1]?.body)

@@ -1,5 +1,56 @@
 # Changelog
 
+## Version v4.6.1 (2025-03-26)
+
+### Fixes
+
+- define user's config as DeepPartial (9683aa6d)
+
+### Chores and tidying
+
+- **deps:** update next to 15.2.4 and eslint to 9.23.0 (375eea2b)
+- release v4.6.0 (3fd82879)
+
+## Version v4.6.0 (2025-03-14)
+
+### Features
+
+- add strict mode for data building (3efe7b5b)
+- add configuration options for fuse (c844e6dc)
+
+### Fixes
+
+- forward flags to `npm run build` and adjust README.md (61eff6d4)
+
+### Chores and tidying
+
+- start new 4.6.0-rc.1 release (864ab225)
+
+## Version v4.5.0 (2025-03-04)
+
+### Features
+
+- add showSearch toggle (#480) (1231dd87)
+- update eslint to 9.21.0 (8b5d2201)
+- update to react 19 and next.js 15.2 (1687f930)
+- restore scroll position when navigating back (5484b04c)
+
+### Fixes
+
+- uri-encode tag when used as query parameter (#472) (86c446b7)
+
+### Chores and tidying
+
+- **deps:** update dependency @types/node to v22.13.9 (#501) (d364a120)
+- **deps:** update nextjs monorepo to v15.2.1 (#477) (81758057)
+- remove superfluous Dialog component and deps (d6b41d0f)
+- update postcss-nested and postcss-preset-env to latest versions (45d9015e)
+- update prettier and related plugins (e2df29a1)
+- update demo entry with code highlighting and bump dependencies (3315d8ca)
+- ignore /techradar/ (953432c9)
+- update commitlint and husky dependencies (bef138f7)
+- bump version to 4.5.0-rc.1 (0d230035)
+
 ## Version v4.4.0.5 PDig (2024-12-05)
 
 ### Fixes

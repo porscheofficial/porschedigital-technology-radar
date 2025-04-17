@@ -2,6 +2,8 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  row-gap: 5px;
+  column-gap: 5px;
 }
 
 .team {
@@ -17,5 +19,4 @@
   line-height: 1;
   overflow: hidden;
   text-decoration: none;
-  margin: 0px 5px 0px 0px;
 }

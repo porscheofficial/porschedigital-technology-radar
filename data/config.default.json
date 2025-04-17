@@ -5,6 +5,7 @@
   "logoFile": "logo.svg",
   "jsFile": "",
   "toggles": {
+    "showSearch": false,
     "showChart": true,
     "showTagFilter": true,
     "showTeamFilter": true,
@@ -138,5 +139,11 @@
     "pageSearch": "Search",
     "searchPlaceholder": "What are you looking for?",
     "metaDescription": ""
+  },
+  "fuzzySearch": {
+    "threshold": 0.4,
+    "distance": 600,
+    "ignoreLocation": false,
+    "includeScore": true
   }
 }

@@ -4,7 +4,6 @@ import { useMemo } from "react";
 
 import styles from "./[id].module.css";
 
-import { RingBadge } from "@/components/Badge/Badge";
 import { ItemDetail } from "@/components/ItemDetail/ItemDetail";
 import { ItemList } from "@/components/ItemList/ItemList";
 import { QuadrantLink } from "@/components/QuadrantLink/QuadrantLink";
@@ -40,12 +39,11 @@ const ItemPage: CustomPage = () => {
 
       <div className={styles.layout}>
         <section className={styles.content}>
-          <ItemDetail item={item} />
+          <ItemDetail item={item} quadrantTitle={quadrant.title} />
         </section>
         <aside className={styles.sidebar}>
           <h3>{quadrant.title}</h3>
-          <div className={styles.ringAndQuadrant}>
-            <RingBadge ring={item.ring} />
+          <div className={styles.quadrantNav}>
             <QuadrantLink
               quadrant={quadrant}
               label={getLabel("quadrantOverview")}

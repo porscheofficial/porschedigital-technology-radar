@@ -1,83 +1,195 @@
-.header {
+.tintZone {
+  position: relative;
+  background: color-mix(in oklch, var(--ring-color) 8%, transparent);
+  border-radius: 12px 12px 0 0;
+  padding: 30px;
+  margin-bottom: 0;
+}
+
+.tintZone::after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: 40px;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in oklch, var(--ring-color) 8%, transparent),
+    transparent
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.bentoGrid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0;
+  border: 2px solid color-mix(in oklch, var(--ring-color) 40%, transparent);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.bentoCell {
+  padding: 20px;
+}
+
+.cellLeft {
+  border-right: 2px solid
+    color-mix(in oklch, var(--ring-color) 40%, transparent);
+  border-bottom: 2px solid
+    color-mix(in oklch, var(--ring-color) 40%, transparent);
+}
+
+.cellRight {
+  border-bottom: 2px solid
+    color-mix(in oklch, var(--ring-color) 40%, transparent);
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  margin: 0 0 20px;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.cellDescription {
+  grid-column: 1 / -1;
+  color: var(--foreground);
+}
+
+.ringName {
+  font-size: 48px;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--ring-color);
+  line-height: 1;
+}
+
+.quadrantLabel {
+  font-size: 14px;
+  color: var(--foreground);
+  opacity: 0.5;
+  margin-top: 4px;
+}
+
+.lastTransition {
+  font-size: 14px;
+  color: var(--foreground);
+  opacity: 0.4;
+  margin-top: 12px;
+}
+
+.tenure {
+  font-size: 12px;
+  color: var(--foreground);
+  opacity: 0.3;
+  margin-top: 8px;
 }
 
 .title {
-  margin: 0 30px 0 0;
+  font-size: 37px;
+  font-weight: 700;
+  color: var(--foreground);
+  margin: 0;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.tags :global(a) {
+  margin: 0;
+}
+
+.teamsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.description {
+  margin: 0;
+}
+
+.description :global(a) {
+  color: var(--link);
+  text-decoration: underline;
+}
+
+.description :global(a):hover {
+  text-decoration: none;
 }
 
 .editLink {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 15px;
+  right: 15px;
   display: block;
   width: 20px;
   height: 20px;
   opacity: 0;
   transition: opacity 0.2s;
+  z-index: 2;
 }
 
-/* Block 1: Current State */
-.currentState {
-  background: var(--content);
-  color: var(--text);
-  border-radius: 6px;
-  padding: 30px 15px;
-  position: relative;
-  margin-bottom: 40px;
-
-  &:hover {
-    .editLink {
-      opacity: 1;
-    }
-  }
+.tintZone:hover .editLink {
+  opacity: 1;
 }
 
-.currentState a {
-  color: var(--link);
-  text-decoration: underline;
-  &:hover {
-    text-decoration: none;
-  }
-}
-
-.currentStateRing {
-  margin-bottom: 15px;
-}
-
-.description {
-  margin: 15px 0;
-}
-
-.hint {
-  font-size: 14px;
-  background: var(--border);
-  color: var(--foreground);
-  border-radius: 6px;
-  padding: 15px;
-  margin-bottom: 15px;
+.cellHint {
+  grid-column: 1 / -1;
   display: flex;
   align-items: center;
   gap: 10px;
+  font-size: 14px;
+  color: var(--foreground);
+  border-bottom: 2px solid
+    color-mix(in oklch, var(--ring-color) 40%, transparent);
 }
 
 .notMaintainedIcon {
   fill: currentColor;
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   flex-shrink: 0;
+  opacity: 0.7;
+}
+
+@media (max-width: 767px) {
+  .tintZone {
+    padding: 15px;
+  }
+  .bentoGrid {
+    grid-template-columns: 1fr;
+    gap: 0;
+    border: 2px solid color-mix(in oklch, var(--ring-color) 40%, transparent);
+  }
+  .cellLeft,
+  .cellRight {
+    border-right: none;
+    border-bottom: none;
+  }
+  .cellLeft {
+    order: 1;
+  }
+  .cellRight {
+    order: 2;
+  }
+  .cellDescription {
+    order: 3;
+  }
+  .ringName {
+    font-size: 36px;
+  }
 }
 
 /* Block 2: Change History — Flat Timeline */
-.historyHeading {
-  margin: 30px 0 20px;
-  font-size: 1.2em;
-}
 
 .timeline {
+  margin-top: 50px;
   position: relative;
   padding-left: 20px;
   margin-left: 8px;
@@ -115,13 +227,13 @@
 .dateLabel::before {
   content: "";
   position: absolute;
-  left: -20px;
   width: 9px;
   height: 9px;
   border-radius: 50%;
   background: var(--foreground);
   border: 2px solid var(--background);
-  transform: translateX(4px);
+  left: calc(-20px + 8px + 0.5px);
+  transform: translateX(-50%);
 }
 
 .dateLabelText {
@@ -215,14 +327,9 @@
   }
 }
 
-/* Expanded description — icon aligned top, full text flows beside */
-.descriptionFull {
-  display: flex;
+/* Expanded description — uses changeRow base with top-aligned icon */
+.changeRowExpanded {
   align-items: flex-start;
-  gap: 10px;
-  font-size: 16px;
-  color: var(--foreground);
-  line-height: 1.5;
 
   .changeIconDesc {
     margin-top: 2px;
@@ -233,6 +340,15 @@
   font-size: 16px;
   color: var(--foreground);
   line-height: 1.5;
+  min-width: 0;
+}
+
+.expandedBody :first-child {
+  margin-top: 0;
+}
+
+.expandedBody :last-child {
+  margin-bottom: 0;
 }
 
 .expandedBody a {
@@ -243,24 +359,14 @@
   }
 }
 
-/* Team change prefix (+/−) */
-.teamPrefix {
-  font-weight: 700;
-  font-size: 16px;
-}
-
-.teamPrefixAdded {
-  composes: teamPrefix;
-  color: rgba(34, 197, 94, 0.9);
-}
-
-.teamPrefixRemoved {
-  composes: teamPrefix;
-  color: rgba(239, 68, 68, 0.9);
-}
-
-/* Initial entry teams (muted pills) */
+/* Initial entry teams */
 .initialTeams {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.initialTeamsList {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
@@ -287,10 +393,6 @@
 }
 
 @media (min-width: 768px) {
-  .currentState {
-    padding: 30px;
-  }
-
   .timeline {
     padding-left: 30px;
     margin-left: 12px;
@@ -301,10 +403,9 @@
   }
 
   .dateLabel::before {
-    left: -30px;
+    left: calc(-30px + 12px + 0.5px);
     width: 11px;
     height: 11px;
-    transform: translateX(7px);
   }
 
   .descriptionPreview {

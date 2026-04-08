@@ -1,18 +1,21 @@
-import { useState } from "react";
+import { CSSProperties, useState } from "react";
 
 import styles from "./ItemDetail.module.css";
 
 import { RingBadge } from "@/components/Badge/Badge";
 import {
   Attention,
-  Description,
+  DescriptionEdit,
   Edit,
   RingChange,
+  RingInitial,
+  TeamAdd,
   Team as TeamIcon,
+  TeamRemove,
 } from "@/components/Icons";
 import { Tag } from "@/components/Tags/Tags";
 import { Team, Teams } from "@/components/Teams/Teams";
-import { getEditUrl, getLabel, getReleases } from "@/lib/data";
+import { getEditUrl, getLabel, getReleases, getRing } from "@/lib/data";
 import { Item, Revision } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -33,49 +36,94 @@ function truncate(text: string, maxLength: number): string {
 
 interface ItemProps {
   item: Item;
+  quadrantTitle: string;
 }
 
-export function ItemDetail({ item }: ItemProps) {
+export function ItemDetail({ item, quadrantTitle }: ItemProps) {
   const notMaintainedText = getLabel("notUpdated");
   const editLink = getEditUrl({ id: item.id, release: item.release });
   const hasHistory = item.revisions !== undefined && item.revisions.length > 0;
 
+  const ringInfo = getRing(item.ring);
+  const ringColor = ringInfo?.color || "#fff";
+
+  // Tenure
+  const sortedRevisions = [...(item.revisions || [])].sort(
+    (a, b) => new Date(a.release).getTime() - new Date(b.release).getTime(),
+  );
+  const firstAssignedRevision = sortedRevisions.find(
+    (r) => r.ring === item.ring,
+  );
+  const tenureDate = firstAssignedRevision
+    ? new Date(firstAssignedRevision.release).toLocaleDateString("en-US", {
+        month: "short",
+        year: "numeric",
+      })
+    : null;
+
+  // Last Transition
+  const latestRevision = [...(item.revisions || [])].sort(
+    (a, b) => new Date(b.release).getTime() - new Date(a.release).getTime(),
+  )[0];
+  const lastTransition = latestRevision?.previousRing
+    ? `${getRing(latestRevision.previousRing)?.title || latestRevision.previousRing} → ${ringInfo?.title || item.ring}`
+    : null;
+
   return (
     <>
-      <div className={styles.header}>
-        <h1 className={styles.title}>{item.title}</h1>
-        {item.tags?.map((tag) => <Tag key={tag} tag={tag} />)}
-      </div>
-
-      {notMaintainedText && isNotMaintained(item.release) && (
-        <div className={styles.hint}>
-          <Attention className={styles.notMaintainedIcon} />
-          <span>{notMaintainedText}</span>
+      <div
+        className={styles.tintZone}
+        style={{ "--ring-color": ringColor } as CSSProperties}
+      >
+        <div className={styles.bentoGrid}>
+          {notMaintainedText && isNotMaintained(item.release) && (
+            <div className={cn(styles.bentoCell, styles.cellHint)}>
+              <Attention className={styles.notMaintainedIcon} />
+              <span>{notMaintainedText}</span>
+            </div>
+          )}
+          <div className={cn(styles.bentoCell, styles.cellLeft)}>
+            <div className={styles.ringName}>
+              {ringInfo?.title || item.ring}
+            </div>
+            <div className={styles.quadrantLabel}>{quadrantTitle}</div>
+            {lastTransition && (
+              <div className={styles.lastTransition}>{lastTransition}</div>
+            )}
+            {tenureDate && (
+              <div className={styles.tenure}>Since {tenureDate}</div>
+            )}
+          </div>
+          <div className={cn(styles.bentoCell, styles.cellRight)}>
+            <h1 className={styles.title}>{item.title}</h1>
+            <div className={styles.tags}>
+              {item.tags?.map((tag) => <Tag key={tag} tag={tag} />)}
+            </div>
+            {!!item.teams && item.teams.length > 0 && (
+              <div className={styles.teamsContainer}>
+                <Teams teams={item.teams} />
+              </div>
+            )}
+          </div>
+          {item.body && (
+            <div className={cn(styles.bentoCell, styles.cellDescription)}>
+              <div
+                id="current-description"
+                className={styles.description}
+                dangerouslySetInnerHTML={{ __html: item.body }}
+              />
+            </div>
+          )}
         </div>
-      )}
-
-      <div className={styles.currentState}>
-        <div className={styles.currentStateRing}>
-          <RingBadge ring={item.ring} size="large" />
-        </div>
-        {item.body && (
-          <div
-            id="current-description"
-            className={styles.description}
-            dangerouslySetInnerHTML={{ __html: item.body }}
-          />
-        )}
         {editLink && (
           <a href={editLink} target="_blank" className={styles.editLink}>
             <Edit />
           </a>
         )}
-        {!!item.teams && item.teams.length > 0 && <Teams teams={item.teams} />}
       </div>
 
       {hasHistory && (
         <>
-          <h2 className={styles.historyHeading}>History</h2>
           <div className={styles.timeline}>
             {item.revisions!.map((revision, index) => (
               <HistoryDateGroup key={index} id={item.id} revision={revision} />
@@ -95,7 +143,7 @@ function ExpandableDescription({ body }: { body: string }) {
   if (!needsTruncation) {
     return (
       <div className={styles.changeRow}>
-        <Description className={styles.changeIconDesc} />
+        <DescriptionEdit className={styles.changeIconDesc} />
         <span className={styles.descriptionPreview}>{plainText}</span>
       </div>
     );
@@ -103,8 +151,8 @@ function ExpandableDescription({ body }: { body: string }) {
 
   if (expanded) {
     return (
-      <div className={styles.descriptionFull}>
-        <Description className={styles.changeIconDesc} />
+      <div className={cn(styles.changeRow, styles.changeRowExpanded)}>
+        <DescriptionEdit className={styles.changeIconDesc} />
         <div
           className={styles.expandedBody}
           dangerouslySetInnerHTML={{ __html: body }}
@@ -115,7 +163,7 @@ function ExpandableDescription({ body }: { body: string }) {
 
   return (
     <div className={styles.changeRow}>
-      <Description className={styles.changeIconDesc} />
+      <DescriptionEdit className={styles.changeIconDesc} />
       <span className={styles.descriptionPreview}>
         {truncate(plainText, 100)}
       </span>
@@ -165,6 +213,7 @@ function HistoryDateGroup({ id, revision }: HistoryDateGroupProps) {
           </div>
         ) : isInitialEntry ? (
           <div className={styles.changeRow}>
+            <RingInitial className={styles.changeIconRing} />
             <RingBadge ring={revision.ring} />
           </div>
         ) : null}
@@ -174,8 +223,7 @@ function HistoryDateGroup({ id, revision }: HistoryDateGroupProps) {
         {hasAddedTeams &&
           revision.addedTeams!.map((team) => (
             <div key={`added-${team}`} className={styles.changeRow}>
-              <TeamIcon className={styles.changeIconTeamAdded} />
-              <span className={styles.teamPrefixAdded}>+</span>
+              <TeamAdd className={styles.changeIconTeamAdded} />
               <Team team={team} />
             </div>
           ))}
@@ -183,8 +231,7 @@ function HistoryDateGroup({ id, revision }: HistoryDateGroupProps) {
         {hasRemovedTeams &&
           revision.removedTeams!.map((team) => (
             <div key={`removed-${team}`} className={styles.changeRow}>
-              <TeamIcon className={styles.changeIconTeamRemoved} />
-              <span className={styles.teamPrefixRemoved}>−</span>
+              <TeamRemove className={styles.changeIconTeamRemoved} />
               <Team team={team} />
             </div>
           ))}
@@ -192,9 +239,11 @@ function HistoryDateGroup({ id, revision }: HistoryDateGroupProps) {
         {isInitialEntry && !!revision.teams && revision.teams.length > 0 && (
           <div className={cn(styles.changeRow, styles.initialTeams)}>
             <TeamIcon className={styles.changeIcon} />
-            {revision.teams.map((team) => (
-              <Team key={team} team={team} />
-            ))}
+            <div className={styles.initialTeamsList}>
+              {revision.teams.map((team) => (
+                <Team key={team} team={team} />
+              ))}
+            </div>
           </div>
         )}
       </div>

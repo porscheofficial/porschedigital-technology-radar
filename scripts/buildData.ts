@@ -118,6 +118,12 @@ async function parseDirectory(dirPath: string): Promise<Item[]> {
           release: releaseDate,
           ring: data.ring,
           body,
+          ...(items[id].revisions!.length > 0 &&
+            (body === "" ||
+              body ===
+                items[id].revisions![items[id].revisions!.length - 1].body) && {
+              bodyInherited: true,
+            }),
           teams: getOrderedTeams(data.teams),
         });
       }
@@ -140,6 +146,22 @@ function getOrderedTeams(listOfTeams: Item["teams"]): Item["teams"] {
   // We use a Set to remove potentially duplicated entries
   const teams = new Set<string>(listOfTeams);
   return Array.from(teams).sort();
+}
+
+function computeRevisionDiffs(revisions: Item["revisions"]): void {
+  if (!revisions || revisions.length < 2) return;
+  for (let i = 1; i < revisions.length; i++) {
+    const prevTeams = revisions[i - 1].teams || [];
+    const currTeams = revisions[i].teams || [];
+    const added = currTeams.filter((t) => !prevTeams.includes(t));
+    const removed = prevTeams.filter((t) => !currTeams.includes(t));
+    if (added.length > 0) revisions[i].addedTeams = added;
+    if (removed.length > 0) revisions[i].removedTeams = removed;
+    // Store previous ring for "trial → adopt" display in history
+    if (revisions[i].ring !== revisions[i - 1].ring) {
+      revisions[i].previousRing = revisions[i - 1].ring;
+    }
+  }
 }
 
 function getUniqueReleases(items: Item[]): string[] {
@@ -226,21 +248,35 @@ function postProcessItems(items: Item[]): {
 
   const releases = getUniqueReleases(filteredItems);
   const uniqueTags = getUniqueTags(filteredItems);
+
+  for (const item of filteredItems) {
+    computeRevisionDiffs(item.revisions);
+  }
+
   const processedItems = filteredItems.map((item) => {
+    const lastRevision = item.revisions?.[item.revisions.length - 1];
     const processedItem = {
       ...item,
       position: positioner.getNextPosition(item.quadrant, item.ring),
       flag: getFlag(item, releases),
+      ...(lastRevision?.addedTeams && { addedTeams: lastRevision.addedTeams }),
+      ...(lastRevision?.removedTeams && {
+        removedTeams: lastRevision.removedTeams,
+      }),
       // only keep revision which ring, body or team is different
       revisions: item.revisions
         ?.filter((revision, index, revisions) => {
-          const { ring, body, teams } = revision;
+          // always keep the first revision as the starting point
+          if (index === 0) return true;
+          const { ring, body } = revision;
+          const prev = revisions[index - 1];
+          const teamsChanged = prev
+            ? !compareArrays(revision.teams, prev.teams)
+            : false;
           return (
             ring !== item.ring ||
-            !compareArrays(teams, item.teams) ||
-            (body != "" &&
-              body != item.body &&
-              body !== revisions[index - 1]?.body)
+            teamsChanged ||
+            (body != "" && body != item.body && body !== prev?.body)
           );
         })
         .reverse(),

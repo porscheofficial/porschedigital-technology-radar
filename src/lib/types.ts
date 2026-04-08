@@ -9,8 +9,12 @@ export type Release = string;
 export interface Revision {
   release: Release;
   ring: string;
+  previousRing?: string;
   body?: string;
+  bodyInherited?: boolean;
   teams?: string[];
+  addedTeams?: string[];
+  removedTeams?: string[];
 }
 
 export interface Item {
@@ -27,6 +31,8 @@ export interface Item {
   revisions?: Revision[];
   position: [x: number, y: number];
   teams?: string[];
+  addedTeams?: string[];
+  removedTeams?: string[];
 }
 
 export interface Ring {

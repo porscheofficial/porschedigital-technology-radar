@@ -23,9 +23,9 @@ const _Chart: FC<ChartProps> = ({
   items = [],
   className,
 }) => {
-  const { highlightedIds } = useRadarHighlight();
+  const { highlightedIds, filterActive } = useRadarHighlight();
   const highlightSet = useMemo(() => new Set(highlightedIds), [highlightedIds]);
-  const hasHighlights = highlightSet.size > 0;
+  const hasHighlights = filterActive || highlightSet.size > 0;
   const viewBoxSize = size;
   const center = size / 2;
   const startAngles = [270, 0, 180, 90]; // Corresponding to positions 1, 2, 3, and 4 respectively

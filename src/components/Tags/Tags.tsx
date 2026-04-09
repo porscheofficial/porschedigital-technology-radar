@@ -3,28 +3,31 @@ import { ComponentPropsWithoutRef } from "react";
 
 import styles from "./Tags.module.scss";
 
-import IconRemove from "@/components/Icons/Close";
-import IconTag from "@/components/Icons/Tag";
 import { getLabel } from "@/lib/data";
 import { cn } from "@/lib/utils";
-import { PHeading } from "@porsche-design-system/components-react/ssr";
+import { PHeading, PTag } from "@porsche-design-system/components-react/ssr";
 
 type TagProps = {
   tag: string;
   isActive?: boolean;
+  compact?: boolean;
 } & Omit<LinkProps, "href"> &
   ComponentPropsWithoutRef<"a">;
 
-export function Tag({ tag, isActive, className, ...props }: TagProps) {
-  const Icon = isActive ? IconRemove : IconTag;
+export function Tag({ tag, isActive, compact, className, ...props }: TagProps) {
   return (
     <Link
       {...props}
       className={cn(styles.tag, className, isActive && styles.active)}
       href={isActive ? "/" : `/?tag=${encodeURIComponent(tag)}`}
     >
-      <Icon className={cn(styles.icon)} />
-      <span className={styles.label}>{tag}</span>
+      <PTag
+        icon={isActive ? "close" : "bookmark"}
+        variant="info"
+        compact={compact}
+      >
+        {tag}
+      </PTag>
     </Link>
   );
 }
@@ -44,9 +47,11 @@ export function Tags({ tags, activeTag, className }: TagsProps) {
           {label}
         </PHeading>
       )}
-      {tags.map((tag) => (
-        <Tag key={tag} tag={tag} isActive={activeTag == tag} scroll={false} />
-      ))}
+      <div className={styles.tagList}>
+        {tags.map((tag) => (
+          <Tag key={tag} tag={tag} isActive={activeTag == tag} scroll={false} />
+        ))}
+      </div>
     </div>
   );
 }

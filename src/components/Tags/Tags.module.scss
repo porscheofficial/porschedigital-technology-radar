@@ -1,45 +1,28 @@
 @use "@porsche-design-system/components-react/styles" as *;
 
-.icon {
-  width: 16px;
-  height: 16px;
+.tag {
+  text-decoration: none;
   display: inline-block;
-  vertical-align: middle;
-  margin: -2px 6px 0 -5px;
+  transition: opacity 150ms ease-in-out;
+
+  &:hover {
+    opacity: 0.85;
+  }
+
+  &.active {
+    opacity: 1;
+  }
 }
 
-.tag {
-  position: relative;
-  display: inline-block;
-  vertical-align: middle;
-  padding: $pds-spacing-static-x-small $pds-spacing-static-small;
-  margin: 6px;
-  text-transform: uppercase;
-  border: 1px solid var(--tag);
-  border-radius: 13px;
-  background: var(--tag);
-  @include pds-text-x-small;
-  line-height: 1;
-  overflow: hidden;
-  text-decoration: none;
-  transition: all 150ms ease-in-out;
-
-  &:hover,
-  &:focus,
-  &.active {
-    background: var(--foreground);
-    color: var(--background);
-  }
-
-  &.active {
-    .icon {
-      transform: scale(0.8);
-    }
-  }
+.tagList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $pds-spacing-static-x-small;
+  justify-content: center;
 }
 
 .tags {
   text-align: center;
-  margin: 0 auto 60px;
+  margin: 0 auto $pds-spacing-fluid-large;
   max-width: 600px;
 }

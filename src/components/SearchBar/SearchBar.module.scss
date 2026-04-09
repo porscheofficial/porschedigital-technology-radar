@@ -2,8 +2,7 @@
 
 .searchBar {
   position: relative;
-  flex: 0 1 320px;
-  margin: 0 $pds-spacing-fluid-small;
+  flex: 0 1 360px;
 }
 
 .inputWrapper {
@@ -21,7 +20,7 @@
 
 .input {
   width: 100%;
-  padding: $pds-spacing-static-small $pds-spacing-static-small
+  padding: $pds-spacing-static-small $pds-spacing-static-x-large
     $pds-spacing-static-small $pds-spacing-static-x-large;
   background: var(--surface);
   border: 1px solid var(--border);
@@ -40,9 +39,28 @@
     box-shadow: 0 0 0 1px var(--highlight);
   }
 
-  // Remove browser clear button for consistent UX
   &::-webkit-search-cancel-button {
     display: none;
+  }
+}
+
+.clearButton {
+  position: absolute;
+  right: $pds-spacing-static-small;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text);
+  opacity: 0.6;
+  transition: opacity 100ms ease;
+
+  &:hover {
+    opacity: 1;
   }
 }
 
@@ -92,11 +110,26 @@
   text-overflow: ellipsis;
 }
 
+.matchHighlight {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 .resultMeta {
   @include pds-text-x-small;
   color: var(--text);
   white-space: nowrap;
   flex-shrink: 0;
+}
+
+.overflow {
+  padding: $pds-spacing-static-small $pds-spacing-static-medium;
+  @include pds-text-x-small;
+  color: var(--text);
+  text-align: center;
+  border-top: 1px solid var(--border);
+  margin-top: $pds-spacing-static-x-small;
+  padding-top: $pds-spacing-static-small;
 }
 
 // Responsive: collapse on small screens

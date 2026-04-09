@@ -1,3 +1,4 @@
+const path = require("path");
 const config = require("./data/config.json");
 const basePath =
   config.basePath && config.basePath !== "/" ? config.basePath : "";
@@ -8,11 +9,11 @@ const nextConfig = {
   output: "export",
   trailingSlash: true,
   reactStrictMode: true,
-  eslint: {
-    ignoreDuringBuilds: true,
+  sassOptions: {
+    loadPaths: [path.join(__dirname, "node_modules")],
   },
-  experimental: {
-    scrollRestoration: true,
+  turbopack: {
+    root: __dirname,
   },
 };
 

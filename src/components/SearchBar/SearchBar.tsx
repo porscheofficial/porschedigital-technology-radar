@@ -9,6 +9,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { ReactNode } from "react";
 
 import styles from "./SearchBar.module.scss";
 
@@ -17,11 +18,27 @@ import { getItems, getLabel, getQuadrant, getRing } from "@/lib/data";
 import { Item } from "@/lib/types";
 import { PIcon } from "@porsche-design-system/components-react/ssr";
 
-const MAX_RESULTS = 10;
+const MAX_VISIBLE = 5;
+
+function highlightMatch(text: string, query: string): ReactNode {
+  if (!query.trim()) return text;
+  const idx = text.toLowerCase().indexOf(query.toLowerCase());
+  if (idx === -1) return text;
+  const before = text.slice(0, idx);
+  const match = text.slice(idx, idx + query.length);
+  const after = text.slice(idx + query.length);
+  return (
+    <>
+      {before}
+      <span className={styles.matchHighlight}>{match}</span>
+      {after}
+    </>
+  );
+}
 
 export function SearchBar() {
   const router = useRouter();
-  const { setHighlightedIds } = useRadarHighlight();
+  const { setHighlight } = useRadarHighlight();
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
@@ -31,17 +48,19 @@ export function SearchBar() {
 
   const items = useMemo(() => getItems(), []);
 
-  const results = useMemo<Item[]>(() => {
+  const allResults = useMemo<Item[]>(() => {
     if (!query.trim()) return [];
     const q = query.toLowerCase();
-    return items
-      .filter((item) => item.title.toLowerCase().includes(q))
-      .slice(0, MAX_RESULTS);
+    return items.filter((item) => item.title.toLowerCase().includes(q));
   }, [query, items]);
 
+  const results = allResults.slice(0, MAX_VISIBLE);
+  const overflowCount = allResults.length - results.length;
+
   useEffect(() => {
-    setHighlightedIds(results.map((item) => item.id));
-  }, [results, setHighlightedIds]);
+    const ids = allResults.map((item) => item.id);
+    setHighlight(ids, ids.length > 0);
+  }, [allResults, setHighlight]);
 
   const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
@@ -52,8 +71,8 @@ export function SearchBar() {
   const close = useCallback(() => {
     setIsOpen(false);
     setActiveIndex(-1);
-    setHighlightedIds([]);
-  }, [setHighlightedIds]);
+    setHighlight([], false);
+  }, [setHighlight]);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLInputElement>) => {
@@ -137,16 +156,30 @@ export function SearchBar() {
           onKeyDown={handleKeyDown}
           onFocus={() => query.trim() && setIsOpen(true)}
           role="combobox"
-          aria-expanded={isOpen && results.length > 0}
+          aria-expanded={isOpen && allResults.length > 0}
           aria-controls="search-results"
           aria-activedescendant={
             activeIndex >= 0 ? `search-result-${activeIndex}` : undefined
           }
           autoComplete="off"
         />
+        {query && (
+          <button
+            type="button"
+            className={styles.clearButton}
+            onClick={() => {
+              setQuery("");
+              close();
+              inputRef.current?.focus();
+            }}
+            aria-label="Clear search"
+          >
+            <PIcon name="close" size="small" />
+          </button>
+        )}
       </div>
 
-      {isOpen && results.length > 0 && (
+      {isOpen && allResults.length > 0 && (
         <ul
           id="search-results"
           ref={listRef}
@@ -177,7 +210,9 @@ export function SearchBar() {
                   }}
                   tabIndex={-1}
                 >
-                  <span className={styles.resultTitle}>{item.title}</span>
+                  <span className={styles.resultTitle}>
+                    {highlightMatch(item.title, query)}
+                  </span>
                   <span className={styles.resultMeta}>
                     {quadrant?.title}
                     {ring ? ` \u00b7 ${ring.title}` : ""}
@@ -186,6 +221,11 @@ export function SearchBar() {
               </li>
             );
           })}
+          {overflowCount > 0 && (
+            <li className={styles.overflow} aria-hidden="true">
+              +{overflowCount} more result{overflowCount !== 1 ? "s" : ""}
+            </li>
+          )}
         </ul>
       )}
     </div>

@@ -56,6 +56,14 @@
   &.isShown {
     opacity: 1;
     transform: translate(-50%, -130%) scale(1);
+    pointer-events: auto;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+
+    &:hover {
+      z-index: 10;
+    }
 
     &:before {
       bottom: -7px;

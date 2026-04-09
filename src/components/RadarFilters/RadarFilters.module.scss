@@ -1,0 +1,56 @@
+@use "@porsche-design-system/components-react/styles" as *;
+
+.filters {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: $pds-spacing-static-small;
+  margin: $pds-spacing-fluid-small 0 $pds-spacing-fluid-medium;
+  padding: 0 $pds-spacing-static-medium;
+  align-items: start;
+}
+
+.row {
+  display: contents;
+}
+
+.rowLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  @include pds-text-xx-small;
+  font-weight: $pds-font-weight-bold;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--foreground);
+  opacity: 0.5;
+  // Align label vertically with first line of pills
+  padding-top: 6px;
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $pds-spacing-static-x-small;
+  align-items: center;
+}
+
+.pill {
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: $pds-spacing-static-x-small;
+  transition: opacity 150ms ease-in-out;
+  opacity: 0.7;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &.active {
+    opacity: 1;
+  }
+}

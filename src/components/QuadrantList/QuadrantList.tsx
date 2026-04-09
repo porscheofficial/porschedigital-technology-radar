@@ -2,7 +2,6 @@ import Link from "next/link";
 
 import styles from "./QuadrantList.module.scss";
 
-import { QuadrantLink } from "@/components/QuadrantLink/QuadrantLink";
 import { RingList } from "@/components/RingList/RingList";
 import { getQuadrant, groupItemsByQuadrant } from "@/lib/data";
 import { Item } from "@/lib/types";
@@ -21,12 +20,12 @@ export function QuadrantList({ items }: RingListProps) {
         if (!quadrant) return null;
         return (
           <li key={quadrantId} className={styles.quadrant}>
-            <div className={styles.header}>
+            <Link href={`/${quadrant.id}`} className={styles.header}>
               <PHeading size="small" tag="h3" className={styles.title}>
-                <Link href={`/${quadrant.id}`}>{quadrant.title}</Link>
+                {quadrant.title}
               </PHeading>
-              <QuadrantLink quadrant={quadrant} />
-            </div>
+              <span className={styles.arrow}>→</span>
+            </Link>
             <RingList items={items} size="small" />
           </li>
         );

@@ -138,7 +138,12 @@ export function ItemDetail({ item, quadrantTitle }: ItemProps) {
         <>
           <div className={styles.timeline}>
             {item.revisions!.map((revision, index) => (
-              <HistoryDateGroup key={index} id={item.id} revision={revision} />
+              <HistoryDateGroup
+                key={index}
+                id={item.id}
+                revision={revision}
+                isFirstEntry={index === item.revisions!.length - 1}
+              />
             ))}
           </div>
         </>
@@ -194,9 +199,14 @@ function ExpandableDescription({ body }: { body: string }) {
 interface HistoryDateGroupProps {
   id: string;
   revision: Revision;
+  isFirstEntry: boolean;
 }
 
-function HistoryDateGroup({ id, revision }: HistoryDateGroupProps) {
+function HistoryDateGroup({
+  id,
+  revision,
+  isFirstEntry,
+}: HistoryDateGroupProps) {
   const date = new Date(revision.release);
   const formattedDate = date.toLocaleDateString("en-US", {
     month: "short",
@@ -207,7 +217,8 @@ function HistoryDateGroup({ id, revision }: HistoryDateGroupProps) {
   const hasBodyChange = !revision.bodyInherited && !!revision.body;
   const hasAddedTeams = (revision.addedTeams?.length ?? 0) > 0;
   const hasRemovedTeams = (revision.removedTeams?.length ?? 0) > 0;
-  const isInitialEntry = !hasRingChange && !hasAddedTeams && !hasRemovedTeams;
+  const isInitialEntry =
+    isFirstEntry && !hasRingChange && !hasAddedTeams && !hasRemovedTeams;
 
   return (
     <div className={styles.dateGroup}>

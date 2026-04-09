@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React, {
   CSSProperties,
   FC,
@@ -12,7 +13,6 @@ import styles from "./Radar.module.scss";
 
 import { Chart } from "@/components/Radar/Chart";
 import { Label } from "@/components/Radar/Label";
-import { Legend } from "@/components/Radar/Legend";
 import { useRadarHighlight } from "@/lib/RadarHighlightContext";
 import { Item, Quadrant, Ring } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -21,6 +21,7 @@ interface PersistentTooltip {
   id: string;
   text: string;
   color: string;
+  href: string;
   x: number;
   y: number;
 }
@@ -39,7 +40,7 @@ export const Radar: FC<RadarProps> = ({
   items = [],
 }) => {
   const radarRef = useRef<HTMLDivElement>(null);
-  const { highlightedIds } = useRadarHighlight();
+  const { highlightedIds, filterActive } = useRadarHighlight();
   const [tooltip, setTooltip] = useState({
     show: false,
     text: "",
@@ -47,20 +48,41 @@ export const Radar: FC<RadarProps> = ({
     x: 0,
     y: 0,
   });
-  const [persistentTooltips, setPersistentTooltips] = useState<
-    PersistentTooltip[]
-  >([]);
+  const [tooltipMap, setTooltipMap] = useState<Map<string, PersistentTooltip>>(
+    new Map(),
+  );
+  const [shownIds, setShownIds] = useState<Set<string>>(new Set());
+  const activeIdsRef = useRef(new Set<string>());
+  const cleanupTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const rafRef = useRef<number>(0);
 
   useEffect(() => {
-    if (highlightedIds.length === 0 || !radarRef.current) {
-      setPersistentTooltips([]);
+    const currentHighlightSet = new Set(highlightedIds);
+    activeIdsRef.current = currentHighlightSet;
+
+    if (cleanupTimerRef.current) {
+      clearTimeout(cleanupTimerRef.current);
+      cleanupTimerRef.current = null;
+    }
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = 0;
+    }
+
+    if (currentHighlightSet.size === 0) {
+      setShownIds(new Set());
+      cleanupTimerRef.current = setTimeout(() => {
+        setTooltipMap(new Map());
+      }, 200);
       return;
     }
 
-    const radarRect = radarRef.current.getBoundingClientRect();
-    const tooltips: PersistentTooltip[] = [];
+    if (!radarRef.current) return;
 
-    for (const id of highlightedIds) {
+    const radarRect = radarRef.current.getBoundingClientRect();
+    const next = new Map<string, PersistentTooltip>();
+
+    for (const id of currentHighlightSet) {
       const link = radarRef.current.querySelector(
         `a[data-item-id="${id}"]`,
       ) as HTMLElement | null;
@@ -68,18 +90,50 @@ export const Radar: FC<RadarProps> = ({
 
       const text = link.getAttribute("data-tooltip") || "";
       const color = link.getAttribute("data-tooltip-color") || "";
+      const href = link.getAttribute("href") || "";
       const linkRect = link.getBoundingClientRect();
 
-      tooltips.push({
+      next.set(id, {
         id,
         text,
         color,
+        href,
         x: linkRect.left - radarRect.left + linkRect.width / 2,
         y: linkRect.top - radarRect.top,
       });
     }
 
-    setPersistentTooltips(tooltips);
+    setTooltipMap((prev) => {
+      const merged = new Map(prev);
+      for (const [id, tt] of next) {
+        merged.set(id, tt);
+      }
+      for (const id of merged.keys()) {
+        if (!next.has(id)) {
+          setTimeout(() => {
+            setTooltipMap((current) => {
+              if (activeIdsRef.current.has(id)) return current;
+              const updated = new Map(current);
+              updated.delete(id);
+              return updated;
+            });
+          }, 200);
+        }
+      }
+      return merged;
+    });
+
+    setShownIds((prev) => {
+      const kept = new Set<string>();
+      for (const id of prev) {
+        if (currentHighlightSet.has(id)) kept.add(id);
+      }
+      return kept;
+    });
+
+    rafRef.current = requestAnimationFrame(() => {
+      setShownIds(new Set(currentHighlightSet));
+    });
   }, [highlightedIds]);
 
   const tooltipStyle = useMemo(
@@ -93,7 +147,7 @@ export const Radar: FC<RadarProps> = ({
   );
 
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
-    if (highlightedIds.length > 0) {
+    if (filterActive || highlightedIds.length > 0) {
       if (tooltip.show) setTooltip({ ...tooltip, show: false });
       return;
     }
@@ -146,17 +200,17 @@ export const Radar: FC<RadarProps> = ({
           <Label key={quadrant.id} quadrant={quadrant} />
         ))}
       </div>
-      <Legend />
       <span
         className={cn(styles.tooltip, tooltip.show && styles.isShown)}
         style={tooltipStyle}
       >
         {tooltip.text}
       </span>
-      {persistentTooltips.map((pt) => (
-        <span
+      {Array.from(tooltipMap.values()).map((pt) => (
+        <Link
           key={pt.id}
-          className={cn(styles.tooltip, styles.isShown)}
+          href={pt.href}
+          className={cn(styles.tooltip, shownIds.has(pt.id) && styles.isShown)}
           style={
             {
               left: pt.x,
@@ -166,7 +220,7 @@ export const Radar: FC<RadarProps> = ({
           }
         >
           {pt.text}
-        </span>
+        </Link>
       ))}
     </div>
   );

@@ -1,5 +1,9 @@
 @use "@porsche-design-system/components-react/styles" as *;
 
+.items a {
+  outline: none;
+}
+
 .ringLabels {
   text-transform: uppercase;
 }

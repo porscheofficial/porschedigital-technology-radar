@@ -1,30 +1,29 @@
 import styles from "./Teams.module.scss";
 
-import IconTeam from "@/components/Icons/Team";
 import { cn } from "@/lib/utils";
+import { PTag } from "@porsche-design-system/components-react/ssr";
 
 type TeamProps = {
   team: string;
   variant?: "default" | "added" | "removed";
-  size?: "default" | "small";
+  compact?: boolean;
 };
 
-export function Team({
-  team,
-  variant = "default",
-  size = "default",
-}: TeamProps) {
+const variantMap = {
+  default: "warning",
+  added: "success",
+  removed: "error",
+} as const;
+
+export function Team({ team, variant = "default", compact }: TeamProps) {
   return (
-    <div
-      className={cn(
-        styles.team,
-        variant === "added" && styles.teamAdded,
-        variant === "removed" && styles.teamRemoved,
-        size === "small" && styles.teamSmall,
-      )}
+    <span
+      className={cn(styles.team, variant === "removed" && styles.teamRemoved)}
     >
-      <span>{team}</span>
-    </div>
+      <PTag icon="user-group" variant={variantMap[variant]} compact={compact}>
+        {team}
+      </PTag>
+    </span>
   );
 }
 

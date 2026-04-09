@@ -1,9 +1,15 @@
-import data from "../../data/data.json";
+import rawData from "../../data/data.json";
 import config from "./config";
 
 import { format } from "@/lib/format";
 import { Flag, Item, Quadrant, Ring } from "@/lib/types";
 import { assetUrl } from "@/lib/utils";
+
+const data = rawData as {
+  releases: string[];
+  tags: string[];
+  items: Item[];
+};
 
 export function getLabel(key: keyof typeof config.labels) {
   return config.labels[key] || "";
@@ -100,11 +106,16 @@ export function getItems(quadrant?: string, featured?: boolean): Item[] {
   }) as Item[];
 }
 
-export function getFilteredItems(tag?: string, team?: string): Item[] {
+export function getFilteredItems(
+  tag?: string,
+  team?: string,
+  flag?: string,
+): Item[] {
   return getItems().filter(
     (item) =>
       (!tag || item.tags?.includes(tag)) &&
-      (!team || item.teams?.includes(team)),
+      (!team || item.teams?.includes(team)) &&
+      (!flag || item.flag === flag),
   );
 }
 

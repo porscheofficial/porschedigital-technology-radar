@@ -24,13 +24,30 @@
   padding: $pds-spacing-static-small 0;
   margin-bottom: $pds-spacing-fluid-medium;
   border-bottom: 1px solid var(--border);
+  text-decoration: none;
+  color: var(--foreground);
+  transition: border-color 200ms ease;
+
+  &:hover {
+    border-bottom-color: var(--foreground);
+
+    .arrow {
+      opacity: 1;
+      transform: translateX(2px);
+    }
+  }
 }
 
 .title {
   margin: 0;
 }
 
-.link {
+.arrow {
+  @include pds-text-small;
+  opacity: 0.4;
+  transition:
+    opacity 200ms ease,
+    transform 200ms ease;
 }
 
 @media (min-width: 1220px) {

@@ -28,25 +28,25 @@
       "id": "languages-and-frameworks",
       "title": "Languages & Frameworks",
       "description": "A selection of programming languages, alongside essential frameworks for building a variety of custom software.",
-      "color": "#09D087"
+      "color": "#4A9E7E"
     },
     {
       "id": "methods-and-patterns",
       "title": "Methods & Patterns",
       "description": "Key software development methods and design patterns, covering everything from continuous integration and testing to architecture.",
-      "color": "#178BFF"
+      "color": "#5B8DB8"
     },
     {
       "id": "platforms-and-operations",
       "title": "Platforms & Operations",
       "description": "Technologies and tools for software and infrastructure operations, including platforms and services for managing and scaling applications.",
-      "color": "#F7CB47"
+      "color": "#C4A85E"
     },
     {
       "id": "tools",
       "title": "Tools",
       "description": "A range of software tools, from simple productivity enhancers to comprehensive project solutions, catering to various project needs.",
-      "color": "#FC4040"
+      "color": "#B85B5B"
     }
   ],
   "rings": [
@@ -54,7 +54,7 @@
       "id": "adopt",
       "title": "Adopt",
       "description": "",
-      "color": "#09D087",
+      "color": "#4A9E7E",
       "radius": 0.5,
       "strokeWidth": 5
     },
@@ -62,7 +62,7 @@
       "id": "trial",
       "title": "Trial",
       "description": "",
-      "color": "#178BFF",
+      "color": "#5B8DB8",
       "radius": 0.69,
       "strokeWidth": 3
     },
@@ -70,7 +70,7 @@
       "id": "assess",
       "title": "Assess",
       "description": "",
-      "color": "#F7CB47",
+      "color": "#C4A85E",
       "radius": 0.85,
       "strokeWidth": 2
     },
@@ -78,20 +78,20 @@
       "id": "hold",
       "title": "Hold",
       "description": "",
-      "color": "#FC4040",
+      "color": "#B85B5B",
       "radius": 1,
       "strokeWidth": 0.75
     }
   ],
   "flags": {
     "new": {
-      "color": "#FC4040",
+      "color": "#B85B5B",
       "title": "New",
       "titleShort": "N",
       "description": "New in this version"
     },
     "changed": {
-      "color": "#178BFF",
+      "color": "#5B8DB8",
       "title": "Changed",
       "titleShort": "C",
       "description": "Recently changed"

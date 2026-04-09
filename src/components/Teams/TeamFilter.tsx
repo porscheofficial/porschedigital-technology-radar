@@ -3,11 +3,9 @@ import { ComponentPropsWithoutRef } from "react";
 
 import styles from "./TeamFilter.module.scss";
 
-import IconRemove from "@/components/Icons/Close";
-import IconTeam from "@/components/Icons/Team";
 import { getLabel, getTeams } from "@/lib/data";
 import { cn } from "@/lib/utils";
-import { PHeading } from "@porsche-design-system/components-react/ssr";
+import { PHeading, PTag } from "@porsche-design-system/components-react/ssr";
 
 type TeamProps = {
   team: string;
@@ -16,15 +14,15 @@ type TeamProps = {
   ComponentPropsWithoutRef<"a">;
 
 function Team({ team, isActive, ...props }: TeamProps) {
-  const Icon = isActive ? IconRemove : IconTeam;
   return (
     <Link
       {...props}
       className={cn(styles.team, isActive && styles.active)}
       href={isActive ? "/" : `/?team=${team}`}
     >
-      <Icon className={cn(styles.icon)} />
-      <span className={styles.label}>{team}</span>
+      <PTag icon={isActive ? "close" : "user-group"} variant="warning">
+        {team}
+      </PTag>
     </Link>
   );
 }
@@ -45,14 +43,16 @@ export function TeamFilter({ activeTeam, className }: TeamFilterProps) {
           {label}
         </PHeading>
       )}
-      {teams.map((team) => (
-        <Team
-          key={team}
-          team={team}
-          isActive={activeTeam === team}
-          scroll={false}
-        />
-      ))}
+      <div className={styles.teamList}>
+        {teams.map((team) => (
+          <Team
+            key={team}
+            team={team}
+            isActive={activeTeam === team}
+            scroll={false}
+          />
+        ))}
+      </div>
     </div>
   );
 }

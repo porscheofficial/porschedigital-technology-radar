@@ -6,6 +6,9 @@
   border-radius: $pds-border-radius-medium $pds-border-radius-medium 0 0;
   padding: $pds-spacing-fluid-small;
   margin-bottom: 0;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .tintZone::after {
@@ -127,11 +130,11 @@
 
 .editLink {
   position: absolute;
-  top: 15px;
-  right: 15px;
-  display: block;
-  width: 20px;
-  height: 20px;
+  top: $pds-spacing-static-large;
+  right: $pds-spacing-static-large;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: var(--foreground);
   opacity: 0;
   transition: opacity 0.2s;
@@ -142,23 +145,8 @@
   opacity: 1;
 }
 
-.cellHint {
-  @include pds-text-x-small;
-  grid-column: 1 / -1;
-  display: flex;
-  align-items: center;
-  gap: $pds-spacing-static-small;
-  color: var(--foreground);
-  border-bottom: 2px solid
-    color-mix(in oklch, var(--ring-color) 40%, transparent);
-}
-
-.notMaintainedIcon {
-  fill: currentColor;
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-  opacity: 0.7;
+.notMaintained {
+  margin-bottom: $pds-spacing-static-medium;
 }
 
 @media (max-width: 767px) {
@@ -198,8 +186,16 @@
 .timeline {
   margin-top: 50px;
   position: relative;
-  padding-left: 20px;
-  margin-left: 8px;
+  // Align with bento description: tintZone padding + border + cell padding + timeline gutter
+  padding-left: calc(
+    $pds-spacing-fluid-small + 2px + $pds-spacing-fluid-medium + 20px
+  );
+  padding-right: calc(
+    $pds-spacing-fluid-small + 2px + $pds-spacing-fluid-medium
+  );
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 900px;
 }
 
 .timeline::before {
@@ -207,14 +203,14 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 8px;
+  left: calc($pds-spacing-fluid-small + 2px + $pds-spacing-fluid-medium + 8px);
   width: 1px;
   background: var(--border);
 }
 
 .dateGroup {
   position: relative;
-  padding-bottom: 32px;
+  padding-bottom: $pds-spacing-fluid-medium;
 }
 
 .dateGroup:last-child {
@@ -251,7 +247,7 @@
 .changeList {
   display: flex;
   flex-direction: column;
-  gap: $pds-spacing-static-small;
+  gap: $pds-spacing-static-medium;
   padding-left: $pds-spacing-static-x-small;
 }
 
@@ -309,7 +305,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 500px;
+  max-width: 100%;
   color: var(--foreground);
 }
 
@@ -393,22 +389,8 @@
 }
 
 @media (min-width: 768px) {
-  .timeline {
-    padding-left: 30px;
-    margin-left: 12px;
-  }
-
-  .timeline::before {
-    left: 12px;
-  }
-
   .dateLabel::before {
-    left: calc(-30px + 12px + 0.5px);
     width: 11px;
     height: 11px;
-  }
-
-  .descriptionPreview {
-    max-width: 700px;
   }
 }

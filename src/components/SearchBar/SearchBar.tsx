@@ -124,6 +124,10 @@ export function SearchBar() {
         containerRef.current &&
         !containerRef.current.contains(e.target as Node)
       ) {
+        // Don't clear highlights when clicking a radar tooltip/blip link —
+        // removing highlights would delete the <Link> from the DOM before navigation fires.
+        const target = e.target as Element | null;
+        if (target?.closest("a[data-item-id]")) return;
         close();
       }
     }

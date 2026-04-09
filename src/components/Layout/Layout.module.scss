@@ -4,12 +4,6 @@
   min-height: 100vh;
 }
 
-.container {
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: $pds-spacing-fluid-medium;
-}
-
 .header {
   position: sticky;
   top: 0;
@@ -84,5 +78,5 @@
 }
 
 .footer {
-  border-top: 1px solid var(--border);
+  background: var(--surface);
 }

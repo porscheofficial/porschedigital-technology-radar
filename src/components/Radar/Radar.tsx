@@ -210,6 +210,7 @@ export const Radar: FC<RadarProps> = ({
         <Link
           key={pt.id}
           href={pt.href}
+          data-item-id={pt.id}
           className={cn(styles.tooltip, shownIds.has(pt.id) && styles.isShown)}
           style={
             {

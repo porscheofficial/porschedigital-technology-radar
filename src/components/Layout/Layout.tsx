@@ -45,7 +45,7 @@ export const Layout: FC<LayoutProps> = ({
         </div>
       </header>
       <main className={cn(styles.content)}>{children}</main>
-      <footer className={cn(styles.container, styles.footer)}>
+      <footer className={styles.footer}>
         <Footer />
       </footer>
     </div>

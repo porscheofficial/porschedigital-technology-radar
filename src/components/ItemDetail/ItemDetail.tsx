@@ -4,7 +4,6 @@ import styles from "./ItemDetail.module.scss";
 
 import { RingBadge } from "@/components/Badge/Badge";
 import {
-  Attention,
   DescriptionEdit,
   RingChange,
   RingInitial,
@@ -20,6 +19,7 @@ import { cn } from "@/lib/utils";
 import {
   PButtonPure,
   PHeading,
+  PInlineNotification,
   PLinkPure,
 } from "@porsche-design-system/components-react/ssr";
 
@@ -75,17 +75,20 @@ export function ItemDetail({ item, quadrantTitle }: ItemProps) {
 
   return (
     <>
+      {notMaintainedText && isNotMaintained(item.release) && (
+        <PInlineNotification
+          heading="Attention"
+          description={notMaintainedText}
+          state="info"
+          dismissButton={false}
+          className={styles.notMaintained}
+        />
+      )}
       <div
         className={styles.tintZone}
         style={{ "--ring-color": ringColor } as CSSProperties}
       >
         <div className={styles.bentoGrid}>
-          {notMaintainedText && isNotMaintained(item.release) && (
-            <div className={cn(styles.bentoCell, styles.cellHint)}>
-              <Attention className={styles.notMaintainedIcon} />
-              <span>{notMaintainedText}</span>
-            </div>
-          )}
           <div className={cn(styles.bentoCell, styles.cellLeft)}>
             <div className={styles.ringName}>
               {ringInfo?.title || item.ring}

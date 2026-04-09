@@ -1,28 +1,5 @@
 @use "@porsche-design-system/components-react/styles" as *;
 
 .tag {
-  text-decoration: none;
   display: inline-block;
-  transition: opacity 150ms ease-in-out;
-
-  &:hover {
-    opacity: 0.85;
-  }
-
-  &.active {
-    opacity: 1;
-  }
-}
-
-.tagList {
-  display: flex;
-  flex-wrap: wrap;
-  gap: $pds-spacing-static-x-small;
-  justify-content: center;
-}
-
-.tags {
-  text-align: center;
-  margin: 0 auto $pds-spacing-fluid-large;
-  max-width: 600px;
 }

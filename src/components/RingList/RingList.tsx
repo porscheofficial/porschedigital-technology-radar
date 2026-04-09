@@ -1,4 +1,4 @@
-import styles from "./RingList.module.css";
+import styles from "./RingList.module.scss";
 
 import { RingBadge } from "@/components/Badge/Badge";
 import { ItemList, ItemListProps } from "@/components/ItemList/ItemList";

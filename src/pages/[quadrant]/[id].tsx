@@ -2,7 +2,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
 
-import styles from "./[id].module.css";
+import styles from "./[id].module.scss";
 
 import { ItemDetail } from "@/components/ItemDetail/ItemDetail";
 import { ItemList } from "@/components/ItemList/ItemList";
@@ -16,6 +16,7 @@ import {
 } from "@/lib/data";
 import { formatTitle } from "@/lib/format";
 import { CustomPage } from "@/pages/_app";
+import { PHeading } from "@porsche-design-system/components-react/ssr";
 
 const ItemPage: CustomPage = () => {
   const { query } = useRouter();
@@ -42,7 +43,9 @@ const ItemPage: CustomPage = () => {
           <ItemDetail item={item} quadrantTitle={quadrant.title} />
         </section>
         <aside className={styles.sidebar}>
-          <h3>{quadrant.title}</h3>
+          <PHeading size="small" tag="h3">
+            {quadrant.title}
+          </PHeading>
           <div className={styles.quadrantNav}>
             <QuadrantLink
               quadrant={quadrant}

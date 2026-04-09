@@ -1,11 +1,12 @@
 import Link from "next/link";
 
-import styles from "./ItemList.module.css";
+import styles from "./ItemList.module.scss";
 
 import { FlagBadge, RingBadge } from "@/components/Badge/Badge";
 import { getQuadrant } from "@/lib/data";
 import { Item } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { PText } from "@porsche-design-system/components-react/ssr";
 
 export interface ItemListProps {
   items: Item[];
@@ -38,7 +39,9 @@ export function ItemList({
             })}
             href={`/${item.quadrant}/${item.id}`}
           >
-            <span className={styles.title}>{item.title}</span>
+            <PText tag="span" className={styles.title}>
+              {item.title}
+            </PText>
             <FlagBadge
               className={styles.flag}
               flag={item.flag}
@@ -47,9 +50,9 @@ export function ItemList({
 
             {size === "large" && (
               <div className={styles.info}>
-                <span className={styles.quadrant}>
+                <PText tag="span" size="x-small" className={styles.quadrant}>
                   {getQuadrant(item.quadrant)?.title}
-                </span>
+                </PText>
                 {!hideRing && (
                   <RingBadge
                     className={styles.ring}

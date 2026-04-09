@@ -1,8 +1,10 @@
+@use "@porsche-design-system/components-react/styles" as *;
+
 .list {
   list-style: none;
   display: flex;
-  gap: 16px;
-  font-size: 14px;
+  gap: $pds-spacing-static-medium;
+  @include pds-text-x-small;
 }
 
 .icon {

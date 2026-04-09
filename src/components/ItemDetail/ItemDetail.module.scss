@@ -1,8 +1,10 @@
+@use "@porsche-design-system/components-react/styles" as *;
+
 .tintZone {
   position: relative;
   background: color-mix(in oklch, var(--ring-color) 8%, transparent);
-  border-radius: 12px 12px 0 0;
-  padding: 30px;
+  border-radius: $pds-border-radius-medium $pds-border-radius-medium 0 0;
+  padding: $pds-spacing-fluid-small;
   margin-bottom: 0;
 }
 
@@ -28,12 +30,12 @@
   grid-template-columns: auto 1fr;
   gap: 0;
   border: 2px solid color-mix(in oklch, var(--ring-color) 40%, transparent);
-  border-radius: 12px;
+  border-radius: $pds-border-radius-medium;
   overflow: hidden;
 }
 
 .bentoCell {
-  padding: 20px;
+  padding: $pds-spacing-fluid-medium;
 }
 
 .cellLeft {
@@ -58,37 +60,36 @@
 }
 
 .ringName {
-  font-size: 48px;
+  @include pds-display-small;
   text-transform: uppercase;
-  font-weight: 700;
+  font-weight: $pds-font-weight-bold;
   color: var(--ring-color);
   line-height: 1;
 }
 
 .quadrantLabel {
-  font-size: 14px;
+  @include pds-text-xx-small;
   color: var(--foreground);
   opacity: 0.5;
-  margin-top: 4px;
+  margin-top: $pds-spacing-static-x-small;
+  text-transform: uppercase;
 }
 
 .lastTransition {
-  font-size: 14px;
+  @include pds-text-x-small;
   color: var(--foreground);
   opacity: 0.4;
-  margin-top: 12px;
+  margin-top: $pds-spacing-static-small;
 }
 
 .tenure {
-  font-size: 12px;
+  @include pds-text-xx-small;
   color: var(--foreground);
   opacity: 0.3;
-  margin-top: 8px;
+  margin-top: $pds-spacing-static-x-small;
 }
 
 .title {
-  font-size: 37px;
-  font-weight: 700;
   color: var(--foreground);
   margin: 0;
 }
@@ -96,8 +97,8 @@
 .tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 12px;
+  gap: $pds-spacing-static-x-small;
+  margin-top: $pds-spacing-static-small;
 }
 
 .tags :global(a) {
@@ -107,10 +108,11 @@
 .teamsContainer {
   display: flex;
   flex-wrap: wrap;
-  margin-top: 12px;
+  margin-top: $pds-spacing-static-small;
 }
 
 .description {
+  @include pds-text-small;
   margin: 0;
 }
 
@@ -130,6 +132,7 @@
   display: block;
   width: 20px;
   height: 20px;
+  color: var(--foreground);
   opacity: 0;
   transition: opacity 0.2s;
   z-index: 2;
@@ -140,11 +143,11 @@
 }
 
 .cellHint {
+  @include pds-text-x-small;
   grid-column: 1 / -1;
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 14px;
+  gap: $pds-spacing-static-small;
   color: var(--foreground);
   border-bottom: 2px solid
     color-mix(in oklch, var(--ring-color) 40%, transparent);
@@ -160,33 +163,37 @@
 
 @media (max-width: 767px) {
   .tintZone {
-    padding: 15px;
+    padding: $pds-spacing-static-medium;
   }
+
   .bentoGrid {
     grid-template-columns: 1fr;
     gap: 0;
     border: 2px solid color-mix(in oklch, var(--ring-color) 40%, transparent);
   }
+
   .cellLeft,
   .cellRight {
     border-right: none;
     border-bottom: none;
   }
+
   .cellLeft {
     order: 1;
   }
+
   .cellRight {
     order: 2;
   }
+
   .cellDescription {
     order: 3;
   }
+
   .ringName {
-    font-size: 36px;
+    @include pds-heading-xx-large;
   }
 }
-
-/* Block 2: Change History — Flat Timeline */
 
 .timeline {
   margin-top: 50px;
@@ -195,7 +202,6 @@
   margin-left: 8px;
 }
 
-/* Vertical spine line */
 .timeline::before {
   content: "";
   position: absolute;
@@ -206,7 +212,6 @@
   background: var(--border);
 }
 
-/* Date group */
 .dateGroup {
   position: relative;
   padding-bottom: 32px;
@@ -216,12 +221,11 @@
   padding-bottom: 0;
 }
 
-/* Small circle on the timeline spine */
 .dateLabel {
   position: relative;
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: $pds-spacing-static-small;
 }
 
 .dateLabel::before {
@@ -237,26 +241,25 @@
 }
 
 .dateLabelText {
-  font-size: 14px;
-  font-weight: 700;
+  @include pds-text-x-small;
+  font-weight: $pds-font-weight-bold;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--foreground);
 }
 
-/* Change rows */
 .changeList {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding-left: 4px;
+  gap: $pds-spacing-static-small;
+  padding-left: $pds-spacing-static-x-small;
 }
 
 .changeRow {
+  @include pds-text-small;
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 16px;
+  gap: $pds-spacing-static-small;
   color: var(--foreground);
   line-height: 1.5;
 }
@@ -291,19 +294,17 @@
   opacity: 1;
 }
 
-/* Ring transition row */
 .ringTransition {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: $pds-spacing-static-x-small;
 }
 
 .ringArrow {
-  font-size: 18px;
+  @include pds-text-medium;
   color: var(--foreground);
 }
 
-/* Description truncation */
 .descriptionPreview {
   white-space: nowrap;
   overflow: hidden;
@@ -313,21 +314,21 @@
 }
 
 .moreLink {
+  @include pds-text-x-small;
   color: var(--link);
   text-decoration: none;
-  font-size: 14px;
   white-space: nowrap;
   background: none;
   border: none;
   padding: 0;
   cursor: pointer;
   font-family: inherit;
+
   &:hover {
     text-decoration: underline;
   }
 }
 
-/* Expanded description — uses changeRow base with top-aligned icon */
 .changeRowExpanded {
   align-items: flex-start;
 
@@ -337,7 +338,7 @@
 }
 
 .expandedBody {
-  font-size: 16px;
+  @include pds-text-small;
   color: var(--foreground);
   line-height: 1.5;
   min-width: 0;
@@ -354,26 +355,25 @@
 .expandedBody a {
   color: var(--link);
   text-decoration: underline;
+
   &:hover {
     text-decoration: none;
   }
 }
 
-/* Initial entry teams */
 .initialTeams {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: $pds-spacing-static-small;
 }
 
 .initialTeamsList {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: $pds-spacing-static-x-small;
   align-items: center;
 }
 
-/* Edit link in history */
 .historyEditLink {
   display: inline-block;
   width: 16px;

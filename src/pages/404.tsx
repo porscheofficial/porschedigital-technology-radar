@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import Search from "@/components/Icons/Search";
 import { formatTitle } from "@/lib/format";
+import { PHeading, PText } from "@porsche-design-system/components-react/ssr";
 
 export default function Custom404() {
   return (
@@ -12,10 +13,12 @@ export default function Custom404() {
       </Head>
       <div style={{ textAlign: "center", margin: "0 auto" }}>
         <Search width={150} style={{ display: "inline-block" }} />
-        <h1>404 - Page Not Found</h1>
-        <p>
+        <PHeading size="xx-large" tag="h1">
+          404 - Page Not Found
+        </PHeading>
+        <PText>
           <Link href="/">Return to homepage</Link>
-        </p>
+        </PText>
       </div>
     </>
   );

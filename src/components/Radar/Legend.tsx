@@ -1,12 +1,13 @@
 import { ComponentPropsWithoutRef } from "react";
 
-import styles from "./Legend.module.css";
+import styles from "./Legend.module.scss";
 
 import BlipChanged from "@/components/Icons/BlipChanged";
 import BlipDefault from "@/components/Icons/BlipDefault";
 import BlipNew from "@/components/Icons/BlipNew";
 import { getFlags } from "@/lib/data";
 import { Flag } from "@/lib/types";
+import { PText } from "@porsche-design-system/components-react/ssr";
 
 function Icon({
   flag,
@@ -28,7 +29,9 @@ export function Legend() {
       {Object.entries(getFlags()).map(([key, flag]) => (
         <li key={key}>
           <Icon flag={key as Flag} className={styles.icon} />
-          <span className={styles.label}>{flag.description}</span>
+          <PText size="x-small" tag="span" className={styles.label}>
+            {flag.description}
+          </PText>
         </li>
       ))}
     </ul>

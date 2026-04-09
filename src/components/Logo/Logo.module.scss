@@ -1,10 +1,12 @@
+@use "@porsche-design-system/components-react/styles" as *;
+
 .logo {
   position: relative;
   display: flex;
   justify-content: flex-start;
   align-items: center;
   min-height: 60px;
-  gap: 16px;
+  gap: $pds-spacing-static-medium;
   transition: padding-left 200ms ease-in-out;
 
   &:before {
@@ -28,7 +30,7 @@
 .subline {
   position: relative;
   top: -2px;
-  font-size: 18px;
+  font-size: $pds-font-size-text-medium;
   opacity: 0;
   transition: opacity 200ms ease-in-out;
 

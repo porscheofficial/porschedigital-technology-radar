@@ -43,7 +43,9 @@
     "typescript": "^5"
   },
   "dependencies": {
-    "chokidar": "3.6.0"
+    "@porsche-design-system/components-react": "^3.23.0",
+    "chokidar": "3.6.0",
+    "sass": "^1.99.0"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"

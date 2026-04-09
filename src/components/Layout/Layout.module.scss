@@ -1,3 +1,5 @@
+@use "@porsche-design-system/components-react/styles" as *;
+
 .layout {
   min-height: 100vh;
 }
@@ -5,7 +7,7 @@
 .container {
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 20px;
+  padding: $pds-spacing-fluid-medium;
 }
 
 .header {
@@ -19,6 +21,6 @@
     max-width: var(--max-width);
     min-height: calc(100vh - 250px);
     margin: 0 auto;
-    padding: 20px;
+    padding: $pds-spacing-fluid-medium;
   }
 }

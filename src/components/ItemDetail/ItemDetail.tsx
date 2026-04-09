@@ -1,12 +1,11 @@
 import { CSSProperties, useState } from "react";
 
-import styles from "./ItemDetail.module.css";
+import styles from "./ItemDetail.module.scss";
 
 import { RingBadge } from "@/components/Badge/Badge";
 import {
   Attention,
   DescriptionEdit,
-  Edit,
   RingChange,
   RingInitial,
   TeamAdd,
@@ -18,6 +17,11 @@ import { Team, Teams } from "@/components/Teams/Teams";
 import { getEditUrl, getLabel, getReleases, getRing } from "@/lib/data";
 import { Item, Revision } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import {
+  PButtonPure,
+  PHeading,
+  PLinkPure,
+} from "@porsche-design-system/components-react/ssr";
 
 const latestReleases = getReleases().slice(-3);
 
@@ -95,7 +99,9 @@ export function ItemDetail({ item, quadrantTitle }: ItemProps) {
             )}
           </div>
           <div className={cn(styles.bentoCell, styles.cellRight)}>
-            <h1 className={styles.title}>{item.title}</h1>
+            <PHeading size="x-large" tag="h1" className={styles.title}>
+              {item.title}
+            </PHeading>
             <div className={styles.tags}>
               {item.tags?.map((tag) => <Tag key={tag} tag={tag} />)}
             </div>
@@ -116,9 +122,15 @@ export function ItemDetail({ item, quadrantTitle }: ItemProps) {
           )}
         </div>
         {editLink && (
-          <a href={editLink} target="_blank" className={styles.editLink}>
-            <Edit />
-          </a>
+          <PLinkPure
+            href={editLink}
+            target="_blank"
+            icon="edit"
+            hideLabel={true}
+            className={styles.editLink}
+          >
+            Edit
+          </PLinkPure>
         )}
       </div>
 
@@ -167,13 +179,14 @@ function ExpandableDescription({ body }: { body: string }) {
       <span className={styles.descriptionPreview}>
         {truncate(plainText, 100)}
       </span>
-      <button
+      <PButtonPure
         type="button"
+        size="x-small"
         className={styles.moreLink}
         onClick={() => setExpanded(true)}
       >
         more
-      </button>
+      </PButtonPure>
     </div>
   );
 }

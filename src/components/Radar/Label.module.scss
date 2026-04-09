@@ -1,3 +1,5 @@
+@use "@porsche-design-system/components-react/styles" as *;
+
 .label {
   width: 240px;
   min-height: 210px;
@@ -13,7 +15,7 @@
   margin: 0 0 15px;
   border-bottom: 2px solid var(--quadrant-color);
   text-transform: uppercase;
-  font-size: 12px;
+  @include pds-text-xx-small;
 }
 
 .title {
@@ -21,7 +23,7 @@
 }
 
 .description {
-  font-size: 14px;
+  font-size: $pds-font-size-text-x-small;
 }
 
 .position-2,

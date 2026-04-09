@@ -1,12 +1,13 @@
 import Link, { LinkProps } from "next/link";
 import { ComponentPropsWithoutRef } from "react";
 
-import styles from "./Tags.module.css";
+import styles from "./Tags.module.scss";
 
 import IconRemove from "@/components/Icons/Close";
 import IconTag from "@/components/Icons/Tag";
 import { getLabel } from "@/lib/data";
 import { cn } from "@/lib/utils";
+import { PHeading } from "@porsche-design-system/components-react/ssr";
 
 type TagProps = {
   tag: string;
@@ -38,7 +39,11 @@ export function Tags({ tags, activeTag, className }: TagsProps) {
   const label = getLabel("filterByTag");
   return (
     <div className={cn(styles.tags, className)}>
-      {!!label && <h3>{label}</h3>}
+      {!!label && (
+        <PHeading size="small" tag="h3">
+          {label}
+        </PHeading>
+      )}
       {tags.map((tag) => (
         <Tag key={tag} tag={tag} isActive={activeTag == tag} scroll={false} />
       ))}

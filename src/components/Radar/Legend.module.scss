@@ -1,8 +1,10 @@
+@use "@porsche-design-system/components-react/styles" as *;
+
 .legend {
   list-style: none;
   padding: 0;
   margin: 0;
-  font-size: 14px;
+  font-size: $pds-font-size-text-x-small;
   display: none;
 }
 

@@ -1,3 +1,5 @@
+@use "@porsche-design-system/components-react/styles" as *;
+
 .radar {
   padding: 0 15px 30px;
   position: relative;
@@ -15,8 +17,8 @@
 .tooltip {
   background-color: var(--tooltip, var(--background));
   color: var(--foreground);
-  font-size: 14px;
-  padding: 4px 8px;
+  @include pds-text-xx-small;
+  padding: $pds-spacing-static-x-small $pds-spacing-static-small;
   height: fit-content;
   width: fit-content;
   border-radius: 6px;

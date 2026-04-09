@@ -1,10 +1,12 @@
 import Link from "next/link";
-import React, { FC, Fragment, memo } from "react";
+import React, { CSSProperties, FC, Fragment, memo, useMemo } from "react";
 
-import styles from "./Chart.module.css";
+import styles from "./Chart.module.scss";
 
 import { Blip } from "@/components/Radar/Blip";
+import { useRadarHighlight } from "@/lib/RadarHighlightContext";
 import { Item, Quadrant, Ring } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 export interface ChartProps {
   size?: number;
@@ -21,6 +23,9 @@ const _Chart: FC<ChartProps> = ({
   items = [],
   className,
 }) => {
+  const { highlightedIds } = useRadarHighlight();
+  const highlightSet = useMemo(() => new Set(highlightedIds), [highlightedIds]);
+  const hasHighlights = highlightSet.size > 0;
   const viewBoxSize = size;
   const center = size / 2;
   const startAngles = [270, 0, 180, 90]; // Corresponding to positions 1, 2, 3, and 4 respectively
@@ -85,8 +90,11 @@ const _Chart: FC<ChartProps> = ({
   const renderItem = (item: Item) => {
     const ring = rings.find((r) => r.id === item.ring);
     const quadrant = quadrants.find((q) => q.id === item.quadrant);
-    if (!ring || !quadrant) return null; // If no ring or quadrant, don't render item
+    if (!ring || !quadrant) return null;
     const [x, y] = item.position;
+
+    const isHighlighted = highlightSet.has(item.id);
+    const isDimmed = hasHighlights && !isHighlighted;
 
     return (
       <Link
@@ -94,6 +102,17 @@ const _Chart: FC<ChartProps> = ({
         href={`/${item.quadrant}/${item.id}`}
         data-tooltip={item.title}
         data-tooltip-color={quadrant.color}
+        data-item-id={item.id}
+        className={cn(
+          hasHighlights && styles.blip,
+          isHighlighted && styles.highlighted,
+          isDimmed && styles.dimmed,
+        )}
+        style={
+          isHighlighted
+            ? ({ "--blip-color": quadrant.color } as CSSProperties)
+            : undefined
+        }
         tabIndex={-1}
       >
         <Blip flag={item.flag} color={quadrant.color} x={x} y={y} />

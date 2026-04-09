@@ -1,11 +1,9 @@
 import Link from "next/link";
 
-import styles from "./Navigation.module.css";
+import styles from "./Navigation.module.scss";
 
-import IconOverview from "@/components/Icons/Overview";
-import IconQuestion from "@/components/Icons/Question";
-import IconSearch from "@/components/Icons/Search";
-import { getLabel, getToggle } from "@/lib/data";
+import { getLabel } from "@/lib/data";
+import { PIcon } from "@porsche-design-system/components-react/ssr";
 
 export function Navigation() {
   return (
@@ -13,24 +11,10 @@ export function Navigation() {
       <ul className={styles.list}>
         <li className={styles.item}>
           <Link href="/help-and-about-tech-radar">
-            <IconQuestion className={styles.icon} />
+            <PIcon name="information" className={styles.icon} size="small" />
             <span className={styles.label}>{getLabel("pageAbout")}</span>
           </Link>
         </li>
-        <li className={styles.item}>
-          <Link href="/overview">
-            <IconOverview className={styles.icon} />
-            <span className={styles.label}>{getLabel("pageOverview")}</span>
-          </Link>
-        </li>
-        {getToggle("showSearch") && (
-          <li className={styles.item}>
-            <Link href="/overview">
-              <IconSearch className={styles.icon} />
-              <span className={styles.label}>{getLabel("pageSearch")}</span>
-            </Link>
-          </li>
-        )}
       </ul>
     </nav>
   );

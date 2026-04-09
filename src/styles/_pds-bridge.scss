@@ -1,0 +1,57 @@
+@use "@porsche-design-system/components-react/styles" as *;
+
+// ============================================================================
+// PDS CSS Variable Bridge
+// ============================================================================
+// PDS dark theme tokens as the FLOOR. config.json colors override these
+// at runtime via _document.tsx inline styles on <html>.
+//
+// Convention: PDS SCSS vars compile to static values at build time.
+// We bridge them to CSS custom properties so they can be overridden.
+// ============================================================================
+
+:root {
+  // -- Core color palette (overridable by config.json "colors" object) -------
+  --foreground: #{$pds-theme-dark-primary};
+  --background: #{$pds-theme-dark-background-base};
+  --content: #{$pds-theme-dark-contrast-high};
+  --text: #{$pds-theme-dark-contrast-medium};
+  --link: #{$pds-theme-dark-primary};
+  --highlight: #{$pds-theme-dark-primary};
+  --border: #{$pds-theme-dark-contrast-low};
+  --tag: #{$pds-theme-dark-contrast-low};
+  --team: #{$pds-theme-dark-contrast-low};
+
+  // -- Extended PDS surfaces (new, not in old system) ------------------------
+  --surface: #{$pds-theme-dark-background-surface};
+  --shading: #{$pds-theme-dark-background-shading};
+  --frosted: #{$pds-theme-dark-background-frosted};
+
+  // -- Semantic notification colors ------------------------------------------
+  --notification-success: #{$pds-theme-dark-notification-success};
+  --notification-warning: #{$pds-theme-dark-notification-warning};
+  --notification-error: #{$pds-theme-dark-notification-error};
+  --notification-info: #{$pds-theme-dark-notification-info};
+
+  // -- State colors ----------------------------------------------------------
+  --state-hover: #{$pds-theme-dark-state-hover};
+  --state-active: #{$pds-theme-dark-state-active};
+  --state-focus: #{$pds-theme-dark-state-focus};
+  --state-disabled: #{$pds-theme-dark-state-disabled};
+
+  // -- Spacing tokens as CSS vars (for JS/non-SCSS consumption) --------------
+  --spacing-xs: #{$pds-spacing-fluid-x-small};
+  --spacing-s: #{$pds-spacing-fluid-small};
+  --spacing-m: #{$pds-spacing-fluid-medium};
+  --spacing-l: #{$pds-spacing-fluid-large};
+  --spacing-xl: #{$pds-spacing-fluid-x-large};
+  --spacing-xxl: #{$pds-spacing-fluid-xx-large};
+
+  // -- Layout (carried over from old system) ---------------------------------
+  --max-width: 1200px;
+  --border-radius: #{$pds-border-radius-medium};
+  --font-mono:
+    ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono",
+    "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro",
+    "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
+}

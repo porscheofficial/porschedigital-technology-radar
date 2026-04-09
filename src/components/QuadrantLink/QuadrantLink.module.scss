@@ -1,6 +1,8 @@
+@use "@porsche-design-system/components-react/styles" as *;
+
 .link {
   text-transform: uppercase;
-  font-size: 12px;
+  @include pds-text-xx-small;
   white-space: nowrap;
 }
 

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import styles from "./Logo.module.css";
+import styles from "./Logo.module.scss";
 
 import { getAppName, getLogoUrl } from "@/lib/data";
 import { cn } from "@/lib/utils";

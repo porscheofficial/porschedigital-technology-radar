@@ -1,8 +1,10 @@
+@use "@porsche-design-system/components-react/styles" as *;
+
 .links {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: $pds-spacing-static-small;
   list-style: none;
   padding: 0;
 }

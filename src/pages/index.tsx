@@ -19,6 +19,7 @@ import {
   getToggle,
 } from "@/lib/data";
 import { CustomPage } from "@/pages/_app";
+import { PHeading, PText } from "@porsche-design-system/components-react/ssr";
 
 const Home: CustomPage = () => {
   const router = useRouter();
@@ -43,12 +44,12 @@ const Home: CustomPage = () => {
         )}
       </Head>
 
-      <h1>
+      <PHeading size="xx-large" tag="h1">
         {appName}{" "}
-        <span style={{ color: "var(--highlight)", whiteSpace: "nowrap" }}>
+        <PText tag="span" color="primary" style={{ whiteSpace: "nowrap" }}>
           Version #{version}
-        </span>
-      </h1>
+        </PText>
+      </PHeading>
       {sections.map((section) => {
         switch (section) {
           case "radar":

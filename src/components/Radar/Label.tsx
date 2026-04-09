@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { CSSProperties, useMemo } from "react";
 
-import styles from "./Label.module.css";
+import styles from "./Label.module.scss";
 
 import { QuadrantLink } from "@/components/QuadrantLink/QuadrantLink";
 import { getLabel } from "@/lib/data";
 import { Quadrant } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { PHeading, PText } from "@porsche-design-system/components-react/ssr";
 
 interface LabelProps {
   quadrant: Quadrant;
@@ -29,8 +30,12 @@ export function Label({ quadrant }: LabelProps) {
         </span>
         <QuadrantLink quadrant={quadrant} />
       </div>
-      <h3 className={styles.title}>{quadrant.title}</h3>
-      <p className={styles.description}>{quadrant.description}</p>
+      <PHeading size="small" tag="h3" className={styles.title}>
+        {quadrant.title}
+      </PHeading>
+      <PText size="x-small" className={styles.description}>
+        {quadrant.description}
+      </PText>
     </div>
   );
 }

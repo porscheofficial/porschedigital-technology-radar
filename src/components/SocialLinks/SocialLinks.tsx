@@ -1,40 +1,42 @@
-import styles from "./SocialLinks.module.css";
+import styles from "./SocialLinks.module.scss";
 
-import {
-  SocialFacebook,
-  SocialGithub,
-  SocialGitlab,
-  SocialInstagram,
-  SocialLinkedin,
-  SocialX,
-  SocialXing,
-  SocialYoutube,
-} from "@/components/Icons";
+import { SocialGitlab, SocialXing } from "@/components/Icons";
 import { getSocialLinks } from "@/lib/data";
 import { cn } from "@/lib/utils";
+import { PIcon } from "@porsche-design-system/components-react/ssr";
 
 interface SocialLinksProps {
   className?: string;
 }
 
-function getIcon(name: string) {
+function renderIcon(name: string) {
   switch (name.toLowerCase()) {
     case "facebook":
-      return SocialFacebook;
+      return (
+        <PIcon name="logo-facebook" theme="light" className={styles.icon} />
+      );
     case "github":
-      return SocialGithub;
+      return <SocialGitlab className={styles.icon} />;
     case "gitlab":
-      return SocialGitlab;
+      return <SocialGitlab className={styles.icon} />;
     case "instagram":
-      return SocialInstagram;
+      return (
+        <PIcon name="logo-instagram" theme="light" className={styles.icon} />
+      );
     case "linkedin":
-      return SocialLinkedin;
+      return (
+        <PIcon name="logo-linkedin" theme="light" className={styles.icon} />
+      );
     case "x":
-      return SocialX;
+      return (
+        <PIcon name="logo-twitter" theme="light" className={styles.icon} />
+      );
     case "xing":
-      return SocialXing;
+      return <SocialXing className={styles.icon} />;
     case "youtube":
-      return SocialYoutube;
+      return (
+        <PIcon name="logo-youtube" theme="light" className={styles.icon} />
+      );
     default:
       return null;
   }
@@ -45,9 +47,9 @@ export function SocialLinks({ className }: SocialLinksProps) {
   return (
     <ul className={cn(styles.links, className)}>
       {links.map((link, i) => {
-        const Icon = getIcon(link.icon);
+        const icon = renderIcon(link.icon);
         return (
-          Icon && (
+          icon && (
             <li key={i}>
               <a
                 href={link.href}
@@ -55,7 +57,7 @@ export function SocialLinks({ className }: SocialLinksProps) {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Icon className={styles.icon} />
+                {icon}
               </a>
             </li>
           )

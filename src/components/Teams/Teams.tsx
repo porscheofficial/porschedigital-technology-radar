@@ -1,4 +1,4 @@
-import styles from "./Teams.module.css";
+import styles from "./Teams.module.scss";
 
 import IconTeam from "@/components/Icons/Team";
 import { cn } from "@/lib/utils";

@@ -1,0 +1,130 @@
+@use "@porsche-design-system/components-react/styles" as *;
+@use "./pds-bridge";
+
+// ============================================================================
+// Global Resets & Base Styles
+// ============================================================================
+
+* {
+  box-sizing: border-box;
+  outline-color: var(--highlight);
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  scroll-behavior: smooth;
+  max-width: 100vw;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  @include pds-text-small;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+p {
+  margin-bottom: 1em;
+}
+
+strong {
+  font-weight: $pds-font-weight-bold;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+svg {
+  display: block;
+  fill: currentColor;
+}
+
+// ============================================================================
+// Typography — PDS mixins replace hardcoded px values
+// ============================================================================
+
+h1,
+h2,
+h3,
+h4 {
+  line-height: 1.2em;
+  margin-bottom: 1em;
+  font-weight: $pds-font-weight-bold;
+}
+
+h1 {
+  @include pds-heading-xx-large;
+}
+
+h2 {
+  @include pds-heading-large;
+  font-weight: $pds-font-weight-regular;
+}
+
+h3 {
+  @include pds-heading-medium;
+}
+
+h4 {
+  @include pds-heading-small;
+}
+
+// ============================================================================
+// Lists
+// ============================================================================
+
+ul,
+ol {
+  padding-left: $pds-spacing-static-medium;
+  margin-bottom: 1em;
+}
+
+ol {
+  padding-left: $pds-spacing-static-large;
+}
+
+// ============================================================================
+// Code blocks
+// ============================================================================
+
+pre {
+  margin-bottom: 1em;
+  white-space: pre-wrap;
+}
+
+code {
+  font-family: var(--font-mono);
+}
+
+// ============================================================================
+// Form inputs
+// ============================================================================
+
+input {
+  background: var(--foreground);
+  color: var(--background);
+  border: 1px solid transparent;
+  padding: $pds-spacing-static-small $pds-spacing-static-medium;
+  border-radius: $pds-border-radius-small;
+  width: 100%;
+  @include pds-text-small;
+
+  &:focus {
+    outline: none;
+    border-color: var(--highlight);
+  }
+}
+
+input::-webkit-search-cancel-button {
+  display: none;
+}

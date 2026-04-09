@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import styles from "./QuadrantLink.module.css";
+import styles from "./QuadrantLink.module.scss";
 
 import Pie from "@/components/Icons/Pie";
 import { getLabel } from "@/lib/data";

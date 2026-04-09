@@ -25,11 +25,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
-      url: getAbsoluteUrl("/overview/"),
-      lastModified: new Date(),
-      priority: 0.9,
-    },
-    {
       url: getAbsoluteUrl("/help-and-about-tech-radar/"),
       lastModified: new Date(),
       priority: 0.9,

@@ -1,11 +1,12 @@
 import Link from "next/link";
 
-import styles from "./QuadrantList.module.css";
+import styles from "./QuadrantList.module.scss";
 
 import { QuadrantLink } from "@/components/QuadrantLink/QuadrantLink";
 import { RingList } from "@/components/RingList/RingList";
 import { getQuadrant, groupItemsByQuadrant } from "@/lib/data";
 import { Item } from "@/lib/types";
+import { PHeading } from "@porsche-design-system/components-react/ssr";
 
 interface RingListProps {
   items: Item[];
@@ -21,9 +22,9 @@ export function QuadrantList({ items }: RingListProps) {
         return (
           <li key={quadrantId} className={styles.quadrant}>
             <div className={styles.header}>
-              <h3 className={styles.title}>
+              <PHeading size="small" tag="h3" className={styles.title}>
                 <Link href={`/${quadrant.id}`}>{quadrant.title}</Link>
-              </h3>
+              </PHeading>
               <QuadrantLink quadrant={quadrant} />
             </div>
             <RingList items={items} size="small" />

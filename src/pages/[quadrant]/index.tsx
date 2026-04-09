@@ -11,6 +11,7 @@ import {
 } from "@/lib/data";
 import { formatTitle } from "@/lib/format";
 import { CustomPage } from "@/pages/_app";
+import { PHeading } from "@porsche-design-system/components-react/ssr";
 
 const QuadrantPage: CustomPage = () => {
   const { query } = useRouter();
@@ -28,8 +29,12 @@ const QuadrantPage: CustomPage = () => {
         <meta name="description" content={quadrant.description} />
       </Head>
 
-      <h1>{quadrant.title}</h1>
-      <h2>{quadrant.description}</h2>
+      <PHeading size="xx-large" tag="h1">
+        {quadrant.title}
+      </PHeading>
+      <PHeading size="large" tag="h2">
+        {quadrant.description}
+      </PHeading>
 
       <RingList items={items} />
     </>

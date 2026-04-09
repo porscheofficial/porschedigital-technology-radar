@@ -1,21 +1,23 @@
+@use "@porsche-design-system/components-react/styles" as *;
+
 .teams {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  row-gap: 5px;
-  column-gap: 5px;
+  row-gap: $pds-spacing-static-x-small;
+  column-gap: $pds-spacing-static-x-small;
 }
 
 .team {
   position: relative;
   display: inline-block;
   vertical-align: middle;
-  padding: 6px 10px;
+  padding: $pds-spacing-static-x-small $pds-spacing-static-small;
   text-transform: uppercase;
   border-radius: 13px;
   color: var(--foreground);
   background-color: var(--team);
-  font-size: 10px;
+  @include pds-text-xx-small;
   line-height: 1;
   overflow: hidden;
   text-decoration: none;
@@ -34,6 +36,6 @@
 }
 
 .teamSmall {
-  padding: 4px 8px;
-  font-size: 9px;
+  padding: $pds-spacing-static-x-small $pds-spacing-static-x-small;
+  @include pds-text-xx-small;
 }

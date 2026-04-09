@@ -14,39 +14,39 @@
   },
   "sections": ["radar", "tags", "teams", "list"],
   "colors": {
-    "foreground": "#fcf2e6",
-    "background": "#113521",
-    "highlight": "#d4a373",
-    "content": "#fff",
-    "text": "#575757",
-    "link": "#bc6c25",
-    "border": "rgba(255, 255, 255, 0.1)",
-    "tag": "rgba(255, 255, 255, 0.1)"
+    "foreground": "#FBFCFF",
+    "background": "#0E0E12",
+    "highlight": "#FBFCFF",
+    "content": "#AFB0B3",
+    "text": "#88898C",
+    "link": "#FBFCFF",
+    "border": "#404044",
+    "tag": "#404044"
   },
   "quadrants": [
     {
       "id": "languages-and-frameworks",
       "title": "Languages & Frameworks",
       "description": "A selection of programming languages, alongside essential frameworks for building a variety of custom software.",
-      "color": "#a3b18a"
+      "color": "#09D087"
     },
     {
       "id": "methods-and-patterns",
       "title": "Methods & Patterns",
       "description": "Key software development methods and design patterns, covering everything from continuous integration and testing to architecture.",
-      "color": "#588157"
+      "color": "#178BFF"
     },
     {
       "id": "platforms-and-operations",
       "title": "Platforms & Operations",
       "description": "Technologies and tools for software and infrastructure operations, including platforms and services for managing and scaling applications.",
-      "color": "#3f633e"
+      "color": "#F7CB47"
     },
     {
       "id": "tools",
       "title": "Tools",
       "description": "A range of software tools, from simple productivity enhancers to comprehensive project solutions, catering to various project needs.",
-      "color": "#40713f"
+      "color": "#FC4040"
     }
   ],
   "rings": [
@@ -54,7 +54,7 @@
       "id": "adopt",
       "title": "Adopt",
       "description": "",
-      "color": "#588157",
+      "color": "#09D087",
       "radius": 0.5,
       "strokeWidth": 5
     },
@@ -62,7 +62,7 @@
       "id": "trial",
       "title": "Trial",
       "description": "",
-      "color": "#457b9d",
+      "color": "#178BFF",
       "radius": 0.69,
       "strokeWidth": 3
     },
@@ -70,7 +70,7 @@
       "id": "assess",
       "title": "Assess",
       "description": "",
-      "color": "#bc6c25",
+      "color": "#F7CB47",
       "radius": 0.85,
       "strokeWidth": 2
     },
@@ -78,20 +78,20 @@
       "id": "hold",
       "title": "Hold",
       "description": "",
-      "color": "#d62828",
+      "color": "#FC4040",
       "radius": 1,
       "strokeWidth": 0.75
     }
   ],
   "flags": {
     "new": {
-      "color": "#f1235a",
+      "color": "#FC4040",
       "title": "New",
       "titleShort": "N",
       "description": "New in this version"
     },
     "changed": {
-      "color": "#40a7d1",
+      "color": "#178BFF",
       "title": "Changed",
       "titleShort": "C",
       "description": "Recently changed"

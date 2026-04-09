@@ -4,12 +4,13 @@ import Head from "next/head";
 import Script from "next/script";
 
 import { Layout, type LayoutClass } from "@/components/Layout/Layout";
+import { RadarHighlightProvider } from "@/lib/RadarHighlightContext";
 import { getJsUrl } from "@/lib/data";
 import { formatTitle } from "@/lib/format";
-import { assetUrl } from "@/lib/utils";
-import "@/styles/_globals.css";
+import "@/styles/_globals.scss";
 import "@/styles/_hljs.css";
-import "@/styles/custom.css";
+import "@/styles/custom.scss";
+import { PorscheDesignSystemProvider } from "@porsche-design-system/components-react/ssr";
 
 export type CustomPage<P = {}, IP = P> = NextPage<P, IP> & {
   layoutClass?: LayoutClass;
@@ -22,16 +23,17 @@ type CustomAppProps = AppProps & {
 export default function App({ Component, pageProps, router }: CustomAppProps) {
   const jsUrl = getJsUrl();
   return (
-    <>
-      <Head>
-        <title>{formatTitle()}</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href={assetUrl("/favicon.ico")} />
-      </Head>
-      <Layout layoutClass={Component.layoutClass}>
-        <Component {...pageProps} />
-        {jsUrl && <Script src={jsUrl} />}
-      </Layout>
-    </>
+    <PorscheDesignSystemProvider theme="dark">
+      <RadarHighlightProvider>
+        <Head>
+          <title>{formatTitle()}</title>
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+        </Head>
+        <Layout layoutClass={Component.layoutClass}>
+          <Component {...pageProps} />
+          {jsUrl && <Script src={jsUrl} />}
+        </Layout>
+      </RadarHighlightProvider>
+    </PorscheDesignSystemProvider>
   );
 }

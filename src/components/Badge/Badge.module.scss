@@ -1,0 +1,64 @@
+@use "@porsche-design-system/components-react/styles" as *;
+
+.badge {
+  @include pds-text-xx-small;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  padding: $pds-spacing-static-x-small $pds-spacing-static-small;
+  text-transform: uppercase;
+  font-weight: $pds-font-weight-bold;
+  border: 1px solid transparent;
+  border-radius: 50px;
+  line-height: 1;
+  overflow: hidden;
+  text-decoration: none;
+}
+
+.size-small {
+  @include pds-text-xx-small;
+  padding: calc(#{$pds-spacing-static-x-small} / 2) $pds-spacing-static-small;
+}
+
+.size-medium {
+  @include pds-text-xx-small;
+  padding: $pds-spacing-static-x-small $pds-spacing-static-small;
+}
+
+.size-large {
+  @include pds-text-xx-small;
+  padding: $pds-spacing-static-x-small $pds-spacing-static-medium;
+}
+
+.colored {
+  color: var(--foreground);
+  background-color: var(--badge);
+}
+
+.selectable {
+  cursor: pointer;
+
+  &:not(.selected) {
+    color: var(--foreground);
+    border: 1px solid var(--foreground);
+    background: transparent;
+  }
+
+  &:not(.colored) {
+    color: var(--foreground);
+    border: 1px solid var(--foreground);
+    background: transparent;
+
+    &.selected {
+      color: var(--background);
+      background: var(--foreground);
+    }
+  }
+}
+
+.selected {
+  color: var(--background);
+  background: var(--foreground);
+}

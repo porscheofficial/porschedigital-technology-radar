@@ -5,7 +5,7 @@ import {
   useMemo,
 } from "react";
 
-import styles from "./Badge.module.css";
+import styles from "./Badge.module.scss";
 
 import { getFlag, getRing } from "@/lib/data";
 import { formatRelease } from "@/lib/format";

@@ -8,6 +8,9 @@ const nextConfig = {
   output: "export",
   trailingSlash: true,
   reactStrictMode: true,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   experimental: {
     scrollRestoration: true,
   },

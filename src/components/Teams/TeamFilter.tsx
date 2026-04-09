@@ -1,12 +1,13 @@
 import Link, { LinkProps } from "next/link";
 import { ComponentPropsWithoutRef } from "react";
 
-import styles from "./TeamFilter.module.css";
+import styles from "./TeamFilter.module.scss";
 
 import IconRemove from "@/components/Icons/Close";
 import IconTeam from "@/components/Icons/Team";
 import { getLabel, getTeams } from "@/lib/data";
 import { cn } from "@/lib/utils";
+import { PHeading } from "@porsche-design-system/components-react/ssr";
 
 type TeamProps = {
   team: string;
@@ -39,7 +40,11 @@ export function TeamFilter({ activeTeam, className }: TeamFilterProps) {
 
   return (
     <div className={cn(styles.teams, className)}>
-      {!!label && <h3>{label}</h3>}
+      {!!label && (
+        <PHeading size="small" tag="h3">
+          {label}
+        </PHeading>
+      )}
       {teams.map((team) => (
         <Team
           key={team}

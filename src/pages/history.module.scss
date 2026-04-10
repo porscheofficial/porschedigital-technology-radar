@@ -1,0 +1,342 @@
+@use "@porsche-design-system/components-react/styles" as *;
+
+.subtitle {
+  opacity: 0.5;
+  margin-bottom: $pds-spacing-fluid-large;
+}
+
+.sectionLabel {
+  @include pds-text-xx-small;
+  font-weight: $pds-font-weight-bold;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  opacity: 0.35;
+  margin-bottom: $pds-spacing-static-medium;
+}
+
+/* === Dot Matrix === */
+
+.matrixSection {
+  margin-bottom: $pds-spacing-fluid-large;
+}
+
+.matrixScroll {
+  overflow: hidden;
+}
+
+.matrixNameCol {
+  width: 200px;
+  text-align: left !important;
+  position: sticky;
+  left: 0;
+  z-index: 2;
+}
+
+.clickableRow:hover .matrixName {
+  cursor: pointer;
+}
+.nameColLabel {
+  @include pds-text-xx-small;
+  font-weight: $pds-font-weight-bold;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.4;
+}
+
+.matrixRelease {
+  text-align: center;
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 200ms ease;
+  opacity: 0.4;
+
+  &:hover {
+    opacity: 0.7;
+  }
+}
+
+.matrixReleaseFocused {
+  opacity: 1 !important;
+}
+
+.releaseLabel {
+  @include pds-text-xx-small;
+  font-weight: $pds-font-weight-bold;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.matrixReleaseFocused .releaseLabel {
+  text-decoration: underline;
+  text-decoration-color: #4a9e7e;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 2px;
+}
+
+.clickableRow {
+  cursor: pointer;
+}
+
+.matrixName {
+  @include pds-text-x-small;
+  font-weight: $pds-font-weight-regular;
+  text-align: left;
+  position: sticky;
+  left: 0;
+  z-index: 2;
+
+  a {
+    color: var(--foreground);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--highlight);
+    }
+  }
+}
+
+.matrixCell {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.dot {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  position: relative;
+  vertical-align: middle;
+}
+
+.dotNew {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  font-size: 9px;
+  color: #e0c862;
+  line-height: 1;
+}
+
+.futureCell {
+  opacity: 0.2;
+}
+
+.rowChanged .matrixName {
+  font-weight: $pds-font-weight-bold;
+}
+
+.rowStable {
+  opacity: 0.4;
+}
+
+.dot {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  position: relative;
+  vertical-align: middle;
+}
+
+.dotNew {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  font-size: 9px;
+  color: #e0c862;
+  line-height: 1;
+}
+
+.dotEmpty {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  vertical-align: middle;
+}
+
+.matrixFooter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: $pds-spacing-static-medium;
+  margin-top: $pds-spacing-static-small;
+}
+
+.matrixLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $pds-spacing-static-medium;
+}
+
+.showAllButton {
+  @include pds-text-xx-small;
+  appearance: none;
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: $pds-border-radius-small;
+  color: var(--foreground);
+  opacity: 0.5;
+  padding: 4px $pds-spacing-static-small;
+  cursor: pointer;
+  transition:
+    opacity 200ms ease,
+    border-color 200ms ease;
+
+  &:hover {
+    opacity: 0.8;
+    border-color: rgba(255, 255, 255, 0.35);
+  }
+}
+
+.legendItem {
+  @include pds-text-xx-small;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0.4;
+}
+
+.legendDot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.legendDotEmpty {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+}
+
+.legendStarIcon {
+  font-size: 10px;
+  color: #e0c862;
+}
+
+/* === Changelog === */
+
+.changelogSection {
+  border-top: 1px solid var(--border);
+  padding-top: $pds-spacing-fluid-medium;
+}
+
+.release {
+  margin-bottom: $pds-spacing-fluid-medium;
+}
+
+.releaseHeader {
+  display: flex;
+  align-items: baseline;
+  gap: $pds-spacing-static-small;
+  margin-bottom: $pds-spacing-static-medium;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: $pds-spacing-static-small;
+}
+
+.releaseDate {
+  @include pds-text-small;
+  font-weight: $pds-font-weight-bold;
+}
+
+.latestBadge {
+  @include pds-text-xx-small;
+  font-weight: $pds-font-weight-bold;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: rgba(74, 158, 126, 0.8);
+  color: var(--background);
+  padding: 2px $pds-spacing-static-small;
+  border-radius: $pds-border-radius-small;
+}
+
+.emptyRelease {
+  opacity: 0.4;
+  font-style: italic;
+}
+
+.changeGroup {
+  margin-bottom: $pds-spacing-static-medium;
+}
+
+.changeGroupTitle {
+  @include pds-text-xx-small;
+  font-weight: $pds-font-weight-bold;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.5;
+  margin-bottom: $pds-spacing-static-x-small;
+  padding-left: 4px;
+}
+
+.changeItem {
+  display: flex;
+  align-items: center;
+  gap: $pds-spacing-static-small;
+  padding: $pds-spacing-static-x-small $pds-spacing-static-small;
+  border-radius: $pds-border-radius-small;
+  text-decoration: none;
+  color: var(--foreground);
+  transition: background 150ms ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.04);
+  }
+}
+
+.changeIcon {
+  width: 24px;
+  text-align: center;
+  flex-shrink: 0;
+  font-size: 14px;
+}
+
+.changeIconDown {
+  @extend .changeIcon;
+  color: var(--flag-hold, #b85b5b);
+}
+
+.changeIconNew {
+  @extend .changeIcon;
+  color: #e0c862;
+}
+
+.changeName {
+  @include pds-text-x-small;
+  font-weight: $pds-font-weight-bold;
+  flex: 1;
+}
+
+.changeDetail {
+  @include pds-text-xx-small;
+  opacity: 0.5;
+}
+
+.ringBadge {
+  @include pds-text-xx-small;
+  font-weight: $pds-font-weight-bold;
+  padding: 2px $pds-spacing-static-small;
+  border-radius: $pds-border-radius-small;
+  white-space: nowrap;
+}
+
+.arrow {
+  opacity: 0.4;
+}
+
+.teamChanges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $pds-spacing-static-x-small;
+  align-items: center;
+}

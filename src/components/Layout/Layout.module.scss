@@ -68,6 +68,25 @@
   margin: (-$pds-spacing-static-x-small);
 }
 
+.versionLabel {
+  @include pds-text-xx-small;
+  color: var(--foreground);
+  opacity: 0.4;
+  text-decoration: none;
+  white-space: nowrap;
+  padding: 2px $pds-spacing-static-small;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: $pds-border-radius-small;
+  transition:
+    opacity 200ms ease,
+    border-color 200ms ease;
+
+  &:hover {
+    opacity: 0.8;
+    border-color: rgba(255, 255, 255, 0.35);
+  }
+}
+
 .layout.default {
   .content {
     max-width: var(--max-width);

@@ -2,7 +2,7 @@ import rawData from "../../data/data.json";
 import config from "./config";
 
 import { format } from "@/lib/format";
-import { Flag, Item, Quadrant, Ring } from "@/lib/types";
+import { Flag, Item, Quadrant, Release, Revision, Ring } from "@/lib/types";
 import { assetUrl } from "@/lib/utils";
 
 const data = rawData as {
@@ -158,3 +158,126 @@ export const groupItemsByQuadrant = (items: Item[]) => {
     {} as { [quadrantId: string]: Item[] },
   );
 };
+
+export interface ItemTrajectory {
+  item: Item;
+  rings: (string | null)[];
+}
+
+export interface VersionDiff {
+  release: Release;
+  promoted: { item: Item; from: string; to: string }[];
+  demoted: { item: Item; from: string; to: string }[];
+  newItems: { item: Item; ring: string }[];
+  teamChanges: {
+    item: Item;
+    added: string[];
+    removed: string[];
+  }[];
+}
+
+export function getItemTrajectories(): ItemTrajectory[] {
+  const releases = getReleases();
+  const items = getItems();
+
+  return items
+    .map((item) => {
+      const revisions = item.revisions || [];
+      const rings = releases.map((release) => {
+        const rev = revisions.find((r: Revision) => r.release === release);
+        if (rev) return rev.ring;
+        const earlier = revisions
+          .filter((r: Revision) => r.release < release)
+          .sort((a: Revision, b: Revision) =>
+            b.release.localeCompare(a.release),
+          );
+        return earlier.length > 0 ? earlier[0].ring : null;
+      });
+      return { item, rings };
+    })
+    .sort((a, b) => {
+      const lastIdx = releases.length - 1;
+      const prevIdx = lastIdx - 1;
+      const aIsNew =
+        a.rings[lastIdx] !== null && (prevIdx < 0 || a.rings[prevIdx] === null);
+      const aChanged =
+        aIsNew ||
+        (lastIdx > 0 &&
+          a.rings[lastIdx] !== null &&
+          a.rings[prevIdx] !== null &&
+          a.rings[lastIdx] !== a.rings[prevIdx]);
+      const bIsNew =
+        b.rings[lastIdx] !== null && (prevIdx < 0 || b.rings[prevIdx] === null);
+      const bChanged =
+        bIsNew ||
+        (lastIdx > 0 &&
+          b.rings[lastIdx] !== null &&
+          b.rings[prevIdx] !== null &&
+          b.rings[lastIdx] !== b.rings[prevIdx]);
+      if (aChanged !== bChanged) return aChanged ? -1 : 1;
+      return a.item.title.localeCompare(b.item.title);
+    });
+}
+
+export function getVersionDiffs(): VersionDiff[] {
+  const releases = getReleases();
+  const items = getItems();
+  const ringOrder = getRings().map((r) => r.id);
+
+  return releases
+    .slice()
+    .reverse()
+    .map((release, reverseIdx) => {
+      const releaseIdx = releases.length - 1 - reverseIdx;
+      const diff: VersionDiff = {
+        release,
+        promoted: [],
+        demoted: [],
+        newItems: [],
+        teamChanges: [],
+      };
+
+      for (const item of items) {
+        const revisions = item.revisions || [];
+        const rev = revisions.find((r: Revision) => r.release === release);
+        if (!rev) continue;
+
+        const isFirst =
+          releaseIdx === 0 ||
+          !revisions.some(
+            (r: Revision) => releases.indexOf(r.release) < releaseIdx,
+          );
+
+        if (isFirst) {
+          diff.newItems.push({ item, ring: rev.ring });
+          continue;
+        }
+
+        if (rev.previousRing && rev.previousRing !== rev.ring) {
+          const fromIdx = ringOrder.indexOf(rev.previousRing);
+          const toIdx = ringOrder.indexOf(rev.ring);
+          if (toIdx < fromIdx) {
+            diff.promoted.push({
+              item,
+              from: rev.previousRing,
+              to: rev.ring,
+            });
+          } else {
+            diff.demoted.push({
+              item,
+              from: rev.previousRing,
+              to: rev.ring,
+            });
+          }
+        }
+
+        const added = rev.addedTeams || [];
+        const removed = rev.removedTeams || [];
+        if (added.length > 0 || removed.length > 0) {
+          diff.teamChanges.push({ item, added, removed });
+        }
+      }
+
+      return diff;
+    });
+}

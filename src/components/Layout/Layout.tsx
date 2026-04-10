@@ -5,8 +5,14 @@ import styles from "./Layout.module.scss";
 
 import { Footer } from "@/components/Footer/Footer";
 import { SearchBar } from "@/components/SearchBar/SearchBar";
+import { getReleases } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import { PCrest, PLinkPure } from "@porsche-design-system/components-react/ssr";
+
+function formatRelease(release: string) {
+  const d = new Date(release + "T00:00:00");
+  return d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+}
 
 export type LayoutClass = "default" | "full";
 
@@ -19,6 +25,9 @@ export const Layout: FC<LayoutProps> = ({
   children,
   layoutClass = "default",
 }) => {
+  const releases = getReleases();
+  const latestRelease = releases[releases.length - 1];
+
   return (
     <div id="layout" className={cn(styles.layout, styles[layoutClass])}>
       <header className={styles.header}>
@@ -28,6 +37,11 @@ export const Layout: FC<LayoutProps> = ({
             <Link href="/" className={styles.brand}>
               TECH RADAR
             </Link>
+            {latestRelease && (
+              <Link href="/history" className={styles.versionLabel}>
+                {formatRelease(latestRelease)}
+              </Link>
+            )}
           </div>
 
           <div className={styles.headerEnd}>

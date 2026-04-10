@@ -3,14 +3,7 @@ import { CSSProperties, useState } from "react";
 import styles from "./ItemDetail.module.scss";
 
 import { RingBadge } from "@/components/Badge/Badge";
-import {
-  DescriptionEdit,
-  RingChange,
-  RingInitial,
-  TeamAdd,
-  Team as TeamIcon,
-  TeamRemove,
-} from "@/components/Icons";
+import { DescriptionEdit, RingChange, RingInitial } from "@/components/Icons";
 import { Tag } from "@/components/Tags/Tags";
 import { Team, Teams } from "@/components/Teams/Teams";
 import { getEditUrl, getLabel, getReleases, getRing } from "@/lib/data";
@@ -250,22 +243,19 @@ function HistoryDateGroup({
         {hasAddedTeams &&
           revision.addedTeams!.map((team) => (
             <div key={`added-${team}`} className={styles.changeRow}>
-              <TeamAdd className={styles.changeIconTeamAdded} />
-              <Team team={team} />
+              <Team team={team} variant="added" />
             </div>
           ))}
 
         {hasRemovedTeams &&
           revision.removedTeams!.map((team) => (
             <div key={`removed-${team}`} className={styles.changeRow}>
-              <TeamRemove className={styles.changeIconTeamRemoved} />
-              <Team team={team} />
+              <Team team={team} variant="removed" />
             </div>
           ))}
 
         {isInitialEntry && !!revision.teams && revision.teams.length > 0 && (
           <div className={cn(styles.changeRow, styles.initialTeams)}>
-            <TeamIcon className={styles.changeIcon} />
             <div className={styles.initialTeamsList}>
               {revision.teams.map((team) => (
                 <Team key={team} team={team} />

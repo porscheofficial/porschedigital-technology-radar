@@ -3,11 +3,9 @@ import { Quadrant, Ring } from "@/lib/types";
 type Position = [x: number, y: number];
 type RingDimension = [innerRadius: number, outerRadius: number];
 
-// Corresponding to positions 1, 2, 3, and 4 respectively
-const startAngles = [270, 0, 180, 90];
-
 export default class Positioner {
   private readonly centerRadius: number;
+  private readonly sweep: number;
   private readonly minDistance: number = 20;
   private readonly paddingRing: number = 15;
   private readonly paddingAngle: number = 10;
@@ -17,9 +15,12 @@ export default class Positioner {
 
   constructor(size: number, quadrants: Quadrant[], rings: Ring[]) {
     this.centerRadius = size / 2;
+    this.sweep = quadrants.length > 0 ? 360 / quadrants.length : 90;
 
     quadrants.forEach((quadrant) => {
-      this.quadrantAngles[quadrant.id] = startAngles[quadrant.position - 1];
+      // Position 1 starts at 270°, each subsequent advances by sweep degrees
+      this.quadrantAngles[quadrant.id] =
+        (270 + (quadrant.position - 1) * this.sweep) % 360;
     });
 
     rings.forEach((ring, index) => {
@@ -54,7 +55,7 @@ export default class Positioner {
     const absoluteRadius = innerRadius + radiusFraction * ringWidth;
 
     const startAngle = this.quadrantAngles[quadrantId] + this.paddingAngle;
-    const endAngle = startAngle + 90 - 2 * this.paddingAngle;
+    const endAngle = startAngle + this.sweep - 2 * this.paddingAngle;
     const absoluteAngle = startAngle + (endAngle - startAngle) * angleFraction;
     const angleInRadians = ((absoluteAngle - 90) * Math.PI) / 180;
 

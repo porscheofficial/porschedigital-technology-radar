@@ -22,18 +22,49 @@ const MAX_VISIBLE = 5;
 
 function highlightMatch(text: string, query: string): ReactNode {
   if (!query.trim()) return text;
-  const idx = text.toLowerCase().indexOf(query.toLowerCase());
-  if (idx === -1) return text;
-  const before = text.slice(0, idx);
-  const match = text.slice(idx, idx + query.length);
-  const after = text.slice(idx + query.length);
-  return (
-    <>
-      {before}
-      <span className={styles.matchHighlight}>{match}</span>
-      {after}
-    </>
-  );
+
+  const q = query.toLowerCase();
+  const substringIdx = text.toLowerCase().indexOf(q);
+  if (substringIdx !== -1) {
+    const before = text.slice(0, substringIdx);
+    const match = text.slice(substringIdx, substringIdx + query.length);
+    const after = text.slice(substringIdx + query.length);
+    return (
+      <>
+        {before}
+        <span className={styles.matchHighlight}>{match}</span>
+        {after}
+      </>
+    );
+  }
+
+  if (matchesAbbreviation(text, q)) {
+    const words = text.split(/(?<=[\s\-\/&.]+)/);
+    let qi = 0;
+    return words.map((word, i) => {
+      if (qi < q.length && word[0]?.toLowerCase() === q[qi]) {
+        qi++;
+        return (
+          <span key={i}>
+            <span className={styles.matchHighlight}>{word[0]}</span>
+            {word.slice(1)}
+          </span>
+        );
+      }
+      return <span key={i}>{word}</span>;
+    });
+  }
+
+  return text;
+}
+
+function matchesAbbreviation(title: string, query: string): boolean {
+  const initials = title
+    .split(/[\s\-\/&.]+/)
+    .filter(Boolean)
+    .map((word) => word[0].toLowerCase())
+    .join("");
+  return initials.startsWith(query.toLowerCase());
 }
 
 export function SearchBar() {
@@ -51,7 +82,11 @@ export function SearchBar() {
   const allResults = useMemo<Item[]>(() => {
     if (!query.trim()) return [];
     const q = query.toLowerCase();
-    return items.filter((item) => item.title.toLowerCase().includes(q));
+    return items.filter(
+      (item) =>
+        item.title.toLowerCase().includes(q) ||
+        matchesAbbreviation(item.title, q),
+    );
   }, [query, items]);
 
   const results = allResults.slice(0, MAX_VISIBLE);

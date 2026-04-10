@@ -273,16 +273,6 @@
   opacity: 1;
 }
 
-.changeIconTeamAdded {
-  composes: changeIcon;
-  color: rgba(34, 197, 94, 0.9);
-}
-
-.changeIconTeamRemoved {
-  composes: changeIcon;
-  color: rgba(239, 68, 68, 0.9);
-}
-
 .changeIconDesc {
   composes: changeIcon;
   stroke: var(--foreground);

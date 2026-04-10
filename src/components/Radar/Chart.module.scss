@@ -24,6 +24,16 @@
   animation: glowPulse 1.8s ease-in-out infinite;
 }
 
+.quadrantLabel {
+  text-decoration: none;
+  opacity: 0.5;
+  transition: opacity 200ms ease;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
 @keyframes glowPulse {
   0%,
   100% {
@@ -39,5 +49,9 @@
 @media (max-width: 767px) {
   .ringLabels {
     display: none;
+  }
+
+  .quadrantLabel {
+    visibility: hidden;
   }
 }

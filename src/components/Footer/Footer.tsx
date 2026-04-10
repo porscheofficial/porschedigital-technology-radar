@@ -1,6 +1,11 @@
 import styles from "./Footer.module.scss";
 
-import { getImprintUrl, getLabel, getSocialLinks } from "@/lib/data";
+import {
+  getFooterLogoUrl,
+  getImprintUrl,
+  getLabel,
+  getSocialLinks,
+} from "@/lib/data";
 import {
   PLinkPure,
   PText,
@@ -28,6 +33,7 @@ const customIconSvg: Record<string, string> = {
 export function Footer() {
   const socialLinks = getSocialLinks();
   const imprintUrl = getImprintUrl();
+  const footerLogoUrl = getFooterLogoUrl();
   const footerText = getLabel("footer");
   const imprintLabel = getLabel("imprint");
 
@@ -59,7 +65,11 @@ export function Footer() {
         </div>
       )}
 
-      <PWordmark className={styles.wordmark} />
+      {footerLogoUrl ? (
+        <img src={footerLogoUrl} alt="" className={styles.footerLogo} />
+      ) : (
+        <PWordmark className={styles.wordmark} />
+      )}
 
       {footerText && (
         <PText size="xx-small" className={styles.description}>

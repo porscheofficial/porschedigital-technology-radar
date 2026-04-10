@@ -5,7 +5,7 @@ import styles from "./Layout.module.scss";
 
 import { Footer } from "@/components/Footer/Footer";
 import { SearchBar } from "@/components/SearchBar/SearchBar";
-import { getReleases } from "@/lib/data";
+import { getLabel, getLogoUrl, getReleases, getToggle } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import { PCrest, PLinkPure } from "@porsche-design-system/components-react/ssr";
 
@@ -27,15 +27,22 @@ export const Layout: FC<LayoutProps> = ({
 }) => {
   const releases = getReleases();
   const latestRelease = releases[releases.length - 1];
+  const logoUrl = getLogoUrl();
 
   return (
     <div id="layout" className={cn(styles.layout, styles[layoutClass])}>
       <header className={styles.header}>
         <div className={styles.headerGrid}>
           <div className={styles.headerStart}>
-            <PCrest href="/" />
+            {logoUrl ? (
+              <Link href="/">
+                <img src={logoUrl} alt="" className={styles.customLogo} />
+              </Link>
+            ) : (
+              <PCrest href="/" />
+            )}
             <Link href="/" className={styles.brand}>
-              TECH RADAR
+              {getLabel("title")}
             </Link>
             {latestRelease && (
               <Link href="/history" className={styles.versionLabel}>
@@ -45,7 +52,7 @@ export const Layout: FC<LayoutProps> = ({
           </div>
 
           <div className={styles.headerEnd}>
-            <SearchBar />
+            {getToggle("showSearch") && <SearchBar />}
             <PLinkPure
               href="/help-and-about-tech-radar"
               icon="information"

@@ -68,6 +68,11 @@
   margin: (-$pds-spacing-static-x-small);
 }
 
+.customLogo {
+  height: 40px;
+  width: auto;
+}
+
 .versionLabel {
   @include pds-text-xx-small;
   color: var(--foreground);

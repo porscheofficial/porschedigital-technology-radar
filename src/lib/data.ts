@@ -19,16 +19,18 @@ export function getToggle(key: keyof typeof config.toggles) {
   return config.toggles[key] || false;
 }
 
-export function getSections() {
-  return config.sections;
-}
-
 export function getAppName() {
   return getLabel("title");
 }
 
 export function getLogoUrl() {
-  return assetUrl(config.logoFile);
+  if (!config.headerLogoFile) return "";
+  return assetUrl(config.headerLogoFile);
+}
+
+export function getFooterLogoUrl() {
+  if (!config.footerLogoFile) return "";
+  return assetUrl(config.footerLogoFile);
 }
 
 export function getJsUrl(): string {
@@ -47,14 +49,6 @@ export function getColors() {
 export function getFlags() {
   return config.flags;
 }
-
-export function getFlag(flag: Flag) {
-  return config.flags[flag];
-}
-
-export const getFuzzySearchConfig = () => {
-  return config.fuzzySearch;
-};
 
 export function getRings(): Ring[] {
   return config.rings;
@@ -135,11 +129,9 @@ export const sortByFeaturedAndTitle = (a: Item, b: Item) =>
   Number(b.featured) - Number(a.featured) || a.title.localeCompare(b.title);
 
 export const groupItemsByRing = (items: Item[]) => {
-  const showEmptyRings = getToggle("showEmptyRings");
   return getRings().reduce(
     (acc, ring) => {
-      const ringItems = items.filter((item) => item.ring === ring.id);
-      if (ringItems.length || showEmptyRings) acc[ring.id] = ringItems;
+      acc[ring.id] = items.filter((item) => item.ring === ring.id);
       return acc;
     },
     {} as { [ringId: string]: Item[] },

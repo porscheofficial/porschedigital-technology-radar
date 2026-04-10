@@ -1,18 +1,16 @@
 {
-  "basePath": "/techradar",
+  "basePath": "/",
   "baseUrl": "",
-  "editUrl": "https://github.dev/AOEpeople/techradar/blob/main/radar/{release}/{id}.md",
-  "logoFile": "logo.svg",
+  "editUrl": "https://github.dev/porscheofficial/porschedigital-technology-radar/blob/main/radar/{release}/{id}.md",
+  "headerLogoFile": "",
+  "footerLogoFile": "",
   "jsFile": "",
   "toggles": {
-    "showSearch": false,
+    "showSearch": true,
     "showChart": true,
     "showTagFilter": true,
-    "showTeamFilter": true,
-    "showQuadrantList": true,
-    "showEmptyRings": false
+    "showTeamFilter": true
   },
-  "sections": ["radar", "tags", "teams", "list"],
   "colors": {
     "foreground": "#FBFCFF",
     "background": "#0E0E12",
@@ -85,19 +83,13 @@
   ],
   "flags": {
     "new": {
-      "color": "#B85B5B",
-      "title": "New",
-      "titleShort": "N",
-      "description": "New in this version"
+      "title": "New"
     },
     "changed": {
-      "color": "#5B8DB8",
-      "title": "Changed",
-      "titleShort": "C",
-      "description": "Recently changed"
+      "title": "Changed"
     },
     "default": {
-      "description": "Unchanged"
+      "title": "Unchanged"
     }
   },
   "chart": {
@@ -106,44 +98,45 @@
   },
   "social": [
     {
-      "href": "https://twitter.com/aoepeople",
+      "href": "https://x.com/Porsche",
       "icon": "x"
     },
     {
-      "href": "https://www.linkedin.com/company/aoe",
+      "href": "https://www.linkedin.com/company/porsche-digital/",
       "icon": "linkedIn"
     },
     {
-      "href": "https://www.xing.com/company/aoe",
+      "href": "https://www.xing.com/pages/dr-ing-h-c-f-porscheag",
       "icon": "xing"
     },
     {
-      "href": "https://github.com/aoepeople",
+      "href": "https://github.com/porscheofficial",
       "icon": "github"
+    },
+    {
+      "href": "https://www.facebook.com/porsche/",
+      "icon": "facebook"
+    },
+    {
+      "href": "https://www.instagram.com/porsche/",
+      "icon": "instagram"
+    },
+    {
+      "href": "https://www.youtube.com/user/Porsche",
+      "icon": "youtube"
+    },
+    {
+      "href": "https://de.pinterest.com/porsche/",
+      "icon": "pinterest"
     }
   ],
-  "imprint": "https://www.aoe.com/en/imprint.html",
+  "imprint": "https://www.porsche.digital/en/imprint",
   "labels": {
     "title": "Technology Radar",
     "imprint": "Legal Information",
-    "quadrant": "Quadrant",
-    "quadrantOverview": "Quadrant Overview",
-    "zoomIn": "Zoom in",
-    "filterByTag": "Filter by Tag",
-    "filterByTeam": "Filter by Team",
-    "footer": "The technology radar is a project by AOE GmbH. Feel free to build your own radar based on the open source project.",
+    "footer": "Based on the open-source Technology Radar by AOE GmbH, extensively modified by Porsche Digital.",
     "notUpdated": "This item was not updated in last three versions of the Radar.",
-    "notFound": "404 - Page not found",
-    "pageAbout": "How to use AOE Technology Radar?",
-    "pageOverview": "Technologies Overview",
-    "pageSearch": "Search",
     "searchPlaceholder": "What are you looking for?",
     "metaDescription": ""
-  },
-  "fuzzySearch": {
-    "threshold": 0.4,
-    "distance": 600,
-    "ignoreLocation": false,
-    "includeScore": true
   }
 }

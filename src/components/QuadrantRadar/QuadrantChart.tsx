@@ -229,8 +229,8 @@ const _QuadrantChart: FC<QuadrantChartProps> = ({
       const innerRadius = rings[index - 1]?.radius || 0;
       const midRadius = ((outerRadius + innerRadius) / 2) * center;
 
-      // Place label along the start boundary of this quadrant
-      const p = polarToCartesian(midRadius, startAngle);
+      // Place label along the bisector of this quadrant
+      const p = polarToCartesian(midRadius, midAngle);
 
       return (
         <text

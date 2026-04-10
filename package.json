@@ -1,7 +1,7 @@
 {
   "name": "@porscheofficial/porschedigital-technology-radar",
   "private": true,
-  "version": "4.6.1.1",
+  "version": "5.0.0",
   "bin": {
     "techradar": "./bin/techradar.js"
   },
@@ -26,7 +26,6 @@
     "clsx": "^2.1.1",
     "eslint": "^9.23.0",
     "eslint-config-next": "^16.2.3",
-    "fuse.js": "^7.1.0",
     "gray-matter": "^4.0.3",
     "highlight.js": "^11.9.0",
     "husky": "^9.0.11",

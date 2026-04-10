@@ -145,8 +145,7 @@ const QuadrantPage: CustomPage = () => {
 
         <div className={styles.content}>
           {rings.map((ring) => {
-            const ringItems = ringGroups[ring.id];
-            if (!ringItems || ringItems.length === 0) return null;
+            const ringItems = ringGroups[ring.id] ?? [];
             const ringData = getRing(ring.id);
             const ringColor = ringData?.color ?? "var(--foreground)";
             return (

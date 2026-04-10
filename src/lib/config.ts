@@ -22,10 +22,4 @@ if (userConfig.labels)
 if (userConfig.toggles)
   config.toggles = { ...defaultConfig.toggles, ...userConfig.toggles };
 
-if (userConfig.fuzzySearch)
-  config.fuzzySearch = {
-    ...defaultConfig.fuzzySearch,
-    ...userConfig.fuzzySearch,
-  };
-
 export default config;

@@ -1,7 +1,7 @@
 import styles from "./RadarFilters.module.scss";
 
 import { useRadarHighlight } from "@/lib/RadarHighlightContext";
-import { getFlags, getTags, getTeams } from "@/lib/data";
+import { getFlags, getTags, getTeams, getToggle } from "@/lib/data";
 import { Flag } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { PIcon, PTag } from "@porsche-design-system/components-react/ssr";
@@ -30,10 +30,7 @@ export function RadarFilters() {
         <div className={styles.pills}>
           {Object.entries(flags).map(([key, flag]) => {
             const isActive = activeFlag === key;
-            const title =
-              "title" in flag
-                ? (flag as { title: string }).title
-                : flag.description;
+            const title = flag.title;
             const blipSvgMap: Record<string, string> = {
               [Flag.New]:
                 "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-5 -4 24 22'%3E%3Cpath d='m.247 10.212 5.02-8.697a2 2 0 0 1 3.465 0l5.021 8.697a2 2 0 0 1-1.732 3H1.98a2 2 0 0 1-1.732-3z' fill='currentColor'/%3E%3C/svg%3E",
@@ -72,7 +69,7 @@ export function RadarFilters() {
         </div>
       </div>
 
-      {tags.length > 0 && (
+      {getToggle("showTagFilter") && tags.length > 0 && (
         <div className={styles.row}>
           <span className={styles.rowLabel}>
             <PIcon name="filter" size="x-small" aria-hidden="true" />
@@ -98,7 +95,7 @@ export function RadarFilters() {
         </div>
       )}
 
-      {teams.length > 0 && (
+      {getToggle("showTeamFilter") && teams.length > 0 && (
         <div className={styles.row}>
           <span className={styles.rowLabel}>
             <PIcon name="filter" size="x-small" aria-hidden="true" />

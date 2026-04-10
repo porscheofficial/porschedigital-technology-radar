@@ -1,0 +1,50 @@
+@use "@porsche-design-system/components-react/styles" as *;
+
+.items a {
+  outline: none;
+}
+
+.ringLabels {
+  text-transform: uppercase;
+}
+
+.ringLabel {
+  opacity: 0.4;
+  transition: opacity 300ms ease;
+}
+
+.ringLabelActive {
+  opacity: 1;
+}
+
+.ringHighlight {
+  transition: opacity 300ms ease;
+}
+
+.blip {
+  transition:
+    opacity 300ms ease,
+    filter 300ms ease;
+}
+
+.dimmed {
+  opacity: 0.12;
+}
+
+.highlighted {
+  filter: drop-shadow(0 0 6px var(--blip-color, currentColor))
+    drop-shadow(0 0 12px var(--blip-color, currentColor));
+  animation: glowPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 4px var(--blip-color, currentColor))
+      drop-shadow(0 0 8px var(--blip-color, currentColor));
+  }
+  50% {
+    filter: drop-shadow(0 0 8px var(--blip-color, currentColor))
+      drop-shadow(0 0 16px var(--blip-color, currentColor));
+  }
+}

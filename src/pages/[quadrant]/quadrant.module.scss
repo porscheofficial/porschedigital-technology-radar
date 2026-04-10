@@ -1,0 +1,156 @@
+@use "@porsche-design-system/components-react/styles" as *;
+
+.page {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $pds-spacing-fluid-medium;
+}
+
+.stickyCol {
+  display: none;
+}
+
+.radarWrap {
+  position: sticky;
+  top: 100px;
+  max-width: 100%;
+}
+
+.content {
+  min-width: 0;
+}
+
+.description {
+  margin-top: $pds-spacing-static-x-small;
+  margin-bottom: $pds-spacing-static-small;
+  opacity: 0.7;
+}
+
+// --- Ring section header ---
+.ringSection {
+  margin-bottom: $pds-spacing-fluid-large;
+  scroll-margin-top: 100px;
+}
+
+.ringHeader {
+  position: relative;
+  padding: $pds-spacing-static-medium $pds-spacing-static-large;
+  padding-left: calc(#{$pds-spacing-static-large} + 4px);
+  margin-bottom: $pds-spacing-static-medium;
+  background: color-mix(in oklch, var(--ring-color) 6%, transparent);
+  border-radius: $pds-border-radius-medium;
+}
+
+.ringAccent {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  border-radius: $pds-border-radius-medium 0 0 $pds-border-radius-medium;
+  background: var(--ring-color);
+}
+
+.ringTitleRow {
+  display: flex;
+  align-items: baseline;
+  gap: $pds-spacing-static-small;
+}
+
+.ringCount {
+  @include pds-text-x-small;
+  opacity: 0.35;
+  font-weight: $pds-font-weight-regular;
+}
+
+.ringDescription {
+  margin-top: $pds-spacing-static-x-small;
+  opacity: 0.5;
+}
+
+// --- Item list ---
+.itemList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.itemRow {
+  & + & {
+    border-top: 1px solid color-mix(in oklch, var(--border) 50%, transparent);
+  }
+}
+
+.itemLink {
+  display: block;
+  padding: $pds-spacing-static-medium $pds-spacing-static-large;
+  border-radius: $pds-border-radius-small;
+  text-decoration: none;
+  color: var(--foreground);
+  transition: background 150ms ease;
+
+  &:hover {
+    background: color-mix(in oklch, var(--foreground) 6%, transparent);
+  }
+
+  &:hover .readMore {
+    opacity: 1;
+  }
+}
+
+.itemContent {
+  display: flex;
+  flex-direction: column;
+  gap: $pds-spacing-static-x-small;
+}
+
+.itemTitleRow {
+  display: flex;
+  align-items: center;
+  gap: $pds-spacing-static-small;
+}
+
+.itemTitle {
+  @include pds-text-small;
+  font-weight: $pds-font-weight-bold;
+  flex: 1;
+}
+
+.itemDescription {
+  @include pds-text-x-small;
+  opacity: 0.55;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
+  pointer-events: none;
+
+  * {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.readMore {
+  @include pds-text-x-small;
+  color: var(--highlight);
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+
+@media (min-width: 900px) {
+  .page {
+    grid-template-columns: minmax(340px, 1fr) minmax(320px, 1fr);
+  }
+
+  .stickyCol {
+    display: block;
+  }
+}
+
+@media (min-width: 1200px) {
+  .page {
+    grid-template-columns: minmax(420px, 1.2fr) minmax(360px, 1fr);
+  }
+}

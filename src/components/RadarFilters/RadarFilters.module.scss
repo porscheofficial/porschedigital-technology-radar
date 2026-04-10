@@ -3,7 +3,7 @@
 .filters {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: $pds-spacing-static-small;
+  gap: $pds-spacing-static-medium;
   margin: $pds-spacing-fluid-small 0 $pds-spacing-fluid-medium;
   padding: 0 $pds-spacing-static-medium;
   align-items: start;

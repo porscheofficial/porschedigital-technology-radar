@@ -33,7 +33,8 @@ const blipSvgMap: Record<string, string> = {
 };
 
 const QuadrantPage: CustomPage = () => {
-  const { query } = useRouter();
+  const router = useRouter();
+  const { query } = router;
   const quadrant = getQuadrant(query.quadrant as string);
   const allQuadrants = useMemo(() => getQuadrants(), []);
   const rings = useMemo(() => getRings(), []);
@@ -178,41 +179,59 @@ const QuadrantPage: CustomPage = () => {
                 </div>
 
                 <ul className={styles.itemList}>
-                  {ringItems.map((item) => (
-                    <li key={item.id} className={styles.itemRow}>
-                      <Link
-                        href={`/${item.quadrant}/${item.id}`}
-                        className={styles.itemLink}
-                        onMouseEnter={() => handleItemEnter(item.id)}
-                        onMouseLeave={handleItemLeave}
-                      >
-                        <div className={styles.itemContent}>
-                          <div className={styles.itemTitleRow}>
-                            <span className={styles.itemTitle}>
-                              {item.title}
-                            </span>
-                            {item.flag !== Flag.Default && (
-                              <PTag
-                                iconSource={blipSvgMap[item.flag]}
-                                color="background-frosted"
+                  {ringItems.map((item) => {
+                    const href = `/${item.quadrant}/${item.id}`;
+                    return (
+                      <li key={item.id} className={styles.itemRow}>
+                        <div
+                          role="link"
+                          tabIndex={0}
+                          className={styles.itemLink}
+                          onMouseEnter={() => handleItemEnter(item.id)}
+                          onMouseLeave={handleItemLeave}
+                          onClick={() => router.push(href)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              router.push(href);
+                            }
+                          }}
+                        >
+                          <div className={styles.itemContent}>
+                            <div className={styles.itemTitleRow}>
+                              <Link
+                                href={href}
+                                className={styles.itemTitleLink}
+                                tabIndex={-1}
+                                onClick={(e) => e.stopPropagation()}
                               >
-                                {item.flag}
-                              </PTag>
+                                {item.title}
+                              </Link>
+                              {item.flag !== Flag.Default && (
+                                <PTag
+                                  iconSource={blipSvgMap[item.flag]}
+                                  color="background-frosted"
+                                >
+                                  {item.flag}
+                                </PTag>
+                              )}
+                            </div>
+                            {item.body && (
+                              <div
+                                className={styles.itemDescription}
+                                dangerouslySetInnerHTML={{ __html: item.body }}
+                              />
+                            )}
+                            {item.body && (
+                              <span className={styles.readMore}>
+                                read more…
+                              </span>
                             )}
                           </div>
-                          {item.body && (
-                            <div
-                              className={styles.itemDescription}
-                              dangerouslySetInnerHTML={{ __html: item.body }}
-                            />
-                          )}
-                          {item.body && (
-                            <span className={styles.readMore}>read more…</span>
-                          )}
                         </div>
-                      </Link>
-                    </li>
-                  ))}
+                      </li>
+                    );
+                  })}
                 </ul>
               </section>
             );

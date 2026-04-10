@@ -94,7 +94,10 @@ export function SearchBar() {
 
   useEffect(() => {
     const ids = allResults.map((item) => item.id);
-    setHighlight(ids, ids.length > 0);
+    const timerId = setTimeout(() => {
+      setHighlight(ids, ids.length > 0);
+    }, 150);
+    return () => clearTimeout(timerId);
   }, [allResults, setHighlight]);
 
   const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {

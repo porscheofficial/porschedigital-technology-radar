@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { CSSProperties, useState } from "react";
 
 import styles from "./ItemDetail.module.scss";
@@ -12,6 +13,7 @@ import { cn } from "@/lib/utils";
 import {
   PButtonPure,
   PHeading,
+  PIcon,
   PInlineNotification,
   PLinkPure,
 } from "@porsche-design-system/components-react/ssr";
@@ -86,7 +88,14 @@ export function ItemDetail({ item, quadrantTitle }: ItemProps) {
             <div className={styles.ringName}>
               {ringInfo?.title || item.ring}
             </div>
-            <div className={styles.quadrantLabel}>{quadrantTitle}</div>
+            <Link href={`/${item.quadrant}`} className={styles.quadrantLabel}>
+              {quadrantTitle}
+              <PIcon
+                name="arrow-head-right"
+                size="xx-small"
+                aria-hidden="true"
+              />
+            </Link>
             {lastTransition && (
               <div className={styles.lastTransition}>{lastTransition}</div>
             )}
@@ -240,19 +249,25 @@ function HistoryDateGroup({
 
         {hasBodyChange && <ExpandableDescription body={revision.body!} />}
 
-        {hasAddedTeams &&
-          revision.addedTeams!.map((team) => (
-            <div key={`added-${team}`} className={styles.changeRow}>
-              <Team team={team} variant="added" />
+        {hasAddedTeams && (
+          <div className={cn(styles.changeRow, styles.initialTeams)}>
+            <div className={styles.initialTeamsList}>
+              {revision.addedTeams!.map((team) => (
+                <Team key={`added-${team}`} team={team} variant="added" />
+              ))}
             </div>
-          ))}
+          </div>
+        )}
 
-        {hasRemovedTeams &&
-          revision.removedTeams!.map((team) => (
-            <div key={`removed-${team}`} className={styles.changeRow}>
-              <Team team={team} variant="removed" />
+        {hasRemovedTeams && (
+          <div className={cn(styles.changeRow, styles.initialTeams)}>
+            <div className={styles.initialTeamsList}>
+              {revision.removedTeams!.map((team) => (
+                <Team key={`removed-${team}`} team={team} variant="removed" />
+              ))}
             </div>
-          ))}
+          </div>
+        )}
 
         {isInitialEntry && !!revision.teams && revision.teams.length > 0 && (
           <div className={cn(styles.changeRow, styles.initialTeams)}>

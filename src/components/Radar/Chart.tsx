@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React, { CSSProperties, FC, Fragment, memo, useMemo } from "react";
+import React, { FC, Fragment, memo, useMemo } from "react";
 
 import styles from "./Chart.module.scss";
 
@@ -131,11 +131,6 @@ const _Chart: FC<ChartProps> = ({
           isHighlighted && styles.highlighted,
           isDimmed && styles.dimmed,
         )}
-        style={
-          isHighlighted
-            ? ({ "--blip-color": quadrant.color } as CSSProperties)
-            : undefined
-        }
         tabIndex={-1}
       >
         <Blip flag={item.flag} color={quadrant.color} x={bx} y={by} />

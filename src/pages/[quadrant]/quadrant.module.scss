@@ -85,8 +85,8 @@
   display: block;
   padding: $pds-spacing-static-medium $pds-spacing-static-large;
   border-radius: $pds-border-radius-small;
-  text-decoration: none;
   color: var(--foreground);
+  cursor: pointer;
   transition: background 150ms ease;
 
   &:hover {
@@ -96,6 +96,14 @@
   &:hover .readMore {
     opacity: 1;
   }
+}
+
+.itemTitleLink {
+  @include pds-text-small;
+  font-weight: $pds-font-weight-bold;
+  flex: 1;
+  text-decoration: none;
+  color: inherit;
 }
 
 .itemContent {
@@ -108,12 +116,6 @@
   display: flex;
   align-items: center;
   gap: $pds-spacing-static-small;
-}
-
-.itemTitle {
-  @include pds-text-small;
-  font-weight: $pds-font-weight-bold;
-  flex: 1;
 }
 
 .itemDescription {

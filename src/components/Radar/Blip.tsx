@@ -12,7 +12,12 @@ interface BlipProps {
   y: number;
 }
 
-export function Blip({ flag, color, x, y }: BlipProps & { flag: Flag }) {
+export const Blip = React.memo(function Blip({
+  flag,
+  color,
+  x,
+  y,
+}: BlipProps & { flag: Flag }) {
   switch (flag) {
     case Flag.New:
       return <BlipNew x={x} y={y} color={color} />;
@@ -21,7 +26,7 @@ export function Blip({ flag, color, x, y }: BlipProps & { flag: Flag }) {
     default:
       return <BlipDefault x={x} y={y} color={color} />;
   }
-}
+});
 
 function BlipNew({ x, y, color }: BlipProps) {
   x = Math.round(x - halfBlipSize);

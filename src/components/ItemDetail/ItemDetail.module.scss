@@ -72,10 +72,19 @@
 
 .quadrantLabel {
   @include pds-text-xx-small;
+  display: inline-flex;
+  align-items: center;
+  gap: $pds-spacing-static-x-small;
   color: var(--foreground);
   opacity: 0.5;
   margin-top: $pds-spacing-static-x-small;
   text-transform: uppercase;
+  text-decoration: none;
+  transition: opacity 0.15s ease;
+
+  &:hover {
+    opacity: 0.8;
+  }
 }
 
 .lastTransition {
@@ -146,6 +155,9 @@
 }
 
 .notMaintained {
+  max-width: calc(900px - 2 * #{$pds-spacing-fluid-small});
+  margin-left: auto;
+  margin-right: auto;
   margin-bottom: $pds-spacing-static-medium;
 }
 

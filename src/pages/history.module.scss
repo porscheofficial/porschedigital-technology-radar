@@ -2,7 +2,54 @@
 
 .subtitle {
   opacity: 0.5;
+  margin-bottom: $pds-spacing-static-medium;
+}
+
+/* === Section Index (TOC) === */
+
+.toc {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $pds-spacing-static-small;
   margin-bottom: $pds-spacing-fluid-large;
+}
+
+.tocLink {
+  @include pds-text-x-small;
+  font-weight: $pds-font-weight-bold;
+  color: var(--foreground);
+  text-decoration: none;
+  padding: 4px $pds-spacing-static-small;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: $pds-border-radius-small;
+  transition:
+    opacity 200ms ease,
+    border-color 200ms ease;
+  opacity: 0.6;
+
+  &:hover {
+    opacity: 1;
+    border-color: rgba(255, 255, 255, 0.35);
+  }
+}
+
+.tocDivider {
+  width: 1px;
+  height: 16px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.tocReleaseLink {
+  @include pds-text-xx-small;
+  color: var(--foreground);
+  text-decoration: none;
+  opacity: 0.35;
+  transition: opacity 200ms ease;
+
+  &:hover {
+    opacity: 0.8;
+  }
 }
 
 .sectionLabel {
@@ -18,6 +65,18 @@
 
 .matrixSection {
   margin-bottom: $pds-spacing-fluid-large;
+}
+
+.sectionDescription {
+  opacity: 0.45;
+  margin-bottom: $pds-spacing-static-medium;
+  max-width: 680px;
+  line-height: 1.6;
+}
+
+.descriptionStar {
+  color: #e0c862;
+  font-size: 0.85em;
 }
 
 .matrixScroll {
@@ -320,14 +379,6 @@
 .changeDetail {
   @include pds-text-xx-small;
   opacity: 0.5;
-}
-
-.ringBadge {
-  @include pds-text-xx-small;
-  font-weight: $pds-font-weight-bold;
-  padding: 2px $pds-spacing-static-small;
-  border-radius: $pds-border-radius-small;
-  white-space: nowrap;
 }
 
 .arrow {

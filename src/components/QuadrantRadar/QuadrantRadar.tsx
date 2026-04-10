@@ -3,6 +3,7 @@ import React, {
   CSSProperties,
   FC,
   MouseEvent,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -147,33 +148,48 @@ export const QuadrantRadar: FC<QuadrantRadarProps> = ({
     [tooltip],
   );
 
-  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
-    if (filterActive || highlightedIds.length > 0) {
-      if (tooltip.show) setTooltip({ ...tooltip, show: false });
-      return;
-    }
-    const link =
-      e.target instanceof Element && e.target.closest("a[data-tooltip]");
-    if (link) {
-      const text = link.getAttribute("data-tooltip") || "";
-      const color = link.getAttribute("data-tooltip-color") || "";
-      const linkRect = link.getBoundingClientRect();
-      const radarRect = radarRef.current!.getBoundingClientRect();
+  const mouseMoveRafRef = useRef(0);
 
-      const x = linkRect.left - radarRect.left + linkRect.width / 2;
-      const y = linkRect.top - radarRect.top;
-
-      setTooltip({ text, color, show: !!text, x, y });
-    } else {
-      if (tooltip.show) {
-        setTooltip({ ...tooltip, show: false });
+  const handleMouseMove = useCallback(
+    (e: MouseEvent<HTMLDivElement>) => {
+      if (filterActive || highlightedIds.length > 0) {
+        if (tooltip.show) setTooltip((prev) => ({ ...prev, show: false }));
+        return;
       }
-    }
-  };
+      const target = e.target;
+      const link =
+        target instanceof Element && target.closest("a[data-tooltip]");
 
-  const handleMouseLeave = () => {
-    setTooltip({ ...tooltip, show: false });
-  };
+      if (!link) {
+        if (tooltip.show) setTooltip((prev) => ({ ...prev, show: false }));
+        return;
+      }
+
+      if (mouseMoveRafRef.current) return;
+      mouseMoveRafRef.current = requestAnimationFrame(() => {
+        mouseMoveRafRef.current = 0;
+        if (!radarRef.current) return;
+        const text = link.getAttribute("data-tooltip") || "";
+        const color = link.getAttribute("data-tooltip-color") || "";
+        const linkRect = link.getBoundingClientRect();
+        const radarRect = radarRef.current.getBoundingClientRect();
+
+        const x = linkRect.left - radarRect.left + linkRect.width / 2;
+        const y = linkRect.top - radarRect.top;
+
+        setTooltip({ text, color, show: !!text, x, y });
+      });
+    },
+    [filterActive, highlightedIds.length, tooltip.show],
+  );
+
+  const handleMouseLeave = useCallback(() => {
+    if (mouseMoveRafRef.current) {
+      cancelAnimationFrame(mouseMoveRafRef.current);
+      mouseMoveRafRef.current = 0;
+    }
+    setTooltip((prev) => ({ ...prev, show: false }));
+  }, []);
 
   return (
     <div

@@ -22,9 +22,7 @@
 }
 
 .blip {
-  transition:
-    opacity 300ms ease,
-    filter 300ms ease;
+  transition: opacity 300ms ease;
 }
 
 .dimmed {
@@ -32,19 +30,5 @@
 }
 
 .highlighted {
-  filter: drop-shadow(0 0 6px var(--blip-color, currentColor))
-    drop-shadow(0 0 12px var(--blip-color, currentColor));
-  animation: glowPulse 1.8s ease-in-out infinite;
-}
-
-@keyframes glowPulse {
-  0%,
-  100% {
-    filter: drop-shadow(0 0 4px var(--blip-color, currentColor))
-      drop-shadow(0 0 8px var(--blip-color, currentColor));
-  }
-  50% {
-    filter: drop-shadow(0 0 8px var(--blip-color, currentColor))
-      drop-shadow(0 0 16px var(--blip-color, currentColor));
-  }
+  opacity: 1;
 }

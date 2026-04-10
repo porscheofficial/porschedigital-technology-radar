@@ -5,6 +5,7 @@ import { useState } from "react";
 
 import styles from "./history.module.scss";
 
+import { RingBadge } from "@/components/Badge/Badge";
 import { Team } from "@/components/Teams/Teams";
 import {
   getItemTrajectories,
@@ -71,8 +72,36 @@ const History: CustomPage = () => {
         Technology radar evolution across {allReleases.length} versions
       </PText>
 
-      <section className={styles.matrixSection}>
+      <nav className={styles.toc} aria-label="Page sections">
+        <a href="#ring-trajectory" className={styles.tocLink}>
+          Ring trajectory
+        </a>
+        <span className={styles.tocDivider} aria-hidden="true" />
+        <a href="#detailed-changelog" className={styles.tocLink}>
+          Detailed changelog
+        </a>
+        {diffs.map((diff) => (
+          <a
+            key={diff.release}
+            href={`#release-${diff.release}`}
+            className={styles.tocReleaseLink}
+          >
+            {formatRelease(diff.release)}
+          </a>
+        ))}
+      </nav>
+
+      <section id="ring-trajectory" className={styles.matrixSection}>
         <div className={styles.sectionLabel}>Ring trajectory</div>
+        <PText size="x-small" className={styles.sectionDescription}>
+          Each row represents a technology and each column a radar release. The
+          coloured dots show which ring the technology was placed in at that
+          point in time. Click a column header to shift the comparison focus —
+          rows that changed between the focused release and its predecessor are
+          highlighted in full opacity while stable items are dimmed. A{" "}
+          <span className={styles.descriptionStar}>✦</span> marks the release
+          where a technology first appeared on the radar.
+        </PText>
         <div className={styles.matrixScroll}>
           <PTable compact caption="Ring trajectory across releases">
             <PTableHead>
@@ -210,7 +239,7 @@ const History: CustomPage = () => {
         </div>
       </section>
 
-      <section className={styles.changelogSection}>
+      <section id="detailed-changelog" className={styles.changelogSection}>
         <div className={styles.sectionLabel}>Detailed changelog</div>
         {diffs.map((diff, idx) => {
           const isEmpty =
@@ -220,7 +249,11 @@ const History: CustomPage = () => {
             diff.teamChanges.length === 0;
 
           return (
-            <div key={diff.release} className={styles.release}>
+            <div
+              key={diff.release}
+              id={`release-${diff.release}`}
+              className={styles.release}
+            >
               <div className={styles.releaseHeader}>
                 <span className={styles.releaseDate}>
                   {formatReleaseFull(diff.release)}
@@ -250,25 +283,9 @@ const History: CustomPage = () => {
                     >
                       <span className={styles.changeIcon}>▲</span>
                       <span className={styles.changeName}>{item.title}</span>
-                      <span
-                        className={styles.ringBadge}
-                        style={{
-                          background: `${getRing(from)?.color}33`,
-                          color: getRing(from)?.color,
-                        }}
-                      >
-                        {getRing(from)?.title}
-                      </span>
+                      <RingBadge ring={from} size="small" />
                       <span className={styles.arrow}>→</span>
-                      <span
-                        className={styles.ringBadge}
-                        style={{
-                          background: `${getRing(to)?.color}33`,
-                          color: getRing(to)?.color,
-                        }}
-                      >
-                        {getRing(to)?.title}
-                      </span>
+                      <RingBadge ring={to} size="small" />
                     </Link>
                   ))}
                 </div>
@@ -285,25 +302,9 @@ const History: CustomPage = () => {
                     >
                       <span className={styles.changeIconDown}>▼</span>
                       <span className={styles.changeName}>{item.title}</span>
-                      <span
-                        className={styles.ringBadge}
-                        style={{
-                          background: `${getRing(from)?.color}33`,
-                          color: getRing(from)?.color,
-                        }}
-                      >
-                        {getRing(from)?.title}
-                      </span>
+                      <RingBadge ring={from} size="small" />
                       <span className={styles.arrow}>→</span>
-                      <span
-                        className={styles.ringBadge}
-                        style={{
-                          background: `${getRing(to)?.color}33`,
-                          color: getRing(to)?.color,
-                        }}
-                      >
-                        {getRing(to)?.title}
-                      </span>
+                      <RingBadge ring={to} size="small" />
                     </Link>
                   ))}
                 </div>
@@ -320,15 +321,7 @@ const History: CustomPage = () => {
                     >
                       <span className={styles.changeIconNew}>✦</span>
                       <span className={styles.changeName}>{item.title}</span>
-                      <span
-                        className={styles.ringBadge}
-                        style={{
-                          background: `${getRing(ring)?.color}33`,
-                          color: getRing(ring)?.color,
-                        }}
-                      >
-                        {getRing(ring)?.title}
-                      </span>
+                      <RingBadge ring={ring} size="small" />
                       <span className={styles.changeDetail}>
                         {getQuadrant(item.quadrant)?.title}
                       </span>

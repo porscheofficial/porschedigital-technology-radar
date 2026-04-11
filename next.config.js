@@ -1,7 +1,14 @@
 const path = require("node:path");
 const config = require("./data/config.json");
+const envBasePath = process.env.NEXT_PUBLIC_BASE_PATH;
 const basePath =
-  config.basePath && config.basePath !== "/" ? config.basePath : "";
+  envBasePath != null
+    ? envBasePath && envBasePath !== "/"
+      ? envBasePath
+      : ""
+    : config.basePath && config.basePath !== "/"
+      ? config.basePath
+      : "";
 
 /** @type {import("next").NextConfig} */
 const nextConfig = {

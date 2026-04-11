@@ -16,7 +16,7 @@ export interface ChartProps {
   className?: string;
 }
 
-const _Chart: FC<ChartProps> = ({
+const ChartInner: FC<ChartProps> = ({
   size = 800,
   quadrants = [],
   rings = [],
@@ -252,11 +252,11 @@ const _Chart: FC<ChartProps> = ({
           ))}
         </g>
       ))}
-      <g className={styles.items}>{items.map((item) => renderItem(item))}</g>
       <g className={styles.ringLabels}>{renderRingLabels()}</g>
+      <g className={styles.items}>{items.map((item) => renderItem(item))}</g>
       <g>{renderQuadrantLabels()}</g>
     </svg>
   );
 };
 
-export const Chart = memo(_Chart);
+export const Chart = memo(ChartInner);

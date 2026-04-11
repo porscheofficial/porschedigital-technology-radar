@@ -1,275 +1,275 @@
-# AOE Technology Radar
+# Porsche Digital Technology Radar
 
-A static site generator for AOE Technology Radar
+A static site generator for building and publishing your own Technology Radar.
 
-![Screenshot of the AOE Technology Radar](./docs/assets/screenshot-techradar.png)
+<!-- TODO: Add new screenshot -->
+<!-- ![Screenshot of the Technology Radar](./docs/assets/screenshot.png) -->
 
-## Looking for the AOE Tech Radar content?
+## About
 
-- The repository is now found here: https://github.com/AOEpeople/techradar
-- The AOE Tech radar is deployed here: https://www.aoe.com/techradar/index.html
+This project is maintained by **Porsche Digital** and is based on the open-source [AOE Technology Radar](https://github.com/AOEpeople/aoe_technology_radar). The codebase has been substantially rewritten and extended — it is not a drop-in replacement. Your existing radar items (Markdown files) can be reused as-is, but the configuration needs to be updated to match the new schema.
 
-## ✨ Version 4.0.0
+## Features
 
-Version 4.0.0 is a complete rewrite of the AOE Technology Radar. It is now based
-on [Next.js](https://nextjs.org/) to provide enhanced static site generation. The visualization has
-been rewritten without the need for the D3 dependency. New features include a fuzzy search based on
-Fuse.js, non-overlapping blips on the radar, and a reworked tag filter on the homepage.
+- Interactive SVG radar visualization (no D3 dependency)
+- Search with abbreviation support (e.g. "k8s" finds "Kubernetes")
+- Filterable by tags, teams, and status
+- Quadrant detail pages with zoomed radar view
+- Item detail pages with revision history and team assignments
+- Ring trajectory history page across all releases
+- Fully configurable via a single `config.json`
+- Custom branding: header logo, footer logo, colors, social links
+- Static export for GitHub Pages or any static hosting
+- Built with Next.js, React, and the Porsche Design System
 
-To migrate from the old version please migrate your `package.json`'s scripts and create a
-new `config.json` based on the documentation below. You can find a reference implementation in
-our [repo](https://github.com/AOEpeople/techradar). The old version is still available in the `v3`
-branch.
+## Quick Start
 
-Version 4.0.0 also removes the .html extension from the URLs. If you want to support the old URLs,
-we recommend to add a redirect rule. For nginx, you can use the following rule:
+**Prerequisites:** Node.js 22+
 
-```nginx
-rewrite ^/techradar/(.+)\.html$ /techradar/$1/ permanent;
+```bash
+git clone https://github.com/porscheofficial/porschedigital-technology-radar.git
+cd porschedigital-technology-radar
+npm install
 ```
 
-## Create your own radar
+Create your configuration by copying the defaults:
 
-The generator is free to use under Open Source License - in fact there are already some other Radars
-published based on our Radar and there are also Contributions back. However, it would be nice to
-mention in radar that the generator is based on this repository.
-
-### Step 1: Create a new project
-
-Ensure node.js ist installed and create a new project by creating a new folder with a `package.json`
-file like the following and adapt to your needs:
-
-```json
-{
-  "name": "aoe-techradar",
-  "version": "1.0.0",
-  "license": "MIT",
-  "scripts": {
-    "build": "techradar build --strict",
-    "serve": "techradar serve"
-  },
-  "dependencies": {
-    "aoe_technology_radar": "^4"
-  }
-}
+```bash
+cp data/config.default.json data/config.json
 ```
 
-Run `npm install` to install the dependencies and run `npm run build` to create the initial radar.
-This will also create a basic bootstrap of all required files, including the `config.json` and
-the `about.md` if they do not exist yet.
+Edit `data/config.json` to match your organization (see [Configuration](#configuration) below).
 
-Note: The `--strict` flag will break the build process if there are any errors in the markdown files. If you do not care about errors, you can remove the `--strict` flag.
+Add your radar items as Markdown files under `radar/` (see [Radar Items](#radar-items) below), then build:
 
-### Step 2: Change logo and the favicon
+```bash
+npm run build:data
+npm run build
+```
 
-Place your `logo.svg` and `favicon.ico` in the `public` folder next to the `package.json`.
-The ideal logo is 150px x 60px. For reference have a look at [public/logo.svg](./public/logo.svg).
+The static site is generated in the `out/` directory. For local development:
 
-If you want to use a file other than an SVG, copy it to the `public` folder and set the name of the
-file as `logoFile` inside the `config.json`. e.g. `"logoFile": "acme-logo.png"`
+```bash
+npm run build:data
+npm run dev
+```
 
-### Step 3: Configure the radar
+Open `http://localhost:3000` (or the `basePath` you configured).
 
-Open the `config.json` file and configure the radar to your needs.
-
-| Attribute   | Description                                                                                                                    |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| basePath    | Set if hosting under a sub-path, otherwise set it to `/`. Default is `/techradar`                                              |
-| baseUrl     | Set to the full URL, where the radar will be hosted. Will be used for sitemap.xml. `https://www.aoe.com/techradar`             |
-| logoFile    | (optional) Filepath in public folder. Default is `logo.svg`                                                                    |
-| jsFile      | (optional) Filepath in public folder or URL to enable include of custom script                                                 |
-| toggles     | (optional) Modify the behaviour and contents of the radar. See config below.                                                   |
-| sections    | (optional) Modify the order of sections (`radar`, `tags`, `list`)                                                              |
-| fuzzySearch | (optional) Modify the fuse.js options (https://www.fusejs.io/api/options.html)                                                 |
-| colors      | A map of colors for the radar. Can be any valid CSS color value                                                                |
-| quadrants   | Config of the 4 quadrants of the radar. See config below.                                                                      |
-| rings       | Config of the rings of the radar. See config below.                                                                            |
-| flags       | Config of the flags of the radar. See config below                                                                             |
-| chart       | If you hava a lot of items, you can increase the `size` to scale down the radar                                                |
-| social      | Social links in the footer. See config below                                                                                   |
-| imprint     | URL to the legal information                                                                                                   |
-| labels      | Configure the labels to change the texts and labels of the radar                                                               |
-| tags        | (optional) Use to render only items, which contain at least one of the specified tags. e.g `["frontend", "backend"]`           |
-| editUrl     | (optional) If set, an edit button will be shown next to the revision.<br/> You can use placeholders for `{id}` and `{release}` |
-
-#### `config.toggles`
-
-| Attribute        | Description                                             |
-| ---------------- | ------------------------------------------------------- |
-| showSearch       | Render the radar search on the header?                  |
-| showChart        | Render the radar visualization on the homepage?         |
-| showTagFilter    | Render the tag filter below the radar?                  |
-| showQuadrantList | Render the items below the radar?                       |
-| showEmptyRings   | If set to `true` it will render empty rings in the list |
-
-#### `config.sections`
-
-An array with of `radar`, `tags`, `list` in order you want them to appear on the page.
-
-#### `config.fuzzySearch`
-
-An object that represents the fuse.js options, which is used to search the radar.
-
-#### `config.quadrants`
-
-| Attribute   | Description                                                 |
-| ----------- | ----------------------------------------------------------- |
-| id          | Used as reference in the radar markdown files and URLs      |
-| title       | Title of the quadrant                                       |
-| description | Will be shown on startpage and on the quadrants detail page |
-| color       | Color of the quadrant arcs and blips                        |
-
-#### `config.rings`
-
-| Attribute   | Description                                                                 |
-| ----------- | --------------------------------------------------------------------------- |
-| id          | Used as reference in the radar markdown files                               |
-| title       | Title of the ring. Will be used in the badge                                |
-| description |                                                                             |
-| color       | Color of the ring's badge                                                   |
-| radius      | Size of the ring. Value between 0 and 1, where 0.5 would be a ring 50% wide |
-| strokeWidth | Size of the ring's border                                                   |
-
-#### `config.flags.[new|changed|default]`
-
-| Attribute   | Description                                |
-| ----------- | ------------------------------------------ |
-| color       | Color of the flag                          |
-| title       | Long label of the flag                     |
-| titleShort  | Short label (single letter) shown in lists |
-| description | Label in the radar legend                  |
-
-#### `config.social.[]`
-
-| Attribute | Description                                                                            |
-| --------- | -------------------------------------------------------------------------------------- |
-| href      | URL to the website                                                                     |
-| icon      | One of `facebook`, `github`, `gitlab`, `instagram`, `linkedin`, `x`, `xing`, `youtube` |
-
-### Step 4: Add a help page with explanations
-
-Edit the `about.md` file next to the `package.json` file. The contents will be shown on
-the `/help-and-about-tech-radar` page. Optionally you can change the title of the menu by
-setting `labels.pageAbout` in your `config.json`.
-
-### Step 5: Create the radar items
-
-Remove or edit existing items in the `radar` folder.
-For a new release, create a folder of the release date (YYYY-MM-DD)
-under `./radar`. e.g. `./radar/2024-03-01`.
-
-The items are written in Markdown format (.md)
-
-Each file has a meta header where the attributes of the item are listed:
+## Project Structure
 
 ```
+├── data/
+│   ├── config.default.json   # Default configuration (do not edit)
+│   ├── config.json            # Your configuration overrides
+│   └── about.md               # Content for the help & about page
+├── public/
+│   ├── favicon.ico            # Your favicon
+│   ├── images/                # Images referenced in radar items
+│   └── custom.css             # Optional custom styles
+└── radar/
+    ├── 2024-06-01/
+    │   ├── react.md
+    │   └── kubernetes.md
+    └── 2025-01-15/
+        ├── react.md           # Updated entry overwrites previous
+        └── deno.md
+```
+
+Only `data/config.json`, `data/about.md`, and the `radar/` directory need your attention. Everything else is part of the generator.
+
+## Configuration
+
+All configuration lives in `data/config.json`. Any key you omit falls back to the defaults in `data/config.default.json`. You only need to set what you want to change.
+
+### Root
+
+| Key              | Description                                                                                        | Default |
+| ---------------- | -------------------------------------------------------------------------------------------------- | ------- |
+| `basePath`       | URL path prefix. Set to `/` for root hosting, or `/techradar` for a sub-path.                      | `/`     |
+| `baseUrl`        | Full URL where the radar is hosted. Used for `sitemap.xml`.                                        | `""`    |
+| `editUrl`        | If set, shows an edit button on item pages. Supports `{id}` and `{release}` placeholders.          | `""`    |
+| `headerLogoFile` | Path to a logo image in `public/` for the header. Leave empty to use the default Porsche crest.    | `""`    |
+| `footerLogoFile` | Path to a logo image in `public/` for the footer. Leave empty to use the default Porsche wordmark. | `""`    |
+| `jsFile`         | Path in `public/` or URL to a custom JavaScript file to include on every page.                     | `""`    |
+| `imprint`        | URL to your legal information / imprint page.                                                      | `""`    |
+
+### `toggles`
+
+| Key              | Description                                   | Default |
+| ---------------- | --------------------------------------------- | ------- |
+| `showSearch`     | Show the search bar in the header.            | `true`  |
+| `showChart`      | Show the radar visualization on the homepage. | `true`  |
+| `showTagFilter`  | Show the tag filter below the radar.          | `true`  |
+| `showTeamFilter` | Show the team filter below the radar.         | `true`  |
+
+### `colors`
+
+A map of CSS color values that theme the entire radar.
+
+| Key          | Description                          | Default   |
+| ------------ | ------------------------------------ | --------- |
+| `foreground` | Primary text and UI element color    | `#FBFCFF` |
+| `background` | Page background                      | `#0E0E12` |
+| `highlight`  | Highlighted text and active elements | `#FBFCFF` |
+| `content`    | Secondary content text               | `#AFB0B3` |
+| `text`       | Tertiary / muted text                | `#88898C` |
+| `link`       | Link color                           | `#FBFCFF` |
+| `border`     | Border and separator color           | `#404044` |
+| `tag`        | Tag background color                 | `#404044` |
+
+### `quadrants`
+
+An array of exactly 4 quadrant objects.
+
+| Key           | Description                                      |
+| ------------- | ------------------------------------------------ |
+| `id`          | Identifier used in radar Markdown files and URLs |
+| `title`       | Display title of the quadrant                    |
+| `description` | Shown on the homepage and quadrant detail page   |
+| `color`       | CSS color for the quadrant arc and its blips     |
+
+### `rings`
+
+An array of ring objects (typically 4), ordered from innermost to outermost.
+
+| Key           | Description                                                    |
+| ------------- | -------------------------------------------------------------- |
+| `id`          | Identifier used in radar Markdown files                        |
+| `title`       | Display title, shown as badge label                            |
+| `description` | Optional description text                                      |
+| `color`       | CSS color for the ring badge                                   |
+| `radius`      | Outer boundary of the ring as a fraction of the chart (0 to 1) |
+| `strokeWidth` | Thickness of the ring's arc border in the SVG                  |
+
+### `flags`
+
+Flags mark items as `new`, `changed`, or `default` (unchanged). Each flag has a single key:
+
+| Key     | Description                                                     |
+| ------- | --------------------------------------------------------------- |
+| `title` | Display label for the flag (e.g. "New", "Changed", "Unchanged") |
+
+### `chart`
+
+| Key        | Description                                                              | Default |
+| ---------- | ------------------------------------------------------------------------ | ------- |
+| `size`     | Base size of the radar chart in pixels. Increase if you have many items. | `800`   |
+| `blipSize` | Radius of each blip dot in pixels                                        | `12`    |
+
+### `social`
+
+An array of social link objects shown in the footer.
+
+| Key    | Description                                                                                                        |
+| ------ | ------------------------------------------------------------------------------------------------------------------ |
+| `href` | URL to the social profile                                                                                          |
+| `icon` | Icon name. Available: `x`, `linkedin`, `facebook`, `instagram`, `youtube`, `xing`, `pinterest`, `github`, `gitlab` |
+
+### `labels`
+
+| Key                 | Description                                               | Default                                                                                             |
+| ------------------- | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `title`             | Radar title shown in the header and page titles           | `"Technology Radar"`                                                                                |
+| `imprint`           | Label for the imprint link in the footer                  | `"Legal Information"`                                                                               |
+| `footer`            | Text shown in the footer                                  | `"Based on the open-source Technology Radar by AOE GmbH, extensively modified by Porsche Digital."` |
+| `notUpdated`        | Warning shown on items not updated in the last 3 releases | `"This item was not updated in last three versions of the Radar."`                                  |
+| `searchPlaceholder` | Placeholder text in the search input                      | `"What are you looking for?"`                                                                       |
+| `metaDescription`   | HTML meta description for SEO                             | `""`                                                                                                |
+
+## Radar Items
+
+Radar items are Markdown files organized by release date under `radar/`.
+
+```
+radar/
+├── 2024-06-01/
+│   ├── react.md
+│   └── kubernetes.md
+└── 2025-01-15/
+    ├── react.md
+    └── deno.md
+```
+
+Each file has a YAML front-matter header followed by Markdown content:
+
+```markdown
 ---
 title: "React"
 ring: adopt
 quadrant: languages-and-frameworks
-tags: [frontend, coding]
-teams: [capybara, star]
+tags: [frontend, javascript]
+teams: [web-platform, mobile]
 ---
 
-Text goes here. You can use **markdown** here.
+Description of the technology, why it was adopted, and any relevant context.
+Supports full **Markdown** formatting.
 ```
 
-Following front-matter attributes are possible:
+### Front-matter attributes
 
-- **title**: Name of the Item
-- **quadrant**: Quadrant. One of the configured quadrants in `config.quadrants`
-- **ring**: Ring section in radar. One of the configured rings in `config.rings`
-- **tags**: Optional tags for filtering.
-- **featured**: (optional, default "true") If you set this to `false`, the item
-  will not be visible in the radar quadrants but still be available in the overview.
-- **teams**: Optional list of teams, which are currently using this item.
+| Attribute  | Required | Description                                                                                             |
+| ---------- | -------- | ------------------------------------------------------------------------------------------------------- |
+| `title`    | Yes      | Name of the technology                                                                                  |
+| `ring`     | Yes      | Ring placement. Must match one of the `id` values in `config.rings`.                                    |
+| `quadrant` | Yes      | Quadrant assignment. Must match one of the `id` values in `config.quadrants`.                           |
+| `tags`     | No       | List of tags for filtering.                                                                             |
+| `teams`    | No       | List of teams currently using this technology.                                                          |
+| `featured` | No       | Set to `false` to hide from the radar chart while keeping the item in the overview. Defaults to `true`. |
 
-The name of the .md file acts as item identifier and may overwrite items with
-the same name from older releases.
+### Versioning
 
-If an item is overwritten in a new release, the attributes from the new item are
-merged with the old ones, and a new history entry is created for that item.
+The filename (without `.md`) serves as the item identifier. When the same filename appears in a newer release folder, the newer entry overwrites the previous one — attributes are merged and a new history entry is created.
 
-You can integrate images in your markdown. Put the image files in the `public/images` folder and
-reference them
+### Images
 
-```
-![nice image](/images/optional-content-image.png)
-```
+Place images in `public/images/` and reference them in Markdown:
 
-### Step 6: Build your radar
-
-Your final file and folder structure should look like this:
-
-```
-├── about.md
-├── config.json
-├── package.json
-├── public/
-│ ├── images/
-│ │ └── optional-content-image.png
-│ ├── favicon.ico
-│ └── logo.svg
-└── radar/
-  ├── 2023-12-31/
-  │ ├── demo-item-1.md
-  │ └── demo-item-2.md
-  └── 2024-03-05/
-    ├── demo-item-1.md
-    └── demo-item-3.md
+```markdown
+![Architecture diagram](/images/architecture.png)
 ```
 
-Run `npm run build` to build the radar and upload the files of the `./build` folder to your server.
+## Development
 
-You can view a development version of the radar by running `npm run serve` and open the radar in
-your browser at `http://localhost:3000/techradar` or the path you specified via `basePath`.
+To work on the radar generator itself:
 
-## Advanced styling with `custom.css`
+```bash
+npm install           # Also runs postinstall → build:icons
+npm run build:data    # Parse Markdown files into data/data.json
+npm run dev           # Start Next.js dev server
+```
 
-If you need to customize the radar's styles, you can add custom CSS rules to the `custom.css` file.
+The build pipeline:
 
-Be aware that this might break with future versions of the radar as we use css-modules in the
-components which generates dynamic, hashed class names and the layout structure might change.
+1. `build:icons` — generates React icon components from SVGs in `src/icons/`
+2. `build:data` — parses `radar/` Markdown files into `data/data.json` and `data/about.json`
+3. `next build` — builds the static site into `out/`
 
-Therefore, it's advised the `[attribute^=value]` selector that matches elements whose attribute
-value begins
-with a specified value. As an example, if you want to always show the subline in the header use
-the following rule:
+The `npm run build` command runs all three steps in sequence.
+
+## Custom Styling
+
+You can add custom CSS rules in `public/custom.css`. Since the project uses CSS Modules with hashed class names, use attribute prefix selectors to target components:
 
 ```css
-[class^="Logo_subline"] {
-  display: block;
-  opacity: 1;
+/* Example: change headline fonts */
+h1,
+h2,
+h3 {
+  font-family: "Times New Roman", Times, serif;
 }
-```
 
-If you want to include assets like images or fonts, use `../../public/` as the base path.
-Adding a background image to the page could be archived like this:
-
-```css
+/* Example: add a background image */
 body {
   background: url("../../public/background.png");
 }
 ```
 
-Changing the font-family of the headlines:
+Changes to `custom.css` require a rebuild — they are not reflected in the dev server's hot reload.
 
-```css
-h1,
-h2,
-h3 {
-  font-family: "Times New Roman", Times, Baskerville, Georgia, serif;
-}
-```
+## License
 
-Changes to the css file will not be reflected in the development server. You need to
-run `npm run serve` or `npm run build` to see the changes.
+This project is open source under the [MIT License](./LICENSE).
 
-## Development
-
-If you want to change core functionality of the radar, you can clone this repository and put your
-radar's markdown-files, config.json and about.md in the `data` folder. Run `npm run build:data` to
-parse the markdown files and create a `data.json` and then run `npm run dev` to start the
-development server, which will be available at `http://localhost:3000/techradar` or the path
-you specified via `basePath`. Run `npm run build:data -- --strict` to break the build process
-when encountering errors.
+Originally based on the [AOE Technology Radar](https://github.com/AOEpeople/aoe_technology_radar).
+Maintained and developed by [Porsche Digital](https://www.porsche.digital/).

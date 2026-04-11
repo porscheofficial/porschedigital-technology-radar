@@ -72,7 +72,9 @@ export const QuadrantRadar: FC<QuadrantRadarProps> = ({
     }
 
     if (currentHighlightSet.size === 0) {
-      setShownIds(new Set());
+      rafRef.current = requestAnimationFrame(() => {
+        setShownIds(new Set());
+      });
       cleanupTimerRef.current = setTimeout(() => {
         setTooltipMap(new Map());
       }, 200);
@@ -81,60 +83,63 @@ export const QuadrantRadar: FC<QuadrantRadarProps> = ({
 
     if (!radarRef.current) return;
 
-    const radarRect = radarRef.current.getBoundingClientRect();
-    const next = new Map<string, PersistentTooltip>();
-
-    for (const id of currentHighlightSet) {
-      const link = radarRef.current.querySelector(
-        `a[data-item-id="${id}"]`,
-      ) as HTMLElement | null;
-      if (!link) continue;
-
-      const text = link.getAttribute("data-tooltip") || "";
-      const color = link.getAttribute("data-tooltip-color") || "";
-      const href = link.getAttribute("href") || "";
-      const linkRect = link.getBoundingClientRect();
-
-      next.set(id, {
-        id,
-        text,
-        color,
-        href,
-        x: linkRect.left - radarRect.left + linkRect.width / 2,
-        y: linkRect.top - radarRect.top,
-      });
-    }
-
-    setTooltipMap((prev) => {
-      const merged = new Map(prev);
-      for (const [id, tt] of next) {
-        merged.set(id, tt);
-      }
-      for (const id of merged.keys()) {
-        if (!next.has(id)) {
-          setTimeout(() => {
-            setTooltipMap((current) => {
-              if (activeIdsRef.current.has(id)) return current;
-              const updated = new Map(current);
-              updated.delete(id);
-              return updated;
-            });
-          }, 200);
-        }
-      }
-      return merged;
-    });
-
-    setShownIds((prev) => {
-      const kept = new Set<string>();
-      for (const id of prev) {
-        if (currentHighlightSet.has(id)) kept.add(id);
-      }
-      return kept;
-    });
-
     rafRef.current = requestAnimationFrame(() => {
-      setShownIds(new Set(currentHighlightSet));
+      if (!radarRef.current) return;
+      const radarRect = radarRef.current.getBoundingClientRect();
+      const next = new Map<string, PersistentTooltip>();
+
+      for (const id of currentHighlightSet) {
+        const link = radarRef.current.querySelector(
+          `a[data-item-id="${id}"]`,
+        ) as HTMLElement | null;
+        if (!link) continue;
+
+        const text = link.getAttribute("data-tooltip") || "";
+        const color = link.getAttribute("data-tooltip-color") || "";
+        const href = link.getAttribute("href") || "";
+        const linkRect = link.getBoundingClientRect();
+
+        next.set(id, {
+          id,
+          text,
+          color,
+          href,
+          x: linkRect.left - radarRect.left + linkRect.width / 2,
+          y: linkRect.top - radarRect.top,
+        });
+      }
+
+      setTooltipMap((prev) => {
+        const merged = new Map(prev);
+        for (const [id, tt] of next) {
+          merged.set(id, tt);
+        }
+        for (const id of merged.keys()) {
+          if (!next.has(id)) {
+            setTimeout(() => {
+              setTooltipMap((current) => {
+                if (activeIdsRef.current.has(id)) return current;
+                const updated = new Map(current);
+                updated.delete(id);
+                return updated;
+              });
+            }, 200);
+          }
+        }
+        return merged;
+      });
+
+      setShownIds((prev) => {
+        const kept = new Set<string>();
+        for (const id of prev) {
+          if (currentHighlightSet.has(id)) kept.add(id);
+        }
+        return kept;
+      });
+
+      requestAnimationFrame(() => {
+        setShownIds(new Set(currentHighlightSet));
+      });
     });
   }, [highlightedIds]);
 

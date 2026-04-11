@@ -22,7 +22,7 @@ export interface QuadrantChartProps {
   className?: string;
 }
 
-const _QuadrantChart: FC<QuadrantChartProps> = ({
+const QuadrantChartInner: FC<QuadrantChartProps> = ({
   size = 800,
   quadrant,
   allQuadrants,
@@ -324,10 +324,10 @@ const _QuadrantChart: FC<QuadrantChartProps> = ({
         />
       ))}
       {renderBoundaryLines()}
-      <g className={styles.items}>{items.map((item) => renderItem(item))}</g>
       <g className={styles.ringLabels}>{renderRingLabels()}</g>
+      <g className={styles.items}>{items.map((item) => renderItem(item))}</g>
     </svg>
   );
 };
 
-export const QuadrantChart = memo(_QuadrantChart);
+export const QuadrantChart = memo(QuadrantChartInner);

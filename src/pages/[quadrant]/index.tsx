@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import styles from "./quadrant.module.scss";
 
@@ -36,19 +36,15 @@ const QuadrantPage: CustomPage = () => {
   const router = useRouter();
   const { query } = router;
   const quadrant = getQuadrant(query.quadrant as string);
-  const allQuadrants = useMemo(() => getQuadrants(), []);
-  const rings = useMemo(() => getRings(), []);
+  const allQuadrants = getQuadrants();
+  const rings = getRings();
   const { setHighlight } = useRadarHighlight();
 
-  const items = useMemo(
-    () => quadrant?.id && getItems(quadrant.id).sort(sortByFeaturedAndTitle),
-    [quadrant?.id],
-  );
+  const items = quadrant
+    ? getItems(quadrant.id).sort(sortByFeaturedAndTitle)
+    : [];
 
-  const ringGroups = useMemo(
-    () => (items ? groupItemsByRing(items) : {}),
-    [items],
-  );
+  const ringGroups = groupItemsByRing(items);
 
   const [activeRings, setActiveRings] = useState<Set<string>>(new Set());
   const ringRefs = useRef<Map<string, HTMLElement>>(new Map());

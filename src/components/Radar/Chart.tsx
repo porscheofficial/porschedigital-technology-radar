@@ -3,7 +3,7 @@ import { type FC, Fragment, memo, useMemo } from "react";
 import { Blip } from "@/components/Radar/Blip";
 import { useRadarHighlight } from "@/lib/RadarHighlightContext";
 import type { Item, Quadrant, Ring } from "@/lib/types";
-import { cn } from "@/lib/utils";
+import { assetUrl, cn } from "@/lib/utils";
 import styles from "./Chart.module.scss";
 
 const CHART_PADDING_RATIO = 0.09;
@@ -220,7 +220,10 @@ const ChartInner: FC<ChartProps> = ({
           <defs>
             <path id={pathId} d={d} fill="none" />
           </defs>
-          <a href={`/${quadrant.id}`} className={styles.quadrantLabel}>
+          <a
+            href={assetUrl(`/${quadrant.id}`)}
+            className={styles.quadrantLabel}
+          >
             <text>
               <textPath
                 href={`#${pathId}`}

@@ -6,7 +6,7 @@ import { Footer } from "@/components/Footer/Footer";
 import { SearchBar } from "@/components/SearchBar/SearchBar";
 import { getLabel, getLogoUrl, getReleases, getToggle } from "@/lib/data";
 import { formatReleaseShort } from "@/lib/format";
-import { cn } from "@/lib/utils";
+import { assetUrl, cn } from "@/lib/utils";
 import styles from "./Layout.module.scss";
 
 export type LayoutClass = "default" | "full";
@@ -34,7 +34,7 @@ export const Layout: FC<LayoutProps> = ({
                 <img src={logoUrl} alt="" className={styles.customLogo} />
               </Link>
             ) : (
-              <PCrest href="/" />
+              <PCrest href={assetUrl("/")} />
             )}
             <Link href="/" className={styles.brand}>
               {getLabel("title")}
@@ -49,7 +49,7 @@ export const Layout: FC<LayoutProps> = ({
           <div className={styles.headerEnd}>
             {getToggle("showSearch") && <SearchBar />}
             <PLinkPure
-              href="/help-and-about-tech-radar"
+              href={assetUrl("/help-and-about-tech-radar")}
               icon="information"
               hideLabel={true}
               theme="dark"

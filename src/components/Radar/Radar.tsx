@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { type CSSProperties, type FC, useRef } from "react";
 import { Chart } from "@/components/Radar/Chart";
 import { useRadarTooltip } from "@/hooks/useRadarTooltip";
@@ -52,7 +51,7 @@ export const Radar: FC<RadarProps> = ({
         {tooltip.text}
       </span>
       {Array.from(tooltipMap.values()).map((pt) => (
-        <Link
+        <a
           key={pt.id}
           href={pt.href}
           data-item-id={pt.id}
@@ -66,7 +65,7 @@ export const Radar: FC<RadarProps> = ({
           }
         >
           {pt.text}
-        </Link>
+        </a>
       ))}
     </div>
   );

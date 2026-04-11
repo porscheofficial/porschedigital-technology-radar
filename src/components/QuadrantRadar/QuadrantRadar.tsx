@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { type CSSProperties, type FC, useRef } from "react";
 import { QuadrantChart } from "@/components/QuadrantRadar/QuadrantChart";
 import { useRadarTooltip } from "@/hooks/useRadarTooltip";
@@ -55,7 +54,7 @@ export const QuadrantRadar: FC<QuadrantRadarProps> = ({
         {tooltip.text}
       </span>
       {Array.from(tooltipMap.values()).map((pt) => (
-        <Link
+        <a
           key={pt.id}
           href={pt.href}
           data-item-id={pt.id}
@@ -69,7 +68,7 @@ export const QuadrantRadar: FC<QuadrantRadarProps> = ({
           }
         >
           {pt.text}
-        </Link>
+        </a>
       ))}
     </div>
   );

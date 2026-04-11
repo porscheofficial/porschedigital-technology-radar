@@ -1,12 +1,12 @@
 import Link from "next/link";
-import React, { FC, Fragment, memo, useMemo } from "react";
-
-import styles from "./QuadrantChart.module.scss";
-
+import { type FC, memo, useMemo } from "react";
 import { Blip } from "@/components/Radar/Blip";
 import { useRadarHighlight } from "@/lib/RadarHighlightContext";
-import { Item, Quadrant, Ring } from "@/lib/types";
+import type { Item, Quadrant, Ring } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import styles from "./QuadrantChart.module.scss";
+
+const QUADRANT_PADDING_RATIO = 0.08;
 
 export interface QuadrantChartProps {
   /** Full radar size used during position generation (default 800). */
@@ -50,7 +50,7 @@ const QuadrantChartInner: FC<QuadrantChartProps> = ({
 
   const toRad = (deg: number) => ((deg - 90) * Math.PI) / 180;
 
-  const pad = size * 0.08;
+  const pad = size * QUADRANT_PADDING_RATIO;
 
   const samplePoints: { x: number; y: number }[] = [{ x: center, y: center }];
   for (let a = startAngle; a <= endAngle; a += sweep / 16) {
@@ -311,7 +311,10 @@ const QuadrantChartInner: FC<QuadrantChartProps> = ({
       className={className}
       viewBox={`${vbX} ${vbY} ${vbW} ${vbH}`}
       preserveAspectRatio="xMidYMid meet"
+      role="img"
+      aria-label="Quadrant radar chart"
     >
+      <title>Quadrant radar chart</title>
       {renderGlow()}
       {renderRingHighlights()}
       {rings.map((ring) => (

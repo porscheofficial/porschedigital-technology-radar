@@ -1,16 +1,14 @@
-import fs from "fs";
+import fs from "node:fs";
+import path from "node:path";
 import matter from "gray-matter";
 import hljs from "highlight.js";
 import { Marked } from "marked";
 import { markedHighlight } from "marked-highlight";
-import path from "path";
-
+import { Flag, type Item } from "@/lib/types";
 import nextConfig from "../next.config.js";
 import config from "../src/lib/config";
 import ErrorHandler, { ErrorType, TextColor } from "./errorHandler.js";
 import Positioner from "./positioner";
-
-import { Flag, Item } from "@/lib/types";
 
 const {
   rings,
@@ -27,7 +25,7 @@ const errorHandler = new ErrorHandler(quadrants, rings);
 const marked = new Marked(
   markedHighlight({
     langPrefix: "hljs language-",
-    highlight(code, lang, info) {
+    highlight(code, lang, _info) {
       const language = hljs.getLanguage(lang) ? lang : "plaintext";
       return hljs.highlight(code, { language }).value;
     },
@@ -114,14 +112,15 @@ async function parseDirectory(dirPath: string): Promise<Item[]> {
               : items[id].featured;
         }
 
-        items[id].revisions!.push({
+        items[id].revisions?.push({
           release: releaseDate,
           ring: data.ring,
           body,
-          ...(items[id].revisions!.length > 0 &&
+          ...(items[id].revisions?.length > 0 &&
             (body === "" ||
               body ===
-                items[id].revisions![items[id].revisions!.length - 1].body) && {
+                items[id].revisions?.[items[id].revisions?.length - 1]
+                  .body) && {
               bodyInherited: true,
             }),
           teams: getOrderedTeams(data.teams),
@@ -134,7 +133,7 @@ async function parseDirectory(dirPath: string): Promise<Item[]> {
   return Object.values(items).sort((a, b) => a.title.localeCompare(b.title));
 }
 
-function compareArrays(arr1: any[] = [], arr2: any[] = []) {
+function compareArrays(arr1: unknown[] = [], arr2: unknown[] = []) {
   return (
     arr1.length === arr2.length &&
     arr1.every((element, index) => element === arr2[index])
@@ -196,7 +195,7 @@ function getFlag(item: Item, allReleases: string[]): Flag {
     revisions.length > 0 &&
     revisions[revisions.length - 1].release === latestRelease;
 
-  if (revisions.length == 1 && isInLatestRelease) {
+  if (revisions.length === 1 && isInLatestRelease) {
     return Flag.New;
   } else if (revisions.length > 1 && isInLatestRelease) {
     return Flag.Changed;
@@ -276,7 +275,7 @@ function postProcessItems(items: Item[]): {
           return (
             ring !== item.ring ||
             teamsChanged ||
-            (body != "" && body != item.body && body !== prev?.body)
+            (body !== "" && body !== item.body && body !== prev?.body)
           );
         })
         .reverse(),

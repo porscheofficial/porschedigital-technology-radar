@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-const fs = require("fs");
-const path = require("path");
-const { execSync, spawn } = require("child_process");
-const crypto = require("crypto");
+const fs = require("node:fs");
+const path = require("node:path");
+const { execSync, spawn } = require("node:child_process");
+const crypto = require("node:crypto");
 const chokidar = require("chokidar");
 
 const CWD = process.cwd();
@@ -29,7 +29,7 @@ function error(message) {
 
 function debounce(func, wait) {
   let timeout;
-  return function (...args) {
+  return (...args) => {
     const later = () => {
       clearTimeout(timeout);
       func(...args);
@@ -117,7 +117,7 @@ if (RECREATE_DIR) {
   try {
     fs.cpSync(SOURCE_DIR, BUILDER_DIR, { recursive: true });
     fs.writeFileSync(HASH_FILE, CURRENT_HASH);
-  } catch (e) {
+  } catch (_e) {
     error(`Could not copy ${SOURCE_DIR} to ${BUILDER_DIR}`);
   }
 
@@ -125,7 +125,7 @@ if (RECREATE_DIR) {
     process.chdir(BUILDER_DIR);
     info("Installing npm packages");
     execSync("npm install", { stdio: "inherit" });
-  } catch (e) {
+  } catch (_e) {
     error("Could not install npm packages");
   }
 }

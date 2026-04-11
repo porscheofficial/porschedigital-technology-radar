@@ -5,6 +5,8 @@
   "headerLogoFile": "",
   "footerLogoFile": "",
   "jsFile": "",
+  "backgroundImage": "/Mac-Wallpaper-30.png",
+  "backgroundOpacity": 0.06,
   "toggles": {
     "showSearch": true,
     "showChart": true,
@@ -136,6 +138,7 @@
     "imprint": "Legal Information",
     "footer": "Based on the open-source Technology Radar by AOE GmbH, extensively modified by Porsche Digital.",
     "notUpdated": "This item was not updated in last three versions of the Radar.",
+    "hiddenFromRadar": "This technology is currently hidden from the radar chart.",
     "searchPlaceholder": "What are you looking for?",
     "metaDescription": ""
   }

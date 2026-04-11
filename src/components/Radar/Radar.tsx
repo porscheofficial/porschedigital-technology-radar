@@ -1,30 +1,10 @@
 import Link from "next/link";
-import React, {
-  CSSProperties,
-  FC,
-  MouseEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-
-import styles from "./Radar.module.scss";
-
+import { type CSSProperties, type FC, useRef } from "react";
 import { Chart } from "@/components/Radar/Chart";
-import { useRadarHighlight } from "@/lib/RadarHighlightContext";
-import { Item, Quadrant, Ring } from "@/lib/types";
+import { useRadarTooltip } from "@/hooks/useRadarTooltip";
+import type { Item, Quadrant, Ring } from "@/lib/types";
 import { cn } from "@/lib/utils";
-
-interface PersistentTooltip {
-  id: string;
-  text: string;
-  color: string;
-  href: string;
-  x: number;
-  y: number;
-}
+import styles from "./Radar.module.scss";
 
 export interface RadarProps {
   size?: number;
@@ -40,159 +20,14 @@ export const Radar: FC<RadarProps> = ({
   items = [],
 }) => {
   const radarRef = useRef<HTMLDivElement>(null);
-  const { highlightedIds, filterActive } = useRadarHighlight();
-  const [tooltip, setTooltip] = useState({
-    show: false,
-    text: "",
-    color: "",
-    x: 0,
-    y: 0,
-  });
-  const [tooltipMap, setTooltipMap] = useState<Map<string, PersistentTooltip>>(
-    new Map(),
-  );
-  const [shownIds, setShownIds] = useState<Set<string>>(new Set());
-  const activeIdsRef = useRef(new Set<string>());
-  const cleanupTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const rafRef = useRef<number>(0);
-
-  useEffect(() => {
-    const currentHighlightSet = new Set(highlightedIds);
-    activeIdsRef.current = currentHighlightSet;
-
-    if (cleanupTimerRef.current) {
-      clearTimeout(cleanupTimerRef.current);
-      cleanupTimerRef.current = null;
-    }
-    if (rafRef.current) {
-      cancelAnimationFrame(rafRef.current);
-      rafRef.current = 0;
-    }
-
-    if (currentHighlightSet.size === 0) {
-      rafRef.current = requestAnimationFrame(() => {
-        setShownIds(new Set());
-      });
-      cleanupTimerRef.current = setTimeout(() => {
-        setTooltipMap(new Map());
-      }, 200);
-      return;
-    }
-
-    if (!radarRef.current) return;
-
-    rafRef.current = requestAnimationFrame(() => {
-      if (!radarRef.current) return;
-      const radarRect = radarRef.current.getBoundingClientRect();
-      const next = new Map<string, PersistentTooltip>();
-
-      for (const id of currentHighlightSet) {
-        const link = radarRef.current.querySelector(
-          `a[data-item-id="${id}"]`,
-        ) as HTMLElement | null;
-        if (!link) continue;
-
-        const text = link.getAttribute("data-tooltip") || "";
-        const color = link.getAttribute("data-tooltip-color") || "";
-        const href = link.getAttribute("href") || "";
-        const linkRect = link.getBoundingClientRect();
-
-        next.set(id, {
-          id,
-          text,
-          color,
-          href,
-          x: linkRect.left - radarRect.left + linkRect.width / 2,
-          y: linkRect.top - radarRect.top,
-        });
-      }
-
-      setTooltipMap((prev) => {
-        const merged = new Map(prev);
-        for (const [id, tt] of next) {
-          merged.set(id, tt);
-        }
-        for (const id of merged.keys()) {
-          if (!next.has(id)) {
-            setTimeout(() => {
-              setTooltipMap((current) => {
-                if (activeIdsRef.current.has(id)) return current;
-                const updated = new Map(current);
-                updated.delete(id);
-                return updated;
-              });
-            }, 200);
-          }
-        }
-        return merged;
-      });
-
-      setShownIds((prev) => {
-        const kept = new Set<string>();
-        for (const id of prev) {
-          if (currentHighlightSet.has(id)) kept.add(id);
-        }
-        return kept;
-      });
-
-      requestAnimationFrame(() => {
-        setShownIds(new Set(currentHighlightSet));
-      });
-    });
-  }, [highlightedIds]);
-
-  const tooltipStyle = useMemo(
-    () =>
-      ({
-        left: tooltip.x,
-        top: tooltip.y,
-        ...(tooltip.color ? { "--tooltip": tooltip.color } : undefined),
-      }) as CSSProperties,
-    [tooltip],
-  );
-
-  const mouseMoveRafRef = useRef(0);
-
-  const handleMouseMove = useCallback(
-    (e: MouseEvent<HTMLDivElement>) => {
-      if (filterActive || highlightedIds.length > 0) {
-        if (tooltip.show) setTooltip((prev) => ({ ...prev, show: false }));
-        return;
-      }
-      const target = e.target;
-      const link =
-        target instanceof Element && target.closest("a[data-tooltip]");
-
-      if (!link) {
-        if (tooltip.show) setTooltip((prev) => ({ ...prev, show: false }));
-        return;
-      }
-
-      if (mouseMoveRafRef.current) return;
-      mouseMoveRafRef.current = requestAnimationFrame(() => {
-        mouseMoveRafRef.current = 0;
-        if (!radarRef.current) return;
-        const text = link.getAttribute("data-tooltip") || "";
-        const color = link.getAttribute("data-tooltip-color") || "";
-        const linkRect = link.getBoundingClientRect();
-        const radarRect = radarRef.current.getBoundingClientRect();
-
-        const x = linkRect.left - radarRect.left + linkRect.width / 2;
-        const y = linkRect.top - radarRect.top;
-
-        setTooltip({ text, color, show: !!text, x, y });
-      });
-    },
-    [filterActive, highlightedIds.length, tooltip.show],
-  );
-
-  const handleMouseLeave = useCallback(() => {
-    if (mouseMoveRafRef.current) {
-      cancelAnimationFrame(mouseMoveRafRef.current);
-      mouseMoveRafRef.current = 0;
-    }
-    setTooltip((prev) => ({ ...prev, show: false }));
-  }, []);
+  const {
+    tooltip,
+    tooltipStyle,
+    tooltipMap,
+    shownIds,
+    handleMouseMove,
+    handleMouseLeave,
+  } = useRadarTooltip(radarRef);
 
   return (
     <div
@@ -200,6 +35,8 @@ export const Radar: FC<RadarProps> = ({
       className={styles.radar}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      role="img"
+      aria-label="Technology radar"
     >
       <Chart
         className={styles.chart}

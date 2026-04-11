@@ -1,18 +1,13 @@
+import { PCrest, PLinkPure } from "@porsche-design-system/components-react/ssr";
 import Link from "next/link";
-import { FC, ReactNode } from "react";
-
-import styles from "./Layout.module.scss";
+import type { FC, ReactNode } from "react";
 
 import { Footer } from "@/components/Footer/Footer";
 import { SearchBar } from "@/components/SearchBar/SearchBar";
 import { getLabel, getLogoUrl, getReleases, getToggle } from "@/lib/data";
+import { formatReleaseShort } from "@/lib/format";
 import { cn } from "@/lib/utils";
-import { PCrest, PLinkPure } from "@porsche-design-system/components-react/ssr";
-
-function formatRelease(release: string) {
-  const d = new Date(release + "T00:00:00");
-  return d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
-}
+import styles from "./Layout.module.scss";
 
 export type LayoutClass = "default" | "full";
 
@@ -46,7 +41,7 @@ export const Layout: FC<LayoutProps> = ({
             </Link>
             {latestRelease && (
               <Link href="/history" className={styles.versionLabel}>
-                {formatRelease(latestRelease)}
+                {formatReleaseShort(latestRelease)}
               </Link>
             )}
           </div>

@@ -1,15 +1,3 @@
-import Link from "next/link";
-import { CSSProperties, useState } from "react";
-
-import styles from "./ItemDetail.module.scss";
-
-import { RingBadge } from "@/components/Badge/Badge";
-import { DescriptionEdit, RingChange, RingInitial } from "@/components/Icons";
-import { Tag } from "@/components/Tags/Tags";
-import { Team, Teams } from "@/components/Teams/Teams";
-import { getEditUrl, getLabel, getReleases, getRing } from "@/lib/data";
-import { Item, Revision } from "@/lib/types";
-import { cn } from "@/lib/utils";
 import {
   PButtonPure,
   PHeading,
@@ -17,10 +5,23 @@ import {
   PInlineNotification,
   PLinkPure,
 } from "@porsche-design-system/components-react/ssr";
+import Link from "next/link";
+import { type CSSProperties, useState } from "react";
 
-const latestReleases = getReleases().slice(-3);
+import { RingBadge } from "@/components/Badge/Badge";
+import { DescriptionEdit, RingChange, RingInitial } from "@/components/Icons";
+import { SafeHtml } from "@/components/SafeHtml/SafeHtml";
+import { Tag } from "@/components/Tags/Tags";
+import { Team, Teams } from "@/components/Teams/Teams";
+import { getEditUrl, getLabel, getReleases, getRing } from "@/lib/data";
+import type { Item, Revision } from "@/lib/types";
+import { cn } from "@/lib/utils";
+import styles from "./ItemDetail.module.scss";
+
+const RECENT_RELEASE_COUNT = 3;
 
 function isNotMaintained(release: string) {
+  const latestReleases = getReleases().slice(-RECENT_RELEASE_COUNT);
   return !latestReleases.includes(release);
 }
 
@@ -30,7 +31,7 @@ function stripHtml(html: string): string {
 
 function truncate(text: string, maxLength: number): string {
   if (text.length <= maxLength) return text;
-  return text.slice(0, maxLength).trimEnd() + "…";
+  return `${text.slice(0, maxLength).trimEnd()}…`;
 }
 
 interface ItemProps {
@@ -40,6 +41,7 @@ interface ItemProps {
 
 export function ItemDetail({ item, quadrantTitle }: ItemProps) {
   const notMaintainedText = getLabel("notUpdated");
+  const hiddenFromRadarText = getLabel("hiddenFromRadar");
   const editLink = getEditUrl({ id: item.id, release: item.release });
   const hasHistory = item.revisions !== undefined && item.revisions.length > 0;
 
@@ -72,8 +74,15 @@ export function ItemDetail({ item, quadrantTitle }: ItemProps) {
     <>
       {notMaintainedText && isNotMaintained(item.release) && (
         <PInlineNotification
-          heading="Attention"
           description={notMaintainedText}
+          state="info"
+          dismissButton={false}
+          className={styles.notMaintained}
+        />
+      )}
+      {hiddenFromRadarText && !item.featured && (
+        <PInlineNotification
+          description={hiddenFromRadarText}
           state="info"
           dismissButton={false}
           className={styles.notMaintained}
@@ -108,7 +117,9 @@ export function ItemDetail({ item, quadrantTitle }: ItemProps) {
               {item.title}
             </PHeading>
             <div className={styles.tags}>
-              {item.tags?.map((tag) => <Tag key={tag} tag={tag} />)}
+              {item.tags?.map((tag) => (
+                <Tag key={tag} tag={tag} />
+              ))}
             </div>
             {!!item.teams && item.teams.length > 0 && (
               <div className={styles.teamsContainer}>
@@ -118,11 +129,7 @@ export function ItemDetail({ item, quadrantTitle }: ItemProps) {
           </div>
           {item.body && (
             <div className={cn(styles.bentoCell, styles.cellDescription)}>
-              <div
-                id="current-description"
-                className={styles.description}
-                dangerouslySetInnerHTML={{ __html: item.body }}
-              />
+              <SafeHtml className={styles.description} html={item.body} />
             </div>
           )}
         </div>
@@ -140,18 +147,15 @@ export function ItemDetail({ item, quadrantTitle }: ItemProps) {
       </div>
 
       {hasHistory && (
-        <>
-          <div className={styles.timeline}>
-            {item.revisions!.map((revision, index) => (
-              <HistoryDateGroup
-                key={index}
-                id={item.id}
-                revision={revision}
-                isFirstEntry={index === item.revisions!.length - 1}
-              />
-            ))}
-          </div>
-        </>
+        <div className={styles.timeline}>
+          {item.revisions?.map((revision, index) => (
+            <HistoryDateGroup
+              key={revision.release}
+              revision={revision}
+              isFirstEntry={index === (item.revisions?.length ?? 0) - 1}
+            />
+          ))}
+        </div>
       )}
     </>
   );
@@ -175,10 +179,7 @@ function ExpandableDescription({ body }: { body: string }) {
     return (
       <div className={cn(styles.changeRow, styles.changeRowExpanded)}>
         <DescriptionEdit className={styles.changeIconDesc} />
-        <div
-          className={styles.expandedBody}
-          dangerouslySetInnerHTML={{ __html: body }}
-        />
+        <SafeHtml className={styles.expandedBody} html={body} />
       </div>
     );
   }
@@ -202,16 +203,11 @@ function ExpandableDescription({ body }: { body: string }) {
 }
 
 interface HistoryDateGroupProps {
-  id: string;
   revision: Revision;
   isFirstEntry: boolean;
 }
 
-function HistoryDateGroup({
-  id,
-  revision,
-  isFirstEntry,
-}: HistoryDateGroupProps) {
+function HistoryDateGroup({ revision, isFirstEntry }: HistoryDateGroupProps) {
   const date = new Date(revision.release);
   const formattedDate = date.toLocaleDateString("en-US", {
     month: "short",
@@ -219,7 +215,9 @@ function HistoryDateGroup({
   });
 
   const hasRingChange = !!revision.previousRing;
+  const previousRing = revision.previousRing ?? "";
   const hasBodyChange = !revision.bodyInherited && !!revision.body;
+  const body = revision.body ?? "";
   const hasAddedTeams = (revision.addedTeams?.length ?? 0) > 0;
   const hasRemovedTeams = (revision.removedTeams?.length ?? 0) > 0;
   const isInitialEntry =
@@ -235,7 +233,7 @@ function HistoryDateGroup({
           <div className={styles.changeRow}>
             <RingChange className={styles.changeIconRing} />
             <div className={styles.ringTransition}>
-              <RingBadge ring={revision.previousRing!} />
+              <RingBadge ring={previousRing} />
               <span className={styles.ringArrow}>→</span>
               <RingBadge ring={revision.ring} />
             </div>
@@ -247,12 +245,12 @@ function HistoryDateGroup({
           </div>
         ) : null}
 
-        {hasBodyChange && <ExpandableDescription body={revision.body!} />}
+        {hasBodyChange && <ExpandableDescription body={body} />}
 
         {hasAddedTeams && (
           <div className={cn(styles.changeRow, styles.initialTeams)}>
             <div className={styles.initialTeamsList}>
-              {revision.addedTeams!.map((team) => (
+              {revision.addedTeams?.map((team) => (
                 <Team key={`added-${team}`} team={team} variant="added" />
               ))}
             </div>
@@ -262,7 +260,7 @@ function HistoryDateGroup({
         {hasRemovedTeams && (
           <div className={cn(styles.changeRow, styles.initialTeams)}>
             <div className={styles.initialTeamsList}>
-              {revision.removedTeams!.map((team) => (
+              {revision.removedTeams?.map((team) => (
                 <Team key={`removed-${team}`} team={team} variant="removed" />
               ))}
             </div>

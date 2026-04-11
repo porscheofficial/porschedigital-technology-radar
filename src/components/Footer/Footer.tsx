@@ -1,17 +1,16 @@
-import styles from "./Footer.module.scss";
-
+import type { IconName } from "@porsche-design-system/components-react/ssr";
+import {
+  PLinkPure,
+  PText,
+  PWordmark,
+} from "@porsche-design-system/components-react/ssr";
 import {
   getFooterLogoUrl,
   getImprintUrl,
   getLabel,
   getSocialLinks,
 } from "@/lib/data";
-import {
-  PLinkPure,
-  PText,
-  PWordmark,
-} from "@porsche-design-system/components-react/ssr";
-import type { IconName } from "@porsche-design-system/components-react/ssr";
+import styles from "./Footer.module.scss";
 
 const pdsIconMap: Record<string, IconName> = {
   x: "logo-x",
@@ -41,7 +40,7 @@ export function Footer() {
     <div className={styles.footer}>
       {socialLinks.length > 0 && (
         <div className={styles.social}>
-          {socialLinks.map((link, i) => {
+          {socialLinks.map((link) => {
             const key = link.icon.toLowerCase();
             const pdsIcon = pdsIconMap[key];
             const customSvg = customIconSvg[key];
@@ -50,7 +49,7 @@ export function Footer() {
 
             return (
               <PLinkPure
-                key={i}
+                key={link.href}
                 href={link.href}
                 {...(pdsIcon ? { icon: pdsIcon } : { iconSource: customSvg })}
                 hideLabel={true}

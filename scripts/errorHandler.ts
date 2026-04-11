@@ -1,4 +1,4 @@
-import { Quadrant, Ring } from "@/lib/types";
+import type { Quadrant, Ring } from "@/lib/types";
 
 export enum ErrorType {
   NoQuadrant = "Item {0} has no quadrant or ring",

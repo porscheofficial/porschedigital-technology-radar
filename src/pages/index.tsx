@@ -1,5 +1,4 @@
 import Head from "next/head";
-import React from "react";
 
 import { Radar } from "@/components/Radar/Radar";
 import { RadarFilters } from "@/components/RadarFilters/RadarFilters";
@@ -11,14 +10,14 @@ import {
   getRings,
   getToggle,
 } from "@/lib/data";
-import { CustomPage } from "@/pages/_app";
+import type { CustomPage } from "@/pages/_app";
 
 const Home: CustomPage = () => {
   const metaDescription = getLabel("metaDescription");
   const chartConfig = getChartConfig();
   const rings = getRings();
   const quadrants = getQuadrants();
-  const items = getItems();
+  const items = getItems(undefined, true);
 
   return (
     <>

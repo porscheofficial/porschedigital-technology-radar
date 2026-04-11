@@ -1,4 +1,4 @@
-const path = require("path");
+const path = require("node:path");
 const config = require("./data/config.json");
 const basePath =
   config.basePath && config.basePath !== "/" ? config.basePath : "";

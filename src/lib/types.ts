@@ -51,3 +51,20 @@ export interface Quadrant {
   color: string;
   position: number;
 }
+
+export interface ItemTrajectory {
+  item: Item;
+  rings: (string | null)[];
+}
+
+export interface VersionDiff {
+  release: Release;
+  promoted: { item: Item; from: string; to: string }[];
+  demoted: { item: Item; from: string; to: string }[];
+  newItems: { item: Item; ring: string }[];
+  teamChanges: {
+    item: Item;
+    added: string[];
+    removed: string[];
+  }[];
+}

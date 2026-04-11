@@ -8,7 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export function assetUrl(path: string) {
   if (/^https?:/.test(path)) return path;
-  if (!path.startsWith("/")) path = "/" + path;
+  if (!path.startsWith("/")) path = `/${path}`;
   const base = config.basePath?.replace(/\/+$/, "") || "";
   return `${base}${path}`;
 }

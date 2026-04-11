@@ -1,7 +1,7 @@
 import {
-  FC,
-  ReactNode,
   createContext,
+  type FC,
+  type ReactNode,
   useCallback,
   useContext,
   useMemo,
@@ -9,7 +9,7 @@ import {
 } from "react";
 
 import { getItems } from "@/lib/data";
-import { Item } from "@/lib/types";
+import type { Item } from "@/lib/types";
 
 interface HighlightState {
   directIds: string[];

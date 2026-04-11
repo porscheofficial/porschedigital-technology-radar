@@ -1,11 +1,10 @@
-import Link from "next/link";
-import { CSSProperties, useMemo } from "react";
-
-import styles from "./Label.module.scss";
-
-import { Quadrant } from "@/lib/types";
-import { cn } from "@/lib/utils";
 import { PText } from "@porsche-design-system/components-react/ssr";
+import Link from "next/link";
+import { type CSSProperties, useMemo } from "react";
+
+import type { Quadrant } from "@/lib/types";
+import { cn } from "@/lib/utils";
+import styles from "./Label.module.scss";
 
 interface LabelProps {
   quadrant: Quadrant;

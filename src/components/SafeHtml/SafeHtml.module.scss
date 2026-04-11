@@ -1,0 +1,25 @@
+@use "@porsche-design-system/components-react/styles" as *;
+
+.safeHtml {
+  a {
+    color: var(--highlight);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+
+    &:hover {
+      text-decoration-thickness: 2px;
+    }
+  }
+
+  blockquote {
+    margin: 0 0 1.5rem;
+    padding: 1rem 1.25rem;
+    border-left: 4px solid var(--highlight);
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 0 4px 4px 0;
+
+    p {
+      margin: 0;
+    }
+  }
+}

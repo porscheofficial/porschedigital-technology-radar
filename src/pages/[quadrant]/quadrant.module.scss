@@ -81,6 +81,10 @@
   }
 }
 
+.itemRowHidden {
+  opacity: 0.55;
+}
+
 .itemLink {
   display: block;
   padding: $pds-spacing-static-medium $pds-spacing-static-large;

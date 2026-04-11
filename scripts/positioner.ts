@@ -1,4 +1,4 @@
-import { Quadrant, Ring } from "@/lib/types";
+import type { Quadrant, Ring } from "@/lib/types";
 
 type Position = [x: number, y: number];
 type RingDimension = [innerRadius: number, outerRadius: number];

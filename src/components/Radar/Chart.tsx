@@ -1,12 +1,13 @@
 import Link from "next/link";
-import React, { FC, Fragment, memo, useMemo } from "react";
-
-import styles from "./Chart.module.scss";
-
+import { type FC, Fragment, memo, useMemo } from "react";
 import { Blip } from "@/components/Radar/Blip";
 import { useRadarHighlight } from "@/lib/RadarHighlightContext";
-import { Item, Quadrant, Ring } from "@/lib/types";
+import type { Item, Quadrant, Ring } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import styles from "./Chart.module.scss";
+
+const CHART_PADDING_RATIO = 0.09;
+const LABEL_PADDING_RATIO = 0.55;
 
 export interface ChartProps {
   size?: number;
@@ -27,7 +28,7 @@ const ChartInner: FC<ChartProps> = ({
   const highlightSet = useMemo(() => new Set(highlightedIds), [highlightedIds]);
   const hasHighlights = filterActive || highlightSet.size > 0;
   const center = size / 2;
-  const padding = size * 0.09;
+  const padding = size * CHART_PADDING_RATIO;
   const viewBoxSize = size + padding * 2;
   const viewBoxCenter = viewBoxSize / 2;
 
@@ -64,8 +65,17 @@ const ChartInner: FC<ChartProps> = ({
 
     // prettier-ignore
     return [
-      "M", start.x, start.y,
-      "A", radius, radius, 0, largeArcFlag, 0, end.x, end.y,
+      "M",
+      start.x,
+      start.y,
+      "A",
+      radius,
+      radius,
+      0,
+      largeArcFlag,
+      0,
+      end.x,
+      end.y,
     ].join(" ");
   };
 
@@ -179,7 +189,7 @@ const ChartInner: FC<ChartProps> = ({
   };
 
   const renderQuadrantLabels = () => {
-    const labelRadius = center + padding * 0.55;
+    const labelRadius = center + padding * LABEL_PADDING_RATIO;
 
     return quadrants.map((quadrant) => {
       const pos = quadrant.position;
@@ -236,7 +246,10 @@ const ChartInner: FC<ChartProps> = ({
       width={viewBoxSize}
       height={viewBoxSize}
       viewBox={`0 0 ${viewBoxSize} ${viewBoxSize}`}
+      role="img"
+      aria-label="Technology radar chart"
     >
+      <title>Technology radar chart</title>
       {quadrants.map((quadrant) => (
         <g key={quadrant.id} data-quadrant={quadrant.id}>
           {renderGlow(quadrant.position, quadrant.color)}

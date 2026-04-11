@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { ItemDetail } from "@/components/ItemDetail/ItemDetail";
 import { getItem, getItems, getQuadrant } from "@/lib/data";
 import { formatTitle } from "@/lib/format";
-import { CustomPage } from "@/pages/_app";
+import type { CustomPage } from "@/pages/_app";
 
 const ItemPage: CustomPage = () => {
   const { query } = useRouter();

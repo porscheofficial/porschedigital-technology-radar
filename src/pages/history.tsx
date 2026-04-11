@@ -1,21 +1,3 @@
-import Head from "next/head";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { useState } from "react";
-
-import styles from "./history.module.scss";
-
-import { RingBadge } from "@/components/Badge/Badge";
-import { Team } from "@/components/Teams/Teams";
-import {
-  getItemTrajectories,
-  getQuadrant,
-  getReleases,
-  getRing,
-  getVersionDiffs,
-} from "@/lib/data";
-import { formatTitle } from "@/lib/format";
-import { CustomPage } from "@/pages/_app";
 import {
   PHeading,
   PIcon,
@@ -28,18 +10,25 @@ import {
   PTableRow,
   PText,
 } from "@porsche-design-system/components-react/ssr";
+import Head from "next/head";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useState } from "react";
+
+import { RingBadge } from "@/components/Badge/Badge";
+import { Team } from "@/components/Teams/Teams";
+import {
+  getItemTrajectories,
+  getQuadrant,
+  getReleases,
+  getRing,
+  getVersionDiffs,
+} from "@/lib/data";
+import { formatRelease, formatReleaseCompact, formatTitle } from "@/lib/format";
+import type { CustomPage } from "@/pages/_app";
+import styles from "./history.module.scss";
 
 const MAX_VISIBLE_VERSIONS = 6;
-
-function formatRelease(release: string) {
-  const d = new Date(release + "T00:00:00");
-  return d.toLocaleDateString("en-US", { month: "short", year: "2-digit" });
-}
-
-function formatReleaseFull(release: string) {
-  const d = new Date(release + "T00:00:00");
-  return d.toLocaleDateString("en-US", { month: "long", year: "numeric" });
-}
 
 const History: CustomPage = () => {
   const allReleases = getReleases();
@@ -86,7 +75,7 @@ const History: CustomPage = () => {
             href={`#release-${diff.release}`}
             className={styles.tocReleaseLink}
           >
-            {formatRelease(diff.release)}
+            {formatReleaseCompact(diff.release)}
           </a>
         ))}
       </nav>
@@ -116,7 +105,7 @@ const History: CustomPage = () => {
                     onClick={() => setFocusIndex(i)}
                   >
                     <span className={styles.releaseLabel}>
-                      {formatRelease(r)}
+                      {formatReleaseCompact(r)}
                     </span>
                   </PTableHeadCell>
                 ))}
@@ -125,9 +114,9 @@ const History: CustomPage = () => {
             <PTableBody>
               {trajectories.map(({ item, rings }) => {
                 const ringByRelease = new Map<string, string | null>();
-                allReleases.forEach((r, idx) =>
-                  ringByRelease.set(r, rings[idx]),
-                );
+                allReleases.forEach((r, idx) => {
+                  ringByRelease.set(r, rings[idx]);
+                });
 
                 const displayRings = displayReleases.map(
                   (r) => ringByRelease.get(r) ?? null,
@@ -175,7 +164,7 @@ const History: CustomPage = () => {
                       const isFuture = i < focusIndex;
                       return (
                         <PTableCell
-                          key={i}
+                          key={currentRelease}
                           className={`${styles.matrixCell} ${isFuture ? styles.futureCell : ""}`}
                         >
                           {ring ? (
@@ -228,6 +217,7 @@ const History: CustomPage = () => {
 
           {needsTruncation && (
             <button
+              type="button"
               className={styles.showAllButton}
               onClick={() => setShowAll(!showAll)}
             >
@@ -256,7 +246,7 @@ const History: CustomPage = () => {
             >
               <div className={styles.releaseHeader}>
                 <span className={styles.releaseDate}>
-                  {formatReleaseFull(diff.release)}
+                  {formatRelease(diff.release)}
                 </span>
                 {idx === 0 && (
                   <span className={styles.latestBadge}>Latest</span>

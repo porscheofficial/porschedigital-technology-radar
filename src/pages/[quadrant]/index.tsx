@@ -1,12 +1,16 @@
+import {
+  PHeading,
+  PTag,
+  PText,
+} from "@porsche-design-system/components-react/ssr";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import styles from "./quadrant.module.scss";
-
 import { QuadrantRadar } from "@/components/QuadrantRadar/QuadrantRadar";
-import { useRadarHighlight } from "@/lib/RadarHighlightContext";
+import { SafeHtml } from "@/components/SafeHtml/SafeHtml";
+import { blipSvgMap } from "@/lib/blipIcons";
 import {
   getItems,
   getQuadrant,
@@ -17,24 +21,14 @@ import {
   sortByFeaturedAndTitle,
 } from "@/lib/data";
 import { formatTitle } from "@/lib/format";
+import { useRadarHighlight } from "@/lib/RadarHighlightContext";
 import { Flag } from "@/lib/types";
-import { CustomPage } from "@/pages/_app";
-import {
-  PHeading,
-  PTag,
-  PText,
-} from "@porsche-design-system/components-react/ssr";
-
-const blipSvgMap: Record<string, string> = {
-  [Flag.New]:
-    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-5 -4 24 22'%3E%3Cpath d='m.247 10.212 5.02-8.697a2 2 0 0 1 3.465 0l5.021 8.697a2 2 0 0 1-1.732 3H1.98a2 2 0 0 1-1.732-3z' fill='currentColor'/%3E%3C/svg%3E",
-  [Flag.Changed]:
-    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 24 24'%3E%3Crect width='12' height='12' x='2' y='2' rx='3' transform='rotate(-45 8 8)' fill='currentColor'/%3E%3C/svg%3E",
-};
+import { cn } from "@/lib/utils";
+import type { CustomPage } from "@/pages/_app";
+import styles from "./quadrant.module.scss";
 
 const QuadrantPage: CustomPage = () => {
-  const router = useRouter();
-  const { query } = router;
+  const { query } = useRouter();
   const quadrant = getQuadrant(query.quadrant as string);
   const allQuadrants = getQuadrants();
   const rings = getRings();
@@ -43,6 +37,7 @@ const QuadrantPage: CustomPage = () => {
   const items = quadrant
     ? getItems(quadrant.id).sort(sortByFeaturedAndTitle)
     : [];
+  const featuredItems = items.filter((item) => item.featured);
 
   const ringGroups = groupItemsByRing(items);
 
@@ -96,7 +91,7 @@ const QuadrantPage: CustomPage = () => {
     return () => {
       observer.disconnect();
     };
-  }, [ringGroups]);
+  }, []);
 
   const handleItemEnter = useCallback(
     (itemId: string) => {
@@ -133,7 +128,7 @@ const QuadrantPage: CustomPage = () => {
               quadrant={quadrant}
               allQuadrants={allQuadrants}
               rings={rings}
-              items={items}
+              items={featuredItems}
               activeRings={activeRings}
             />
           </div>
@@ -177,31 +172,24 @@ const QuadrantPage: CustomPage = () => {
                   {ringItems.map((item) => {
                     const href = `/${item.quadrant}/${item.id}`;
                     return (
-                      <li key={item.id} className={styles.itemRow}>
-                        <div
-                          role="link"
-                          tabIndex={0}
+                      <li
+                        key={item.id}
+                        className={cn(
+                          styles.itemRow,
+                          !item.featured && styles.itemRowHidden,
+                        )}
+                      >
+                        <Link
+                          href={href}
                           className={styles.itemLink}
                           onMouseEnter={() => handleItemEnter(item.id)}
                           onMouseLeave={handleItemLeave}
-                          onClick={() => router.push(href)}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter" || e.key === " ") {
-                              e.preventDefault();
-                              router.push(href);
-                            }
-                          }}
                         >
                           <div className={styles.itemContent}>
                             <div className={styles.itemTitleRow}>
-                              <Link
-                                href={href}
-                                className={styles.itemTitleLink}
-                                tabIndex={-1}
-                                onClick={(e) => e.stopPropagation()}
-                              >
+                              <span className={styles.itemTitleLink}>
                                 {item.title}
-                              </Link>
+                              </span>
                               {item.flag !== Flag.Default && (
                                 <PTag
                                   iconSource={blipSvgMap[item.flag]}
@@ -210,11 +198,16 @@ const QuadrantPage: CustomPage = () => {
                                   {item.flag}
                                 </PTag>
                               )}
+                              {!item.featured && (
+                                <PTag icon="disable" color="background-frosted">
+                                  Hidden
+                                </PTag>
+                              )}
                             </div>
                             {item.body && (
-                              <div
+                              <SafeHtml
+                                html={item.body}
                                 className={styles.itemDescription}
-                                dangerouslySetInnerHTML={{ __html: item.body }}
                               />
                             )}
                             {item.body && (
@@ -223,7 +216,7 @@ const QuadrantPage: CustomPage = () => {
                               </span>
                             )}
                           </div>
-                        </div>
+                        </Link>
                       </li>
                     );
                   })}

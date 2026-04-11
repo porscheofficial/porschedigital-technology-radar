@@ -1,9 +1,8 @@
 import Head from "next/head";
-
-import about from "../../data/about.json";
-
+import { SafeHtml } from "@/components/SafeHtml/SafeHtml";
 import { formatTitle } from "@/lib/format";
-import { CustomPage } from "@/pages/_app";
+import type { CustomPage } from "@/pages/_app";
+import about from "../../data/about.json";
 
 const HelpAndAbout: CustomPage = () => {
   return (
@@ -12,7 +11,7 @@ const HelpAndAbout: CustomPage = () => {
         <title>{formatTitle("Help and About")}</title>
       </Head>
 
-      <div dangerouslySetInnerHTML={{ __html: about.body }} />
+      <SafeHtml html={about.body} />
     </>
   );
 };

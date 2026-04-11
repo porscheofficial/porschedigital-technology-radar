@@ -1,22 +1,20 @@
+import { PIcon } from "@porsche-design-system/components-react/ssr";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import {
-  ChangeEvent,
-  KeyboardEvent,
+  type ChangeEvent,
+  type KeyboardEvent,
+  type ReactNode,
   useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from "react";
-import { ReactNode } from "react";
-
-import styles from "./SearchBar.module.scss";
-
-import { useRadarHighlight } from "@/lib/RadarHighlightContext";
 import { getItems, getLabel, getQuadrant, getRing } from "@/lib/data";
-import { Item } from "@/lib/types";
-import { PIcon } from "@porsche-design-system/components-react/ssr";
+import { useRadarHighlight } from "@/lib/RadarHighlightContext";
+import type { Item } from "@/lib/types";
+import styles from "./SearchBar.module.scss";
 
 const MAX_VISIBLE = 5;
 
@@ -39,18 +37,20 @@ function highlightMatch(text: string, query: string): ReactNode {
   }
 
   if (matchesAbbreviation(text, q)) {
-    const words = text.split(/(?<=[\s\-\/&.]+)/);
+    const words = text.split(/(?<=[\s\-/&.]+)/);
     let qi = 0;
     return words.map((word, i) => {
       if (qi < q.length && word[0]?.toLowerCase() === q[qi]) {
         qi++;
         return (
+          // biome-ignore lint/suspicious/noArrayIndexKey: ephemeral highlight fragments regenerated on each keystroke
           <span key={i}>
             <span className={styles.matchHighlight}>{word[0]}</span>
             {word.slice(1)}
           </span>
         );
       }
+      // biome-ignore lint/suspicious/noArrayIndexKey: ephemeral highlight fragments regenerated on each keystroke
       return <span key={i}>{word}</span>;
     });
   }
@@ -60,7 +60,7 @@ function highlightMatch(text: string, query: string): ReactNode {
 
 function matchesAbbreviation(title: string, query: string): boolean {
   const initials = title
-    .split(/[\s\-\/&.]+/)
+    .split(/[\s\-/&.]+/)
     .filter(Boolean)
     .map((word) => word[0].toLowerCase())
     .join("");
@@ -75,7 +75,7 @@ export function SearchBar() {
   const [activeIndex, setActiveIndex] = useState(-1);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const listRef = useRef<HTMLUListElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
 
   const items = useMemo(() => getItems(), []);
 
@@ -222,20 +222,21 @@ export function SearchBar() {
       </div>
 
       {isOpen && allResults.length > 0 && (
-        <ul
+        <div
           id="search-results"
           ref={listRef}
-          className={styles.dropdown}
           role="listbox"
+          className={styles.dropdown}
         >
           {results.map((item, index) => {
             const quadrant = getQuadrant(item.quadrant);
             const ring = getRing(item.ring);
             return (
-              <li
+              <div
                 key={item.id}
                 id={`search-result-${index}`}
                 role="option"
+                tabIndex={-1}
                 aria-selected={index === activeIndex}
                 className={
                   index === activeIndex
@@ -257,18 +258,18 @@ export function SearchBar() {
                   </span>
                   <span className={styles.resultMeta}>
                     {quadrant?.title}
-                    {ring ? ` \u00b7 ${ring.title}` : ""}
+                    {ring ? ` · ${ring.title}` : ""}
                   </span>
                 </Link>
-              </li>
+              </div>
             );
           })}
           {overflowCount > 0 && (
-            <li className={styles.overflow} aria-hidden="true">
+            <div className={styles.overflow} aria-hidden="true">
               +{overflowCount} more result{overflowCount !== 1 ? "s" : ""}
-            </li>
+            </div>
           )}
-        </ul>
+        </div>
       )}
     </div>
   );

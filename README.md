@@ -84,15 +84,17 @@ All configuration lives in `data/config.json`. Any key you omit falls back to th
 
 ### Root
 
-| Key              | Description                                                                                        | Default |
-| ---------------- | -------------------------------------------------------------------------------------------------- | ------- |
-| `basePath`       | URL path prefix. Set to `/` for root hosting, or `/techradar` for a sub-path.                      | `/`     |
-| `baseUrl`        | Full URL where the radar is hosted. Used for `sitemap.xml`.                                        | `""`    |
-| `editUrl`        | If set, shows an edit button on item pages. Supports `{id}` and `{release}` placeholders.          | `""`    |
-| `headerLogoFile` | Path to a logo image in `public/` for the header. Leave empty to use the default Porsche crest.    | `""`    |
-| `footerLogoFile` | Path to a logo image in `public/` for the footer. Leave empty to use the default Porsche wordmark. | `""`    |
-| `jsFile`         | Path in `public/` or URL to a custom JavaScript file to include on every page.                     | `""`    |
-| `imprint`        | URL to your legal information / imprint page.                                                      | `""`    |
+| Key                 | Description                                                                                        | Default |
+| ------------------- | -------------------------------------------------------------------------------------------------- | ------- |
+| `basePath`          | URL path prefix. Set to `/` for root hosting, or `/techradar` for a sub-path.                      | `/`     |
+| `baseUrl`           | Full URL where the radar is hosted. Used for `sitemap.xml`.                                        | `""`    |
+| `editUrl`           | If set, shows an edit button on item pages. Supports `{id}` and `{release}` placeholders.          | `""`    |
+| `headerLogoFile`    | Path to a logo image in `public/` for the header. Leave empty to use the default Porsche crest.    | `""`    |
+| `footerLogoFile`    | Path to a logo image in `public/` for the footer. Leave empty to use the default Porsche wordmark. | `""`    |
+| `jsFile`            | Path in `public/` or URL to a custom JavaScript file to include on every page.                     | `""`    |
+| `backgroundImage`   | Path to an image in `public/` shown as a subtle background overlay. Leave empty to disable.        | `""`    |
+| `backgroundOpacity` | Opacity of the background image overlay (0 = invisible, 1 = fully visible).                        | `0.06`  |
+| `imprint`           | URL to your legal information / imprint page.                                                      | `""`    |
 
 ### `toggles`
 
@@ -174,6 +176,7 @@ An array of social link objects shown in the footer.
 | `imprint`           | Label for the imprint link in the footer                  | `"Legal Information"`                                                                               |
 | `footer`            | Text shown in the footer                                  | `"Based on the open-source Technology Radar by AOE GmbH, extensively modified by Porsche Digital."` |
 | `notUpdated`        | Warning shown on items not updated in the last 3 releases | `"This item was not updated in last three versions of the Radar."`                                  |
+| `hiddenFromRadar`   | Info shown on items hidden from the radar chart           | `"This technology is currently hidden from the radar chart."`                                       |
 | `searchPlaceholder` | Placeholder text in the search input                      | `"What are you looking for?"`                                                                       |
 | `metaDescription`   | HTML meta description for SEO                             | `""`                                                                                                |
 
@@ -258,18 +261,13 @@ h2,
 h3 {
   font-family: "Times New Roman", Times, serif;
 }
-
-/* Example: add a background image */
-body {
-  background: url("../../public/background.png");
-}
 ```
 
 Changes to `custom.css` require a rebuild — they are not reflected in the dev server's hot reload.
 
 ## License
 
-This project is open source under the [MIT License](./LICENSE).
+This project is open source under the [Apache License 2.0](./LICENSE).
 
 Originally based on the [AOE Technology Radar](https://github.com/AOEpeople/aoe_technology_radar).
 Maintained and developed by [Porsche Digital](https://www.porsche.digital/).

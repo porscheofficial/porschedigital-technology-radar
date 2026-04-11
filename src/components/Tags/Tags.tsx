@@ -1,7 +1,7 @@
-import styles from "./Tags.module.scss";
+import { PTag } from "@porsche-design-system/components-react/ssr";
 
 import { cn } from "@/lib/utils";
-import { PTag } from "@porsche-design-system/components-react/ssr";
+import styles from "./Tags.module.scss";
 
 type TagProps = {
   tag: string;

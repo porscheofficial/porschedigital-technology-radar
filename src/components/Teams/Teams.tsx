@@ -1,7 +1,7 @@
-import styles from "./Teams.module.scss";
+import { PTag } from "@porsche-design-system/components-react/ssr";
 
 import { cn } from "@/lib/utils";
-import { PTag } from "@porsche-design-system/components-react/ssr";
+import styles from "./Teams.module.scss";
 
 type TeamProps = {
   team: string;

@@ -1,15 +1,13 @@
 import {
-  CSSProperties,
-  ComponentPropsWithoutRef,
-  ReactNode,
+  type ComponentPropsWithoutRef,
+  type CSSProperties,
+  type ReactNode,
   useMemo,
 } from "react";
-
-import styles from "./Badge.module.scss";
-
 import { getRing } from "@/lib/data";
 import { formatRelease } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import styles from "./Badge.module.scss";
 
 interface BadgeProps extends ComponentPropsWithoutRef<"span"> {
   children?: ReactNode;

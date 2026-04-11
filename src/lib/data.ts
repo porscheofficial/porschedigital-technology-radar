@@ -1,9 +1,15 @@
+import { format } from "@/lib/format";
+import type {
+  Item,
+  ItemTrajectory,
+  Quadrant,
+  Revision,
+  Ring,
+  VersionDiff,
+} from "@/lib/types";
+import { assetUrl } from "@/lib/utils";
 import rawData from "../../data/data.json";
 import config from "./config";
-
-import { format } from "@/lib/format";
-import { Flag, Item, Quadrant, Release, Revision, Ring } from "@/lib/types";
-import { assetUrl } from "@/lib/utils";
 
 const data = rawData as {
   releases: string[];
@@ -36,6 +42,15 @@ export function getFooterLogoUrl() {
 export function getJsUrl(): string {
   if (!config.jsFile) return "";
   return assetUrl(config.jsFile);
+}
+
+export function getBackgroundImage(): string {
+  if (!config.backgroundImage) return "";
+  return assetUrl(config.backgroundImage);
+}
+
+export function getBackgroundOpacity(): number {
+  return config.backgroundOpacity ?? 0;
 }
 
 export function getChartConfig() {
@@ -74,7 +89,9 @@ export function getTeams(): string[] {
   const teamsSet = new Set<string>();
   data.items.forEach((item) => {
     if (item.teams) {
-      item.teams.forEach((team) => teamsSet.add(team));
+      item.teams.forEach((team) => {
+        teamsSet.add(team);
+      });
     }
   });
   return Array.from(teamsSet).sort();
@@ -150,23 +167,6 @@ export const groupItemsByQuadrant = (items: Item[]) => {
     {} as { [quadrantId: string]: Item[] },
   );
 };
-
-export interface ItemTrajectory {
-  item: Item;
-  rings: (string | null)[];
-}
-
-export interface VersionDiff {
-  release: Release;
-  promoted: { item: Item; from: string; to: string }[];
-  demoted: { item: Item; from: string; to: string }[];
-  newItems: { item: Item; ring: string }[];
-  teamChanges: {
-    item: Item;
-    added: string[];
-    removed: string[];
-  }[];
-}
 
 export function getItemTrajectories(): ItemTrajectory[] {
   const releases = getReleases();

@@ -1,7 +1,3 @@
-import { Head, Html, Main, NextScript } from "next/document";
-import { CSSProperties, useMemo } from "react";
-
-import { getColors } from "@/lib/data";
 import {
   getComponentChunkLinks,
   getDSRPonyfill,
@@ -11,21 +7,34 @@ import {
   getInitialStyles,
   getMetaTagsAndIconLinks,
 } from "@porsche-design-system/components-react/partials";
+import { Head, Html, Main, NextScript } from "next/document";
+import type { CSSProperties } from "react";
+import {
+  getBackgroundImage,
+  getBackgroundOpacity,
+  getColors,
+  getLabel,
+} from "@/lib/data";
+
+function buildColorVariables(): CSSProperties {
+  const vars: Record<string, string> = {};
+  for (const [key, value] of Object.entries(getColors())) {
+    vars[`--${key}`] = value;
+  }
+  const bgImage = getBackgroundImage();
+  if (bgImage) {
+    vars["--background-image"] = `url("${bgImage}")`;
+    vars["--background-opacity"] = String(getBackgroundOpacity());
+  } else {
+    vars["--background-image"] = "none";
+    vars["--background-opacity"] = "0";
+  }
+  return vars as CSSProperties;
+}
 
 export default function Document() {
-  const style = useMemo(() => {
-    const cssVariables: Record<string, any> = {};
-    const colors = getColors();
-
-    Object.entries(colors).forEach(([key, value]) => {
-      cssVariables[`--${key}`] = value;
-    });
-
-    return cssVariables as CSSProperties;
-  }, []);
-
   return (
-    <Html lang="en" style={style}>
+    <Html lang="en" data-scroll-behavior="smooth" style={buildColorVariables()}>
       <Head>
         {getInitialStyles({ format: "jsx" })}
         {getFontFaceStyles({ format: "jsx" })}
@@ -33,7 +42,7 @@ export default function Document() {
         {getComponentChunkLinks({ format: "jsx" })}
         {getIconLinks({ format: "jsx" })}
         {getMetaTagsAndIconLinks({
-          appTitle: "Technology Radar",
+          appTitle: getLabel("title"),
           format: "jsx",
         })}
       </Head>

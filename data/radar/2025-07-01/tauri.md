@@ -2,8 +2,11 @@
 title: "Tauri"
 ring: hold
 quadrant: tools
-tags: [desktop, frontend]
-teams: [macan]
+tags:
+  - desktop
+  - frontend
+teams:
+  - macan
 featured: false
 ---
 

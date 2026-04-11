@@ -1,0 +1,15 @@
+{
+  // markdownlint-cli2 configuration for Technology Radar items
+  // Docs: https://github.com/DavidAnson/markdownlint-cli2
+  "config": {
+    // Disable line length — radar items vary widely
+    "MD013": false,
+    // Allow duplicate headings across files
+    "MD024": false,
+    // Allow inline HTML (common in radar descriptions)
+    "MD033": false,
+    // First line needn't be a heading (frontmatter comes first)
+    "MD041": false
+  },
+  "globs": ["radar/**/*.md"]
+}

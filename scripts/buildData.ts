@@ -9,11 +9,11 @@ import remarkGfm from "remark-gfm";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import { unified } from "unified";
-import { z } from "zod";
 import { Flag, type Item } from "@/lib/types";
 import nextConfig from "../next.config.js";
 import config from "../src/lib/config";
 import Positioner from "./positioner";
+import { parseRadarFrontmatter } from "./validateFrontmatter";
 
 // ---------------------------------------------------------------------------
 // Config-derived constants
@@ -24,30 +24,13 @@ const {
   chart: { size },
 } = config;
 
-const ringIds = rings.map((r) => r.id) as [string, ...string[]];
 const quadrants = config.quadrants.map((q, i) => ({ ...q, position: i + 1 }));
-const quadrantIds = quadrants.map((q) => q.id) as [string, ...string[]];
 const configTags = (config as { tags?: string[] }).tags ?? [];
 
 const positioner = new Positioner(size, quadrants, rings);
 const isStrict = process.argv.slice(2).includes("--strict");
 
 consola.info(`Build mode: ${isStrict ? "strict" : "lenient"}`);
-
-// ---------------------------------------------------------------------------
-// Zod frontmatter schema — validates at parse boundary
-// ---------------------------------------------------------------------------
-
-const FrontmatterSchema = z.object({
-  title: z.string().optional(),
-  ring: z.enum(ringIds),
-  quadrant: z.enum(quadrantIds),
-  featured: z.boolean().default(true),
-  tags: z.array(z.string()).default([]),
-  teams: z.array(z.string()).default([]),
-});
-
-type Frontmatter = z.infer<typeof FrontmatterSchema>;
 
 // ---------------------------------------------------------------------------
 // Unified markdown → HTML processor
@@ -151,20 +134,6 @@ async function readMarkdownFile(filePath: string) {
   const { data, content } = matter(fileContent);
   const body = await convertToHtml(content);
   return { id, data, body };
-}
-
-function parseRadarFrontmatter(
-  data: Record<string, unknown>,
-  filePath: string,
-): Frontmatter | null {
-  const result = FrontmatterSchema.safeParse(data);
-  if (!result.success) {
-    for (const issue of result.error.issues) {
-      consola.error(`${filePath}: ${issue.path.join(".")} — ${issue.message}`);
-    }
-    return null;
-  }
-  return result.data;
 }
 
 async function parseDirectory(dirPath: string): Promise<{

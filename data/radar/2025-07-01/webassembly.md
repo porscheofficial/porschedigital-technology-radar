@@ -2,8 +2,12 @@
 title: "WebAssembly"
 ring: trial
 quadrant: methods-and-patterns
-tags: [performance, frontend]
-teams: [cayenne, "911"]
+tags:
+  - performance
+  - frontend
+teams:
+  - cayenne
+  - "911"
 featured: false
 ---
 

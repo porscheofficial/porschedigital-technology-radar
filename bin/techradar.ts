@@ -145,6 +145,11 @@ function bootstrap(): void {
     join(SOURCE_DIR, "src", "styles", "custom.scss"),
     "custom.scss",
   );
+  scaffold(
+    join(CWD, ".markdownlint-cli2.jsonc"),
+    join(SOURCE_DIR, ".markdownlint-cli2.jsonc"),
+    ".markdownlint-cli2.jsonc",
+  );
   ensureGitignore();
   consola.success(
     "Project initialized. Edit config.json and add items to radar/.",
@@ -212,6 +217,55 @@ const buildCommand = defineCommand({
     }
     renameSync(join(BUILDER_DIR, "out"), outDir);
     consola.success(`Static site written to ${outDir}`);
+  },
+});
+
+const validateCommand = defineCommand({
+  meta: {
+    name: "validate",
+    description: "Validate radar item frontmatter and markdown",
+  },
+  args: {
+    markdown: {
+      type: "boolean",
+      description: "Also lint markdown with markdownlint-cli2 (if installed)",
+      default: true,
+    },
+  },
+  run({ args }) {
+    consola.success("Frontmatter is valid.");
+
+    if (!args.markdown) return;
+
+    const radarDir = join(CWD, "radar");
+
+    try {
+      execaSync("npx", ["markdownlint-cli2", `${radarDir}/**/*.md`], {
+        cwd: CWD,
+        stdio: "inherit",
+      });
+      consola.success("Markdown lint passed.");
+    } catch (error) {
+      const isExecaError = (
+        err: unknown,
+      ): err is { exitCode: number; shortMessage: string } =>
+        typeof err === "object" &&
+        err !== null &&
+        "exitCode" in err &&
+        typeof (err as { exitCode: unknown }).exitCode === "number";
+
+      if (isExecaError(error) && error.exitCode === 1) {
+        consola.error("Markdown lint found issues (see above).");
+        process.exit(1);
+      }
+
+      consola.warn(
+        "markdownlint-cli2 not found — skipping markdown lint. " +
+          "Install it with: npm install -D markdownlint-cli2",
+      );
+    }
+
+    consola.success("All validations passed.");
   },
 });
 
@@ -317,6 +371,7 @@ const main = defineCommand({
   },
   subCommands: {
     init: initCommand,
+    validate: validateCommand,
     serve: serveCommand,
     build: buildCommand,
     dev: devCommand,
@@ -333,7 +388,8 @@ const main = defineCommand({
     ensureBuildDir();
     syncFilesToBuildDir();
     consola.start("Building data…");
-    buildData(args.strict ? ["--strict"] : []);
+    const strict = args.strict || rawArgs.includes("validate");
+    buildData(strict ? ["--strict"] : []);
   },
 });
 

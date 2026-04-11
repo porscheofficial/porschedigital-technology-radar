@@ -2,8 +2,11 @@
 title: "Deno"
 ring: assess
 quadrant: languages-and-frameworks
-tags: [runtime, backend]
-teams: [taycan]
+tags:
+  - runtime
+  - backend
+teams:
+  - taycan
 featured: false
 ---
 

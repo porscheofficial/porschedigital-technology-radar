@@ -19,7 +19,10 @@ A **100% statically exported** Next.js site that visualizes the Porsche Digital 
 data/radar/**/*.md          (frontmatter + markdown per item)
         |
         v
-scripts/buildData.ts        (@11ty/gray-matter + unified/rehype + Zod + consola)
+scripts/validateFrontmatter.ts (Zod schema + frontmatter validation — shared)
+        |
+        v
+scripts/buildData.ts        (@11ty/gray-matter + unified/rehype + consola)
         |
         v
 data/data.json              (generated, gitignored)
@@ -66,7 +69,7 @@ data/
   about.md / about.json  About page content
   data.json          Generated (gitignored) — run `npm run build:data`
 
-scripts/             Build-time scripts (buildData.ts, positioner.ts, errorHandler.ts)
+scripts/             Build-time scripts (buildData.ts, validateFrontmatter.ts, positioner.ts, errorHandler.ts)
 bin/                 CLI entry point (techradar.ts — citty + consola + execa + chokidar)
 ```
 
@@ -99,6 +102,7 @@ npm run dev            # Dev server (portless)
 npm run build          # Full static build → out/
 npm run build:data     # Rebuild data/data.json from markdown
 npm run build:icons    # Rebuild Icons/ from src/icons/ SVGs
+npm run validate       # Validate frontmatter (Zod schema)
 npm run lint           # Biome check (lint + format)
 npm run lint:fix       # Biome check --write (auto-fix)
 npm run format         # Biome format --write

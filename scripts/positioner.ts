@@ -3,6 +3,8 @@ import type { Quadrant, Ring } from "@/lib/types";
 type Position = [x: number, y: number];
 type RingDimension = [innerRadius: number, outerRadius: number];
 
+const MAX_PLACEMENT_ATTEMPTS = 150;
+
 export default class Positioner {
   private readonly centerRadius: number;
   private readonly sweep: number;
@@ -81,10 +83,10 @@ export default class Positioner {
       tries++;
     } while (
       this.isOverlapping(position, this.positions[quadrantId]) &&
-      tries < 150
+      tries < MAX_PLACEMENT_ATTEMPTS
     );
 
-    if (tries >= 150) {
+    if (tries >= MAX_PLACEMENT_ATTEMPTS) {
       console.warn(
         `Could not find a non-overlapping position for ${quadrantId} in ring ${ringId}`,
       );

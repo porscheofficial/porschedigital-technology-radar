@@ -14,7 +14,23 @@ Items are organized into quadrants and placed on rings that indicate our current
 
 ### Setting up your own instance
 
-<!-- TODO: Replace with actual setup instructions once the distribution approach is finalized. -->
+1. Create a new project and install the radar as a dependency:
+
+```bash
+mkdir my-technology-radar && cd my-technology-radar
+npm init -y
+npm install porsche_technology_radar@porscheofficial/porschedigital-technology-radar
+```
+
+2. Run `npx techradar init` to scaffold starter files (`radar/`, `config.json`, `about.md`, `public/`, `custom.scss`, `.gitignore`).
+
+3. Edit `config.json` to set your branding, quadrants, rings, and colors.
+
+4. Add your technologies as Markdown files in `radar/` (one folder per release, e.g. `radar/2025-01-15/react.md`).
+
+5. Run `npx techradar dev` to preview, then `npx techradar build` to generate the static site in `build/`.
+
+See the [README](https://github.com/porscheofficial/porschedigital-technology-radar) for full configuration and front-matter documentation.
 
 ### Contributing
 

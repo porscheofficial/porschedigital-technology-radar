@@ -6,7 +6,7 @@ import type { Item, Quadrant, Ring } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import styles from "./Radar.module.scss";
 
-export interface RadarProps {
+interface RadarProps {
   size?: number;
   quadrants: Quadrant[];
   rings: Ring[];
@@ -71,5 +71,3 @@ export const Radar: FC<RadarProps> = ({
     </div>
   );
 };
-
-export default Radar;

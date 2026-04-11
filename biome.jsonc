@@ -1,7 +1,6 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.4.11/schema.json",
 
-  // VCS integration — respects .gitignore for file exclusion
   "vcs": {
     "enabled": true,
     "clientKind": "git",
@@ -20,37 +19,20 @@
     ]
   },
 
-  // Formatter — matches previous Prettier config
   "formatter": {
-    "enabled": true,
     "indentStyle": "space",
     "indentWidth": 2,
     "lineWidth": 80,
     "lineEnding": "lf"
   },
 
-  // Linter — recommended base + Next.js / React domains
   "linter": {
-    "enabled": true,
     "rules": {
       "recommended": true,
-      "correctness": {
-        // Static layouts with single-instance components — IDs won't collide
-        "useUniqueElementIds": "off"
-      },
-      "performance": {
-        // Static export with user-provided image URLs; next/image doesn't fit
-        "noImgElement": "off"
-      },
-      "security": {
-        // PDS handles target="_blank" rel attributes
-        "noBlankTarget": "off"
-      },
-      "style": {
-        // Next.js Pages Router requires getStaticProps/getStaticPaths as named exports
-        // alongside the default component export
-        "useComponentExportOnlyModules": "off"
-      }
+      "correctness": { "useUniqueElementIds": "off" },
+      "performance": { "noImgElement": "off" },
+      "security": { "noBlankTarget": "off" },
+      "style": { "useComponentExportOnlyModules": "off" }
     },
     "domains": {
       "next": "all",
@@ -58,21 +40,14 @@
     }
   },
 
-  // JavaScript / TypeScript formatter
   "javascript": {
     "formatter": {
       "quoteStyle": "double",
-      "jsxQuoteStyle": "double",
       "semicolons": "always",
-      "trailingCommas": "all",
-      "arrowParentheses": "always",
-      "bracketSameLine": false,
-      "bracketSpacing": true,
-      "quoteProperties": "asNeeded"
+      "trailingCommas": "all"
     }
   },
 
-  // JSON parser — allow comments for tsconfig.json
   "json": {
     "parser": {
       "allowComments": true,
@@ -80,57 +55,34 @@
     }
   },
 
-  // Import organization — replaces @trivago/prettier-plugin-sort-imports
   "assist": {
-    "enabled": true,
     "actions": {
-      "source": {
-        "organizeImports": "on"
-      }
+      "source": { "organizeImports": "on" }
     }
   },
 
   "overrides": [
     {
-      // CJS config files — allow require(), module.exports
       "includes": [
         "commitlint.config.js",
         "postcss.config.js",
-        "next.config.js"
+        "next.config.js",
+        "bin/**"
       ],
-      "javascript": {
-        "globals": ["module", "require"]
-      },
-      "linter": {
-        "rules": {
-          "style": {
-            "noCommonJs": "off"
-          }
-        }
-      }
-    },
-    {
-      // CLI script — CJS, relaxed rules
-      "includes": ["bin/**"],
       "javascript": {
         "globals": ["module", "require", "process", "__dirname"]
       },
       "linter": {
         "rules": {
-          "style": {
-            "noCommonJs": "off"
-          }
+          "style": { "noCommonJs": "off" }
         }
       }
     },
     {
-      // Test files — allow `any` in mock factories
       "includes": ["**/*.test.ts", "**/*.test.tsx"],
       "linter": {
         "rules": {
-          "suspicious": {
-            "noExplicitAny": "off"
-          }
+          "suspicious": { "noExplicitAny": "off" }
         }
       }
     }

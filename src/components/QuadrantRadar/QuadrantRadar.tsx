@@ -6,7 +6,7 @@ import type { Item, Quadrant, Ring } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import styles from "./QuadrantRadar.module.scss";
 
-export interface QuadrantRadarProps {
+interface QuadrantRadarProps {
   quadrant: Quadrant;
   allQuadrants: Quadrant[];
   rings: Ring[];

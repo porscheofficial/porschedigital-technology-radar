@@ -19,7 +19,7 @@ A **100% statically exported** Next.js site that visualizes the Porsche Digital 
 data/radar/**/*.md          (frontmatter + markdown per item)
         |
         v
-scripts/buildData.ts        (gray-matter + marked + highlight.js)
+scripts/buildData.ts        (@11ty/gray-matter + unified/rehype + Zod + consola)
         |
         v
 data/data.json              (generated, gitignored)
@@ -67,7 +67,7 @@ data/
   data.json          Generated (gitignored) — run `npm run build:data`
 
 scripts/             Build-time scripts (buildData.ts, positioner.ts, errorHandler.ts)
-bin/                 CLI entry point (techradar.js — CJS, uses chokidar)
+bin/                 CLI entry point (techradar.ts — citty + consola + execa + chokidar)
 ```
 
 ### Component Architecture

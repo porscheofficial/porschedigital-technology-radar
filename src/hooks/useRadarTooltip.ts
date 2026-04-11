@@ -12,7 +12,7 @@ import { useRadarHighlight } from "@/lib/RadarHighlightContext";
 
 const TOOLTIP_CLEANUP_DELAY_MS = 200;
 
-export interface PersistentTooltip {
+interface PersistentTooltip {
   id: string;
   text: string;
   color: string;

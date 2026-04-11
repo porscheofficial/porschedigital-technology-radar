@@ -26,57 +26,74 @@ This project is maintained by **Porsche Digital** and is based on the open-sourc
 
 **Prerequisites:** Node.js 22+
 
-```bash
-git clone https://github.com/porscheofficial/porschedigital-technology-radar.git
-cd porschedigital-technology-radar
-npm install
-```
-
-Create your configuration by copying the defaults:
+### 1. Create a new project
 
 ```bash
-cp data/config.default.json data/config.json
+mkdir my-technology-radar && cd my-technology-radar
+npm init -y
 ```
 
-Edit `data/config.json` to match your organization (see [Configuration](#configuration) below).
-
-Add your radar items as Markdown files under `radar/` (see [Radar Items](#radar-items) below), then build:
+### 2. Install the radar as a dependency
 
 ```bash
-npm run build:data
-npm run build
+npm install porsche_technology_radar@porscheofficial/porschedigital-technology-radar
 ```
 
-The static site is generated in the `out/` directory. For local development:
+### 3. Initialize the project
+
+Scaffolds starter files (`radar/`, `config.json`, `about.md`, `public/`, `custom.scss`, `.gitignore`) into your directory:
 
 ```bash
-npm run build:data
-npm run dev
+npx techradar init
 ```
 
-Open `http://localhost:3000` (or the `basePath` you configured).
+### 4. Customize
 
-## Project Structure
+Edit the scaffolded files to match your organization:
+
+- `config.json` — branding, quadrants, rings, colors (see [Configuration](#configuration))
+- `radar/` — your technology items as Markdown (see [Radar Items](#radar-items))
+- `about.md` — content for the help & about page
+- `public/` — favicon, images, background image
+- `custom.scss` — optional style overrides
+
+### 5. Run
+
+```bash
+npx techradar dev     # Start dev server with file watching
+npx techradar build   # Build static site → build/
+npx techradar serve   # Start dev server without file watching
+```
+
+### 6. Deploy
+
+After `npx techradar build`, the static site is in `build/`. Deploy it to GitHub Pages, Vercel, Netlify, or any static hosting provider.
+
+## Project Structure (consumer)
 
 ```
-├── data/
-│   ├── config.default.json   # Default configuration (do not edit)
-│   ├── config.json            # Your configuration overrides
-│   └── about.md               # Content for the help & about page
+my-technology-radar/
+├── config.json          # Your configuration overrides
+├── about.md             # Content for the help & about page
+├── custom.scss          # Optional style overrides
 ├── public/
-│   ├── favicon.ico            # Your favicon
-│   ├── images/                # Images referenced in radar items
-│   └── custom.css             # Optional custom styles
-└── radar/
-    ├── 2024-06-01/
-    │   ├── react.md
-    │   └── kubernetes.md
-    └── 2025-01-15/
-        ├── react.md           # Updated entry overwrites previous
-        └── deno.md
+│   ├── favicon.ico      # Your favicon
+│   └── images/          # Images referenced in radar items
+├── radar/
+│   ├── 2024-06-01/
+│   │   ├── react.md
+│   │   └── kubernetes.md
+│   └── 2025-01-15/
+│       ├── react.md     # Updated entry overwrites previous
+│       └── deno.md
+├── build/               # Generated static site (after build)
+├── .techradar/          # Shadow build dir (auto-generated)
+└── .gitignore           # Auto-generated with .techradar/, build/, node_modules/
 ```
 
-Only `data/config.json`, `data/about.md`, and the `radar/` directory need your attention. Everything else is part of the generator.
+The CLI automatically creates a `.gitignore` (or extends your existing one) with the entries needed to keep generated directories out of version control.
+
+Only `config.json`, `about.md`, `custom.scss`, `public/`, and `radar/` need your attention. Everything else is managed by the CLI.
 
 ## Configuration
 
@@ -232,11 +249,13 @@ Place images in `public/images/` and reference them in Markdown:
 ![Architecture diagram](/images/architecture.png)
 ```
 
-## Development
+## Development (contributing to the generator)
 
 To work on the radar generator itself:
 
 ```bash
+git clone https://github.com/porscheofficial/porschedigital-technology-radar.git
+cd porschedigital-technology-radar
 npm install           # Also runs postinstall → build:icons
 npm run build:data    # Parse Markdown files into data/data.json
 npm run dev           # Start Next.js dev server
@@ -252,9 +271,9 @@ The `npm run build` command runs all three steps in sequence.
 
 ## Custom Styling
 
-You can add custom CSS rules in `public/custom.css`. Since the project uses CSS Modules with hashed class names, use attribute prefix selectors to target components:
+You can add custom SCSS rules in `custom.scss`. Since the project uses CSS Modules with hashed class names, use element or attribute selectors to target components:
 
-```css
+```scss
 /* Example: change headline fonts */
 h1,
 h2,
@@ -263,7 +282,7 @@ h3 {
 }
 ```
 
-Changes to `custom.css` require a rebuild — they are not reflected in the dev server's hot reload.
+Changes to `custom.scss` are picked up automatically in `dev` mode (with file watching).
 
 ## License
 

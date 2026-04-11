@@ -1,5 +1,9 @@
 import { assetUrl, cn } from "@/lib/utils";
 
+vi.mock("../../../next.config.js", () => ({
+  default: { basePath: "" },
+}));
+
 describe("cn", () => {
   it("joins class names", () => {
     expect(cn("a", "b")).toBe("a b");

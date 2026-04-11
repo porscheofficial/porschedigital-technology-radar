@@ -1,6 +1,10 @@
 import type { Item, Revision } from "@/lib/types";
 import { Flag } from "@/lib/types";
 
+vi.mock("../../../next.config.js", () => ({
+  default: { basePath: "" },
+}));
+
 const _mockItems: Item[] = [
   {
     id: "typescript",

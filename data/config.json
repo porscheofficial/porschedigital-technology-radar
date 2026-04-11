@@ -1,3 +1,6 @@
 {
-  "basePath": "/porschedigital-technology-radar"
+  "basePath": "/porschedigital-technology-radar",
+  "toggles": {
+    "showDemoDisclaimer": true
+  }
 }

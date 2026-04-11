@@ -1,5 +1,6 @@
 import Head from "next/head";
 
+import { DemoDisclaimer } from "@/components/DemoDisclaimer/DemoDisclaimer";
 import { Radar } from "@/components/Radar/Radar";
 import { RadarFilters } from "@/components/RadarFilters/RadarFilters";
 import {
@@ -26,6 +27,8 @@ const Home: CustomPage = () => {
           <meta name="description" content={metaDescription} />
         )}
       </Head>
+
+      {getToggle("showDemoDisclaimer") && <DemoDisclaimer />}
 
       {getToggle("showChart") && (
         <>

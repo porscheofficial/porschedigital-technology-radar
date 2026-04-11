@@ -11,7 +11,8 @@
     "showSearch": true,
     "showChart": true,
     "showTagFilter": true,
-    "showTeamFilter": true
+    "showTeamFilter": true,
+    "showDemoDisclaimer": false
   },
   "colors": {
     "foreground": "#FBFCFF",

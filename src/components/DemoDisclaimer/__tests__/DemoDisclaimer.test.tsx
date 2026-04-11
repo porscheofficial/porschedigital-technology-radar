@@ -1,6 +1,29 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { ComponentProps } from "react";
 import { DemoDisclaimer } from "../DemoDisclaimer";
+
+vi.mock("@porsche-design-system/components-react/ssr", () => ({
+  PInlineNotification: (
+    props: ComponentProps<"div"> & {
+      description?: string;
+      dismissButton?: boolean;
+      onDismiss?: () => void;
+    },
+  ) => {
+    const { description, dismissButton, onDismiss, ...rest } = props;
+    return (
+      <div role="status" {...rest}>
+        {description}
+        {dismissButton && (
+          <button type="button" aria-label="Dismiss" onClick={onDismiss}>
+            ✕
+          </button>
+        )}
+      </div>
+    );
+  },
+}));
 
 describe("DemoDisclaimer", () => {
   const storageKey = "radar-disclaimer-dismissed";
@@ -58,9 +81,7 @@ describe("DemoDisclaimer", () => {
       ).toBeInTheDocument();
     });
 
-    const closeButton = screen.getByRole("button", {
-      name: "Dismiss disclaimer",
-    });
+    const closeButton = screen.getByRole("button", { name: "Dismiss" });
     await user.click(closeButton);
 
     expect(

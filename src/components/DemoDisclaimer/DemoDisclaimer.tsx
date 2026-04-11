@@ -1,5 +1,5 @@
+import { PInlineNotification } from "@porsche-design-system/components-react/ssr";
 import { useCallback, useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
 import styles from "./DemoDisclaimer.module.scss";
 
 const STORAGE_KEY = "radar-disclaimer-dismissed";
@@ -29,20 +29,12 @@ export function DemoDisclaimer() {
   if (!visible) return null;
 
   return (
-    <div className={cn(styles.disclaimer)} role="status">
-      <p className={styles.message}>
-        This technology radar is for{" "}
-        <strong>visualization purposes only</strong> and does not represent
-        actual technology usage at Porsche or Porsche Digital.
-      </p>
-      <button
-        type="button"
-        className={styles.close}
-        onClick={dismiss}
-        aria-label="Dismiss disclaimer"
-      >
-        ✕
-      </button>
-    </div>
+    <PInlineNotification
+      className={styles.disclaimer}
+      state="warning"
+      description="This technology radar is for visualization purposes only and does not represent actual technology usage at Porsche or Porsche Digital."
+      dismissButton={true}
+      onDismiss={dismiss}
+    />
   );
 }

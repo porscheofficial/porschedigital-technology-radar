@@ -1,5 +1,13 @@
 # Porsche Digital Technology Radar
 
+[![GitHub Pages Deploy](https://img.shields.io/github/actions/workflow/status/porscheofficial/porschedigital-technology-radar/deploy.yml?branch=pdig&label=deploy)](https://github.com/porscheofficial/porschedigital-technology-radar/actions/workflows/deploy.yml)
+[![GitHub Release](https://img.shields.io/github/v/release/porscheofficial/porschedigital-technology-radar)](https://github.com/porscheofficial/porschedigital-technology-radar/releases)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue)](./LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Biome](https://img.shields.io/badge/linter-Biome-60A5FA?logo=biome&logoColor=white)](https://biomejs.dev/)
+[![GitHub Stars](https://img.shields.io/github/stars/porscheofficial/porschedigital-technology-radar)](https://github.com/porscheofficial/porschedigital-technology-radar/stargazers)
+[![Last Commit](https://img.shields.io/github/last-commit/porscheofficial/porschedigital-technology-radar/pdig)](https://github.com/porscheofficial/porschedigital-technology-radar/commits/pdig)
+
 A static site generator for building and publishing your own Technology Radar.
 
 <!-- TODO: Add new screenshot -->
@@ -9,18 +17,19 @@ A static site generator for building and publishing your own Technology Radar.
 
 This project is maintained by **Porsche Digital** and is based on the open-source [AOE Technology Radar](https://github.com/AOEpeople/aoe_technology_radar). The codebase has been substantially rewritten and extended — it is not a drop-in replacement. Your existing radar items (Markdown files) can be reused as-is, but the configuration needs to be updated to match the new schema.
 
+## Why a Technology Radar?
+
+A Technology Radar makes technology decisions visible across your organization. It gives CTOs, architects, and tech leads a shared vocabulary for evaluating, adopting, and retiring technologies — and keeps engineering teams aligned on what to invest in.
+
 ## Features
 
-- Interactive SVG radar visualization (no D3 dependency)
-- Search with abbreviation support (e.g. "k8s" finds "Kubernetes")
-- Filterable by tags, teams, and status
-- Quadrant detail pages with zoomed radar view
-- Item detail pages with revision history and team assignments
-- Ring trajectory history page across all releases
-- Fully configurable via a single `config.json`
-- Custom branding: header logo, footer logo, colors, social links
-- Static export for GitHub Pages or any static hosting
-- Built with Next.js, React, and the Porsche Design System
+- **Visual technology landscape** — See your entire technology portfolio at a glance, organized by quadrant and maturity ring
+- **Track decisions over time** — Full revision history per technology and a trajectory view across releases, so you can see how assessments evolved
+- **Team visibility** — Understand which teams use which technologies, enabling informed staffing and knowledge-sharing decisions
+- **Searchable and filterable** — Find technologies instantly by name, tag, team, or status — including abbreviation matching (e.g. "k8s" finds "Kubernetes")
+- **Your branding, your rules** — Fully customizable colors, logos, quadrants, rings, and labels via a single `config.json`
+- **Zero infrastructure** — Static site that deploys to GitHub Pages, Netlify, or any hosting. No servers, no databases, no runtime dependencies
+- **Content as code** — Technologies are plain Markdown files in Git. Review changes in PRs, track history with commits, collaborate with your existing workflow
 
 ## Quick Start
 

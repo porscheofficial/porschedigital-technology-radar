@@ -37,7 +37,7 @@ consola.info(`Build mode: ${isStrict ? "strict" : "lenient"}`);
 // ---------------------------------------------------------------------------
 
 /** Rehype plugin: prepend basePath to internal links */
-function rehypeBasePathLinks() {
+export function rehypeBasePathLinks() {
   const basePath = nextConfig.basePath;
   if (!basePath) return () => {};
 
@@ -54,7 +54,7 @@ function rehypeBasePathLinks() {
 }
 
 /** Rehype plugin: strip deprecated .html extensions from internal links */
-function rehypeStripHtmlExtension() {
+export function rehypeStripHtmlExtension() {
   return (tree: import("hast").Root) => {
     visit(tree, "element", (node: import("hast").Element) => {
       if (node.tagName === "a" && typeof node.properties.href === "string") {
@@ -68,7 +68,7 @@ function rehypeStripHtmlExtension() {
 }
 
 /** Simple hast visitor — walks element nodes */
-function visit(
+export function visit(
   tree: import("hast").Root,
   type: string,
   fn: (node: import("hast").Element) => void,
@@ -99,7 +99,7 @@ const processor = unified()
   .use(rehypeHighlight, { prefix: "hljs language-" })
   .use(rehypeStringify);
 
-async function convertToHtml(markdown: string): Promise<string> {
+export async function convertToHtml(markdown: string): Promise<string> {
   const result = await processor.process(markdown.trim());
   return String(result);
 }
@@ -108,16 +108,18 @@ async function convertToHtml(markdown: string): Promise<string> {
 // Helpers
 // ---------------------------------------------------------------------------
 
-function dataPath(...paths: string[]): string {
+export function dataPath(...paths: string[]): string {
   return path.resolve("data", ...paths);
 }
 
-function getOrderedTeams(teams: string[] | undefined): string[] | undefined {
+export function getOrderedTeams(
+  teams: string[] | undefined,
+): string[] | undefined {
   if (!teams) return undefined;
   return [...new Set(teams)].sort();
 }
 
-function compareArrays(arr1: unknown[] = [], arr2: unknown[] = []) {
+export function compareArrays(arr1: unknown[] = [], arr2: unknown[] = []) {
   return (
     arr1.length === arr2.length &&
     arr1.every((element, index) => element === arr2[index])
@@ -128,7 +130,7 @@ function compareArrays(arr1: unknown[] = [], arr2: unknown[] = []) {
 // Parse markdown files
 // ---------------------------------------------------------------------------
 
-async function readMarkdownFile(filePath: string) {
+export async function readMarkdownFile(filePath: string) {
   const id = path.basename(filePath, ".md");
   const fileContent = fs.readFileSync(filePath, "utf8");
   const { data, content } = matter(fileContent);
@@ -136,7 +138,7 @@ async function readMarkdownFile(filePath: string) {
   return { id, data, body };
 }
 
-async function parseDirectory(dirPath: string): Promise<{
+export async function parseDirectory(dirPath: string): Promise<{
   items: Item[];
   errors: number;
 }> {
@@ -244,7 +246,7 @@ async function parseDirectory(dirPath: string): Promise<{
 // Post-processing
 // ---------------------------------------------------------------------------
 
-function computeRevisionDiffs(revisions: Item["revisions"]): void {
+export function computeRevisionDiffs(revisions: Item["revisions"]): void {
   if (!revisions || revisions.length < 2) return;
   for (let i = 1; i < revisions.length; i++) {
     const prevTeams = revisions[i - 1].teams ?? [];
@@ -259,7 +261,7 @@ function computeRevisionDiffs(revisions: Item["revisions"]): void {
   }
 }
 
-function getUniqueReleases(items: Item[]): string[] {
+export function getUniqueReleases(items: Item[]): string[] {
   const releases = new Set<string>();
   for (const item of items) {
     for (const revision of item.revisions ?? []) {
@@ -269,7 +271,7 @@ function getUniqueReleases(items: Item[]): string[] {
   return Array.from(releases).sort();
 }
 
-function getUniqueTags(items: Item[]): string[] {
+export function getUniqueTags(items: Item[]): string[] {
   const tags = new Set<string>();
   for (const item of items) {
     for (const tag of item.tags ?? []) {
@@ -279,7 +281,7 @@ function getUniqueTags(items: Item[]): string[] {
   return Array.from(tags).sort();
 }
 
-function getFlag(item: Item, allReleases: string[]): Flag {
+export function getFlag(item: Item, allReleases: string[]): Flag {
   if (allReleases.length === 1) return Flag.Default;
 
   const latestRelease = allReleases[allReleases.length - 1];
@@ -293,7 +295,7 @@ function getFlag(item: Item, allReleases: string[]): Flag {
   return Flag.Default;
 }
 
-function postProcessItems(items: Item[]): {
+export function postProcessItems(items: Item[]): {
   releases: string[];
   tags: string[];
   items: Item[];

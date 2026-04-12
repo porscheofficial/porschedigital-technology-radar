@@ -1,0 +1,66 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "08:00"
+      timezone: Europe/Berlin
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "build"
+      include: "scope"
+    labels:
+      - dependencies
+    groups:
+      porsche-design-system:
+        patterns:
+          - "@porsche-design-system/*"
+      next:
+        patterns:
+          - "next"
+          - "@next/*"
+          - "eslint-config-next"
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
+      unified-rehype:
+        patterns:
+          - "unified"
+          - "rehype*"
+          - "remark*"
+          - "hast*"
+          - "mdast*"
+          - "unist*"
+      testing:
+        patterns:
+          - "vitest"
+          - "@vitest/*"
+          - "@testing-library/*"
+          - "jsdom"
+      biome:
+        patterns:
+          - "@biomejs/*"
+      types:
+        patterns:
+          - "@types/*"
+        exclude-patterns:
+          - "@types/react"
+          - "@types/react-dom"
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "08:00"
+      timezone: Europe/Berlin
+    commit-message:
+      prefix: "ci"
+    labels:
+      - dependencies
+      - github-actions

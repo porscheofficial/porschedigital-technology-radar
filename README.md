@@ -10,8 +10,7 @@
 
 A static site generator for building and publishing your own Technology Radar.
 
-<!-- TODO: Add new screenshot -->
-<!-- ![Screenshot of the Technology Radar](./docs/assets/screenshot.png) -->
+![Screenshot of the Technology Radar](./docs/assets/screenshot-radar.png)
 
 ## About
 
@@ -30,6 +29,34 @@ A Technology Radar makes technology decisions visible across your organization. 
 - **Your branding, your rules** — Fully customizable colors, logos, quadrants, rings, and labels via a single `config.json`
 - **Zero infrastructure** — Static site that deploys to GitHub Pages, Netlify, or any hosting. No servers, no databases, no runtime dependencies
 - **Content as code** — Technologies are plain Markdown files in Git. Review changes in PRs, track history with commits, collaborate with your existing workflow
+
+## Screenshots
+
+### Quadrant Detail
+
+Drill into a single quadrant with a zoomed mini-radar and a grouped technology list.
+
+![Quadrant detail page](./docs/assets/screenshot-quadrant.png)
+
+### Technology Detail
+
+Each technology has its own page with ring status, description, tags, teams, and full revision history.
+
+![Technology detail page](./docs/assets/screenshot-detail.png)
+
+### History & Changelog
+
+Track how technology assessments evolved across releases with the trajectory matrix.
+
+![History page](./docs/assets/screenshot-history.png)
+
+### Mobile
+
+Fully responsive — works on phones and tablets out of the box.
+
+<p align="center">
+  <img src="./docs/assets/screenshot-mobile.png" alt="Mobile view" width="390">
+</p>
 
 ## Quick Start
 

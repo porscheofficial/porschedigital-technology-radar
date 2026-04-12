@@ -1,0 +1,29 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "packages": {
+    ".": {
+      "package-name": "porschedigital-technology-radar",
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md",
+      "bump-minor-pre-major": true,
+      "changelog-sections": [
+        { "type": "feat", "section": "Features" },
+        { "type": "fix", "section": "Bug Fixes" },
+        { "type": "bug", "section": "Bug Fixes" },
+        { "type": "sec", "section": "Security" },
+        { "type": "perf", "section": "Performance" },
+        { "type": "refactor", "section": "Code Refactoring" },
+        { "type": "rework", "section": "Code Refactoring" },
+        { "type": "doc", "section": "Documentation" },
+        { "type": "test", "section": "Tests" },
+        { "type": "build", "section": "Build System" },
+        { "type": "ci", "section": "CI/CD" },
+        { "type": "cd", "section": "CI/CD" },
+        { "type": "ops", "section": "Operations" },
+        { "type": "chore", "section": "Miscellaneous" },
+        { "type": "update", "section": "Updates" }
+      ],
+      "extra-files": []
+    }
+  }
+}

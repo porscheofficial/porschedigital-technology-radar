@@ -21,7 +21,6 @@
         { "type": "ci", "section": "CI/CD" },
         { "type": "cd", "section": "CI/CD" },
         { "type": "ops", "section": "Operations" },
-        { "type": "chore", "section": "Miscellaneous" },
         { "type": "update", "section": "Updates" }
       ],
       "extra-files": []

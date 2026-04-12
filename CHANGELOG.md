@@ -4,6 +4,35 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.0.1](https://github.com/porscheofficial/porschedigital-technology-radar/compare/v1.0.0...v1.0.1) (2026-04-12)
+
+
+### Bug Fixes
+
+* correct search feature description in README ([15a9d8f](https://github.com/porscheofficial/porschedigital-technology-radar/commit/15a9d8f7559b3221d4f50534fecee0f12be20437))
+* disable component prefix in release-please tag matching ([57453cf](https://github.com/porscheofficial/porschedigital-technology-radar/commit/57453cf23fc62d17fa7c885fdb29396363a475af))
+
+
+### Documentation
+
+* add badges and rewrite features section for leadership audience ([8ed8302](https://github.com/porscheofficial/porschedigital-technology-radar/commit/8ed8302aa4dafadf6555254c2e4c6c0ccbb27b0e))
+* add screenshots of radar, quadrant, detail, history, and mobile views ([b28c28a](https://github.com/porscheofficial/porschedigital-technology-radar/commit/b28c28a72fe3f3e0d02482a6e5829d85db8f2212))
+
+
+### Tests
+
+* add comprehensive tests for buildData and positioner scripts ([3c89986](https://github.com/porscheofficial/porschedigital-technology-radar/commit/3c8998682da45bafc20feb22816cdb6629748901))
+
+
+### CI/CD
+
+* add release-please for automated GitHub Releases ([08f5063](https://github.com/porscheofficial/porschedigital-technology-radar/commit/08f50636a96efd6521ab14994bd648cbd16f4a39))
+
+
+### Miscellaneous
+
+* remove 24 unused SVG source files from src/icons/ ([0e2c3c2](https://github.com/porscheofficial/porschedigital-technology-radar/commit/0e2c3c2e5515fa9c8a736713ca83bd7c8c420b86))
+
 ## [1.0.0] - 2026-04-11
 
 ### Added

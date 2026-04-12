@@ -25,7 +25,7 @@ A Technology Radar makes technology decisions visible across your organization. 
 - **Visual technology landscape** — See your entire technology portfolio at a glance, organized by quadrant and maturity ring
 - **Track decisions over time** — Full revision history per technology and a trajectory view across releases, so you can see how assessments evolved
 - **Team visibility** — Understand which teams use which technologies, enabling informed staffing and knowledge-sharing decisions
-- **Searchable and filterable** — Find technologies instantly by name, tag, team, or status — including abbreviation matching (e.g. "k8s" finds "Kubernetes")
+- **Searchable and filterable** — Find technologies instantly by name, tag, team, or status with real-time highlighting across the radar
 - **Your branding, your rules** — Fully customizable colors, logos, quadrants, rings, and labels via a single `config.json`
 - **Zero infrastructure** — Static site that deploys to GitHub Pages, Netlify, or any hosting. No servers, no databases, no runtime dependencies
 - **Content as code** — Technologies are plain Markdown files in Git. Review changes in PRs, track history with commits, collaborate with your existing workflow

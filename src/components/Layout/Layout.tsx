@@ -48,6 +48,17 @@ export const Layout: FC<LayoutProps> = ({
 
           <div className={styles.headerEnd}>
             {getToggle("showSearch") && <SearchBar />}
+            {latestRelease && (
+              <PLinkPure
+                href={assetUrl("/history")}
+                icon="clock"
+                hideLabel={true}
+                theme="dark"
+                className={cn(styles.actionButton, styles.historyLink)}
+              >
+                History
+              </PLinkPure>
+            )}
             <PLinkPure
               href={assetUrl("/help-and-about-tech-radar")}
               icon="information"

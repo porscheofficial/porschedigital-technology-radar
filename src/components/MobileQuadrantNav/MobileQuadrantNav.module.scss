@@ -1,0 +1,17 @@
+@use "@porsche-design-system/components-react/styles" as *;
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $pds-spacing-static-small;
+  padding: $pds-spacing-fluid-small $pds-spacing-static-medium;
+
+  @media (min-width: 768px) {
+    display: none;
+  }
+}
+
+.colorSwatch {
+  width: 100%;
+  height: 100%;
+}

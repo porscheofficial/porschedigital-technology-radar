@@ -42,7 +42,7 @@
 
 .headerEnd {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: $pds-spacing-static-medium;
   align-items: center;
   justify-content: end;
@@ -89,6 +89,45 @@
   &:hover {
     opacity: 0.8;
     border-color: rgba(255, 255, 255, 0.35);
+  }
+}
+
+.historyLink {
+  display: none;
+}
+
+@media (max-width: 849px) {
+  .headerGrid {
+    grid-template-columns: 1fr auto;
+    gap: $pds-spacing-static-small;
+    min-height: auto;
+    padding: $pds-spacing-static-small $pds-spacing-fluid-medium;
+  }
+
+  .headerStart {
+    grid-column: 1;
+    flex-wrap: nowrap;
+    gap: $pds-spacing-static-small;
+    overflow: hidden;
+  }
+
+  .headerEnd {
+    grid-column: 2;
+    flex-wrap: nowrap;
+    gap: $pds-spacing-static-small;
+  }
+
+  .brand {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .versionLabel {
+    display: none;
+  }
+
+  .historyLink {
+    display: flex;
   }
 }
 

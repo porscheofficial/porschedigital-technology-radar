@@ -133,10 +133,23 @@
 }
 
 // Responsive: collapse on small screens
-@media (max-width: 600px) {
+@media (max-width: 849px) {
   .searchBar {
     flex: 0 0 40px;
     margin: 0;
+    transition: flex-basis 200ms ease;
+
+    &:focus-within {
+      flex: 1 1 100%;
+    }
+  }
+
+  .clearButton {
+    display: none;
+  }
+
+  .searchBar:focus-within .clearButton {
+    display: flex;
   }
 
   .input {
@@ -150,9 +163,7 @@
     }
 
     &:focus {
-      position: absolute;
-      right: 0;
-      width: 240px;
+      width: 100%;
       padding-left: $pds-spacing-static-x-large;
       color: var(--foreground);
       cursor: text;
@@ -166,8 +177,12 @@
   }
 
   .dropdown {
+    left: 0;
     right: 0;
-    left: auto;
-    width: 240px;
+    width: auto;
+  }
+
+  .resultMeta {
+    display: none;
   }
 }

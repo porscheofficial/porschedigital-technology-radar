@@ -11,6 +11,7 @@ const mockData = vi.hoisted(() => ({
   getRings: vi.fn(),
   getToggle: vi.fn(),
   radarProps: vi.fn(),
+  mobileNavProps: vi.fn(),
 }));
 
 vi.mock("next/head", () => ({
@@ -35,6 +36,13 @@ vi.mock("@/components/Radar/Radar", () => ({
 
 vi.mock("@/components/RadarFilters/RadarFilters", () => ({
   RadarFilters: () => <div data-testid="radar-filters" />,
+}));
+
+vi.mock("@/components/MobileQuadrantNav/MobileQuadrantNav", () => ({
+  MobileQuadrantNav: (props: any) => {
+    mockData.mobileNavProps(props);
+    return <nav data-testid="mobile-quadrant-nav" />;
+  },
 }));
 
 describe("Home page", () => {
@@ -144,5 +152,27 @@ describe("Home page", () => {
 
     expect(screen.queryByTestId("radar")).not.toBeInTheDocument();
     expect(screen.queryByTestId("radar-filters")).not.toBeInTheDocument();
+  });
+
+  it("renders MobileQuadrantNav when showChart is true", () => {
+    render(<Home />);
+
+    expect(screen.getByTestId("mobile-quadrant-nav")).toBeInTheDocument();
+  });
+
+  it("passes quadrants to MobileQuadrantNav", () => {
+    render(<Home />);
+
+    expect(mockData.mobileNavProps).toHaveBeenCalledWith({
+      quadrants,
+    });
+  });
+
+  it("does not render MobileQuadrantNav when showChart is false", () => {
+    mockData.getToggle.mockReturnValue(false);
+
+    render(<Home />);
+
+    expect(screen.queryByTestId("mobile-quadrant-nav")).not.toBeInTheDocument();
   });
 });

@@ -1,0 +1,7 @@
+@use "@porsche-design-system/components-react/styles" as *;
+
+.desktopRadar {
+  @media (max-width: 767px) {
+    display: none;
+  }
+}

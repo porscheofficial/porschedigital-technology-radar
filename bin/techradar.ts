@@ -9,7 +9,7 @@ import {
   rmSync,
   writeFileSync,
 } from "node:fs";
-import { join } from "node:path";
+import { basename, join } from "node:path";
 import { watch } from "chokidar";
 import { defineCommand, runMain } from "citty";
 import consola from "consola";
@@ -30,6 +30,55 @@ const GITIGNORE_ENTRIES = [".techradar/", "build/", "node_modules/"];
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
+
+/** Consumer project name for portless `--name` flag (package.json → dir basename). */
+function getConsumerName(): string {
+  try {
+    const pkg = JSON.parse(
+      readFileSync(join(CWD, "package.json"), "utf-8"),
+    ) as { name?: string };
+    if (pkg.name) {
+      return pkg.name.replace(/^@[^/]+\//, "");
+    }
+  } catch {
+    // No package.json — fall through to basename
+  }
+  return basename(CWD);
+}
+
+function hasGlobalPortless(): boolean {
+  try {
+    execaSync("portless", ["--version"], { stdio: "ignore" });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function startDevServer(mode: "sync"): void;
+function startDevServer(mode: "async"): ReturnType<typeof execa>;
+function startDevServer(
+  mode: "sync" | "async",
+): undefined | ReturnType<typeof execa> {
+  const usePortless = hasGlobalPortless();
+  const cmd = usePortless ? "portless" : "npx";
+  const args = usePortless
+    ? ["run", "--name", getConsumerName(), "next", "dev"]
+    : ["next", "dev"];
+
+  if (!usePortless) {
+    consola.warn(
+      "portless is not installed globally — falling back to plain next dev.\n" +
+        "Install it for nicer local URLs: npm install -g portless",
+    );
+  }
+
+  if (mode === "sync") {
+    execaSync(cmd, args, { cwd: BUILDER_DIR, stdio: "inherit" });
+  } else {
+    return execa(cmd, args, { cwd: BUILDER_DIR, stdio: "inherit" });
+  }
+}
 
 function hashFile(filePath: string): string {
   return createHash("sha256").update(readFileSync(filePath)).digest("hex");
@@ -201,7 +250,7 @@ const serveCommand = defineCommand({
   meta: { name: "serve", description: "Start the development server" },
   run() {
     consola.start("Starting development server…");
-    execaSync("npm", ["run", "dev"], { cwd: BUILDER_DIR, stdio: "inherit" });
+    startDevServer("sync");
   },
 });
 
@@ -277,10 +326,7 @@ const devCommand = defineCommand({
   async run() {
     consola.start("Starting development mode…");
 
-    const child = execa("npm", ["run", "dev"], {
-      cwd: BUILDER_DIR,
-      stdio: "inherit",
-    });
+    const child = startDevServer("async");
 
     const radarDir = join(CWD, "radar");
     const aboutFile = join(CWD, "about.md");

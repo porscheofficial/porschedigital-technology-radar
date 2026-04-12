@@ -3,13 +3,14 @@
   "private": true,
   "version": "1.0.0",
   "bin": {
-    "techradar": "./bin/techradar.js"
+    "techradar": "./dist/bin/techradar.js"
   },
   "scripts": {
     "dev": "portless run next dev",
     "build:icons": "npx @svgr/cli --typescript --no-dimensions --no-prettier --out-dir src/components/Icons -- src/icons",
     "build:data": "tsx scripts/buildData.ts",
     "validate": "tsx scripts/validateFrontmatter.ts",
+    "build:bin": "tsup",
     "build": "next build",
     "start": "next start",
     "lint": "biome check .",
@@ -19,7 +20,7 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "knip": "knip",
-    "prepare": "husky",
+    "prepare": "(husky || true) && npm run build:bin",
     "postinstall": "npm run build:icons"
   },
   "devDependencies": {
@@ -58,6 +59,7 @@
     "remark-gfm": "^4.0.1",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.2",
+    "tsup": "^8.5.1",
     "tsx": "^4.15.8",
     "typescript": "^5",
     "unified": "^11.0.5",

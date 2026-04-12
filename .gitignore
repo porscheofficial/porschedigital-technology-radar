@@ -16,6 +16,7 @@
 
 # generated
 /src/components/Icons/
+/dist/
 
 /data/about.json
 /data/data.json

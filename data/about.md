@@ -1,6 +1,6 @@
 # How to use the Technology Radar
 
-> ⚠️ **Disclaimer:** This is a test instance. The technology blips shown here are for **testing and demonstration purposes only** and do not represent the actual technology choices, recommendations, or technology stack used at Porsche or Porsche Digital.
+> ⚠️ **Disclaimer:** This is a showcase based on the [open-source technology radar](https://github.com/porscheofficial/porschedigital-technology-radar) for visualization purposes and does not represent actual Porsche or Porsche Digital technology choices.
 
 <!-- NOTE: Rewrite this file for each instance of the Technology Radar. -->
 <!-- This content is displayed on the "Help & About" page visible to end users. -->
@@ -19,7 +19,7 @@ Items are organized into quadrants and placed on rings that indicate our current
 ```bash
 mkdir my-technology-radar && cd my-technology-radar
 npm init -y
-npm install porsche_technology_radar@porscheofficial/porschedigital-technology-radar
+npm install porschedigital-technology-radar@porscheofficial/porschedigital-technology-radar
 ```
 
 2. Run `npx techradar init` to scaffold starter files (`radar/`, `config.json`, `about.md`, `public/`, `custom.scss`, `.gitignore`).

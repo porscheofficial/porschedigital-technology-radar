@@ -210,3 +210,4 @@ Conventional commits enforced by commitlint. Allowed types:
 5. **Date strings need `T00:00:00` suffix** — `toSafeDate()` in `format.ts` handles this. Raw date strings like `"2024-03"` parsed without the suffix will shift timezones.
 6. **Config deep-merge is manual** — only `colors`, `labels`, and `toggles` keys are deep-merged between `config.default.json` and `config.json`. Other keys are shallow-replaced.
 7. **Module-level data imports are intentional** — `data.ts` accessors read from the statically imported `data.json`. This is safe because all data is available at build time.
+8. **All links and asset URLs must use `assetUrl()`** — The site is deployed under a configurable `basePath` (e.g., `/technology-radar`). Never hardcode `href="/"` or `href={`/${slug}`}` — always wrap with `assetUrl()` from `@/lib/utils` (e.g., `assetUrl("/")`, `assetUrl(`/${quadrant.id}`)`) so links work correctly in all deployment environments.

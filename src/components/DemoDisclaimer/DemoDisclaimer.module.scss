@@ -1,6 +1,53 @@
 @use "@porsche-design-system/components-react/styles" as *;
 
 .disclaimer {
+  display: flex;
+  align-items: flex-start;
+  gap: $pds-spacing-static-small;
   margin: $pds-spacing-static-medium auto 0;
   max-width: 800px;
+  padding: $pds-spacing-static-small $pds-spacing-static-medium;
+  background: #ff9b0026;
+  border: 1px solid #ff9b00;
+  border-radius: $pds-border-radius-medium;
+}
+
+.icon {
+  flex-shrink: 0;
+  color: #ff9b00;
+  margin-top: 2px;
+}
+
+.text {
+  @include pds-text-x-small;
+  flex: 1;
+  margin: 0;
+  color: var(--foreground);
+
+  a {
+    color: var(--link);
+    text-decoration: underline;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+}
+
+.closeButton {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--foreground);
+  opacity: 0.6;
+  transition: opacity 0.15s ease;
+
+  &:hover {
+    opacity: 1;
+  }
 }

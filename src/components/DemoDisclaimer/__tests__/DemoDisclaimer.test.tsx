@@ -4,24 +4,9 @@ import type { ComponentProps } from "react";
 import { DemoDisclaimer } from "../DemoDisclaimer";
 
 vi.mock("@porsche-design-system/components-react/ssr", () => ({
-  PInlineNotification: (
-    props: ComponentProps<"div"> & {
-      description?: string;
-      dismissButton?: boolean;
-      onDismiss?: () => void;
-    },
-  ) => {
-    const { description, dismissButton, onDismiss, ...rest } = props;
-    return (
-      <div role="status" {...rest}>
-        {description}
-        {dismissButton && (
-          <button type="button" aria-label="Dismiss" onClick={onDismiss}>
-            ✕
-          </button>
-        )}
-      </div>
-    );
+  PIcon: (props: ComponentProps<"span"> & { name?: string }) => {
+    const { name, ...rest } = props;
+    return <span data-icon={name} {...rest} />;
   },
 }));
 
@@ -52,9 +37,7 @@ describe("DemoDisclaimer", () => {
     render(<DemoDisclaimer />);
 
     await waitFor(() => {
-      expect(
-        screen.getByText(/visualization purposes only/),
-      ).toBeInTheDocument();
+      expect(screen.getByText(/visualization purposes/)).toBeInTheDocument();
     });
   });
 
@@ -65,7 +48,7 @@ describe("DemoDisclaimer", () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByText(/visualization purposes only/),
+        screen.queryByText(/visualization purposes/),
       ).not.toBeInTheDocument();
     });
   });
@@ -76,16 +59,14 @@ describe("DemoDisclaimer", () => {
     render(<DemoDisclaimer />);
 
     await waitFor(() => {
-      expect(
-        screen.getByText(/visualization purposes only/),
-      ).toBeInTheDocument();
+      expect(screen.getByText(/visualization purposes/)).toBeInTheDocument();
     });
 
     const closeButton = screen.getByRole("button", { name: "Dismiss" });
     await user.click(closeButton);
 
     expect(
-      screen.queryByText(/visualization purposes only/),
+      screen.queryByText(/visualization purposes/),
     ).not.toBeInTheDocument();
     expect(setItemSpy).toHaveBeenCalledWith(storageKey, "1");
   });
@@ -98,9 +79,7 @@ describe("DemoDisclaimer", () => {
     render(<DemoDisclaimer />);
 
     await waitFor(() => {
-      expect(
-        screen.getByText(/visualization purposes only/),
-      ).toBeInTheDocument();
+      expect(screen.getByText(/visualization purposes/)).toBeInTheDocument();
     });
   });
 
@@ -109,6 +88,21 @@ describe("DemoDisclaimer", () => {
 
     await waitFor(() => {
       expect(screen.getByRole("status")).toBeInTheDocument();
+    });
+  });
+
+  it("includes a link to the GitHub project", async () => {
+    render(<DemoDisclaimer />);
+
+    await waitFor(() => {
+      const link = screen.getByRole("link", {
+        name: /open-source technology radar/,
+      });
+      expect(link).toHaveAttribute(
+        "href",
+        "https://github.com/porscheofficial/porschedigital-technology-radar",
+      );
+      expect(link).toHaveAttribute("target", "_blank");
     });
   });
 });

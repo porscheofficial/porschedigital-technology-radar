@@ -137,7 +137,7 @@
   "labels": {
     "title": "Technology Radar",
     "imprint": "Legal Information",
-    "footer": "Based on the open-source Technology Radar by AOE GmbH, extensively modified by Porsche Digital.",
+    "footer": "An open-source technology radar by Porsche Digital, originally based on the AOE Technology Radar.",
     "notUpdated": "This item was not updated in last three versions of the Radar.",
     "hiddenFromRadar": "This technology is currently hidden from the radar chart.",
     "searchPlaceholder": "What are you looking for?",

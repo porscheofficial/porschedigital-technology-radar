@@ -177,6 +177,7 @@ export function SearchBar() {
     const handleRouteChange = () => {
       close();
       setQuery("");
+      inputRef.current?.blur();
     };
     router.events.on("routeChangeStart", handleRouteChange);
     return () => router.events.off("routeChangeStart", handleRouteChange);
@@ -227,6 +228,7 @@ export function SearchBar() {
           ref={listRef}
           role="listbox"
           className={styles.dropdown}
+          onMouseDown={(e) => e.preventDefault()}
         >
           {results.map((item, index) => {
             const quadrant = getQuadrant(item.quadrant);
@@ -250,6 +252,7 @@ export function SearchBar() {
                   onClick={() => {
                     close();
                     setQuery("");
+                    inputRef.current?.blur();
                   }}
                   tabIndex={-1}
                 >

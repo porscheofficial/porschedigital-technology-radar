@@ -3,6 +3,11 @@ import type { ComponentProps } from "react";
 import type { Quadrant } from "@/lib/types";
 import { MobileQuadrantNav } from "../MobileQuadrantNav";
 
+vi.mock("@/lib/utils", () => ({
+  assetUrl: (path: string) => `/base${path}`,
+  cn: (...args: unknown[]) => args.filter(Boolean).join(" "),
+}));
+
 vi.mock("@porsche-design-system/components-react/ssr", () => ({
   PLinkTile: ({
     href,
@@ -72,10 +77,10 @@ describe("MobileQuadrantNav", () => {
     render(<MobileQuadrantNav quadrants={quadrants} />);
 
     const links = screen.getAllByRole("link");
-    expect(links[0]).toHaveAttribute("href", "/languages-and-frameworks");
-    expect(links[1]).toHaveAttribute("href", "/methods-and-patterns");
-    expect(links[2]).toHaveAttribute("href", "/platforms-and-operations");
-    expect(links[3]).toHaveAttribute("href", "/tools");
+    expect(links[0]).toHaveAttribute("href", "/base/languages-and-frameworks");
+    expect(links[1]).toHaveAttribute("href", "/base/methods-and-patterns");
+    expect(links[2]).toHaveAttribute("href", "/base/platforms-and-operations");
+    expect(links[3]).toHaveAttribute("href", "/base/tools");
   });
 
   it("passes quadrant title as description", () => {

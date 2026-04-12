@@ -1,6 +1,7 @@
 import { PLinkTile } from "@porsche-design-system/components-react/ssr";
 
 import type { Quadrant } from "@/lib/types";
+import { assetUrl } from "@/lib/utils";
 
 import styles from "./MobileQuadrantNav.module.scss";
 
@@ -14,7 +15,7 @@ export function MobileQuadrantNav({ quadrants }: MobileQuadrantNavProps) {
       {quadrants.map((q) => (
         <PLinkTile
           key={q.id}
-          href={`/${q.id}`}
+          href={assetUrl(`/${q.id}`)}
           label="Explore"
           description={q.title}
           compact={true}

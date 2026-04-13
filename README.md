@@ -10,6 +10,8 @@
 
 A static site generator for building and publishing your own Technology Radar.
 
+**[🔗 Live Showcase](https://opensource.porsche.com/porschedigital-technology-radar/)**
+
 ![Screenshot of the Technology Radar](./docs/assets/screenshot-radar.png)
 
 ## About

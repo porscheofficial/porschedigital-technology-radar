@@ -80,10 +80,14 @@ function startDevServer(
   }
 }
 
-/** Combined hash of consumer package.json + installed package's package.json. */
+/** Hash of consumer package.json + lockfile (contains resolved git SHA) + installed package.json. */
 function buildDirHash(): string {
   const hash = createHash("sha256");
   hash.update(readFileSync(join(CWD, "package.json")));
+  const lockfile = join(CWD, "package-lock.json");
+  if (existsSync(lockfile)) {
+    hash.update(readFileSync(lockfile));
+  }
   const sourcePkg = join(SOURCE_DIR, "package.json");
   if (existsSync(sourcePkg)) {
     hash.update(readFileSync(sourcePkg));

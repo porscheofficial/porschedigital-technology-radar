@@ -1,15 +1,19 @@
+import type { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
-import { useRouter } from "next/router";
 
 import { ItemDetail } from "@/components/ItemDetail/ItemDetail";
 import { getItem, getItems, getQuadrant } from "@/lib/data";
 import { formatTitle } from "@/lib/format";
 import type { CustomPage } from "@/pages/_app";
 
-const ItemPage: CustomPage = () => {
-  const { query } = useRouter();
-  const quadrant = getQuadrant(query.quadrant as string);
-  const item = getItem(query.id as string);
+interface ItemPageProps {
+  quadrantId: string;
+  itemId: string;
+}
+
+const ItemPage: CustomPage<ItemPageProps> = ({ quadrantId, itemId }) => {
+  const quadrant = getQuadrant(quadrantId);
+  const item = getItem(itemId);
 
   if (!quadrant || !item) return null;
 
@@ -27,7 +31,7 @@ const ItemPage: CustomPage = () => {
 
 export default ItemPage;
 
-export const getStaticPaths = async () => {
+export const getStaticPaths: GetStaticPaths = async () => {
   const items = getItems();
   const paths = items.map((item) => ({
     params: { quadrant: item.quadrant, id: item.id },
@@ -36,6 +40,13 @@ export const getStaticPaths = async () => {
   return { paths, fallback: false };
 };
 
-export const getStaticProps = async () => {
-  return { props: {} };
+export const getStaticProps: GetStaticProps<ItemPageProps> = async ({
+  params,
+}) => {
+  return {
+    props: {
+      quadrantId: params?.quadrant as string,
+      itemId: params?.id as string,
+    },
+  };
 };

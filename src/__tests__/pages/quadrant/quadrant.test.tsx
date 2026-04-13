@@ -4,11 +4,6 @@ import { Flag } from "@/lib/types";
 import QuadrantPage from "@/pages/[quadrant]/index";
 
 const mockState = vi.hoisted(() => ({
-  router: {
-    query: { quadrant: "languages-and-frameworks" },
-    push: vi.fn(),
-    back: vi.fn(),
-  },
   highlight: {
     highlightedIds: [],
     filterActive: false,
@@ -34,10 +29,6 @@ const mockState = vi.hoisted(() => ({
 
 vi.mock("next/head", () => ({
   default: ({ children }: any) => <>{children}</>,
-}));
-
-vi.mock("next/router", () => ({
-  useRouter: vi.fn(() => mockState.router),
 }));
 
 vi.mock("next/link", () => ({
@@ -188,7 +179,6 @@ describe("Quadrant detail page", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    mockState.router.query = { quadrant: quadrant.id };
     mockState.getAppName.mockReturnValue("Test Radar");
     mockState.getQuadrant.mockImplementation((id: string) =>
       quadrants.find((entry) => entry.id === id),
@@ -206,7 +196,7 @@ describe("Quadrant detail page", () => {
   });
 
   it("renders the quadrant title heading", () => {
-    render(<QuadrantPage />);
+    render(<QuadrantPage quadrantId={quadrant.id} />);
 
     expect(
       screen.getByRole("heading", { name: "Languages & Frameworks" }),
@@ -214,7 +204,7 @@ describe("Quadrant detail page", () => {
   });
 
   it("renders QuadrantRadar with only featured items", () => {
-    render(<QuadrantPage />);
+    render(<QuadrantPage quadrantId={quadrant.id} />);
 
     expect(screen.getByTestId("quadrant-radar")).toBeInTheDocument();
     expect(mockState.quadrantRadarProps).toHaveBeenCalledWith(
@@ -228,7 +218,7 @@ describe("Quadrant detail page", () => {
   });
 
   it("renders ring sections with items grouped by ring", () => {
-    render(<QuadrantPage />);
+    render(<QuadrantPage quadrantId={quadrant.id} />);
 
     expect(screen.getByRole("heading", { name: "Adopt" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Trial" })).toBeInTheDocument();
@@ -238,7 +228,7 @@ describe("Quadrant detail page", () => {
   });
 
   it("renders item links with the correct hrefs", () => {
-    render(<QuadrantPage />);
+    render(<QuadrantPage quadrantId={quadrant.id} />);
 
     expect(screen.getByRole("link", { name: /React/ })).toHaveAttribute(
       "href",
@@ -251,7 +241,7 @@ describe("Quadrant detail page", () => {
   });
 
   it("shows flag tags only for non-default items", () => {
-    render(<QuadrantPage />);
+    render(<QuadrantPage quadrantId={quadrant.id} />);
 
     expect(screen.getByText("new")).toBeInTheDocument();
     expect(screen.getByText("changed")).toBeInTheDocument();
@@ -259,14 +249,14 @@ describe("Quadrant detail page", () => {
   });
 
   it("shows Hidden tag for non-featured items", () => {
-    render(<QuadrantPage />);
+    render(<QuadrantPage quadrantId={quadrant.id} />);
 
     const hiddenTags = screen.getAllByText("Hidden");
     expect(hiddenTags).toHaveLength(2);
   });
 
   it("updates highlighted ids on item hover", () => {
-    render(<QuadrantPage />);
+    render(<QuadrantPage quadrantId={quadrant.id} />);
 
     const denoLink = screen.getByRole("link", { name: /Deno/ });
     fireEvent.mouseEnter(denoLink);
@@ -285,9 +275,7 @@ describe("Quadrant detail page", () => {
   });
 
   it("returns null when the quadrant is not found", () => {
-    mockState.router.query = { quadrant: "missing" };
-
-    const { container } = render(<QuadrantPage />);
+    const { container } = render(<QuadrantPage quadrantId="missing" />);
 
     expect(container).toBeEmptyDOMElement();
   });

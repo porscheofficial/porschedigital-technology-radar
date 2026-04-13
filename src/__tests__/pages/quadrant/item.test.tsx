@@ -4,11 +4,6 @@ import { Flag } from "@/lib/types";
 import ItemPage, { getStaticPaths } from "@/pages/[quadrant]/[id]";
 
 const mockState = vi.hoisted(() => ({
-  router: {
-    query: { quadrant: "languages-and-frameworks", id: "react" },
-    push: vi.fn(),
-    back: vi.fn(),
-  },
   getAppName: vi.fn(),
   getItem: vi.fn(),
   getItems: vi.fn(),
@@ -18,10 +13,6 @@ const mockState = vi.hoisted(() => ({
 
 vi.mock("next/head", () => ({
   default: ({ children }: any) => <>{children}</>,
-}));
-
-vi.mock("next/router", () => ({
-  useRouter: vi.fn(() => mockState.router),
 }));
 
 vi.mock("@/components/ItemDetail/ItemDetail", () => ({
@@ -62,7 +53,6 @@ describe("Item detail page", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    mockState.router.query = { quadrant: quadrant.id, id: item.id };
     mockState.getAppName.mockReturnValue("Test Radar");
     mockState.getQuadrant.mockReturnValue(quadrant);
     mockState.getItem.mockReturnValue(item);
@@ -70,13 +60,13 @@ describe("Item detail page", () => {
   });
 
   it("renders the item title", () => {
-    render(<ItemPage />);
+    render(<ItemPage quadrantId={quadrant.id} itemId={item.id} />);
 
     expect(screen.getByTestId("item-detail")).toHaveTextContent("React");
   });
 
   it("renders ItemDetail with the correct props", () => {
-    render(<ItemPage />);
+    render(<ItemPage quadrantId={quadrant.id} itemId={item.id} />);
 
     expect(mockState.itemDetailProps).toHaveBeenCalledWith({
       item,
@@ -87,7 +77,9 @@ describe("Item detail page", () => {
   it("returns null when the item is not found", () => {
     mockState.getItem.mockReturnValue(undefined);
 
-    const { container } = render(<ItemPage />);
+    const { container } = render(
+      <ItemPage quadrantId={quadrant.id} itemId={item.id} />,
+    );
 
     expect(container).toBeEmptyDOMElement();
   });
@@ -95,13 +87,15 @@ describe("Item detail page", () => {
   it("returns null when the quadrant is not found", () => {
     mockState.getQuadrant.mockReturnValue(undefined);
 
-    const { container } = render(<ItemPage />);
+    const { container } = render(
+      <ItemPage quadrantId={quadrant.id} itemId={item.id} />,
+    );
 
     expect(container).toBeEmptyDOMElement();
   });
 
   it("creates static paths for all item detail pages", async () => {
-    await expect(getStaticPaths()).resolves.toEqual({
+    await expect(getStaticPaths({} as any)).resolves.toEqual({
       paths: [{ params: { quadrant: quadrant.id, id: item.id } }],
       fallback: false,
     });

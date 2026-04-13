@@ -3,9 +3,9 @@ import {
   PTag,
   PText,
 } from "@porsche-design-system/components-react/ssr";
+import type { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { QuadrantRadar } from "@/components/QuadrantRadar/QuadrantRadar";
@@ -27,9 +27,12 @@ import { cn } from "@/lib/utils";
 import type { CustomPage } from "@/pages/_app";
 import styles from "./quadrant.module.scss";
 
-const QuadrantPage: CustomPage = () => {
-  const { query } = useRouter();
-  const quadrant = getQuadrant(query.quadrant as string);
+interface QuadrantPageProps {
+  quadrantId: string;
+}
+
+const QuadrantPage: CustomPage<QuadrantPageProps> = ({ quadrantId }) => {
+  const quadrant = getQuadrant(quadrantId);
   const allQuadrants = getQuadrants();
   const rings = getRings();
   const { setHighlight } = useRadarHighlight();
@@ -232,7 +235,7 @@ const QuadrantPage: CustomPage = () => {
 
 export default QuadrantPage;
 
-export const getStaticPaths = async () => {
+export const getStaticPaths: GetStaticPaths = async () => {
   const quadrants = getQuadrants();
   const paths = quadrants.map((quadrant) => ({
     params: { quadrant: quadrant.id },
@@ -241,6 +244,8 @@ export const getStaticPaths = async () => {
   return { paths, fallback: false };
 };
 
-export const getStaticProps = async () => {
-  return { props: {} };
+export const getStaticProps: GetStaticProps<QuadrantPageProps> = async ({
+  params,
+}) => {
+  return { props: { quadrantId: params?.quadrant as string } };
 };

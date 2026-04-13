@@ -188,8 +188,8 @@ const QuadrantPage: CustomPage<QuadrantPageProps> = ({ quadrantId }) => {
                           onMouseEnter={() => handleItemEnter(item.id)}
                           onMouseLeave={handleItemLeave}
                         >
-                          <div className={styles.itemContent}>
-                            <div className={styles.itemTitleRow}>
+                          <span className={styles.itemContent}>
+                            <span className={styles.itemTitleRow}>
                               <span className={styles.itemTitleLink}>
                                 {item.title}
                               </span>
@@ -206,9 +206,10 @@ const QuadrantPage: CustomPage<QuadrantPageProps> = ({ quadrantId }) => {
                                   Hidden
                                 </PTag>
                               )}
-                            </div>
+                            </span>
                             {item.body && (
                               <SafeHtml
+                                as="span"
                                 html={item.body}
                                 className={styles.itemDescription}
                               />
@@ -218,7 +219,7 @@ const QuadrantPage: CustomPage<QuadrantPageProps> = ({ quadrantId }) => {
                                 read more…
                               </span>
                             )}
-                          </div>
+                          </span>
                         </Link>
                       </li>
                     );

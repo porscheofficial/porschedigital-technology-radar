@@ -141,11 +141,21 @@ describe("Positioner", () => {
 
   it("keeps positions within the correct quadrant angular sweep", () => {
     const positioner = new Positioner(size, quadrants, rings);
+    // Ranges account for ±1° rounding tolerance because Positioner
+    // rounds pixel coordinates (Math.round) and the test recovers
+    // the angle via atan2, which amplifies sub-pixel rounding error.
+    const roundingTolerance = 1;
     const expectedRanges: Record<string, [number, number]> = {
-      "languages-and-frameworks": [280, 350],
-      "methods-and-patterns": [10, 80],
-      "platforms-and-operations": [100, 170],
-      tools: [190, 260],
+      "languages-and-frameworks": [
+        280 - roundingTolerance,
+        350 + roundingTolerance,
+      ],
+      "methods-and-patterns": [10 - roundingTolerance, 80 + roundingTolerance],
+      "platforms-and-operations": [
+        100 - roundingTolerance,
+        170 + roundingTolerance,
+      ],
+      tools: [190 - roundingTolerance, 260 + roundingTolerance],
     };
 
     for (const quadrant of quadrants) {

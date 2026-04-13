@@ -537,6 +537,43 @@ describe("buildData", () => {
       expect(revisions[1]).toMatchObject({ body: "", bodyInherited: true });
     });
 
+    it("marks bodyInherited in the directory-merge path (dated subdirectories)", async () => {
+      writeFile(
+        "2024-01/ab-testing.md",
+        "---\nring: assess\nquadrant: tools\nteams:\n  - alpha\n---\nShared description",
+      );
+      writeFile(
+        "2025-01/ab-testing.md",
+        "---\nring: assess\nquadrant: tools\nteams:\n  - alpha\n  - beta\n---\nShared description",
+      );
+
+      const result = await buildData.parseDirectory(tmpDir);
+      const item = result.items.find((i) => i.id === "ab-testing");
+      const revisions = item?.revisions ?? [];
+
+      expect(revisions).toHaveLength(2);
+      expect(revisions[0].bodyInherited).toBeUndefined();
+      expect(revisions[1]).toMatchObject({ bodyInherited: true });
+    });
+
+    it("does not mark bodyInherited when body differs across dated subdirectories", async () => {
+      writeFile(
+        "2024-01/item.md",
+        "---\nring: adopt\nquadrant: tools\n---\nOriginal body",
+      );
+      writeFile(
+        "2025-01/item.md",
+        "---\nring: adopt\nquadrant: tools\n---\nUpdated body",
+      );
+
+      const result = await buildData.parseDirectory(tmpDir);
+      const revisions = result.items[0].revisions ?? [];
+
+      expect(revisions).toHaveLength(2);
+      expect(revisions[0].bodyInherited).toBeUndefined();
+      expect(revisions[1].bodyInherited).toBeUndefined();
+    });
+
     it("counts invalid frontmatter errors, keeps valid items, sorts by title, and traverses nested directories", async () => {
       writeFile(
         "group-a/2024-01/zeta.md",

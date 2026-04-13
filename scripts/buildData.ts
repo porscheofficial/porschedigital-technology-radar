@@ -171,6 +171,15 @@ export async function parseDirectory(dirPath: string): Promise<{
               ...(existing.revisions ?? []),
               ...item.revisions,
             ];
+            // Mark revisions whose body is identical to the previous revision
+            // (mirrors the same check done in the file-level merge branch)
+            for (let i = 1; i < existing.revisions.length; i++) {
+              const rev = existing.revisions[i];
+              const prev = existing.revisions[i - 1];
+              if (rev.body === "" || rev.body === prev.body) {
+                rev.bodyInherited = true;
+              }
+            }
           }
         }
       }

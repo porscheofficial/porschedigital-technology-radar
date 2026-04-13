@@ -24,7 +24,6 @@ const mockState = vi.hoisted(() => ({
   groupItemsByRing: vi.fn(),
   sortByFeaturedAndTitle: vi.fn(),
   quadrantRadarProps: vi.fn(),
-  safeHtmlProps: vi.fn(),
 }));
 
 vi.mock("next/head", () => ({
@@ -52,13 +51,6 @@ vi.mock("@/components/QuadrantRadar/QuadrantRadar", () => ({
   QuadrantRadar: (props: any) => {
     mockState.quadrantRadarProps(props);
     return <div data-testid="quadrant-radar" />;
-  },
-}));
-
-vi.mock("@/components/SafeHtml/SafeHtml", () => ({
-  SafeHtml: ({ html }: any) => {
-    mockState.safeHtmlProps({ html });
-    return <div data-testid="safe-html">{html}</div>;
   },
 }));
 

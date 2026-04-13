@@ -9,7 +9,6 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { QuadrantRadar } from "@/components/QuadrantRadar/QuadrantRadar";
-import { SafeHtml } from "@/components/SafeHtml/SafeHtml";
 import { blipSvgMap } from "@/lib/blipIcons";
 import {
   getItems,
@@ -20,7 +19,7 @@ import {
   groupItemsByRing,
   sortByFeaturedAndTitle,
 } from "@/lib/data";
-import { formatTitle } from "@/lib/format";
+import { formatTitle, stripHtml } from "@/lib/format";
 import { useRadarHighlight } from "@/lib/RadarHighlightContext";
 import { Flag } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -208,11 +207,9 @@ const QuadrantPage: CustomPage<QuadrantPageProps> = ({ quadrantId }) => {
                               )}
                             </span>
                             {item.body && (
-                              <SafeHtml
-                                as="span"
-                                html={item.body}
-                                className={styles.itemDescription}
-                              />
+                              <span className={styles.itemDescription}>
+                                {stripHtml(item.body)}
+                              </span>
                             )}
                             {item.body && (
                               <span className={styles.readMore}>

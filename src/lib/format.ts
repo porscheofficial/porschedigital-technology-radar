@@ -34,3 +34,7 @@ export function formatReleaseCompact(release: string): string {
     year: "2-digit",
   });
 }
+
+export function stripHtml(html: string): string {
+  return html.replace(/<[^>]*>/g, "").trim();
+}

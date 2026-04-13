@@ -429,6 +429,80 @@ describe("buildData", () => {
       });
     });
 
+    it("clears teams when a later revision has no teams", async () => {
+      writeFile(
+        "2024-01/item.md",
+        [
+          "---",
+          'title: "Item"',
+          "ring: adopt",
+          "quadrant: languages-and-frameworks",
+          "teams:",
+          "  - alpha",
+          "---",
+          "Body",
+        ].join("\n"),
+      );
+      writeFile(
+        "2024-02/item.md",
+        [
+          "---",
+          'title: "Item"',
+          "ring: adopt",
+          "quadrant: languages-and-frameworks",
+          "---",
+          "Body",
+        ].join("\n"),
+      );
+
+      const result = await buildData.parseDirectory(tmpDir);
+      const item = result.items[0];
+
+      expect(item.teams).toEqual([]);
+      expect(item.revisions).toHaveLength(2);
+      expect(item.revisions?.[0]).toMatchObject({
+        release: "2024-01",
+        teams: ["alpha"],
+      });
+      expect(item.revisions?.[1]).toMatchObject({
+        release: "2024-02",
+        teams: [],
+      });
+    });
+
+    it("clears tags when a later revision has no tags", async () => {
+      writeFile(
+        "2024-01/item.md",
+        [
+          "---",
+          'title: "Item"',
+          "ring: adopt",
+          "quadrant: languages-and-frameworks",
+          "tags:",
+          "  - frontend",
+          "---",
+          "Body",
+        ].join("\n"),
+      );
+      writeFile(
+        "2024-02/item.md",
+        [
+          "---",
+          'title: "Item"',
+          "ring: adopt",
+          "quadrant: languages-and-frameworks",
+          "---",
+          "Body",
+        ].join("\n"),
+      );
+
+      const result = await buildData.parseDirectory(tmpDir);
+      const item = result.items[0];
+
+      expect(item.tags).toEqual([]);
+      expect(item.revisions).toHaveLength(2);
+    });
+
     it("marks bodyInherited when a later duplicate has the same body", async () => {
       writeFile(
         "2024-01/vue.md",

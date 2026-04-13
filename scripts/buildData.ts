@@ -163,10 +163,8 @@ export async function parseDirectory(dirPath: string): Promise<{
           existing.title = item.title || existing.title;
           existing.ring = item.ring || existing.ring;
           existing.quadrant = item.quadrant || existing.quadrant;
-          existing.tags =
-            (item.tags?.length ?? 0) > 0 ? item.tags : existing.tags;
-          existing.teams =
-            (item.teams?.length ?? 0) > 0 ? item.teams : existing.teams;
+          existing.tags = item.tags ?? existing.tags;
+          existing.teams = item.teams ?? existing.teams;
           existing.featured = item.featured;
           if (item.revisions) {
             existing.revisions = [

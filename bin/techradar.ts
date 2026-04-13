@@ -80,8 +80,15 @@ function startDevServer(
   }
 }
 
-function hashFile(filePath: string): string {
-  return createHash("sha256").update(readFileSync(filePath)).digest("hex");
+/** Combined hash of consumer package.json + installed package's package.json. */
+function buildDirHash(): string {
+  const hash = createHash("sha256");
+  hash.update(readFileSync(join(CWD, "package.json")));
+  const sourcePkg = join(SOURCE_DIR, "package.json");
+  if (existsSync(sourcePkg)) {
+    hash.update(readFileSync(sourcePkg));
+  }
+  return hash.digest("hex");
 }
 
 function scaffold(
@@ -129,10 +136,11 @@ function ensureGitignore(): void {
 
 /**
  * Ensure .techradar/ shadow build directory is in sync with the installed
- * package. Re-creates it when the consumer's package.json hash changes.
+ * package. Re-creates it when the consumer's package.json or the installed
+ * package changes (e.g. after npm update).
  */
 function ensureBuildDir(): void {
-  const currentHash = hashFile(join(CWD, "package.json"));
+  const currentHash = buildDirHash();
   const hashMatches =
     existsSync(BUILDER_DIR) &&
     existsSync(HASH_FILE) &&

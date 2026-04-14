@@ -13,6 +13,12 @@ import { Flag, type Item } from "@/lib/types";
 import nextConfig from "../next.config.js";
 import config from "../src/lib/config";
 import Positioner from "./positioner";
+import {
+  type BlipLookup,
+  getUnresolvedCount,
+  remarkWikiLink,
+  resetUnresolvedCount,
+} from "./remarkWikiLink";
 import { parseRadarFrontmatter } from "./validateFrontmatter";
 
 // ---------------------------------------------------------------------------
@@ -105,21 +111,32 @@ export function visit(
   walk(tree);
 }
 
-const processor = unified()
-  .use(remarkParse)
-  .use(remarkGfm)
-  .use(remarkRehype)
-  .use(rehypeStripHtmlExtension)
-  .use(rehypeBasePathLinks)
-  .use(rehypeExternalLinks, {
-    target: "_blank",
-    rel: ["noopener", "noreferrer"],
-  })
-  .use(rehypePdsExternalLinks)
-  .use(rehypeHighlight, { prefix: "hljs language-" })
-  .use(rehypeStringify);
+export function createProcessor(blipLookup?: BlipLookup, strict?: boolean) {
+  const pipeline = unified().use(remarkParse).use(remarkGfm);
 
-export async function convertToHtml(markdown: string): Promise<string> {
+  if (blipLookup) {
+    pipeline.use(remarkWikiLink, { lookup: blipLookup, strict });
+  }
+
+  return pipeline
+    .use(remarkRehype)
+    .use(rehypeStripHtmlExtension)
+    .use(rehypeBasePathLinks)
+    .use(rehypeExternalLinks, {
+      target: "_blank",
+      rel: ["noopener", "noreferrer"],
+    })
+    .use(rehypePdsExternalLinks)
+    .use(rehypeHighlight, { prefix: "hljs language-" })
+    .use(rehypeStringify);
+}
+
+const defaultProcessor = createProcessor();
+
+export async function convertToHtml(
+  markdown: string,
+  processor = defaultProcessor,
+): Promise<string> {
   const result = await processor.process(markdown.trim());
   return String(result);
 }
@@ -146,19 +163,58 @@ export function compareArrays(arr1: unknown[] = [], arr2: unknown[] = []) {
   );
 }
 
+export function preScanBlipLookup(dirPath: string): BlipLookup {
+  const lookup: BlipLookup = new Map();
+
+  function scan(dir: string): void {
+    const entries = fs
+      .readdirSync(dir, { withFileTypes: true })
+      .sort((a, b) => a.name.localeCompare(b.name));
+
+    for (const entry of entries) {
+      const fullPath = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        scan(fullPath);
+      } else if (entry.isFile() && entry.name.endsWith(".md")) {
+        const id = path.basename(fullPath, ".md");
+        if (lookup.has(id)) continue;
+
+        const fileContent = fs.readFileSync(fullPath, "utf8");
+        const { data } = matter(fileContent);
+        const frontmatter = parseRadarFrontmatter(data, fullPath);
+        if (frontmatter) {
+          lookup.set(id, {
+            title: frontmatter.title ?? id,
+            quadrant: frontmatter.quadrant,
+          });
+        }
+      }
+    }
+  }
+
+  scan(dirPath);
+  return lookup;
+}
+
 // ---------------------------------------------------------------------------
 // Parse markdown files
 // ---------------------------------------------------------------------------
 
-export async function readMarkdownFile(filePath: string) {
+export async function readMarkdownFile(
+  filePath: string,
+  processor = defaultProcessor,
+) {
   const id = path.basename(filePath, ".md");
   const fileContent = fs.readFileSync(filePath, "utf8");
   const { data, content } = matter(fileContent);
-  const body = await convertToHtml(content);
+  const body = await convertToHtml(content, processor);
   return { id, data, body };
 }
 
-export async function parseDirectory(dirPath: string): Promise<{
+export async function parseDirectory(
+  dirPath: string,
+  processor = defaultProcessor,
+): Promise<{
   items: Item[];
   errors: number;
 }> {
@@ -172,7 +228,7 @@ export async function parseDirectory(dirPath: string): Promise<{
   for (const entry of entries) {
     const fullPath = path.join(dirPath, entry.name);
     if (entry.isDirectory()) {
-      const sub = await parseDirectory(fullPath);
+      const sub = await parseDirectory(fullPath, processor);
       for (const item of sub.items) {
         if (!items[item.id]) {
           items[item.id] = item;
@@ -207,7 +263,7 @@ export async function parseDirectory(dirPath: string): Promise<{
       errors += sub.errors;
     } else if (entry.isFile() && entry.name.endsWith(".md")) {
       const releaseDate = path.basename(path.dirname(fullPath));
-      const { id, data, body } = await readMarkdownFile(fullPath);
+      const { id, data, body } = await readMarkdownFile(fullPath, processor);
       const frontmatter = parseRadarFrontmatter(data, fullPath);
 
       if (!frontmatter) {
@@ -390,7 +446,12 @@ async function main() {
 
   consola.start("Building radar data...");
 
-  const { items, errors } = await parseDirectory(dataPath("radar"));
+  const radarDir = dataPath("radar");
+  const blipLookup = preScanBlipLookup(radarDir);
+  resetUnresolvedCount();
+  const wikiProcessor = createProcessor(blipLookup, isStrict);
+
+  const { items, errors } = await parseDirectory(radarDir, wikiProcessor);
 
   if (errors > 0) {
     consola.warn(`${errors} file(s) had invalid frontmatter`);
@@ -398,6 +459,14 @@ async function main() {
       consola.fatal("Aborting — strict mode enabled");
       process.exit(1);
     }
+  }
+
+  const unresolved = getUnresolvedCount();
+  if (unresolved > 0 && isStrict) {
+    consola.fatal(
+      `${unresolved} unresolved wiki-link(s) — aborting (strict mode)`,
+    );
+    process.exit(1);
   }
 
   const data = postProcessItems(items);

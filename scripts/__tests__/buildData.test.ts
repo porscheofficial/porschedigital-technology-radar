@@ -319,6 +319,115 @@ describe("buildData", () => {
     });
   });
 
+  describe("wiki-link integration", () => {
+    it("resolves wiki-links via createProcessor with a blip lookup", async () => {
+      const lookup = new Map([
+        ["react", { title: "React", quadrant: "languages-and-frameworks" }],
+      ]);
+      const processor = buildData.createProcessor(lookup);
+      const html = await buildData.convertToHtml(
+        "See [[react]] for details.",
+        processor,
+      );
+
+      expect(html).toContain(
+        '<a href="/technology-radar/languages-and-frameworks/react">React</a>',
+      );
+    });
+
+    it("resolves wiki-links with custom labels", async () => {
+      const lookup = new Map([
+        [
+          "kubernetes",
+          { title: "Kubernetes", quadrant: "platforms-and-operations" },
+        ],
+      ]);
+      const processor = buildData.createProcessor(lookup);
+      const html = await buildData.convertToHtml(
+        "[[kubernetes|our K8s]]",
+        processor,
+      );
+
+      expect(html).toContain(
+        '<a href="/technology-radar/platforms-and-operations/kubernetes">our K8s</a>',
+      );
+    });
+
+    it("renders unresolved wiki-links as plain text", async () => {
+      const processor = buildData.createProcessor(new Map());
+      const html = await buildData.convertToHtml(
+        "Check [[nonexistent]]",
+        processor,
+      );
+
+      expect(html).toContain("nonexistent");
+      expect(html).not.toContain("<a");
+    });
+
+    it("preScanBlipLookup builds lookup from markdown frontmatter", () => {
+      writeFile(
+        "2024-01/typescript.md",
+        [
+          "---",
+          'title: "TypeScript"',
+          "ring: adopt",
+          "quadrant: languages-and-frameworks",
+          "---",
+          "Body",
+        ].join("\n"),
+      );
+      writeFile(
+        "2024-01/react.md",
+        [
+          "---",
+          'title: "React"',
+          "ring: trial",
+          "quadrant: languages-and-frameworks",
+          "---",
+          "Body",
+        ].join("\n"),
+      );
+
+      const lookup = buildData.preScanBlipLookup(tmpDir);
+
+      expect(lookup.size).toBe(2);
+      expect(lookup.get("typescript")).toEqual({
+        title: "TypeScript",
+        quadrant: "languages-and-frameworks",
+      });
+      expect(lookup.get("react")).toEqual({
+        title: "React",
+        quadrant: "languages-and-frameworks",
+      });
+    });
+
+    it("preScanBlipLookup uses id as title when title is omitted", () => {
+      writeFile(
+        "2024-01/my-tool.md",
+        "---\nring: adopt\nquadrant: tools\n---\nBody",
+      );
+
+      const lookup = buildData.preScanBlipLookup(tmpDir);
+      expect(lookup.get("my-tool")?.title).toBe("my-tool");
+    });
+
+    it("preScanBlipLookup skips files with invalid frontmatter", () => {
+      writeFile(
+        "2024-01/valid.md",
+        "---\ntitle: Valid\nring: adopt\nquadrant: tools\n---\nBody",
+      );
+      writeFile(
+        "2024-01/invalid.md",
+        "---\nring: bad-ring\nquadrant: tools\n---\nBody",
+      );
+
+      const lookup = buildData.preScanBlipLookup(tmpDir);
+      expect(lookup.size).toBe(1);
+      expect(lookup.has("valid")).toBe(true);
+      expect(lookup.has("invalid")).toBe(false);
+    });
+  });
+
   describe("readMarkdownFile", () => {
     it("reads frontmatter, derives id, and converts markdown body to html", async () => {
       writeFile(

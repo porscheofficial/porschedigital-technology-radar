@@ -257,8 +257,12 @@ Each file has a YAML front-matter header followed by Markdown content:
 title: "React"
 ring: adopt
 quadrant: languages-and-frameworks
-tags: [frontend, javascript]
-teams: [web-platform, mobile]
+tags:
+  - frontend
+  - javascript
+teams:
+  - web-platform
+  - mobile
 links:
   - url: https://react.dev
     name: Official Docs
@@ -293,6 +297,24 @@ Place images in `public/images/` and reference them in Markdown:
 ![Architecture diagram](/images/architecture.png)
 ```
 
+### Cross-linking blips
+
+Use wiki-link syntax to link between radar items. The build resolves each link to the correct URL based on the item's quadrant:
+
+```markdown
+We use [[typescript]] alongside [[react]] for our frontend stack.
+See also [[kubernetes|our K8s setup]] for deployment details.
+```
+
+| Syntax | Rendered as |
+| --- | --- |
+| `[[item-id]]` | Link using the item's title as label |
+| `[[item-id\|custom label]]` | Link using a custom label |
+
+The `item-id` is the Markdown filename without the `.md` extension (e.g., `typescript.md` → `typescript`).
+
+Unresolved wiki-links (referencing a non-existent item) are rendered as plain text with a build warning. In strict mode (`--strict`), unresolved wiki-links cause the build to fail.
+
 ## Development (contributing to the generator)
 
 To work on the radar generator itself:
@@ -312,6 +334,30 @@ The build pipeline:
 3. `next build` — builds the static site into `out/`
 
 The `npm run build` command runs all three steps in sequence.
+
+### Strict mode
+
+Pass `--strict` to turn warnings into errors during the data build step.
+
+**Consumer projects** (using the CLI):
+
+```bash
+npx techradar --strict build
+npx techradar --strict dev
+```
+
+**This repository** (development):
+
+```bash
+npm run build:data -- --strict
+```
+
+In strict mode, the build fails on:
+
+- Invalid frontmatter (missing or invalid `ring`, `quadrant`, etc.)
+- Unresolved wiki-links (e.g., `[[nonexistent-item]]`)
+
+This is recommended for CI pipelines to catch issues before deployment.
 
 ## Custom Styling
 

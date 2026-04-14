@@ -12,4 +12,4 @@ teams:
   - macan
 ---
 
-Vitest is now adopted by all teams. The Macan team uses it for testing their data visualization components. Browser mode has enabled us to consolidate component integration tests that previously required Cypress, simplifying our testing infrastructure. Average CI test time across all projects is under 90 seconds.
+Vitest is now adopted by all teams. The Macan team uses it for testing their data visualization components. Browser mode has enabled us to consolidate component integration tests that previously required Cypress, simplifying our testing infrastructure alongside [[storybook|Storybook's]] visual regression testing. All tests are written in [[typescript]]. Average CI test time across all projects is under 90 seconds.

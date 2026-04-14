@@ -12,7 +12,7 @@ teams:
   - taycan
 ---
 
-Kubernetes remains our standard container orchestration platform. Recent improvements include migration to Cilium for eBPF-based networking, implementation of Crossplane for infrastructure-as-code within K8s, and adoption of Kyverno for policy enforcement. Our platform team now supports 50+ production services across all teams.
+Kubernetes remains our standard container orchestration platform. Recent improvements include migration to Cilium for eBPF-based networking, implementation of Crossplane for infrastructure-as-code within K8s, and adoption of Kyverno for policy enforcement. Our platform team now supports 50+ production services across all teams, with observability powered by [[opentelemetry]] and [[dash0]]. We are actively consolidating [[aws-lambda]] workloads onto the platform.
 
 ## Platform Overview
 

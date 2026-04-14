@@ -23,6 +23,11 @@ scripts/validateFrontmatter.ts (Zod schema + frontmatter validation — shared)
         |
         v
 scripts/buildData.ts        (@11ty/gray-matter + unified/rehype + consola)
+  ├─ preScanBlipLookup()    (pass 1: extract id→quadrant map from frontmatter)
+  └─ parseDirectory()       (pass 2: full markdown→HTML with wiki-link resolution)
+        |
+        v
+scripts/remarkWikiLink.ts   (remark plugin: [[id]] / [[id|label]] → internal links)
         |
         v
 data/data.json              (generated, gitignored)

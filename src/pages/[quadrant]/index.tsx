@@ -116,6 +116,15 @@ const QuadrantPage: CustomPage<QuadrantPageProps> = ({ quadrantId }) => {
       </Head>
 
       <div className={styles.page}>
+        <div className={styles.mobileHeader}>
+          <PHeading size="large" tag="h1">
+            {quadrant.title}
+          </PHeading>
+          {quadrant.description && (
+            <PText className={styles.description}>{quadrant.description}</PText>
+          )}
+        </div>
+
         <div className={styles.stickyCol}>
           <div className={styles.radarWrap}>
             <PHeading size="x-large" tag="h1">

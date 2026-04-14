@@ -6,6 +6,10 @@
   gap: $pds-spacing-fluid-medium;
 }
 
+.mobileHeader {
+  display: block;
+}
+
 .stickyCol {
   display: none;
 }
@@ -148,6 +152,10 @@
 @media (min-width: 900px) {
   .page {
     grid-template-columns: minmax(340px, 1fr) minmax(320px, 1fr);
+  }
+
+  .mobileHeader {
+    display: none;
   }
 
   .stickyCol {

@@ -24,6 +24,9 @@ vi.mock("@porsche-design-system/components-react/ssr", () => ({
       {children}
     </a>
   ),
+  PText: ({ children, ...rest }: ComponentProps<"span">) => (
+    <span {...rest}>{children}</span>
+  ),
 }));
 
 describe("MobileQuadrantNav", () => {

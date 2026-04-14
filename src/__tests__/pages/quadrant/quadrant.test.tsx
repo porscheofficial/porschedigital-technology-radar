@@ -191,9 +191,10 @@ describe("Quadrant detail page", () => {
   it("renders the quadrant title heading", () => {
     render(<QuadrantPage quadrantId={quadrant.id} />);
 
-    expect(
-      screen.getByRole("heading", { name: "Languages & Frameworks" }),
-    ).toBeInTheDocument();
+    const headings = screen.getAllByRole("heading", {
+      name: "Languages & Frameworks",
+    });
+    expect(headings.length).toBeGreaterThanOrEqual(1);
   });
 
   it("renders QuadrantRadar with only featured items", () => {

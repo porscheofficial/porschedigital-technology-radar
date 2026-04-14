@@ -183,9 +183,9 @@ export async function parseDirectory(dirPath: string): Promise<{
           existing.title = item.title || existing.title;
           existing.ring = item.ring || existing.ring;
           existing.quadrant = item.quadrant || existing.quadrant;
-          existing.tags = item.tags ?? existing.tags;
-          existing.teams = item.teams ?? existing.teams;
-          existing.links = item.links ?? existing.links;
+          existing.tags = item.tags;
+          existing.teams = item.teams;
+          existing.links = item.links;
           existing.featured = item.featured;
           if (item.revisions) {
             existing.revisions = [
@@ -217,9 +217,6 @@ export async function parseDirectory(dirPath: string): Promise<{
 
       const teams = getOrderedTeams(frontmatter.teams);
 
-      const links =
-        frontmatter.links.length > 0 ? frontmatter.links : undefined;
-
       if (!items[id]) {
         items[id] = {
           id,
@@ -241,7 +238,7 @@ export async function parseDirectory(dirPath: string): Promise<{
           ],
           position: [0, 0],
           teams: teams ?? [],
-          links,
+          links: frontmatter.links,
         };
       } else {
         const existing = items[id];
@@ -250,10 +247,9 @@ export async function parseDirectory(dirPath: string): Promise<{
         existing.title = frontmatter.title ?? existing.title;
         existing.ring = frontmatter.ring;
         existing.quadrant = frontmatter.quadrant;
-        existing.tags =
-          frontmatter.tags.length > 0 ? frontmatter.tags : existing.tags;
-        existing.teams = teams ?? existing.teams;
-        existing.links = links ?? existing.links;
+        existing.tags = frontmatter.tags;
+        existing.teams = teams;
+        existing.links = frontmatter.links;
         existing.featured = frontmatter.featured;
 
         const prevBody =

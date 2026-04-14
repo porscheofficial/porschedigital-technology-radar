@@ -526,6 +526,79 @@ describe("buildData", () => {
       expect(item.revisions).toHaveLength(2);
     });
 
+    it("overwrites links when a later revision provides new links", async () => {
+      writeFile(
+        "2024-01/item.md",
+        [
+          "---",
+          'title: "Item"',
+          "ring: adopt",
+          "quadrant: languages-and-frameworks",
+          "links:",
+          "  - url: https://old.example.com",
+          "    name: Old Link",
+          "---",
+          "Body",
+        ].join("\n"),
+      );
+      writeFile(
+        "2024-02/item.md",
+        [
+          "---",
+          'title: "Item"',
+          "ring: adopt",
+          "quadrant: languages-and-frameworks",
+          "links:",
+          "  - url: https://new.example.com",
+          "    name: New Link",
+          "  - url: https://docs.example.com",
+          "---",
+          "Body",
+        ].join("\n"),
+      );
+
+      const result = await buildData.parseDirectory(tmpDir);
+      const item = result.items[0];
+
+      expect(item.links).toEqual([
+        { url: "https://new.example.com", name: "New Link" },
+        { url: "https://docs.example.com" },
+      ]);
+    });
+
+    it("clears links when a later revision has no links", async () => {
+      writeFile(
+        "2024-01/item.md",
+        [
+          "---",
+          'title: "Item"',
+          "ring: adopt",
+          "quadrant: languages-and-frameworks",
+          "links:",
+          "  - url: https://example.com",
+          "    name: Example",
+          "---",
+          "Body",
+        ].join("\n"),
+      );
+      writeFile(
+        "2024-02/item.md",
+        [
+          "---",
+          'title: "Item"',
+          "ring: adopt",
+          "quadrant: languages-and-frameworks",
+          "---",
+          "Body",
+        ].join("\n"),
+      );
+
+      const result = await buildData.parseDirectory(tmpDir);
+      const item = result.items[0];
+
+      expect(item.links).toEqual([]);
+    });
+
     it("marks bodyInherited when a later duplicate has the same body", async () => {
       writeFile(
         "2024-01/vue.md",

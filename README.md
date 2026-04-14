@@ -27,7 +27,7 @@ A Technology Radar makes technology decisions visible across your organization. 
 - **Visual technology landscape** — See your entire technology portfolio at a glance, organized by quadrant and maturity ring
 - **Track decisions over time** — Full revision history per technology and a trajectory view across releases, so you can see how assessments evolved
 - **Team visibility** — Understand which teams use which technologies, enabling informed staffing and knowledge-sharing decisions
-- **Searchable and filterable** — Find technologies instantly by name, tag, team, or status with real-time highlighting across the radar
+- **Searchable and filterable** — Find technologies instantly by name, tag, team, or status with real-time highlighting across the radar. Supports configurable multi-select or single-select filtering with shareable filter URLs
 - **Your branding, your rules** — Fully customizable colors, logos, quadrants, rings, and labels via a single `config.json`
 - **Zero infrastructure** — Static site that deploys to GitHub Pages, Netlify, or any hosting. No servers, no databases, no runtime dependencies
 - **Content as code** — Technologies are plain Markdown files in Git. Review changes in PRs, track history with commits, collaborate with your existing workflow
@@ -159,6 +159,7 @@ All configuration lives in `data/config.json`. Any key you omit falls back to th
 | `showChart`      | Show the radar visualization on the homepage. | `true`  |
 | `showTagFilter`  | Show the tag filter below the radar.          | `true`  |
 | `showTeamFilter` | Show the team filter below the radar.         | `true`  |
+| `multiSelectFilters` | Allow selecting multiple filters per dimension (OR semantics within, AND across). When `false`, each dimension allows only one active filter at a time. | `true` |
 
 ### `colors`
 

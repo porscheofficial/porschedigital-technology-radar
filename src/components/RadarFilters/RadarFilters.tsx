@@ -7,17 +7,23 @@ import styles from "./RadarFilters.module.scss";
 
 export function RadarFilters() {
   const {
-    activeFlag,
-    activeTag,
-    activeTeam,
+    activeFlags,
+    activeTags,
+    activeTeams,
+    filterActive,
     toggleFlag,
     toggleTag,
     toggleTeam,
+    clearFilters,
   } = useRadarHighlight();
 
   const flags = getFlags();
   const tags = getTags();
   const teams = getTeams();
+
+  const showTags = getToggle("showTagFilter") && tags.length > 0;
+  const showTeams = getToggle("showTeamFilter") && teams.length > 0;
+  const isMultiSelect = getToggle("multiSelectFilters");
 
   return (
     <section className={styles.filters} aria-label="Filter radar">
@@ -28,7 +34,7 @@ export function RadarFilters() {
         </span>
         <div className={styles.pills}>
           {Object.entries(flags).map(([key, flag]) => {
-            const isActive = activeFlag === key;
+            const isActive = activeFlags.has(key);
             const title = flag.title;
             return (
               <button
@@ -60,7 +66,7 @@ export function RadarFilters() {
         </div>
       </div>
 
-      {getToggle("showTagFilter") && tags.length > 0 && (
+      {showTags && (
         <div className={styles.row}>
           <span className={styles.rowLabel}>
             <PIcon name="filter" size="x-small" aria-hidden="true" />
@@ -68,7 +74,7 @@ export function RadarFilters() {
           </span>
           <div className={styles.pills}>
             {tags.map((tag) => {
-              const isActive = activeTag === tag;
+              const isActive = activeTags.has(tag);
               return (
                 <button
                   key={tag}
@@ -86,7 +92,7 @@ export function RadarFilters() {
         </div>
       )}
 
-      {getToggle("showTeamFilter") && teams.length > 0 && (
+      {showTeams && (
         <div className={styles.row}>
           <span className={styles.rowLabel}>
             <PIcon name="filter" size="x-small" aria-hidden="true" />
@@ -94,7 +100,7 @@ export function RadarFilters() {
           </span>
           <div className={styles.pills}>
             {teams.map((team) => {
-              const isActive = activeTeam === team;
+              const isActive = activeTeams.has(team);
               return (
                 <button
                   key={team}
@@ -112,6 +118,27 @@ export function RadarFilters() {
               );
             })}
           </div>
+        </div>
+      )}
+
+      {isMultiSelect && (
+        <div
+          className={cn(
+            styles.clearRow,
+            !filterActive && styles.clearRowHidden,
+          )}
+        >
+          <button
+            type="button"
+            onClick={clearFilters}
+            className={styles.clearButton}
+            tabIndex={filterActive ? 0 : -1}
+            aria-hidden={!filterActive}
+          >
+            <PTag icon="close" color="background-frosted">
+              clear all filters
+            </PTag>
+          </button>
         </div>
       )}
     </section>

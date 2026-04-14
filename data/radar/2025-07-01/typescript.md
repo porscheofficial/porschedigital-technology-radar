@@ -10,6 +10,13 @@ teams:
   - "911"
   - cayenne
   - macan
+links:
+  - url: https://www.typescriptlang.org
+    name: Official Website
+  - url: https://github.com/microsoft/TypeScript
+    name: GitHub Repository
+  - url: https://www.typescriptlang.org/docs/handbook/intro.html
+    name: TypeScript Handbook
 ---
 
 TypeScript has achieved adopt status across all teams. Every new project and service is written in TypeScript. The Macan team completed their migration of the telemetry API from plain JavaScript, and all teams benefit from shared type definitions via our internal npm packages. TypeScript is now a non-negotiable part of our technology stack.

@@ -67,6 +67,25 @@ export function rehypeStripHtmlExtension() {
   };
 }
 
+/** Rehype plugin: transform external links to PDS <p-link-pure> web components */
+export function rehypePdsExternalLinks() {
+  return (tree: import("hast").Root) => {
+    visit(tree, "element", (node: import("hast").Element) => {
+      if (
+        node.tagName === "a" &&
+        node.properties.target === "_blank" &&
+        typeof node.properties.href === "string"
+      ) {
+        node.tagName = "p-link-pure";
+        node.properties["align-label"] = "start";
+        node.properties.icon = "external";
+        node.properties.underline = "true";
+        node.properties.theme = "dark";
+      }
+    });
+  };
+}
+
 /** Simple hast visitor — walks element nodes */
 export function visit(
   tree: import("hast").Root,
@@ -96,6 +115,7 @@ const processor = unified()
     target: "_blank",
     rel: ["noopener", "noreferrer"],
   })
+  .use(rehypePdsExternalLinks)
   .use(rehypeHighlight, { prefix: "hljs language-" })
   .use(rehypeStringify);
 
@@ -165,6 +185,7 @@ export async function parseDirectory(dirPath: string): Promise<{
           existing.quadrant = item.quadrant || existing.quadrant;
           existing.tags = item.tags ?? existing.tags;
           existing.teams = item.teams ?? existing.teams;
+          existing.links = item.links ?? existing.links;
           existing.featured = item.featured;
           if (item.revisions) {
             existing.revisions = [
@@ -196,6 +217,9 @@ export async function parseDirectory(dirPath: string): Promise<{
 
       const teams = getOrderedTeams(frontmatter.teams);
 
+      const links =
+        frontmatter.links.length > 0 ? frontmatter.links : undefined;
+
       if (!items[id]) {
         items[id] = {
           id,
@@ -217,6 +241,7 @@ export async function parseDirectory(dirPath: string): Promise<{
           ],
           position: [0, 0],
           teams: teams ?? [],
+          links,
         };
       } else {
         const existing = items[id];
@@ -228,6 +253,7 @@ export async function parseDirectory(dirPath: string): Promise<{
         existing.tags =
           frontmatter.tags.length > 0 ? frontmatter.tags : existing.tags;
         existing.teams = teams ?? existing.teams;
+        existing.links = links ?? existing.links;
         existing.featured = frontmatter.featured;
 
         const prevBody =
@@ -351,6 +377,7 @@ export function postProcessItems(items: Item[]): {
     if (!processedItem.revisions?.length) delete processedItem.revisions;
     if (!processedItem.tags?.length) delete processedItem.tags;
     if (!processedItem.teams?.length) delete processedItem.teams;
+    if (!processedItem.links?.length) delete processedItem.links;
 
     return processedItem;
   });

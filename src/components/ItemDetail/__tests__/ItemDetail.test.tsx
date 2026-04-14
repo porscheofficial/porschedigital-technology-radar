@@ -346,4 +346,61 @@ describe("ItemDetail", () => {
       screen.queryByRole("button", { name: "more" }),
     ).not.toBeInTheDocument();
   });
+
+  describe("links section", () => {
+    it("renders links with custom names below the description", () => {
+      renderItemDetail({
+        links: [
+          { url: "https://example.com/docs", name: "Documentation" },
+          { url: "https://github.com/example/repo", name: "GitHub" },
+        ],
+      });
+
+      expect(screen.getByText("Links")).toBeInTheDocument();
+
+      const docsLink = screen.getByRole("link", { name: "Documentation" });
+      expect(docsLink).toHaveAttribute("href", "https://example.com/docs");
+      expect(docsLink).toHaveAttribute("target", "_blank");
+
+      const githubLink = screen.getByRole("link", { name: "GitHub" });
+      expect(githubLink).toHaveAttribute(
+        "href",
+        "https://github.com/example/repo",
+      );
+    });
+
+    it("renders links without names using the formatted URL", () => {
+      renderItemDetail({
+        links: [{ url: "https://www.example.com/path/to/page" }],
+      });
+
+      expect(
+        screen.getByRole("link", { name: "example.com/path/to/page" }),
+      ).toBeInTheDocument();
+    });
+
+    it("does not render the links section when links is undefined", () => {
+      renderItemDetail({ links: undefined });
+
+      expect(screen.queryByText("Links")).not.toBeInTheDocument();
+    });
+
+    it("does not render the links section when links is empty", () => {
+      renderItemDetail({ links: [] });
+
+      expect(screen.queryByText("Links")).not.toBeInTheDocument();
+    });
+
+    it("renders links even when body is empty", () => {
+      renderItemDetail({
+        body: "",
+        links: [{ url: "https://example.com", name: "Example" }],
+      });
+
+      expect(screen.getByRole("link", { name: "Example" })).toHaveAttribute(
+        "href",
+        "https://example.com",
+      );
+    });
+  });
 });

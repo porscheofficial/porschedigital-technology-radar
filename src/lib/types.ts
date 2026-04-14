@@ -17,6 +17,11 @@ export interface Revision {
   removedTeams?: string[];
 }
 
+export interface ItemLink {
+  url: string;
+  name?: string;
+}
+
 export interface Item {
   id: string;
   title: string;
@@ -33,6 +38,7 @@ export interface Item {
   teams?: string[];
   addedTeams?: string[];
   removedTeams?: string[];
+  links?: ItemLink[];
 }
 
 export interface Ring {

@@ -14,7 +14,7 @@ import { SafeHtml } from "@/components/SafeHtml/SafeHtml";
 import { Tag } from "@/components/Tags/Tags";
 import { Team, Teams } from "@/components/Teams/Teams";
 import { getEditUrl, getLabel, getReleases, getRing } from "@/lib/data";
-import type { Item, Revision } from "@/lib/types";
+import type { Item, ItemLink, Revision } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import styles from "./ItemDetail.module.scss";
 
@@ -32,6 +32,16 @@ function stripHtml(html: string): string {
 function truncate(text: string, maxLength: number): string {
   if (text.length <= maxLength) return text;
   return `${text.slice(0, maxLength).trimEnd()}…`;
+}
+
+function formatLinkLabel(link: ItemLink): string {
+  if (link.name) return link.name;
+  try {
+    const url = new URL(link.url);
+    return url.hostname.replace(/^www\./, "") + url.pathname.replace(/\/$/, "");
+  } catch {
+    return link.url;
+  }
 }
 
 interface ItemProps {
@@ -127,9 +137,34 @@ export function ItemDetail({ item, quadrantTitle }: ItemProps) {
               </div>
             )}
           </div>
-          {item.body && (
+          {(item.body || (item.links && item.links.length > 0)) && (
             <div className={cn(styles.bentoCell, styles.cellDescription)}>
-              <SafeHtml className={styles.description} html={item.body} />
+              {item.body && (
+                <SafeHtml className={styles.description} html={item.body} />
+              )}
+              {!!item.links && item.links.length > 0 && (
+                <div className={styles.linksSection}>
+                  <div className={styles.linksSeparator}>
+                    <span className={styles.linksSeparatorLabel}>Links</span>
+                  </div>
+                  <ul className={styles.linksList}>
+                    {item.links.map((link) => (
+                      <li key={link.url}>
+                        <PLinkPure
+                          href={link.url}
+                          target="_blank"
+                          icon="external"
+                          alignLabel="start"
+                          stretch={false}
+                          underline={true}
+                        >
+                          {formatLinkLabel(link)}
+                        </PLinkPure>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           )}
         </div>

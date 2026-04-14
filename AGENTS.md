@@ -160,6 +160,10 @@ NEVER skip writing tests by saying "tests can be added later."
 
 ## Conventions
 
+### Configuration ↔ README Sync
+
+Any change to `data/config.default.json` or `scripts/validateFrontmatter.ts` (new keys, renamed keys, changed defaults, new frontmatter attributes) MUST be reflected in the corresponding section of `README.md` (Configuration tables and/or Front-matter attributes table). Never ship a config or schema change without updating the README.
+
 ### TypeScript
 
 - Strict mode, no `any` (except test mock factories)

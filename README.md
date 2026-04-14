@@ -143,7 +143,7 @@ All configuration lives in `data/config.json`. Any key you omit falls back to th
 | ------------------- | -------------------------------------------------------------------------------------------------- | ------- |
 | `basePath`          | URL path prefix. Set to `/` for root hosting, or `/techradar` for a sub-path.                      | `/`     |
 | `baseUrl`           | Full URL where the radar is hosted. Used for `sitemap.xml`.                                        | `""`    |
-| `editUrl`           | If set, shows an edit button on item pages. Supports `{id}` and `{release}` placeholders.          | `""`    |
+| `editUrl`           | If set, shows an edit button on item pages. Supports `{id}` and `{release}` placeholders. Example: `https://github.dev/org/repo/blob/main/data/radar/{release}/{id}.md` | `""`    |
 | `headerLogoFile`    | Path to a logo image in `public/` for the header. Leave empty to use the default Porsche crest.    | `""`    |
 | `footerLogoFile`    | Path to a logo image in `public/` for the footer. Leave empty to use the default Porsche wordmark. | `""`    |
 | `jsFile`            | Path in `public/` or URL to a custom JavaScript file to include on every page.                     | `""`    |
@@ -258,6 +258,10 @@ ring: adopt
 quadrant: languages-and-frameworks
 tags: [frontend, javascript]
 teams: [web-platform, mobile]
+links:
+  - url: https://react.dev
+    name: Official Docs
+  - url: https://github.com/facebook/react
 ---
 
 Description of the technology, why it was adopted, and any relevant context.
@@ -273,6 +277,7 @@ Supports full **Markdown** formatting.
 | `quadrant` | Yes      | Quadrant assignment. Must match one of the `id` values in `config.quadrants`.                           |
 | `tags`     | No       | List of tags for filtering.                                                                             |
 | `teams`    | No       | List of teams currently using this technology.                                                          |
+| `links`    | No       | List of external links. Each entry has a `url` (required) and optional `name`. Shown on the detail page. |
 | `featured` | No       | Set to `false` to hide from the radar chart while keeping the item in the overview. Defaults to `true`. |
 
 ### Versioning

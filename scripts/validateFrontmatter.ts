@@ -16,6 +16,11 @@ const quadrantIds = config.quadrants.map((q) => q.id) as [string, ...string[]];
 // Zod frontmatter schema — validates at parse boundary
 // ---------------------------------------------------------------------------
 
+const LinkSchema = z.object({
+  url: z.string().url(),
+  name: z.string().optional(),
+});
+
 export const FrontmatterSchema = z.object({
   title: z.string().optional(),
   ring: z.enum(ringIds),
@@ -23,6 +28,7 @@ export const FrontmatterSchema = z.object({
   featured: z.boolean().default(true),
   tags: z.array(z.string()).default([]),
   teams: z.array(z.string()).default([]),
+  links: z.array(LinkSchema).default([]),
 });
 
 export type Frontmatter = z.infer<typeof FrontmatterSchema>;

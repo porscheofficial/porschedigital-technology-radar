@@ -1,7 +1,7 @@
 {
   "basePath": "/",
   "baseUrl": "",
-  "editUrl": "https://github.dev/porscheofficial/porschedigital-technology-radar/blob/pdig/radar/{release}/{id}.md",
+  "editUrl": "https://github.dev/porscheofficial/porschedigital-technology-radar/blob/pdig/data/radar/{release}/{id}.md",
   "headerLogoFile": "",
   "footerLogoFile": "",
   "jsFile": "",

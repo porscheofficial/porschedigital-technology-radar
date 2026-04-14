@@ -274,6 +274,29 @@ describe("buildData", () => {
       expect(html).toContain("<del>legacy</del>");
     });
 
+    it("transforms external links to p-link-pure web components", async () => {
+      const html = await buildData.convertToHtml(
+        "[Docs](https://docs.example.com)",
+      );
+
+      expect(html).toContain("<p-link-pure");
+      expect(html).toContain('href="https://docs.example.com"');
+      expect(html).toContain('icon="external"');
+      expect(html).toContain('align-label="start"');
+      expect(html).toContain('underline="true"');
+      expect(html).toContain('theme="dark"');
+      expect(html).toContain("Docs</p-link-pure>");
+    });
+
+    it("does not transform internal links to p-link-pure", async () => {
+      const html = await buildData.convertToHtml(
+        "[Internal](/tools/typescript)",
+      );
+
+      expect(html).not.toContain("<p-link-pure");
+      expect(html).toContain("<a");
+    });
+
     it("highlights code blocks and handles complex markdown", async () => {
       const html = await buildData.convertToHtml(
         [

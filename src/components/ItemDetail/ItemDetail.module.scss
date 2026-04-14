@@ -141,6 +141,49 @@
   text-decoration: none;
 }
 
+.linksSection {
+  margin-top: $pds-spacing-fluid-medium;
+}
+
+.linksSeparator {
+  display: flex;
+  align-items: center;
+  gap: $pds-spacing-static-small;
+  margin-bottom: $pds-spacing-static-medium;
+}
+
+.linksSeparator::before {
+  content: "";
+  flex: 0 0 $pds-spacing-static-medium;
+  height: 1px;
+  background: var(--border);
+}
+
+.linksSeparator::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.linksSeparatorLabel {
+  @include pds-text-xx-small;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--foreground);
+  opacity: 0.5;
+  white-space: nowrap;
+}
+
+.linksList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: $pds-spacing-static-small $pds-spacing-static-medium;
+}
+
 .editLink {
   position: absolute;
   top: $pds-spacing-static-large;

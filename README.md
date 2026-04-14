@@ -14,15 +14,18 @@ A static site generator for building and publishing your own Technology Radar.
 
 ![Screenshot of the Technology Radar](./docs/assets/screenshot-radar.png)
 
-## About
+## 📖 About
 
-This project is maintained by **Porsche Digital** and is based on the open-source [AOE Technology Radar](https://github.com/AOEpeople/aoe_technology_radar). The codebase has been substantially rewritten and extended — it is not a drop-in replacement. Your existing radar items (Markdown files) can be reused as-is, but the configuration needs to be updated to match the new schema.
+This project is maintained by **Porsche Digital** and is based on the open-source [AOE Technology Radar](https://github.com/AOEpeople/aoe_technology_radar). The codebase has been substantially rewritten and extended — it is not a drop-in replacement.
 
-## Why a Technology Radar?
+> [!NOTE]
+> Your existing radar items (Markdown files) can be reused as-is, but the configuration needs to be updated to match the new schema.
+
+## 💡 Why a Technology Radar?
 
 A Technology Radar makes technology decisions visible across your organization. It gives CTOs, architects, and tech leads a shared vocabulary for evaluating, adopting, and retiring technologies — and keeps engineering teams aligned on what to invest in.
 
-## Features
+## ✨ Features
 
 - **Visual technology landscape** — See your entire technology portfolio at a glance, organized by quadrant and maturity ring
 - **Track decisions over time** — Full revision history per technology and a trajectory view across releases, so you can see how assessments evolved
@@ -32,7 +35,7 @@ A Technology Radar makes technology decisions visible across your organization. 
 - **Zero infrastructure** — Static site that deploys to GitHub Pages, Netlify, or any hosting. No servers, no databases, no runtime dependencies
 - **Content as code** — Technologies are plain Markdown files in Git. Review changes in PRs, track history with commits, collaborate with your existing workflow
 
-## Screenshots
+## 📸 Screenshots
 
 ### Quadrant Detail
 
@@ -60,9 +63,10 @@ Fully responsive — works on phones and tablets out of the box.
   <img src="./docs/assets/screenshot-mobile.png" alt="Mobile view" width="390">
 </p>
 
-## Quick Start
+## 🚀 Quick Start
 
-**Prerequisites:** Node.js 22+
+> [!IMPORTANT]
+> **Prerequisites:** Node.js 22+
 
 ### 1. Create a new project
 
@@ -107,7 +111,7 @@ npx techradar serve   # Start dev server without file watching
 
 After `npx techradar build`, the static site is in `build/`. Deploy it to GitHub Pages, Vercel, Netlify, or any static hosting provider.
 
-## Project Structure (consumer)
+## 📁 Project Structure (consumer)
 
 ```
 my-technology-radar/
@@ -131,13 +135,15 @@ my-technology-radar/
 
 The CLI automatically creates a `.gitignore` (or extends your existing one) with the entries needed to keep generated directories out of version control.
 
-Only `config.json`, `about.md`, `custom.scss`, `public/`, and `radar/` need your attention. Everything else is managed by the CLI.
+> [!TIP]
+> Only `config.json`, `about.md`, `custom.scss`, `public/`, and `radar/` need your attention. Everything else is managed by the CLI.
 
-## Configuration
+## ⚙️ Configuration
 
 All configuration lives in `data/config.json`. Any key you omit falls back to the defaults in `data/config.default.json`. You only need to set what you want to change.
 
-### Root
+<details>
+<summary><strong>Root</strong></summary>
 
 | Key                 | Description                                                                                        | Default |
 | ------------------- | -------------------------------------------------------------------------------------------------- | ------- |
@@ -151,7 +157,10 @@ All configuration lives in `data/config.json`. Any key you omit falls back to th
 | `backgroundOpacity` | Opacity of the background image overlay (0 = invisible, 1 = fully visible).                        | `0.06`  |
 | `imprint`           | URL to your legal information / imprint page.                                                      | `""`    |
 
-### `toggles`
+</details>
+
+<details>
+<summary><strong><code>toggles</code></strong></summary>
 
 | Key              | Description                                   | Default |
 | ---------------- | --------------------------------------------- | ------- |
@@ -161,7 +170,10 @@ All configuration lives in `data/config.json`. Any key you omit falls back to th
 | `showTeamFilter` | Show the team filter below the radar.         | `true`  |
 | `multiSelectFilters` | Allow selecting multiple filters per dimension (OR semantics within, AND across). When `false`, each dimension allows only one active filter at a time. | `true` |
 
-### `colors`
+</details>
+
+<details>
+<summary><strong><code>colors</code></strong></summary>
 
 A map of CSS color values that theme the entire radar.
 
@@ -176,7 +188,10 @@ A map of CSS color values that theme the entire radar.
 | `border`     | Border and separator color           | `#404044` |
 | `tag`        | Tag background color                 | `#404044` |
 
-### `quadrants`
+</details>
+
+<details>
+<summary><strong><code>quadrants</code></strong></summary>
 
 An array of exactly 4 quadrant objects.
 
@@ -187,7 +202,10 @@ An array of exactly 4 quadrant objects.
 | `description` | Shown on the homepage and quadrant detail page   |
 | `color`       | CSS color for the quadrant arc and its blips     |
 
-### `rings`
+</details>
+
+<details>
+<summary><strong><code>rings</code></strong></summary>
 
 An array of ring objects (typically 4), ordered from innermost to outermost.
 
@@ -200,7 +218,10 @@ An array of ring objects (typically 4), ordered from innermost to outermost.
 | `radius`      | Outer boundary of the ring as a fraction of the chart (0 to 1) |
 | `strokeWidth` | Thickness of the ring's arc border in the SVG                  |
 
-### `flags`
+</details>
+
+<details>
+<summary><strong><code>flags</code></strong></summary>
 
 Flags mark items as `new`, `changed`, or `default` (unchanged). Each flag has a single key:
 
@@ -208,14 +229,20 @@ Flags mark items as `new`, `changed`, or `default` (unchanged). Each flag has a 
 | ------- | --------------------------------------------------------------- |
 | `title` | Display label for the flag (e.g. "New", "Changed", "Unchanged") |
 
-### `chart`
+</details>
+
+<details>
+<summary><strong><code>chart</code></strong></summary>
 
 | Key        | Description                                                              | Default |
 | ---------- | ------------------------------------------------------------------------ | ------- |
 | `size`     | Base size of the radar chart in pixels. Increase if you have many items. | `800`   |
 | `blipSize` | Radius of each blip dot in pixels                                        | `12`    |
 
-### `social`
+</details>
+
+<details>
+<summary><strong><code>social</code></strong></summary>
 
 An array of social link objects shown in the footer.
 
@@ -224,7 +251,10 @@ An array of social link objects shown in the footer.
 | `href` | URL to the social profile                                                                                          |
 | `icon` | Icon name. Available: `x`, `linkedin`, `facebook`, `instagram`, `youtube`, `xing`, `pinterest`, `github`, `gitlab` |
 
-### `labels`
+</details>
+
+<details>
+<summary><strong><code>labels</code></strong></summary>
 
 | Key                 | Description                                               | Default                                                                                             |
 | ------------------- | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
@@ -236,7 +266,130 @@ An array of social link objects shown in the footer.
 | `searchPlaceholder` | Placeholder text in the search input                      | `"What are you looking for?"`                                                                       |
 | `metaDescription`   | HTML meta description for SEO                             | `""`                                                                                                |
 
-## Radar Items
+</details>
+
+---
+
+### Full example
+
+<details>
+<summary><strong>Complete <code>config.json</code> for a fictional company</strong></summary>
+
+```json
+{
+  "basePath": "/techradar",
+  "baseUrl": "https://techradar.acme.io",
+  "editUrl": "https://github.dev/acme/techradar/blob/main/radar/{release}/{id}.md",
+  "headerLogoFile": "/images/acme-logo.svg",
+  "footerLogoFile": "/images/acme-wordmark.svg",
+  "backgroundImage": "/images/bg-pattern.png",
+  "backgroundOpacity": 0.04,
+  "imprint": "https://acme.io/legal",
+  "toggles": {
+    "showSearch": true,
+    "showChart": true,
+    "showTagFilter": true,
+    "showTeamFilter": false,
+    "multiSelectFilters": true
+  },
+  "colors": {
+    "foreground": "#F0F0F5",
+    "background": "#1A1A2E",
+    "highlight": "#E94560",
+    "content": "#A0A0B0",
+    "text": "#707080",
+    "link": "#E94560",
+    "border": "#2A2A40",
+    "tag": "#2A2A40"
+  },
+  "quadrants": [
+    {
+      "id": "languages-and-frameworks",
+      "title": "Languages & Frameworks",
+      "description": "Programming languages and application frameworks used across our stack.",
+      "color": "#0F9D58"
+    },
+    {
+      "id": "infrastructure",
+      "title": "Infrastructure",
+      "description": "Cloud platforms, orchestration, and infrastructure-as-code tools.",
+      "color": "#4285F4"
+    },
+    {
+      "id": "data-and-ai",
+      "title": "Data & AI",
+      "description": "Data pipelines, storage, analytics, and machine learning frameworks.",
+      "color": "#F4B400"
+    },
+    {
+      "id": "developer-experience",
+      "title": "Developer Experience",
+      "description": "Tools and practices that improve developer productivity and satisfaction.",
+      "color": "#DB4437"
+    }
+  ],
+  "rings": [
+    {
+      "id": "adopt",
+      "title": "Adopt",
+      "description": "Proven in production. Use by default for new projects.",
+      "color": "#0F9D58",
+      "radius": 0.5,
+      "strokeWidth": 5
+    },
+    {
+      "id": "trial",
+      "title": "Trial",
+      "description": "Worth pursuing. Use in non-critical projects to build experience.",
+      "color": "#4285F4",
+      "radius": 0.69,
+      "strokeWidth": 3
+    },
+    {
+      "id": "assess",
+      "title": "Assess",
+      "description": "Interesting. Explore in spikes or proof-of-concepts.",
+      "color": "#F4B400",
+      "radius": 0.85,
+      "strokeWidth": 2
+    },
+    {
+      "id": "hold",
+      "title": "Hold",
+      "description": "Do not start new work with this. Migrate away when practical.",
+      "color": "#DB4437",
+      "radius": 1,
+      "strokeWidth": 0.75
+    }
+  ],
+  "flags": {
+    "new": { "title": "New" },
+    "changed": { "title": "Changed" },
+    "default": { "title": "Unchanged" }
+  },
+  "chart": {
+    "size": 900,
+    "blipSize": 14
+  },
+  "social": [
+    { "href": "https://github.com/acme", "icon": "github" },
+    { "href": "https://linkedin.com/company/acme", "icon": "linkedin" }
+  ],
+  "labels": {
+    "title": "ACME Tech Radar",
+    "imprint": "Legal Notice",
+    "footer": "Built with the Porsche Digital Technology Radar.",
+    "notUpdated": "This item has not been reviewed in the last three releases.",
+    "hiddenFromRadar": "This technology is hidden from the radar chart.",
+    "searchPlaceholder": "Search technologies…",
+    "metaDescription": "ACME's technology radar — tracking what we adopt, trial, assess, and hold."
+  }
+}
+```
+
+</details>
+
+## 📝 Radar Items
 
 Radar items are Markdown files organized by release date under `radar/`.
 
@@ -313,9 +466,12 @@ See also [[kubernetes|our K8s setup]] for deployment details.
 
 The `item-id` is the Markdown filename without the `.md` extension (e.g., `typescript.md` → `typescript`).
 
-Unresolved wiki-links (referencing a non-existent item) are rendered as plain text with a build warning. In strict mode (`--strict`), unresolved wiki-links cause the build to fail.
+Unresolved wiki-links (referencing a non-existent item) are rendered as plain text with a build warning.
 
-## Development (contributing to the generator)
+> [!WARNING]
+> In strict mode (`--strict`), unresolved wiki-links cause the build to fail.
+
+## 🛠️ Development (contributing to the generator)
 
 To work on the radar generator itself:
 
@@ -359,9 +515,15 @@ In strict mode, the build fails on:
 
 This is recommended for CI pipelines to catch issues before deployment.
 
-## Custom Styling
+> [!TIP]
+> Add `npx techradar --strict build` to your CI pipeline to catch frontmatter issues and broken wiki-links before deployment.
 
-You can add custom SCSS rules in `custom.scss`. Since the project uses CSS Modules with hashed class names, use element or attribute selectors to target components:
+## 🎨 Custom Styling
+
+You can add custom SCSS rules in `custom.scss`.
+
+> [!NOTE]
+> The project uses CSS Modules with hashed class names. Use element or attribute selectors to target components.
 
 ```scss
 /* Example: change headline fonts */
@@ -374,7 +536,7 @@ h3 {
 
 Changes to `custom.scss` are picked up automatically in `dev` mode (with file watching).
 
-## License
+## 📄 License
 
 This project is open source under the [Apache License 2.0](./LICENSE).
 

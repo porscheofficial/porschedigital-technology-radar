@@ -4,6 +4,9 @@ on:
   push:
     branches: [pdig]
 
+env:
+  NEXT_PUBLIC_BASE_PATH: /porschedigital-technology-radar
+
 permissions:
   contents: read
   pages: write
@@ -29,8 +32,6 @@ jobs:
       - run: npm run build:data
 
       - run: npm run build
-        env:
-          NEXT_PUBLIC_BASE_PATH: /porschedigital-technology-radar
 
       - uses: actions/upload-pages-artifact@v3
         with:

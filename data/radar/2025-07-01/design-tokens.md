@@ -10,6 +10,13 @@ teams:
   - "911"
   - cayenne
   - macan
+links:
+  - url: https://tr.designtokens.org/format/
+    name: W3C Design Token Format
+  - url: https://tokens.studio
+    name: Tokens Studio
+  - url: https://amzn.github.io/style-dictionary/
+    name: Style Dictionary
 ---
 
 Design tokens have reached adopt status across all teams. Our token pipeline is fully automated: design changes in [[figma]] trigger token builds that publish to npm, CocoaPods, and Maven. The W3C Design Token Format ensures portability, and our theming system — previewed in [[storybook]] — supports brand-specific and market-specific customizations.

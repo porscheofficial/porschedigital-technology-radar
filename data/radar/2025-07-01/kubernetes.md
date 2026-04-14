@@ -10,6 +10,13 @@ teams:
   - macan
   - cayenne
   - taycan
+links:
+  - url: https://kubernetes.io
+    name: Official Website
+  - url: https://github.com/kubernetes/kubernetes
+    name: GitHub Repository
+  - url: https://aws.amazon.com/eks/
+    name: Amazon EKS
 ---
 
 Kubernetes remains our standard container orchestration platform. Recent improvements include migration to Cilium for eBPF-based networking, implementation of Crossplane for infrastructure-as-code within K8s, and adoption of Kyverno for policy enforcement. Our platform team now supports 50+ production services across all teams, with observability powered by [[opentelemetry]] and [[dash0]]. We are actively consolidating [[aws-lambda]] workloads onto the platform.

@@ -4,6 +4,60 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.1.0](https://github.com/porscheofficial/porschedigital-technology-radar/compare/v1.0.4...v1.1.0) (2026-04-21)
+
+
+### Features
+
+* add a11y harness (jsx-a11y + axe-core) as fifth steering arm ([0b1df3b](https://github.com/porscheofficial/porschedigital-technology-radar/commit/0b1df3b57eacf2b8a6f2ab63a09fb6a6dcaacaf9))
+* ban top-level helper functions in component files ([1b3259f](https://github.com/porscheofficial/porschedigital-technology-radar/commit/1b3259f7cfe5234047518e0a1710359df18066dc))
+* introduce architecture steering harness ([8e5e091](https://github.com/porscheofficial/porschedigital-technology-radar/commit/8e5e091f3182fd968244964f024b75524d4dbdcb))
+* phase 1 build-output sensors + Next server API ban ([efdcb87](https://github.com/porscheofficial/porschedigital-technology-radar/commit/efdcb87c297abec11d94a5d032be4246717fb7e3))
+* phase 2 — adrs and doc-coverage sensor ([207f489](https://github.com/porscheofficial/porschedigital-technology-radar/commit/207f489c1801d5e2ba9b0308ef60b28147eaa0ac))
+* phase 3 — framework lints and bundle budget ([933dca5](https://github.com/porscheofficial/porschedigital-technology-radar/commit/933dca535ee93a6f03f30e2276e7aae38d058f77))
+* phase 7 harness sensors (wikilinks, license, html, coverage, spell) ([f978406](https://github.com/porscheofficial/porschedigital-technology-radar/commit/f97840607c2f91a0a4770310f6296f52ef9af542))
+
+
+### Bug Fixes
+
+* clean pre-existing biome lint warnings ([d0c1a53](https://github.com/porscheofficial/porschedigital-technology-radar/commit/d0c1a53a5986c69af3e5b7fd289c21009a3c490b))
+* dereference annotated tags to commit SHAs for 3 pinned actions ([aa9183c](https://github.com/porscheofficial/porschedigital-technology-radar/commit/aa9183cf70215b66cd84df0b1b9231d846296a1d))
+* drop assetUrl() inside &lt;Link&gt; to prevent basePath doubling ([2159d96](https://github.com/porscheofficial/porschedigital-technology-radar/commit/2159d969778ea1cd14cf30f5f74e654fe22163b4))
+* resolve 3 CodeQL findings (sanitization, ReDoS, TOCTOU) ([c41bb6d](https://github.com/porscheofficial/porschedigital-technology-radar/commit/c41bb6dc866b5bfcfe2196a575c695da7fb4d95a))
+
+
+### Security
+
+* add Phase 1 security harness (sanitize, deps, secrets) ([4712383](https://github.com/porscheofficial/porschedigital-technology-radar/commit/4712383308ae6cb2805e786efd46bc7ec2691c99))
+* pin GitHub Actions to SHAs and tighten GITHUB_TOKEN scopes (ADR-0017) ([9c3743a](https://github.com/porscheofficial/porschedigital-technology-radar/commit/9c3743ad575e5f727e57b49c130ee5b5f75cb93e))
+* swap gitleaks for trufflehog as secrets-scanning sensor ([cb300af](https://github.com/porscheofficial/porschedigital-technology-radar/commit/cb300aff5634c8db284288c81b8715b1365cbfc9))
+
+
+### Code Refactoring
+
+* add jscpd duplication sensor (Phase 2b) ([fb78cd2](https://github.com/porscheofficial/porschedigital-technology-radar/commit/fb78cd25d01381351b72d85509cabed37e113bfe))
+* phase 2c naming-convention sensor (biome useNamingConvention) ([0a5f2ee](https://github.com/porscheofficial/porschedigital-technology-radar/commit/0a5f2ee7c4d9da333040c324e1f9f3b3984d1396))
+* phase 2d sonarjs sensor closes clean-code arm ([07d19f2](https://github.com/porscheofficial/porschedigital-technology-radar/commit/07d19f28c22c9fde979ba7d4633c176e8bf0c947))
+* wire knip as check:quality harness arm (Phase 2a) ([778a1ee](https://github.com/porscheofficial/porschedigital-technology-radar/commit/778a1eed90105c03b1a9a22ea7ef10ed6be3e600))
+
+
+### Documentation
+
+* add centered inline table of contents to README ([c8f7a7a](https://github.com/porscheofficial/porschedigital-technology-radar/commit/c8f7a7a279b026c106dd5069c30e4df5614e020c))
+* add docs/HARNESS.md as worked example of the steering harness ([33387f2](https://github.com/porscheofficial/porschedigital-technology-radar/commit/33387f240e20729a4e50882dff5e89d338360bc3))
+* add npm version and weekly downloads badges ([5319d14](https://github.com/porscheofficial/porschedigital-technology-radar/commit/5319d14795d3a62d55adbfffbd0e5c27595847be))
+* collapse harness invariant tables into one with a Phase column ([cca5984](https://github.com/porscheofficial/porschedigital-technology-radar/commit/cca5984b5e39de338a07a0a275b5a066d8d3c614))
+
+
+### Build System
+
+* add .npmrc with legacy-peer-deps for jsx-a11y eslint 10 gap ([385bbcd](https://github.com/porscheofficial/porschedigital-technology-radar/commit/385bbcd8668b006495c3ca65ac91fea45bbea0ab))
+
+
+### CI/CD
+
+* harden npm publish job and add manual recovery trigger ([79bf957](https://github.com/porscheofficial/porschedigital-technology-radar/commit/79bf957064e9f50865d2629d6580a38ee94c569c))
+
 ## [1.0.4](https://github.com/porscheofficial/porschedigital-technology-radar/compare/v1.0.3...v1.0.4) (2026-04-21)
 
 

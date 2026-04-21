@@ -135,11 +135,12 @@ npm run build          # Static export succeeds
 4. `npm run check:arch` — architecture invariants hold (see "Steering Harness" below)
 5. `npm run check:sec` — security invariants hold (see "Steering Harness" below)
 6. `npm run check:quality` — clean-code invariants hold (see "Steering Harness" below)
-7. `npm run build` — static export succeeds
+7. `npm run check:a11y` — accessibility invariants hold (see "Steering Harness" below)
+8. `npm run build` — static export succeeds
 
 ## Steering Harness
 
-This repo runs a four-arm steering harness for agent work:
+This repo runs a five-arm steering harness for agent work:
 
 **Feedforward** — per-directory `AGENTS.md` files teach the rules at point-of-entry:
 
@@ -187,6 +188,11 @@ Plus an advisory (non-gating) workflow: `.github/workflows/scorecard.yml` runs O
 - `npm run check:quality:coverage` — `vitest run --coverage` with v8-provider thresholds in `vitest.config.ts` (lines 55, statements 55, branches 55, functions 60). Floors are set at the current measured baseline, not aspirational — bumping a floor is a deliberate diffable act per ADR-0008's anti-aspirational pattern. Vitest applies thresholds only when `--coverage` is enabled, so `npm test` (without coverage) is unaffected. See ADR-0015.
 - `npm run check:quality:spell` — [cspell](https://cspell.org/) on `**/*.md` only. Both `en` and `en-US` are accepted languages. Project-specific terms live in `cspell-words.txt`; generated content (`out/`, lock files, JSON, SVG, generated `Icons/`, `data/data.json`) and externally-authored radar items (`data/radar/**`) are excluded via `.cspell.json` `ignorePaths`. When a new ADR or HARNESS update introduces a new technical term, the gate fires; resolution is to add the term to `cspell-words.txt` in the same PR. See ADR-0016.
 
+**Feedback (a11y)** — `npm run check:a11y` enforces the accessibility invariants. See ADR-0018 for the full rationale.
+
+- `npm run check:a11y:source` — [eslint-plugin-jsx-a11y](https://github.com/jsx-eslint/eslint-plugin-jsx-a11y) via a dedicated flat config (`a11y.eslint.config.mjs`) so a11y findings stay separate from `check:arch:eslint`'s architectural bans (mirrors the `sonar.eslint.config.mjs` split per ADR-0010). Runs the `recommended` ruleset against `src/**/*.{jsx,tsx}` to catch source-level a11y mistakes (missing `alt`, invalid ARIA, label-control associations, keyboard-handler pairing).
+- `npm run check:a11y:axe` — `scripts/checkA11y.ts`: walks every `out/**/*.html` and runs [axe-core](https://github.com/dequelabs/axe-core) inside a `jsdom` window. Fails on `serious` and `critical` impact only; lower severities are reported as info and do not block. A small set of axe rules is disabled at the sensor level with inline rationale (e.g. `color-contrast` needs a real browser, `landmark-one-main`/`region`/`page-has-heading-one` produce noise on PDS shells pre-hydration per ADR-0014). The thresholds are anti-aspirational per ADR-0008/0015 — bumping the policy is a deliberate diffable act.
+
 When a check fails, read its rule's `comment` (dep-cruiser) or message (ESLint/scripts) — each cites the AGENTS.md doc that explains why.
 
 **Architecture Decision Records** — `docs/decisions/` holds short, dated ADRs explaining *why* the load-bearing rules exist (Pages Router not App Router, static export, no `next/image`, the `format.ts ↛ data.ts` cycle break, the security harness). When tempted to revisit a rule, read the matching ADR first. New irreversible decisions get a new ADR; see `docs/decisions/README.md` for the format.
@@ -230,7 +236,7 @@ Any change to `data/config.default.json` or `scripts/validateFrontmatter.ts` (ne
 
 `docs/HARNESS.md` is a teaching artifact that describes the live harness with diagrams, sensor inventory, and the change-lifecycle map. It is used as a worked example for talks and onboarding, so it must not drift from reality. Any change to **any** of the following requires an in-PR update to `docs/HARNESS.md`:
 
-- A `check:arch:*` or `check:build:*` or `check:sec:*` or `check:quality:*` script (added, removed, renamed)
+- A `check:arch:*` or `check:build:*` or `check:sec:*` or `check:quality:*` or `check:a11y:*` script (added, removed, renamed)
 - A `.dependency-cruiser.cjs` rule (added, removed, semantic change)
 - An `eslint.config.mjs` architectural rule
 - A `scripts/check*.ts` sensor

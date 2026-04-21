@@ -222,6 +222,7 @@ export function SearchBar() {
           id="search-results"
           ref={listRef}
           role="listbox"
+          tabIndex={-1}
           className={styles.dropdown}
           onMouseDown={(e) => e.preventDefault()}
         >

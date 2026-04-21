@@ -77,6 +77,10 @@ flowchart LR
             Q5["check:quality:coverage<br/>(vitest v8 thresholds)"]
             Q6["check:quality:spell<br/>(cspell on **/*.md)"]
         end
+        subgraph A11Y["Accessibility (npm run check:a11y)"]
+            A1["check:a11y:source<br/>(eslint-plugin-jsx-a11y, dedicated config)"]
+            A2["check:a11y:axe<br/>(scripts/checkA11y.ts: axe-core + jsdom)"]
+        end
     end
 
     Agent(("agent")) -.reads.-> FF
@@ -84,11 +88,14 @@ flowchart LR
     Code --> SRC
     Code --> SEC
     Code --> QUAL
+    Code --> A11Y
     Code --> BuildStep["npm run build → out/"]
     BuildStep --> BUILD
+    BuildStep --> A11Y
     SRC -.violation cites doc.-> Agent
     SEC -.violation cites doc.-> Agent
     QUAL -.violation cites doc.-> Agent
+    A11Y -.violation cites doc.-> Agent
     BUILD -.violation cites doc.-> Agent
 ```
 
@@ -98,7 +105,7 @@ Every feedback rule's failure message **cites the `AGENTS.md` doc that explains 
 
 ## 3. The invariant buckets
 
-The regulator's variety. Each row is one architectural property the harness preserves; the columns show which sensor enforces it, which doc teaches it, and which phase introduced it. Twenty-four buckets and counting — every time review catches a new class of issue, a row is added (see § 8).
+The regulator's variety. Each row is one architectural property the harness preserves; the columns show which sensor enforces it, which doc teaches it, and which phase introduced it. Twenty-six buckets and counting — every time review catches a new class of issue, a row is added (see § 8).
 
 | #  | Invariant                                              | Feedback sensor                                                                 | Feedforward doc            | Phase |
 |----|--------------------------------------------------------|----------------------------------------------------------------------------------|----------------------------|-------|
@@ -126,6 +133,8 @@ The regulator's variety. Each row is one architectural property the harness pres
 | 22 | Built HTML in `out/` is structurally valid             | `check:build:html` (`scripts/checkHtmlValidate.ts`, `.htmlvalidate.json`)       | root `AGENTS.md`           | 7     |
 | 23 | Test coverage stays above explicit floors              | `check:quality:coverage` (vitest v8 thresholds in `vitest.config.ts`)           | root `AGENTS.md`           | 7     |
 | 24 | No misspellings in load-bearing prose                  | `check:quality:spell` (`cspell`, `.cspell.json`, `cspell-words.txt`)            | root `AGENTS.md`           | 7     |
+| 25 | JSX accessibility patterns at edit time                | `check:a11y:source` (`eslint-plugin-jsx-a11y` via `a11y.eslint.config.mjs`)     | root `AGENTS.md`           | 8     |
+| 26 | No serious/critical axe violations in built HTML       | `check:a11y:axe` (`scripts/checkA11y.ts`, axe-core via jsdom)                   | root `AGENTS.md`           | 8     |
 
 **Notes on #12** — catches two failure modes at once: helper duplication across components (e.g. multiple components copy-pasting `stripHtml` instead of importing the canonical `@/lib/format` version) and component files accreting non-component logic. The fix is one of three: move pure helpers to `src/lib/`, convert JSX-returning helpers to PascalCase sub-components, or inline single-use render helpers as `const` arrows inside the component body.
 
@@ -148,6 +157,8 @@ The regulator's variety. Each row is one architectural property the harness pres
 **Notes on #23** — coverage thresholds are **floors, not targets** (same anti-aspirational principle as ADR-0008's jscpd 3% threshold). Floors match the current measured baseline (lines 55, statements 55, branches 55, functions 60). Bumping a floor is a deliberate diffable act — a contributor adding a high-coverage feature can lock in the gain by raising the matching floor in the same PR. A refactor that drops a metric below its floor fails the gate. Vitest applies thresholds only when coverage is enabled, so `npm test` (without `--coverage`) is unaffected. See ADR-0015.
 
 **Notes on #24** — `cspell` runs on `**/*.md` only — the highest signal-to-noise scope. Source-code spell-checking is deferred (camelCase splits and identifier fragments would either inflate the dictionary indefinitely or train contributors to ignore the gate). Both `en` and `en-US` are accepted languages because the project has authors using AmEng and BrEng interchangeably. Project-specific terms live in `cspell-words.txt`; radar item content under `data/radar/**` is excluded (vendor names produce false positives without signal). When a new ADR or HARNESS update introduces a new technical term, the gate fires; resolution is to add the term to `cspell-words.txt` in the same PR. See ADR-0016.
+
+**Notes on #25–#26** — the accessibility arm. #25 catches JSX-level a11y patterns at edit time (alt text, focusable interactive roles, click handlers without keyboard handlers). It loads through a *dedicated* flat config `a11y.eslint.config.mjs`, mirroring the SonarJS split (#19) so a11y findings stay separate from architectural-ban findings. #26 runs the same `axe-core` engine that DevTools and Pa11y wrap, but in-process via JSDOM against `out/**/*.html` — no real browser, no server, no Playwright. Failure policy is **serious + critical only**; minor/moderate findings surface as info (anti-aspirational, same principle as #17 jscpd threshold and #23 coverage floors). Disabled rules are documented inline in `scripts/checkA11y.ts` and split into two buckets: browser-only signals jsdom cannot provide (`color-contrast`, `target-size`, `scrollable-region-focusable`) and pre-hydration noise from PDS web-component shells (`landmark-one-main`, `region`, `page-has-heading-one`, `aria-required-parent`, plus framework-emitted not-found pages for `html-has-lang`, plus the radar SVG's intentional nested-interactive structure). The remaining axe rule set works fine on pre-hydration HTML — the WCAG cluster ADR-0014 deferred to "a future a11y arm" lands here. See ADR-0018.
 
 Plus framework-aware lints from `@next/eslint-plugin-next` (recommended set, with `no-img-element` and `no-html-link-for-pages` disabled per ADRs / our `assetUrl()` convention — see `eslint.config.mjs` header).
 
@@ -237,7 +248,7 @@ The harness is computational-only. The inferential column is the next frontier:
 - **/review-radar skill** — LLM-as-judge against the invariant table on a diff.
 - **Generator + evaluator loop** — Anthropic-style two-agent pattern for visual changes to the radar SVG.
 
-Also deliberately deferred: visual regression on the SVG, mutation testing, Lighthouse/axe — see roadmap notes in the project's planning artifacts.
+Also deliberately deferred: visual regression on the SVG, mutation testing, Lighthouse — see roadmap notes in the project's planning artifacts. (Axe via jsdom landed in Phase 8 — see ADR-0018; a real-browser a11y arm with computed-CSS rules like `color-contrast` would be the next step.)
 
 ---
 
@@ -276,6 +287,10 @@ npm run check:quality       # clean-code sensors
   ├─ check:quality:coverage # vitest --coverage with v8 thresholds
   └─ check:quality:spell    # cspell on **/*.md
 
+npm run check:a11y          # accessibility sensors
+  ├─ check:a11y:source      # eslint-plugin-jsx-a11y on src/**/*.{jsx,tsx}
+  └─ check:a11y:axe         # axe-core via jsdom on out/**/*.html
+
 npm run build               # static export → out/
 npm run check:build         # build-output sensors
   ├─ check:build:routes     # every expected file present
@@ -286,4 +301,4 @@ npm run check:build         # build-output sensors
 npm test                    # includes architecture.test.ts (6 fs invariants)
 ```
 
-Read these as a single command set: `check:arch && check:sec && check:quality && build && check:build && test`. If all six are green, the harness has signed off.
+Read these as a single command set: `check:arch && check:sec && check:quality && check:a11y && build && check:build && test`. If all seven are green, the harness has signed off.

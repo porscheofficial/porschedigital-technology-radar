@@ -51,6 +51,7 @@ ADRs cite the *decisions behind those rules*.
 | 0015 | Quality harness: test coverage floor           | accepted |
 | 0016 | Quality harness: spell-check on documentation  | accepted |
 | 0017 | Pin GitHub Actions to commit SHAs and tighten `GITHUB_TOKEN` permissions | accepted (amends 0006) |
+| 0018 | A11y harness: jsx-a11y on source + axe-core on built HTML | accepted |
 
 ## When to write a new ADR
 

@@ -133,6 +133,7 @@ const ChartInner: FC<ChartProps> = ({
       <Link
         key={item.id}
         href={`/${item.quadrant}/${item.id}`}
+        aria-label={item.title}
         data-tooltip={item.title}
         data-tooltip-color={quadrant.color}
         data-item-id={item.id}

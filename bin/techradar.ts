@@ -167,10 +167,26 @@ function ensureBuildDir(): void {
   }
 
   cpSync(SOURCE_DIR, BUILDER_DIR, { recursive: true });
+
+  // Strip maintainer-only lifecycle scripts from the shadow copy so the
+  // consumer's `npm install` doesn't try to rebuild artifacts that are
+  // already shipped pre-built in the published tarball (dist/, Icons/).
+  // Transitive dependencies' postinstall scripts (e.g. esbuild) still run.
+  const pkgPath = join(BUILDER_DIR, "package.json");
+  const pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
+  if (pkg.scripts) {
+    delete pkg.scripts.prepare;
+    delete pkg.scripts.postinstall;
+  }
+  writeFileSync(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`);
+
   writeFileSync(HASH_FILE, currentHash);
 
   consola.start("Installing dependencies…");
-  execaSync("npm", ["install"], { cwd: BUILDER_DIR, stdio: "inherit" });
+  execaSync("npm", ["install", "--no-audit", "--no-fund"], {
+    cwd: BUILDER_DIR,
+    stdio: "inherit",
+  });
   consola.success("Build environment ready.");
 }
 

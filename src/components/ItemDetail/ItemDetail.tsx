@@ -13,7 +13,13 @@ import { DescriptionEdit, RingChange, RingInitial } from "@/components/Icons";
 import { SafeHtml } from "@/components/SafeHtml/SafeHtml";
 import { Tag } from "@/components/Tags/Tags";
 import { Team, Teams } from "@/components/Teams/Teams";
-import { getEditUrl, getLabel, getReleases, getRing } from "@/lib/data";
+import {
+  getEditUrl,
+  getLabel,
+  getReleases,
+  getRing,
+  getToggle,
+} from "@/lib/data";
 import { formatLinkLabel, stripHtml, truncate } from "@/lib/format";
 import type { Item, Revision } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -34,6 +40,13 @@ export function ItemDetail({ item, quadrantTitle }: ItemProps) {
   const notMaintained = !getReleases()
     .slice(-RECENT_RELEASE_COUNT)
     .includes(item.release);
+
+  const tagFilterEnabled = getToggle("showTagFilter");
+  const teamFilterEnabled = getToggle("showTeamFilter");
+  const tagHref = (tag: string) =>
+    tagFilterEnabled ? `/?tags=${encodeURIComponent(tag)}` : undefined;
+  const getTeamHref = (team: string) =>
+    teamFilterEnabled ? `/?teams=${encodeURIComponent(team)}` : undefined;
 
   const ringInfo = getRing(item.ring);
   const ringColor = ringInfo?.color || "#fff";
@@ -108,12 +121,12 @@ export function ItemDetail({ item, quadrantTitle }: ItemProps) {
             </PHeading>
             <div className={styles.tags}>
               {item.tags?.map((tag) => (
-                <Tag key={tag} tag={tag} />
+                <Tag key={tag} tag={tag} href={tagHref(tag)} />
               ))}
             </div>
             {!!item.teams && item.teams.length > 0 && (
               <div className={styles.teamsContainer}>
-                <Teams teams={item.teams} />
+                <Teams teams={item.teams} getTeamHref={getTeamHref} />
               </div>
             )}
           </div>

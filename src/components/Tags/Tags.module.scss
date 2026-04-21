@@ -3,3 +3,16 @@
 .tag {
   display: inline-block;
 }
+
+.tagLink {
+  display: inline-block;
+  text-decoration: none;
+  color: inherit;
+  opacity: 0.7;
+  transition: opacity 150ms ease-in-out;
+
+  &:hover,
+  &:focus-visible {
+    opacity: 1;
+  }
+}

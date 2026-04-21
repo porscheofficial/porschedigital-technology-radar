@@ -10,6 +10,7 @@ const mockState = vi.hoisted(() => ({
   getLabel: vi.fn(),
   getReleases: vi.fn(),
   getRing: vi.fn(),
+  getToggle: vi.fn(),
 }));
 
 vi.mock("@/lib/data", () => ({
@@ -17,6 +18,7 @@ vi.mock("@/lib/data", () => ({
   getLabel: mockState.getLabel,
   getReleases: mockState.getReleases,
   getRing: mockState.getRing,
+  getToggle: mockState.getToggle,
 }));
 
 vi.mock("@porsche-design-system/components-react/ssr", () => ({
@@ -137,6 +139,11 @@ describe("ItemDetail", () => {
     mockState.getRing.mockImplementation(
       (ring: string) => rings[ring as keyof typeof rings],
     );
+    mockState.getToggle.mockImplementation((key: string) => {
+      if (key === "showTagFilter") return true;
+      if (key === "showTeamFilter") return true;
+      return false;
+    });
   });
 
   it("renders the item title, ring, quadrant link, tags, teams, body, and edit link", () => {
@@ -401,6 +408,48 @@ describe("ItemDetail", () => {
         "href",
         "https://example.com",
       );
+    });
+  });
+
+  describe("tag and team filter links", () => {
+    it("renders tag badges as links to the home page with the tag filter when showTagFilter is enabled", () => {
+      renderItemDetail({ tags: ["frontend"] });
+
+      const tagLink = screen.getByRole("link", { name: /frontend/i });
+      expect(tagLink).toHaveAttribute("href", "/?tags=frontend");
+    });
+
+    it("renders team badges as links to the home page with the team filter when showTeamFilter is enabled", () => {
+      renderItemDetail({ teams: ["Team Alpha"] });
+
+      const teamLink = screen.getByRole("link", { name: /team alpha/i });
+      expect(teamLink).toHaveAttribute("href", "/?teams=Team%20Alpha");
+    });
+
+    it("renders tag badges as plain (non-link) when showTagFilter is disabled", () => {
+      mockState.getToggle.mockImplementation(
+        (key: string) => key === "showTeamFilter",
+      );
+
+      renderItemDetail({ tags: ["frontend"], teams: [] });
+
+      expect(
+        screen.queryByRole("link", { name: /frontend/i }),
+      ).not.toBeInTheDocument();
+      expect(screen.getByText("frontend")).toBeInTheDocument();
+    });
+
+    it("renders team badges as plain (non-link) when showTeamFilter is disabled", () => {
+      mockState.getToggle.mockImplementation(
+        (key: string) => key === "showTagFilter",
+      );
+
+      renderItemDetail({ tags: [], teams: ["Team Alpha"] });
+
+      expect(
+        screen.queryByRole("link", { name: /team alpha/i }),
+      ).not.toBeInTheDocument();
+      expect(screen.getByText("Team Alpha")).toBeInTheDocument();
     });
   });
 });

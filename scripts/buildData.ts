@@ -4,6 +4,7 @@ import matter from "@11ty/gray-matter";
 import { consola } from "consola";
 import rehypeExternalLinks from "rehype-external-links";
 import rehypeHighlight from "rehype-highlight";
+import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import rehypeStringify from "rehype-stringify";
 import remarkGfm from "remark-gfm";
 import remarkParse from "remark-parse";
@@ -118,17 +119,27 @@ export function createProcessor(blipLookup?: BlipLookup, strict?: boolean) {
     pipeline.use(remarkWikiLink, { lookup: blipLookup, strict });
   }
 
-  return pipeline
-    .use(remarkRehype)
-    .use(rehypeStripHtmlExtension)
-    .use(rehypeBasePathLinks)
-    .use(rehypeExternalLinks, {
-      target: "_blank",
-      rel: ["noopener", "noreferrer"],
-    })
-    .use(rehypePdsExternalLinks)
-    .use(rehypeHighlight, { prefix: "hljs language-" })
-    .use(rehypeStringify);
+  return (
+    pipeline
+      .use(remarkRehype)
+      // Defense-in-depth: strip raw HTML / event handlers / javascript: URIs.
+      // remarkRehype is invoked WITHOUT `allowDangerousHtml`, so raw HTML in
+      // markdown is already dropped at the mdast→hast boundary. Sanitize is the
+      // backstop in case a future plugin re-introduces raw HTML, and the
+      // anchor-rewriting plugins below run AFTER sanitize so the `target`,
+      // `rel`, and `<p-link-pure>` they emit are not subject to the schema.
+      // (See ADR-0006.)
+      .use(rehypeSanitize, defaultSchema)
+      .use(rehypeStripHtmlExtension)
+      .use(rehypeBasePathLinks)
+      .use(rehypeExternalLinks, {
+        target: "_blank",
+        rel: ["noopener", "noreferrer"],
+      })
+      .use(rehypePdsExternalLinks)
+      .use(rehypeHighlight, { prefix: "hljs language-" })
+      .use(rehypeStringify)
+  );
 }
 
 const defaultProcessor = createProcessor();

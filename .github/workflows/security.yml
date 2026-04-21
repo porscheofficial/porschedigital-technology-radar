@@ -1,0 +1,50 @@
+name: Security
+
+on:
+  pull_request:
+  push:
+    branches: [pdig, main]
+  schedule:
+    - cron: "17 4 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  deps:
+    name: OSV-Scanner (npm advisories)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: google/osv-scanner-action/osv-scanner-action@v2.0.2
+        with:
+          scan-args: |-
+            --lockfile=package-lock.json
+            --format=table
+
+  secrets:
+    name: gitleaks (committed secrets)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  sanitize:
+    name: rehype-sanitize wiring + XSS regression
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run check:sec:sanitize
+      - run: npx vitest run scripts/__tests__/sanitize.test.ts

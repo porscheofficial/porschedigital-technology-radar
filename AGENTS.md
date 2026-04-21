@@ -133,11 +133,12 @@ npm run build          # Static export succeeds
 2. `npx tsc --noEmit` — 0 type errors
 3. `npm run test` — all pass, no skipped tests (includes architecture invariants)
 4. `npm run check:arch` — architecture invariants hold (see "Steering Harness" below)
-5. `npm run build` — static export succeeds
+5. `npm run check:sec` — security invariants hold (see "Steering Harness" below)
+6. `npm run build` — static export succeeds
 
 ## Steering Harness
 
-This repo runs a two-arm steering harness for agent work:
+This repo runs a three-arm steering harness for agent work:
 
 **Feedforward** — per-directory `AGENTS.md` files teach the rules at point-of-entry:
 
@@ -163,9 +164,19 @@ This repo runs a two-arm steering harness for agent work:
 - `npm run check:build:links` — `linkinator` (config in `linkinator.config.json`): crawls the built site from `out/index.html` and fails on broken internal links. External URLs are skipped via the `^https?://(?!localhost)` pattern.
 - `npm run check:build:budget` — `scripts/checkBundleBudget.ts`: walks `out/_next/static/` and asserts total JS, total CSS, and per-chunk sizes stay under the caps in `bundle-budget.json`. Bumping the budget is a deliberate, diffable act — see ADR-0005.
 
+**Feedback (security)** — `npm run check:sec` enforces the security invariants. See ADR-0006 for the full rationale.
+
+- `npm run check:sec:sanitize` — `scripts/checkSanitize.ts`: asserts `rehype-sanitize` is imported and runs immediately after `remarkRehype` in `scripts/buildData.ts`, and that `allowDangerousHtml: true` appears nowhere in the file. Companion XSS regression suite in `scripts/__tests__/sanitize.test.ts` feeds `<script>`, `<iframe>`, inline event handlers, and `javascript:` URIs through the real pipeline. Two-layer defense: `remarkRehype` is called without `allowDangerousHtml`, and `rehypeSanitize` strips anything that slips through.
+- `npm run check:sec:deps` — `osv-scanner --lockfile=package-lock.json`: queries the public OSV.dev database for known CVEs in the npm graph. **Requires `osv-scanner` on PATH** (`brew install osv-scanner`). CI uses `google/osv-scanner-action`.
+- `npm run check:sec:secrets` — `gitleaks detect --no-git -s .`: scans the working tree for committed secrets and API tokens. **Requires `gitleaks` on PATH** (`brew install gitleaks`). CI uses `gitleaks/gitleaks-action`.
+
+`osv-scanner` and `gitleaks` are deliberately NOT in `devDependencies` — they are Go binaries with no useful npm wrapper. CI runs the official actions; local devs install via Homebrew. Without them installed, the `:deps` and `:secrets` sensors exit with `command not found`. The `:sanitize` sensor needs no extra binary and is the primary local feedback loop.
+
+Plus an advisory (non-gating) workflow: `.github/workflows/scorecard.yml` runs OpenSSF Scorecard weekly and uploads SARIF to GitHub's code-scanning UI.
+
 When a check fails, read its rule's `comment` (dep-cruiser) or message (ESLint/scripts) — each cites the AGENTS.md doc that explains why.
 
-**Architecture Decision Records** — `docs/decisions/` holds short, dated ADRs explaining *why* the load-bearing rules exist (Pages Router not App Router, static export, no `next/image`, the `format.ts ↛ data.ts` cycle break). When tempted to revisit a rule, read the matching ADR first. New irreversible decisions get a new ADR; see `docs/decisions/README.md` for the format.
+**Architecture Decision Records** — `docs/decisions/` holds short, dated ADRs explaining *why* the load-bearing rules exist (Pages Router not App Router, static export, no `next/image`, the `format.ts ↛ data.ts` cycle break, the security harness). When tempted to revisit a rule, read the matching ADR first. New irreversible decisions get a new ADR; see `docs/decisions/README.md` for the format.
 
 ### Test Coverage Requirement
 
@@ -206,7 +217,7 @@ Any change to `data/config.default.json` or `scripts/validateFrontmatter.ts` (ne
 
 `docs/HARNESS.md` is a teaching artifact that describes the live harness with diagrams, sensor inventory, and the change-lifecycle map. It is used as a worked example for talks and onboarding, so it must not drift from reality. Any change to **any** of the following requires an in-PR update to `docs/HARNESS.md`:
 
-- A `check:arch:*` or `check:build:*` script (added, removed, renamed)
+- A `check:arch:*` or `check:build:*` or `check:sec:*` script (added, removed, renamed)
 - A `.dependency-cruiser.cjs` rule (added, removed, semantic change)
 - An `eslint.config.mjs` architectural rule
 - A `scripts/check*.ts` sensor

@@ -39,6 +39,7 @@ ADRs cite the *decisions behind those rules*.
 | 0003 | No `next/image`                                | accepted |
 | 0004 | `format.ts` reads config, not `data.ts`        | accepted |
 | 0005 | Bundle budget enforced via fs walk, not @next/bundle-analyzer | accepted |
+| 0006 | Security harness (Phase 1)                     | accepted |
 
 ## When to write a new ADR
 

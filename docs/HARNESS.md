@@ -61,14 +61,21 @@ flowchart LR
             B2["check:build:links<br/>(linkinator)"]
             B3["check:build:budget<br/>(scripts/checkBundleBudget.ts)"]
         end
+        subgraph SEC["Security (npm run check:sec)"]
+            X1["check:sec:sanitize<br/>(scripts/checkSanitize.ts + XSS test)"]
+            X2["check:sec:deps<br/>(osv-scanner, CI binary)"]
+            X3["check:sec:secrets<br/>(gitleaks, CI binary)"]
+        end
     end
 
     Agent(("agent")) -.reads.-> FF
     Agent ==edits==> Code["src/, scripts/, data/"]
     Code --> SRC
+    Code --> SEC
     Code --> BuildStep["npm run build → out/"]
     BuildStep --> BUILD
     SRC -.violation cites doc.-> Agent
+    SEC -.violation cites doc.-> Agent
     BUILD -.violation cites doc.-> Agent
 ```
 
@@ -78,7 +85,7 @@ Every feedback rule's failure message **cites the `AGENTS.md` doc that explains 
 
 ## 3. The invariant buckets
 
-The regulator's variety. Each row is one architectural property the harness preserves; the columns show which sensor enforces it, which doc teaches it, and which phase introduced it. Twelve buckets and counting — every time review catches a new class of issue, a row is added (see § 8).
+The regulator's variety. Each row is one architectural property the harness preserves; the columns show which sensor enforces it, which doc teaches it, and which phase introduced it. Fifteen buckets and counting — every time review catches a new class of issue, a row is added (see § 8).
 
 | #  | Invariant                                              | Feedback sensor                                                                 | Feedforward doc            | Phase |
 |----|--------------------------------------------------------|----------------------------------------------------------------------------------|----------------------------|-------|
@@ -94,10 +101,17 @@ The regulator's variety. Each row is one architectural property the harness pres
 | 10 | Every `(Checked: …)` reference resolves to a live rule | `check:arch:doccoverage`                                                        | every `AGENTS.md`          | 2     |
 | 11 | JS / CSS / per-chunk sizes stay under explicit caps    | `check:build:budget` (`bundle-budget.json`)                                     | `src/pages/AGENTS.md`      | 3     |
 | 12 | No top-level helper functions in component files       | ESLint `no-restricted-syntax` + `architecture.test.ts` → `no-component-helpers` | `src/components/AGENTS.md` | 4     |
+| 13 | rehype-sanitize stays wired into the markdown pipeline | `check:sec:sanitize` + `scripts/__tests__/sanitize.test.ts` (XSS regression)    | `scripts/AGENTS.md`        | 5     |
+| 14 | No known-CVE npm dependencies                          | `check:sec:deps` (osv-scanner) + `.github/workflows/security.yml`               | root `AGENTS.md`           | 5     |
+| 15 | No committed secrets / API tokens                      | `check:sec:secrets` (gitleaks) + `.github/workflows/security.yml`               | root `AGENTS.md`           | 5     |
 
 **Notes on #12** — catches two failure modes at once: helper duplication across components (e.g. multiple components copy-pasting `stripHtml` instead of importing the canonical `@/lib/format` version) and component files accreting non-component logic. The fix is one of three: move pure helpers to `src/lib/`, convert JSX-returning helpers to PascalCase sub-components, or inline single-use render helpers as `const` arrows inside the component body.
 
+**Notes on #13–#15** — the security arm. #13 is two-layer defense: `scripts/buildData.ts` calls `remarkRehype` without `allowDangerousHtml` *and* runs `rehypeSanitize` immediately after. The sensor enforces the second layer (the first is a one-keystroke regression that the second catches). #14 and #15 use Go binaries (`osv-scanner`, `gitleaks`) deliberately *not* added to `devDependencies` — CI runs the official actions, local devs install via `brew`. See ADR-0006.
+
 Plus framework-aware lints from `@next/eslint-plugin-next` (recommended set, with `no-img-element` and `no-html-link-for-pages` disabled per ADRs / our `assetUrl()` convention — see `eslint.config.mjs` header).
+
+A non-gating advisory workflow — **OpenSSF Scorecard** (`.github/workflows/scorecard.yml`) — runs weekly and uploads SARIF to GitHub's code-scanning UI. Findings are a posture metric, not a blocking check.
 
 ---
 
@@ -207,6 +221,11 @@ npm run check:arch          # source-only sensors (~3s)
   ├─ check:arch:readme      # config ↔ README
   └─ check:arch:doccoverage # AGENTS.md (Checked: …) refs resolve
 
+npm run check:sec           # security sensors
+  ├─ check:sec:sanitize     # rehype-sanitize wired in buildData.ts
+  ├─ check:sec:deps         # osv-scanner (requires `brew install osv-scanner`)
+  └─ check:sec:secrets      # gitleaks (requires `brew install gitleaks`)
+
 npm run build               # static export → out/
 npm run check:build         # build-output sensors
   ├─ check:build:routes     # every expected file present
@@ -216,4 +235,4 @@ npm run check:build         # build-output sensors
 npm test                    # includes architecture.test.ts (6 fs invariants)
 ```
 
-Read these as a single command set: `check:arch && build && check:build && test`. If all four are green, the harness has signed off.
+Read these as a single command set: `check:arch && check:sec && build && check:build && test`. If all five are green, the harness has signed off.

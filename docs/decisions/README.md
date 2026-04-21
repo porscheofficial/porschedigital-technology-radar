@@ -40,6 +40,7 @@ ADRs cite the *decisions behind those rules*.
 | 0004 | `format.ts` reads config, not `data.ts`        | accepted |
 | 0005 | Bundle budget enforced via fs walk, not @next/bundle-analyzer | accepted |
 | 0006 | Security harness (Phase 1)                     | accepted |
+| 0007 | Clean-code harness, Phase 2a: knip             | accepted |
 
 ## When to write a new ADR
 

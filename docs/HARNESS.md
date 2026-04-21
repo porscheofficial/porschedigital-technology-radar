@@ -66,16 +66,21 @@ flowchart LR
             X2["check:sec:deps<br/>(osv-scanner, CI binary)"]
             X3["check:sec:secrets<br/>(gitleaks, CI binary)"]
         end
+        subgraph QUAL["Clean-code (npm run check:quality)"]
+            Q1["check:quality:knip<br/>(dead code + unlisted deps)"]
+        end
     end
 
     Agent(("agent")) -.reads.-> FF
     Agent ==edits==> Code["src/, scripts/, data/"]
     Code --> SRC
     Code --> SEC
+    Code --> QUAL
     Code --> BuildStep["npm run build → out/"]
     BuildStep --> BUILD
     SRC -.violation cites doc.-> Agent
     SEC -.violation cites doc.-> Agent
+    QUAL -.violation cites doc.-> Agent
     BUILD -.violation cites doc.-> Agent
 ```
 
@@ -85,7 +90,7 @@ Every feedback rule's failure message **cites the `AGENTS.md` doc that explains 
 
 ## 3. The invariant buckets
 
-The regulator's variety. Each row is one architectural property the harness preserves; the columns show which sensor enforces it, which doc teaches it, and which phase introduced it. Fifteen buckets and counting — every time review catches a new class of issue, a row is added (see § 8).
+The regulator's variety. Each row is one architectural property the harness preserves; the columns show which sensor enforces it, which doc teaches it, and which phase introduced it. Sixteen buckets and counting — every time review catches a new class of issue, a row is added (see § 8).
 
 | #  | Invariant                                              | Feedback sensor                                                                 | Feedforward doc            | Phase |
 |----|--------------------------------------------------------|----------------------------------------------------------------------------------|----------------------------|-------|
@@ -104,10 +109,13 @@ The regulator's variety. Each row is one architectural property the harness pres
 | 13 | rehype-sanitize stays wired into the markdown pipeline | `check:sec:sanitize` + `scripts/__tests__/sanitize.test.ts` (XSS regression)    | `scripts/AGENTS.md`        | 5     |
 | 14 | No known-CVE npm dependencies                          | `check:sec:deps` (osv-scanner) + `.github/workflows/security.yml`               | root `AGENTS.md`           | 5     |
 | 15 | No committed secrets / API tokens                      | `check:sec:secrets` (gitleaks) + `.github/workflows/security.yml`               | root `AGENTS.md`           | 5     |
+| 16 | No dead code, unused exports, or unlisted deps         | `check:quality:knip` (`knip.json`)                                              | root `AGENTS.md`           | 6     |
 
 **Notes on #12** — catches two failure modes at once: helper duplication across components (e.g. multiple components copy-pasting `stripHtml` instead of importing the canonical `@/lib/format` version) and component files accreting non-component logic. The fix is one of three: move pure helpers to `src/lib/`, convert JSX-returning helpers to PascalCase sub-components, or inline single-use render helpers as `const` arrows inside the component body.
 
 **Notes on #13–#15** — the security arm. #13 is two-layer defense: `scripts/buildData.ts` calls `remarkRehype` without `allowDangerousHtml` *and* runs `rehypeSanitize` immediately after. The sensor enforces the second layer (the first is a one-keystroke regression that the second catches). #14 and #15 use Go binaries (`osv-scanner`, `gitleaks`) deliberately *not* added to `devDependencies` — CI runs the official actions, local devs install via `brew`. See ADR-0006.
+
+**Notes on #16** — the clean-code arm opens with knip, the cheapest of four planned Phase-2 sensors (jscpd for duplication, `@typescript-eslint/naming-convention`, and the sonar successor still land as separate ADRs). `ignoreBinaries` in `knip.json` covers the `osv-scanner` / `gitleaks` system binaries so the security and clean-code arms don't fight. See ADR-0007.
 
 Plus framework-aware lints from `@next/eslint-plugin-next` (recommended set, with `no-img-element` and `no-html-link-for-pages` disabled per ADRs / our `assetUrl()` convention — see `eslint.config.mjs` header).
 
@@ -226,6 +234,9 @@ npm run check:sec           # security sensors
   ├─ check:sec:deps         # osv-scanner (requires `brew install osv-scanner`)
   └─ check:sec:secrets      # gitleaks (requires `brew install gitleaks`)
 
+npm run check:quality       # clean-code sensors
+  └─ check:quality:knip     # unused files / exports / deps
+
 npm run build               # static export → out/
 npm run check:build         # build-output sensors
   ├─ check:build:routes     # every expected file present
@@ -235,4 +246,4 @@ npm run check:build         # build-output sensors
 npm test                    # includes architecture.test.ts (6 fs invariants)
 ```
 
-Read these as a single command set: `check:arch && check:sec && build && check:build && test`. If all five are green, the harness has signed off.
+Read these as a single command set: `check:arch && check:sec && check:quality && build && check:build && test`. If all six are green, the harness has signed off.

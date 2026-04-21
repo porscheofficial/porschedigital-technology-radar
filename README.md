@@ -1,6 +1,8 @@
 # Porsche Digital Technology Radar
 
 [![GitHub Pages Deploy](https://img.shields.io/github/actions/workflow/status/porscheofficial/porschedigital-technology-radar/deploy.yml?branch=pdig&label=deploy)](https://github.com/porscheofficial/porschedigital-technology-radar/actions/workflows/deploy.yml)
+[![npm version](https://img.shields.io/npm/v/@porscheofficial/porschedigital-technology-radar?logo=npm)](https://www.npmjs.com/package/@porscheofficial/porschedigital-technology-radar)
+[![npm downloads](https://img.shields.io/npm/dw/@porscheofficial/porschedigital-technology-radar?logo=npm&label=downloads)](https://www.npmjs.com/package/@porscheofficial/porschedigital-technology-radar)
 [![GitHub Release](https://img.shields.io/github/v/release/porscheofficial/porschedigital-technology-radar)](https://github.com/porscheofficial/porschedigital-technology-radar/releases)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue)](./LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)

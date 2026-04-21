@@ -76,8 +76,7 @@ export default tseslint.config(
         {
           selector:
             "JSXElement[openingElement.name.name='Link'] JSXAttribute[name.name='href'] CallExpression[callee.name='assetUrl']",
-          message:
-            'Do not wrap <Link> href with assetUrl() — Next.js auto-prepends basePath. Use a bare path like href="/foo" or href={`/${id}`}.',
+          message: `Do not wrap <Link> href with assetUrl() — Next.js auto-prepends basePath. Use a bare path like href="/foo" or href={\`/\${id}\`}.`,
         },
 
         // 3) `as any` cast.
@@ -117,8 +116,7 @@ export default tseslint.config(
         {
           selector:
             "JSXElement[openingElement.name.name='Link'] JSXAttribute[name.name='href'] CallExpression[callee.name='assetUrl']",
-          message:
-            'Do not wrap <Link> href with assetUrl() — Next.js auto-prepends basePath. Use a bare path like href="/foo" or href={`/${id}`}.',
+          message: `Do not wrap <Link> href with assetUrl() — Next.js auto-prepends basePath. Use a bare path like href="/foo" or href={\`/\${id}\`}.`,
         },
         {
           selector: "TSAsExpression > TSAnyKeyword.typeAnnotation",
@@ -170,8 +168,7 @@ export default tseslint.config(
         {
           selector:
             "JSXElement[openingElement.name.name='Link'] JSXAttribute[name.name='href'] CallExpression[callee.name='assetUrl']",
-          message:
-            'Do not wrap <Link> href with assetUrl() — Next.js auto-prepends basePath. Use a bare path like href="/foo" or href={`/${id}`}.',
+          message: `Do not wrap <Link> href with assetUrl() — Next.js auto-prepends basePath. Use a bare path like href="/foo" or href={\`/\${id}\`}.`,
         },
         {
           selector: "TSAsExpression > TSAnyKeyword.typeAnnotation",

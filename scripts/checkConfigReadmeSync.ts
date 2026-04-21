@@ -32,7 +32,7 @@ const configKeys = flattenLeafKeys(cfg);
 
 const missingInReadme: string[] = [];
 for (const key of configKeys) {
-  const leaf = key.split(".").pop()!;
+  const leaf = key.split(".").pop() ?? key;
   if (["0", "1", "2", "3", "4", "5", "6", "7"].includes(leaf)) continue;
   const pattern = new RegExp(`\`${leaf}\``);
   if (!pattern.test(readme)) missingInReadme.push(key);

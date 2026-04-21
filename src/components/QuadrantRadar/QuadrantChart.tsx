@@ -3,7 +3,7 @@ import { type FC, memo, useMemo } from "react";
 import { Blip } from "@/components/Radar/Blip";
 import { useRadarHighlight } from "@/lib/RadarHighlightContext";
 import type { Item, Quadrant, Ring } from "@/lib/types";
-import { assetUrl, cn } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import styles from "./QuadrantChart.module.scss";
 
 const QUADRANT_PADDING_RATIO = 0.08;

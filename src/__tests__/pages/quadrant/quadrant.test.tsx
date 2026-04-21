@@ -60,6 +60,10 @@ vi.mock("@/lib/RadarHighlightContext", () => ({
   RadarHighlightProvider: ({ children }: any) => children,
 }));
 
+vi.mock("@/lib/config", () => ({
+  default: { labels: { title: "Test Radar" } },
+}));
+
 vi.mock("@/lib/data", () => ({
   getAppName: mockState.getAppName,
   getItems: mockState.getItems,

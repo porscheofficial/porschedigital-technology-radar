@@ -15,7 +15,7 @@ import { Tag } from "@/components/Tags/Tags";
 import { Team, Teams } from "@/components/Teams/Teams";
 import { getEditUrl, getLabel, getReleases, getRing } from "@/lib/data";
 import type { Item, ItemLink, Revision } from "@/lib/types";
-import { cn } from "@/lib/utils";
+import { assetUrl, cn } from "@/lib/utils";
 import styles from "./ItemDetail.module.scss";
 
 const RECENT_RELEASE_COUNT = 3;
@@ -107,7 +107,10 @@ export function ItemDetail({ item, quadrantTitle }: ItemProps) {
             <div className={styles.ringName}>
               {ringInfo?.title || item.ring}
             </div>
-            <Link href={`/${item.quadrant}`} className={styles.quadrantLabel}>
+            <Link
+              href={assetUrl(`/${item.quadrant}`)}
+              className={styles.quadrantLabel}
+            >
               {quadrantTitle}
               <PIcon
                 name="arrow-head-right"

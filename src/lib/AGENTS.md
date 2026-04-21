@@ -1,0 +1,25 @@
+# `src/lib/` — Core Logic
+
+The single source of truth for types, data accessors, config, and helpers. Pages and components import from here, not the other way around.
+
+## Module roles
+
+| File | Role |
+| --- | --- |
+| `types.ts` | All shared TypeScript types. New types go here, not next to components. |
+| `data.ts` | **The ONLY module allowed to import `data/data.json`.** Exposes `getItems`, `getQuadrants`, `getRings`, etc. (Checked: `.dependency-cruiser.cjs` → `data-accessor-only`.) |
+| `config.ts` | Deep-merges `data/config.default.json` + `data/config.json`. Default export is the merged config. |
+| `format.ts` | Date/number/title formatting. May read `config` but **must not import from `data.ts`** (would create a cycle). |
+| `utils.ts` | `cn()`, `assetUrl()`, small pure helpers. |
+| `blipIcons.ts` | Maps blip ids to icon components. |
+
+## Rules
+
+- **No runtime data fetching.** No `axios`, `node-fetch`, `swr`, `react-query`, `@tanstack/react-query`. Everything is static. (Checked: `.dependency-cruiser.cjs` → `no-runtime-fetch-libs`.)
+- **No circular imports.** (Checked: `.dependency-cruiser.cjs` → `no-circular`.) Specifically: `data.ts` imports `format.ts`, so `format.ts` must not import `data.ts`.
+- **No `as any` / `@ts-ignore` / `@ts-expect-error`.** Use `unknown` + narrowing or fix the type. (Checked: `eslint.config.js`.)
+- **All `href`/`src` literals starting with `/`** must go through `assetUrl()`. This applies to logo paths and any URL strings constructed here. (Checked: `eslint.config.js`.)
+
+## Tests
+
+Lib tests live in `src/lib/__tests__/{name}.test.ts`. Mock heavyweight modules (`@/lib/data`, `@/lib/config`) with `vi.mock()`.

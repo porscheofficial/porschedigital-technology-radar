@@ -14,6 +14,7 @@ import {
 import { getItems, getLabel, getQuadrant, getRing } from "@/lib/data";
 import { useRadarHighlight } from "@/lib/RadarHighlightContext";
 import type { Item } from "@/lib/types";
+import { assetUrl } from "@/lib/utils";
 import styles from "./SearchBar.module.scss";
 
 const MAX_VISIBLE = 5;
@@ -247,7 +248,7 @@ export function SearchBar() {
                 }
               >
                 <Link
-                  href={`/${item.quadrant}/${item.id}`}
+                  href={assetUrl(`/${item.quadrant}/${item.id}`)}
                   className={styles.resultLink}
                   onClick={() => {
                     close();

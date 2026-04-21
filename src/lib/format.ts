@@ -1,4 +1,4 @@
-import { getAppName } from "@/lib/data";
+import config from "@/lib/config";
 
 export function format(text: string, context: Record<string, string>): string {
   return text.replace(/{(\w+)}/g, (match, key) => {
@@ -7,7 +7,7 @@ export function format(text: string, context: Record<string, string>): string {
 }
 
 export function formatTitle(...title: string[]): string {
-  return [...title, getAppName()].join(" | ");
+  return [...title, config.labels.title || ""].join(" | ");
 }
 
 function toSafeDate(release: string): Date {

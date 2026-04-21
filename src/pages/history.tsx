@@ -25,6 +25,7 @@ import {
   getVersionDiffs,
 } from "@/lib/data";
 import { formatRelease, formatReleaseCompact, formatTitle } from "@/lib/format";
+import { assetUrl } from "@/lib/utils";
 import type { CustomPage } from "@/pages/_app";
 import styles from "./history.module.scss";
 
@@ -268,7 +269,7 @@ const History: CustomPage = () => {
                   {diff.promoted.map(({ item, from, to }) => (
                     <Link
                       key={item.id}
-                      href={`/${item.quadrant}/${item.id}`}
+                      href={assetUrl(`/${item.quadrant}/${item.id}`)}
                       className={styles.changeItem}
                     >
                       <span className={styles.changeIcon}>▲</span>
@@ -287,7 +288,7 @@ const History: CustomPage = () => {
                   {diff.demoted.map(({ item, from, to }) => (
                     <Link
                       key={item.id}
-                      href={`/${item.quadrant}/${item.id}`}
+                      href={assetUrl(`/${item.quadrant}/${item.id}`)}
                       className={styles.changeItem}
                     >
                       <span className={styles.changeIconDown}>▼</span>
@@ -306,7 +307,7 @@ const History: CustomPage = () => {
                   {diff.newItems.map(({ item, ring }) => (
                     <Link
                       key={item.id}
-                      href={`/${item.quadrant}/${item.id}`}
+                      href={assetUrl(`/${item.quadrant}/${item.id}`)}
                       className={styles.changeItem}
                     >
                       <span className={styles.changeIconNew}>✦</span>
@@ -333,7 +334,7 @@ const History: CustomPage = () => {
                   {diff.teamChanges.map(({ item, added, removed }) => (
                     <Link
                       key={item.id}
-                      href={`/${item.quadrant}/${item.id}`}
+                      href={assetUrl(`/${item.quadrant}/${item.id}`)}
                       className={styles.changeItem}
                     >
                       <span className={styles.changeIcon}>

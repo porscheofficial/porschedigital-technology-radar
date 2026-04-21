@@ -22,6 +22,10 @@ vi.mock("@/components/ItemDetail/ItemDetail", () => ({
   },
 }));
 
+vi.mock("@/lib/config", () => ({
+  default: { labels: { title: "Test Radar" } },
+}));
+
 vi.mock("@/lib/data", () => ({
   getAppName: mockState.getAppName,
   getItem: mockState.getItem,

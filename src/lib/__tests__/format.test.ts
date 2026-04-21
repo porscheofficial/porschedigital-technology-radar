@@ -6,8 +6,8 @@ import {
   formatTitle,
 } from "@/lib/format";
 
-vi.mock("@/lib/data", () => ({
-  getAppName: () => "Test Radar",
+vi.mock("@/lib/config", () => ({
+  default: { labels: { title: "Test Radar" } },
 }));
 
 describe("format", () => {

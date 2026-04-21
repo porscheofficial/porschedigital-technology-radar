@@ -83,6 +83,10 @@ vi.mock("@/components/Teams/Teams", () => ({
   ),
 }));
 
+vi.mock("@/lib/config", () => ({
+  default: { labels: { title: "Test Radar" } },
+}));
+
 vi.mock("@/lib/data", () => ({
   getAppName: mockState.getAppName,
   getItemTrajectories: mockState.getItemTrajectories,

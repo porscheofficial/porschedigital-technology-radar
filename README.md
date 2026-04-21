@@ -186,6 +186,7 @@ All configuration lives in `data/config.json`. Any key you omit falls back to th
 | `showChart`      | Show the radar visualization on the homepage. | `true`  |
 | `showTagFilter`  | Show the tag filter below the radar.          | `true`  |
 | `showTeamFilter` | Show the team filter below the radar.         | `true`  |
+| `showDemoDisclaimer` | Show the demo-data disclaimer banner on the homepage. | `false` |
 | `multiSelectFilters` | Allow selecting multiple filters per dimension (OR semantics within, AND across). When `false`, each dimension allows only one active filter at a time. | `true` |
 
 </details>

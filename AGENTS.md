@@ -131,8 +131,32 @@ npm run build          # Static export succeeds
 
 1. `npm run lint` — 0 errors, 0 warnings
 2. `npx tsc --noEmit` — 0 type errors
-3. `npm run test` — all pass, no skipped tests
-4. `npm run build` — static export succeeds
+3. `npm run test` — all pass, no skipped tests (includes architecture invariants)
+4. `npm run check:arch` — architecture invariants hold (see "Steering Harness" below)
+5. `npm run build` — static export succeeds
+
+## Steering Harness
+
+This repo runs a two-arm steering harness for agent work:
+
+**Feedforward** — per-directory `AGENTS.md` files teach the rules at point-of-entry:
+
+- `src/pages/AGENTS.md` — Pages Router rules
+- `src/app/AGENTS.md` — App Router scoped to `sitemap.ts`
+- `src/components/AGENTS.md` — Folder shape, SCSS Modules, PDS, `SafeHtml`, `assetUrl`
+- `src/lib/AGENTS.md` — Module roles, no cycles, single data importer
+- `src/__tests__/AGENTS.md` — Out-of-tree test placement
+- `scripts/AGENTS.md` — Build-time tooling, schema↔README invariant
+- `data/AGENTS.md` — Frontmatter, config, wiki links
+
+**Feedback** — `npm run check:arch` enforces the same rules:
+
+- `npm run check:arch:depcruise` — dependency-cruiser (`.dependency-cruiser.cjs`): import-graph rules (data accessor, no `next/image`, no CSS-in-JS, no runtime fetching, app-router scope, no cross-page imports, no cycles).
+- `npm run check:arch:eslint` — ESLint flat config (`eslint.config.js`, lint-only): bans `as any` / `@ts-ignore`, requires `assetUrl()` for absolute URLs, restricts `dangerouslySetInnerHTML` to `SafeHtml.tsx`.
+- `npm run check:arch:readme` — `scripts/checkConfigReadmeSync.ts`: every `data/config.default.json` leaf key and every Zod field in `validateFrontmatter.ts` must appear in `README.md`.
+- `src/__tests__/architecture/architecture.test.ts` — fs-based invariants: no `.test.tsx` in `src/pages/`, `src/app/` only contains `sitemap.ts`, component folder shape, no `pages/api`, no `middleware.ts`.
+
+When a check fails, read its rule's `comment` (dep-cruiser) or message (ESLint) — each cites the AGENTS.md doc that explains why.
 
 ### Test Coverage Requirement
 

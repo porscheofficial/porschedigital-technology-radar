@@ -3,7 +3,7 @@ import { type FC, memo, useMemo } from "react";
 import { Blip } from "@/components/Radar/Blip";
 import { useRadarHighlight } from "@/lib/RadarHighlightContext";
 import type { Item, Quadrant, Ring } from "@/lib/types";
-import { cn } from "@/lib/utils";
+import { assetUrl, cn } from "@/lib/utils";
 import styles from "./QuadrantChart.module.scss";
 
 const QUADRANT_PADDING_RATIO = 0.08;
@@ -263,7 +263,7 @@ const QuadrantChartInner: FC<QuadrantChartProps> = ({
     return (
       <Link
         key={item.id}
-        href={`/${item.quadrant}/${item.id}`}
+        href={assetUrl(`/${item.quadrant}/${item.id}`)}
         data-tooltip={item.title}
         data-tooltip-color={quadrant.color}
         data-item-id={item.id}

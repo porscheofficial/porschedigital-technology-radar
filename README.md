@@ -14,6 +14,22 @@ A static site generator for building and publishing your own Technology Radar.
 
 ![Screenshot of the Technology Radar](./docs/assets/screenshot-radar.png)
 
+## Table of Contents
+
+<p align="center">
+  <a href="#-about">About</a> ·
+  <a href="#-why-a-technology-radar">Why a Technology Radar?</a> ·
+  <a href="#-features">Features</a> ·
+  <a href="#-screenshots">Screenshots</a> ·
+  <a href="#-quick-start">Quick Start</a> ·
+  <a href="#-project-structure-consumer">Project Structure</a> ·
+  <a href="#️-configuration">Configuration</a> ·
+  <a href="#-radar-items">Radar Items</a> ·
+  <a href="#️-development-contributing-to-the-generator">Development</a> ·
+  <a href="#-custom-styling">Custom Styling</a> ·
+  <a href="#-license">License</a>
+</p>
+
 ## 📖 About
 
 This project is maintained by **Porsche Digital** and is based on the open-source [AOE Technology Radar](https://github.com/AOEpeople/aoe_technology_radar). The codebase has been substantially rewritten and extended — it is not a drop-in replacement.

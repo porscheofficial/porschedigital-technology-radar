@@ -37,7 +37,16 @@ export function formatReleaseCompact(release: string): string {
 }
 
 export function stripHtml(html: string): string {
-  return html.replace(/<[^>]*>/g, "").trim();
+  // Loop until stable so that overlapping/nested patterns like
+  // `<<script>script>` cannot bypass a single-pass strip
+  // (CodeQL js/incomplete-multi-character-sanitization).
+  let prev: string;
+  let next = html;
+  do {
+    prev = next;
+    next = prev.replace(/<[^>]*>/g, "");
+  } while (next !== prev);
+  return next.trim();
 }
 
 export function truncate(text: string, maxLength: number): string {

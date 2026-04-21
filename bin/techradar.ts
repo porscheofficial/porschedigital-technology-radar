@@ -120,22 +120,28 @@ function isInitialized(): boolean {
 
 function ensureGitignore(): void {
   const gitignorePath = join(CWD, ".gitignore");
-  const existing = existsSync(gitignorePath)
-    ? readFileSync(gitignorePath, "utf8")
-    : "";
+  // Read-or-empty without a separate existsSync gate to avoid TOCTOU
+  // (CodeQL js/file-system-race). ENOENT is the only expected failure mode.
+  let existing = "";
+  try {
+    existing = readFileSync(gitignorePath, "utf8");
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code !== "ENOENT") throw err;
+  }
   const lines = existing.split("\n").map((l) => l.trim());
   const missing = GITIGNORE_ENTRIES.filter((entry) => !lines.includes(entry));
 
   if (missing.length === 0) return;
 
-  if (!existing) {
-    writeFileSync(gitignorePath, `${missing.join("\n")}\n`);
-    consola.info("Created .gitignore");
-  } else {
-    const prefix = existing.endsWith("\n") ? "" : "\n";
-    appendFileSync(gitignorePath, `${prefix}${missing.join("\n")}\n`);
-    consola.info(`Added ${missing.join(", ")} to .gitignore`);
-  }
+  // appendFileSync creates the file when absent, so a single call covers
+  // both the create and append paths without a second filesystem check.
+  const prefix = !existing || existing.endsWith("\n") ? "" : "\n";
+  appendFileSync(gitignorePath, `${prefix}${missing.join("\n")}\n`);
+  consola.info(
+    existing
+      ? `Added ${missing.join(", ")} to .gitignore`
+      : "Created .gitignore",
+  );
 }
 
 /**

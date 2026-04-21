@@ -1,0 +1,208 @@
+# Harness Engineering — Worked Example
+
+> **Keep in sync.** This file is a teaching artifact built from the real harness in this repo. Any change to a sensor, a rule, an `AGENTS.md`, or a `npm run check:*` script MUST be reflected here in the same PR. Out-of-date diagrams teach the wrong lesson. (See root `AGENTS.md` → _Harness Documentation Sync_.)
+
+This document explains what a coding-agent harness is, then walks through the one wired into this project — concretely, with file paths and rule names you can grep for.
+
+---
+
+## 1. What is a harness?
+
+A **harness** is the set of guides and sensors that surrounds a coding agent (or a human, for that matter) so the loop _converges_ on correct, on-spec changes instead of drifting.
+
+Martin Fowler & Birgitta Böckeler frame it as a 2×2 grid:
+
+|                        | **Feedforward** (teaches before you act) | **Feedback** (catches after you act)                 |
+| ---------------------- | ---------------------------------------- | ---------------------------------------------------- |
+| **Computational** (deterministic, fast)   | Type signatures, schemas, examples       | Linters, type-checkers, dep-cruiser, fitness tests   |
+| **Inferential** (LLM-judged, slow)        | Architectural narratives, ADRs           | Review skills, generator+evaluator loops             |
+
+Two regulation principles drive the design:
+
+1. **Ashby's Law of Requisite Variety** — the regulator (harness) must have at least as much variety as the system it regulates. If the codebase has 7 invariants, you need 7 sensors.
+2. **Keep quality left** — distribute sensors across the change lifecycle so violations are caught at the cheapest possible point (editor → pre-commit → CI → after-build).
+
+This project currently fields the **computational column** of the grid in both rows. The inferential row is on the roadmap.
+
+---
+
+## 2. The two arms in this repo
+
+```mermaid
+flowchart LR
+    subgraph FF["Feedforward — what the agent reads BEFORE editing"]
+        direction TB
+        FF1["AGENTS.md (root)"]
+        FF2["src/pages/AGENTS.md"]
+        FF3["src/app/AGENTS.md"]
+        FF4["src/components/AGENTS.md"]
+        FF5["src/lib/AGENTS.md"]
+        FF6["src/__tests__/AGENTS.md"]
+        FF7["scripts/AGENTS.md"]
+        FF8["data/AGENTS.md"]
+    end
+
+    subgraph FB["Feedback — what fires AFTER editing"]
+        direction TB
+        subgraph SRC["Source-only (npm run check:arch)"]
+            S1["check:arch:depcruise<br/>(.dependency-cruiser.cjs)"]
+            S2["check:arch:eslint<br/>(eslint.config.js)"]
+            S3["check:arch:readme<br/>(scripts/checkConfigReadmeSync.ts)"]
+            S4["architecture.test.ts<br/>(vitest, fs invariants)"]
+        end
+        subgraph BUILD["Build-output (npm run check:build)"]
+            B1["check:build:routes<br/>(scripts/checkBuildOutput.ts)"]
+            B2["check:build:links<br/>(linkinator)"]
+        end
+    end
+
+    Agent(("agent")) -.reads.-> FF
+    Agent ==edits==> Code["src/, scripts/, data/"]
+    Code --> SRC
+    Code --> BuildStep["npm run build → out/"]
+    BuildStep --> BUILD
+    SRC -.violation cites doc.-> Agent
+    BUILD -.violation cites doc.-> Agent
+```
+
+Every feedback rule's failure message **cites the `AGENTS.md` doc that explains why** — closing the loop back to the feedforward arm. This is the single most important property of the harness.
+
+---
+
+## 3. The seven invariant buckets
+
+The regulator's variety. Each row is one architectural property the harness preserves; the columns show which sensor enforces it and which doc teaches it.
+
+| # | Invariant                                            | Feedback sensor                                     | Feedforward doc                |
+|---|------------------------------------------------------|-----------------------------------------------------|--------------------------------|
+| 1 | Static export only (no SSR/API/middleware)           | `architecture.test.ts` + `no-next-server-apis`      | `src/pages/AGENTS.md`          |
+| 2 | Pages Router topology (no `.test.tsx` in pages)      | `architecture.test.ts` (5 fs tests)                 | `src/pages/AGENTS.md`          |
+| 3 | App Router scoped to `sitemap.ts`                    | `architecture.test.ts` + `app-router-only-sitemap`  | `src/app/AGENTS.md`            |
+| 4 | One importer of `data/data.json`                     | `data-accessor-only` (dep-cruiser)                  | `src/lib/AGENTS.md`            |
+| 5 | Component shape (`Name.tsx` + `Name.module.scss`)    | `architecture.test.ts` → `component-folder-shape`   | `src/components/AGENTS.md`     |
+| 6 | No type suppressions, `assetUrl()` for absolute URLs | ESLint `ban-ts-comment` + `no-restricted-syntax`    | `src/components/AGENTS.md`     |
+| 7 | Config / Zod schema documented in README             | `scripts/checkConfigReadmeSync.ts`                  | `data/AGENTS.md`               |
+
+Plus two **build-output** invariants added in Phase 1:
+
+| # | Invariant                                            | Feedback sensor                                     | Feedforward doc                |
+|---|------------------------------------------------------|-----------------------------------------------------|--------------------------------|
+| 8 | Every expected route file lands in `out/`            | `check:build:routes`                                | `src/pages/AGENTS.md`          |
+| 9 | No broken internal links in the built site           | `check:build:links` (linkinator)                    | `src/pages/AGENTS.md`          |
+
+---
+
+## 4. Sensor placement across the change lifecycle
+
+```mermaid
+flowchart LR
+    edit["edit file"] --> lsp["LSP / TS<br/>(in editor)"]
+    lsp --> precommit["pre-commit<br/>(husky → lint-staged → biome)"]
+    precommit --> push["push"]
+    push --> arch["check:arch<br/>(source-only, ~3s)"]
+    arch --> test["npm test<br/>(323 tests, ~4s)"]
+    test --> build["npm run build<br/>(static export → out/)"]
+    build --> bld["check:build<br/>(routes + links)"]
+    bld --> ship["ship"]
+
+    classDef cheap fill:#d4edda,stroke:#155724
+    classDef medium fill:#fff3cd,stroke:#856404
+    classDef costly fill:#f8d7da,stroke:#721c24
+    class lsp,precommit cheap
+    class arch,test medium
+    class build,bld costly
+```
+
+Cheap-to-expensive ordering matters: every sensor moved leftward saves agent time, tokens, and CI minutes.
+
+---
+
+## 5. Anatomy of a single rule
+
+Every dep-cruiser rule has the same shape. This is the smallest unit of the harness:
+
+```js
+{
+  name: "no-next-server-apis",
+  severity: "error",
+  comment:
+    "Static export has no server. No imports from next/headers, " +
+    "next/cache, next/server, or server-only. " +
+    "Fix: use getStaticProps + module-level data imports. " +
+    "See src/pages/AGENTS.md → static-export contract.",
+  from: { path: "^src/" },
+  to:   { path: "^node_modules/(next/(headers|cache|server)|server-only)(\\.|/|$)" },
+}
+```
+
+Three properties make this rule _agent-legible_:
+
+1. **`severity: "error"`** — non-negotiable. The rule won't be ignored.
+2. **`comment`** — embeds **the fix** and **the citation** to the doc that explains the constraint. The agent reads this on failure and knows exactly what to do.
+3. **Resolved-path matching** — `to.path` matches the resolved `node_modules/...` location, not the bare specifier. This is documented in the banner of `.dependency-cruiser.cjs` so the next person doesn't burn an hour finding out.
+
+---
+
+## 6. The agent-correction loop
+
+```mermaid
+sequenceDiagram
+    actor A as Agent
+    participant C as Code
+    participant S as Sensor (e.g. dep-cruiser)
+    participant D as AGENTS.md
+
+    A->>C: edit src/foo.tsx<br/>(adds `import 'next/server'`)
+    A->>S: npm run check:arch
+    S-->>A: ✗ no-next-server-apis<br/>"...See src/pages/AGENTS.md → static-export contract"
+    A->>D: read src/pages/AGENTS.md
+    D-->>A: rationale + the right pattern (getStaticProps)
+    A->>C: rewrite without next/server
+    A->>S: npm run check:arch
+    S-->>A: ✔ 0 violations
+```
+
+The arrow from sensor back to doc is what makes this an _engineered harness_ rather than a pile of linters. Without that citation, the agent fixes the symptom, not the principle.
+
+---
+
+## 7. What's intentionally _not_ here yet
+
+The harness is computational-only. The inferential column is the next frontier:
+
+- **/doc-gardener skill** — periodically audits whether the AGENTS.md files still describe reality.
+- **/review-radar skill** — LLM-as-judge against the seven invariants on a diff.
+- **Generator + evaluator loop** — Anthropic-style two-agent pattern for visual changes to the radar SVG.
+
+Also deliberately deferred: visual regression on the SVG, mutation testing, Lighthouse/axe — see roadmap notes in the project's planning artifacts.
+
+---
+
+## 8. The meta-rule (humans-ON-loop)
+
+Kief Morris's distinction (Fowler exploring-gen-ai series):
+
+- **Humans IN the loop** — gatekeep every change. Bottleneck.
+- **Humans ON the loop** — improve the harness whenever a class of issue recurs. Compounds.
+
+The rule for this project: **when a violation slips past every sensor and a human catches it in review, the fix is not just the code — it's also a new sensor, a new AGENTS.md line, or both.** That's the only way the harness keeps up with the codebase.
+
+---
+
+## 9. Quick reference
+
+```bash
+npm run check:arch          # source-only sensors (~3s)
+  ├─ check:arch:depcruise   # import graph
+  ├─ check:arch:eslint      # JSX / TS suppressions
+  └─ check:arch:readme      # config ↔ README
+
+npm run build               # static export → out/
+npm run check:build         # build-output sensors
+  ├─ check:build:routes     # every expected file present
+  └─ check:build:links      # no broken internal links
+
+npm test                    # includes architecture.test.ts (5 fs invariants)
+```
+
+Read these as a single command set: `check:arch && build && check:build && test`. If all four are green, the harness has signed off.

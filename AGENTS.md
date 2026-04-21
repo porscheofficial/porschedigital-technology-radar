@@ -198,6 +198,19 @@ NEVER skip writing tests by saying "tests can be added later."
 
 Any change to `data/config.default.json` or `scripts/validateFrontmatter.ts` (new keys, renamed keys, changed defaults, new frontmatter attributes) MUST be reflected in the corresponding section of `README.md` (Configuration tables and/or Front-matter attributes table). Never ship a config or schema change without updating the README.
 
+### Harness Documentation Sync
+
+`docs/HARNESS.md` is a teaching artifact that describes the live harness with diagrams, sensor inventory, and the change-lifecycle map. It is used as a worked example for talks and onboarding, so it must not drift from reality. Any change to **any** of the following requires an in-PR update to `docs/HARNESS.md`:
+
+- A `check:arch:*` or `check:build:*` script (added, removed, renamed)
+- A `.dependency-cruiser.cjs` rule (added, removed, semantic change)
+- An `eslint.config.js` architectural rule
+- A `scripts/check*.ts` sensor
+- An `AGENTS.md` file (added, removed)
+- An invariant bucket in the seven-row table (sensor or doc citation changes)
+
+If the harness gains an inferential sensor (skill, LLM judge), update Section 7 to move it from "not yet" into the inventory.
+
 ### TypeScript
 
 - Strict mode, no `any` (except test mock factories)

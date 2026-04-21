@@ -19,7 +19,7 @@ Items are organized into quadrants and placed on rings that indicate our current
 ```bash
 mkdir my-technology-radar && cd my-technology-radar
 npm init -y
-npm install porschedigital-technology-radar@porscheofficial/porschedigital-technology-radar
+npm install @porscheofficial/porschedigital-technology-radar
 ```
 
 2. Run `npx techradar init` to scaffold starter files (`radar/`, `config.json`, `about.md`, `public/`, `custom.scss`, `.gitignore`).

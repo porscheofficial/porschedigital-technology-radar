@@ -1,9 +1,47 @@
 {
-  "name": "porschedigital-technology-radar",
-  "private": true,
-  "version": "1.0.2",
+  "name": "@porscheofficial/porschedigital-technology-radar",
+  "version": "1.0.3",
+  "description": "Static site generator for building and publishing your own Technology Radar.",
+  "keywords": [
+    "technology-radar",
+    "tech-radar",
+    "thoughtworks",
+    "static-site",
+    "next.js",
+    "porsche"
+  ],
+  "license": "Apache-2.0",
+  "author": "Porsche Digital",
+  "homepage": "https://opensource.porsche.com/porschedigital-technology-radar/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/porscheofficial/porschedigital-technology-radar.git"
+  },
+  "bugs": {
+    "url": "https://github.com/porscheofficial/porschedigital-technology-radar/issues"
+  },
+  "engines": {
+    "node": ">=22"
+  },
   "bin": {
-    "techradar": "./dist/bin/techradar.js"
+    "techradar": "dist/bin/techradar.js"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "data",
+    "public",
+    "scripts",
+    "src",
+    "next.config.js",
+    "next-env.d.ts",
+    "tsconfig.json",
+    "biome.jsonc",
+    "postcss.config.js",
+    ".markdownlint-cli2.jsonc"
+  ],
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "dev": "portless run next dev",
@@ -20,8 +58,7 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "knip": "knip",
-    "prepare": "(husky || true) && npm run build:bin",
-    "postinstall": "npm run build:icons"
+    "prepare": "(husky || true) && npm run build:icons && npm run build:bin"
   },
   "devDependencies": {
     "@11ty/gray-matter": "^2.0.1",
@@ -41,12 +78,12 @@
     "clsx": "^2.1.1",
     "consola": "^3.4.2",
     "execa": "^9.6.1",
-    "hast": "^0.0.2",
+    "hast": "^1.0.0",
     "husky": "^9.0.11",
     "jsdom": "^29.0.2",
     "knip": "6.4.0",
     "lint-staged": "^15.2.7",
-    "markdownlint-cli2": "^0.22.0",
+    "markdownlint-cli2": "^0.21.0",
     "next": "^16.2.3",
     "portless": "^0.10.1",
     "postcss-nested": "^6.0.1",

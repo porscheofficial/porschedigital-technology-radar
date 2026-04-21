@@ -78,7 +78,7 @@ npm init -y
 ### 2. Install the radar as a dependency
 
 ```bash
-npm install porschedigital-technology-radar@porscheofficial/porschedigital-technology-radar
+npm install @porscheofficial/porschedigital-technology-radar
 ```
 
 ### 3. Initialize the project

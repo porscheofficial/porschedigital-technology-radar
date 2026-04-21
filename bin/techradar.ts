@@ -19,7 +19,7 @@ import { execa, execaSync } from "execa";
 // Constants
 // ---------------------------------------------------------------------------
 
-const PACKAGE_NAME = "porschedigital-technology-radar";
+const PACKAGE_NAME = "@porscheofficial/porschedigital-technology-radar";
 const CWD = process.cwd();
 const SOURCE_DIR = join(CWD, "node_modules", PACKAGE_NAME);
 const BUILDER_DIR = join(CWD, ".techradar");

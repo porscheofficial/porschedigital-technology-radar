@@ -31,6 +31,7 @@ export default tseslint.config(
       ".next/**",
       "out/**",
       "dist/**",
+      "coverage/**",
       "src/components/Icons/**",
       "data/**",
     ],

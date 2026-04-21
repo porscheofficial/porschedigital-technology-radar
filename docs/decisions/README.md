@@ -45,6 +45,11 @@ ADRs cite the *decisions behind those rules*.
 | 0009 | Clean-code harness, Phase 2c: useNamingConvention | accepted |
 | 0010 | Clean-code harness, Phase 2d: SonarJS           | accepted |
 | 0011 | Swap gitleaks for TruffleHog                    | accepted |
+| 0012 | Architecture harness: wiki-link integrity sensor | accepted |
+| 0013 | Security harness: license compliance check     | accepted |
+| 0014 | Build harness: HTML structural validation      | accepted |
+| 0015 | Quality harness: test coverage floor           | accepted |
+| 0016 | Quality harness: spell-check on documentation  | accepted |
 
 ## When to write a new ADR
 

@@ -507,4 +507,6 @@ async function main() {
   consola.info("Output: data/data.json, data/about.json");
 }
 
-main();
+if (require.main === module) {
+  main();
+}

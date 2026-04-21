@@ -30,7 +30,7 @@ Inside item markdown bodies you can write:
 See also [[other-blip-id]] or [[other-blip-id|custom label]].
 ```
 
-`scripts/remarkWikiLink.ts` resolves these against the pre-scanned blip lookup table at build time. Unknown ids will fail the build.
+`scripts/remarkWikiLink.ts` resolves these against the pre-scanned blip lookup table at build time. Unknown ids will fail the build. (Checked: `npm run check:arch:wikilinks`.)
 
 ## After editing
 

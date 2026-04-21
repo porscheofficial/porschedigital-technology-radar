@@ -2,5 +2,6 @@
   "$schema": "https://unpkg.com/knip@6/schema.json",
   "entry": ["scripts/*.ts"],
   "project": ["src/**/*.{ts,tsx}", "bin/**/*.{ts,js}", "scripts/**/*.ts"],
-  "ignoreBinaries": ["osv-scanner", "trufflehog"]
+  "ignoreBinaries": ["osv-scanner", "trufflehog"],
+  "ignoreDependencies": ["html-validate"]
 }

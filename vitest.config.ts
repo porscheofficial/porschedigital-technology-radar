@@ -21,6 +21,12 @@ export default defineConfig({
         "src/pages/_document.tsx",
         "src/pages/_app.tsx",
       ],
+      thresholds: {
+        lines: 55,
+        functions: 60,
+        statements: 55,
+        branches: 55,
+      },
     },
   },
 });

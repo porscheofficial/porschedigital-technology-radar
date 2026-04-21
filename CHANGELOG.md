@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.0.4](https://github.com/porscheofficial/porschedigital-technology-radar/compare/v1.0.3...v1.0.4) (2026-04-21)
+
+
+### Bug Fixes
+
+* skip maintainer prepare script in consumer build dir ([28cf571](https://github.com/porscheofficial/porschedigital-technology-radar/commit/28cf57175c31d42fcfeac0e6fd09dce01a95f415))
+
 ## [1.0.2](https://github.com/porscheofficial/porschedigital-technology-radar/compare/v1.0.1...v1.0.2) (2026-04-13)
 
 

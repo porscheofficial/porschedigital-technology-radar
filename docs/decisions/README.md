@@ -42,6 +42,7 @@ ADRs cite the *decisions behind those rules*.
 | 0006 | Security harness (Phase 1)                     | accepted |
 | 0007 | Clean-code harness, Phase 2a: knip             | accepted |
 | 0008 | Clean-code harness, Phase 2b: jscpd            | accepted |
+| 0009 | Clean-code harness, Phase 2c: useNamingConvention | accepted |
 
 ## When to write a new ADR
 

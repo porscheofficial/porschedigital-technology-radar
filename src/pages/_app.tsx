@@ -12,11 +12,15 @@ import "@/styles/_hljs.css";
 import "@/styles/custom.scss";
 import { PorscheDesignSystemProvider } from "@porsche-design-system/components-react/ssr";
 
-export type CustomPage<P = Record<string, never>, IP = P> = NextPage<P, IP> & {
+export type CustomPage<P = Record<string, never>, InitialProps = P> = NextPage<
+  P,
+  InitialProps
+> & {
   layoutClass?: LayoutClass;
 };
 
 type CustomAppProps = AppProps & {
+  // biome-ignore lint/style/useNamingConvention: mirrors Next.js AppProps.Component
   Component: CustomPage;
 };
 

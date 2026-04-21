@@ -33,7 +33,13 @@
       "correctness": { "useUniqueElementIds": "off" },
       "performance": { "noImgElement": "off" },
       "security": { "noBlankTarget": "off" },
-      "style": { "useComponentExportOnlyModules": "off" }
+      "style": {
+        "useComponentExportOnlyModules": "off",
+        "useNamingConvention": {
+          "level": "error",
+          "options": { "strictCase": false }
+        }
+      }
     },
     "domains": {
       "next": "all",
@@ -83,7 +89,8 @@
       "includes": ["**/*.test.ts", "**/*.test.tsx"],
       "linter": {
         "rules": {
-          "suspicious": { "noExplicitAny": "off" }
+          "suspicious": { "noExplicitAny": "off" },
+          "style": { "useNamingConvention": "off" }
         }
       }
     }

@@ -24,6 +24,11 @@ Two regulation principles drive the design:
 
 This project currently fields the **computational column** of the grid in both rows. The inferential row is on the roadmap.
 
+Two complementary artifacts in this repo:
+
+- **`AGENTS.md` files** — point-of-entry rules. What to do, what not to do, which sensor enforces it.
+- **`docs/decisions/`** — Architecture Decision Records. The *why* behind the rules. When an agent (or human) wants to revisit a constraint, the ADR is the first stop.
+
 ---
 
 ## 2. The two arms in this repo
@@ -48,7 +53,8 @@ flowchart LR
             S1["check:arch:depcruise<br/>(.dependency-cruiser.cjs)"]
             S2["check:arch:eslint<br/>(eslint.config.js)"]
             S3["check:arch:readme<br/>(scripts/checkConfigReadmeSync.ts)"]
-            S4["architecture.test.ts<br/>(vitest, fs invariants)"]
+            S4["check:arch:doccoverage<br/>(scripts/checkDocCoverage.ts)"]
+            S5["architecture.test.ts<br/>(vitest, fs invariants)"]
         end
         subgraph BUILD["Build-output (npm run check:build)"]
             B1["check:build:routes<br/>(scripts/checkBuildOutput.ts)"]
@@ -89,6 +95,12 @@ Plus two **build-output** invariants added in Phase 1:
 |---|------------------------------------------------------|-----------------------------------------------------|--------------------------------|
 | 8 | Every expected route file lands in `out/`            | `check:build:routes`                                | `src/pages/AGENTS.md`          |
 | 9 | No broken internal links in the built site           | `check:build:links` (linkinator)                    | `src/pages/AGENTS.md`          |
+
+Plus one **doc-coverage** invariant added in Phase 2:
+
+| #  | Invariant                                            | Feedback sensor                                     | Feedforward doc                |
+|----|------------------------------------------------------|-----------------------------------------------------|--------------------------------|
+| 10 | Every `(Checked: …)` reference resolves to a live rule | `check:arch:doccoverage`                          | every `AGENTS.md`              |
 
 ---
 
@@ -170,7 +182,7 @@ The arrow from sensor back to doc is what makes this an _engineered harness_ rat
 
 The harness is computational-only. The inferential column is the next frontier:
 
-- **/doc-gardener skill** — periodically audits whether the AGENTS.md files still describe reality.
+- **/doc-gardener skill** — periodically audits whether the AGENTS.md files still describe reality. (`check:arch:doccoverage` is the computational floor for this; `/doc-gardener` is the inferential ceiling — it can spot stale prose, not just stale identifiers.)
 - **/review-radar skill** — LLM-as-judge against the seven invariants on a diff.
 - **Generator + evaluator loop** — Anthropic-style two-agent pattern for visual changes to the radar SVG.
 
@@ -195,7 +207,8 @@ The rule for this project: **when a violation slips past every sensor and a huma
 npm run check:arch          # source-only sensors (~3s)
   ├─ check:arch:depcruise   # import graph
   ├─ check:arch:eslint      # JSX / TS suppressions
-  └─ check:arch:readme      # config ↔ README
+  ├─ check:arch:readme      # config ↔ README
+  └─ check:arch:doccoverage # AGENTS.md (Checked: …) refs resolve
 
 npm run build               # static export → out/
 npm run check:build         # build-output sensors

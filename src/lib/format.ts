@@ -1,4 +1,5 @@
 import config from "@/lib/config";
+import type { ItemLink } from "@/lib/types";
 
 export function format(text: string, context: Record<string, string>): string {
   return text.replace(/{(\w+)}/g, (match, key) => {
@@ -37,4 +38,28 @@ export function formatReleaseCompact(release: string): string {
 
 export function stripHtml(html: string): string {
   return html.replace(/<[^>]*>/g, "").trim();
+}
+
+export function truncate(text: string, maxLength: number): string {
+  if (text.length <= maxLength) return text;
+  return `${text.slice(0, maxLength).trimEnd()}…`;
+}
+
+export function formatLinkLabel(link: ItemLink): string {
+  if (link.name) return link.name;
+  try {
+    const url = new URL(link.url);
+    return url.hostname.replace(/^www\./, "") + url.pathname.replace(/\/$/, "");
+  } catch {
+    return link.url;
+  }
+}
+
+export function matchesAbbreviation(title: string, query: string): boolean {
+  const initials = title
+    .split(/[\s\-/&.]+/)
+    .filter(Boolean)
+    .map((word) => word[0].toLowerCase())
+    .join("");
+  return initials.startsWith(query.toLowerCase());
 }

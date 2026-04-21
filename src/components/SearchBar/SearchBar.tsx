@@ -12,61 +12,12 @@ import {
   useState,
 } from "react";
 import { getItems, getLabel, getQuadrant, getRing } from "@/lib/data";
+import { matchesAbbreviation } from "@/lib/format";
 import { useRadarHighlight } from "@/lib/RadarHighlightContext";
 import type { Item } from "@/lib/types";
-import { assetUrl } from "@/lib/utils";
 import styles from "./SearchBar.module.scss";
 
 const MAX_VISIBLE = 5;
-
-function highlightMatch(text: string, query: string): ReactNode {
-  if (!query.trim()) return text;
-
-  const q = query.toLowerCase();
-  const substringIdx = text.toLowerCase().indexOf(q);
-  if (substringIdx !== -1) {
-    const before = text.slice(0, substringIdx);
-    const match = text.slice(substringIdx, substringIdx + query.length);
-    const after = text.slice(substringIdx + query.length);
-    return (
-      <>
-        {before}
-        <span className={styles.matchHighlight}>{match}</span>
-        {after}
-      </>
-    );
-  }
-
-  if (matchesAbbreviation(text, q)) {
-    const words = text.split(/(?<=[\s\-/&.]+)/);
-    let qi = 0;
-    return words.map((word, i) => {
-      if (qi < q.length && word[0]?.toLowerCase() === q[qi]) {
-        qi++;
-        return (
-          // biome-ignore lint/suspicious/noArrayIndexKey: ephemeral highlight fragments regenerated on each keystroke
-          <span key={i}>
-            <span className={styles.matchHighlight}>{word[0]}</span>
-            {word.slice(1)}
-          </span>
-        );
-      }
-      // biome-ignore lint/suspicious/noArrayIndexKey: ephemeral highlight fragments regenerated on each keystroke
-      return <span key={i}>{word}</span>;
-    });
-  }
-
-  return text;
-}
-
-function matchesAbbreviation(title: string, query: string): boolean {
-  const initials = title
-    .split(/[\s\-/&.]+/)
-    .filter(Boolean)
-    .map((word) => word[0].toLowerCase())
-    .join("");
-  return initials.startsWith(query.toLowerCase());
-}
 
 export function SearchBar() {
   const router = useRouter();
@@ -77,6 +28,49 @@ export function SearchBar() {
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+
+  const highlightMatch = useCallback(
+    (text: string, query: string): ReactNode => {
+      if (!query.trim()) return text;
+
+      const q = query.toLowerCase();
+      const substringIdx = text.toLowerCase().indexOf(q);
+      if (substringIdx !== -1) {
+        const before = text.slice(0, substringIdx);
+        const match = text.slice(substringIdx, substringIdx + query.length);
+        const after = text.slice(substringIdx + query.length);
+        return (
+          <>
+            {before}
+            <span className={styles.matchHighlight}>{match}</span>
+            {after}
+          </>
+        );
+      }
+
+      if (matchesAbbreviation(text, q)) {
+        const words = text.split(/(?<=[\s\-/&.]+)/);
+        let qi = 0;
+        return words.map((word, i) => {
+          if (qi < q.length && word[0]?.toLowerCase() === q[qi]) {
+            qi++;
+            return (
+              // biome-ignore lint/suspicious/noArrayIndexKey: ephemeral highlight fragments regenerated on each keystroke
+              <span key={i}>
+                <span className={styles.matchHighlight}>{word[0]}</span>
+                {word.slice(1)}
+              </span>
+            );
+          }
+          // biome-ignore lint/suspicious/noArrayIndexKey: ephemeral highlight fragments regenerated on each keystroke
+          return <span key={i}>{word}</span>;
+        });
+      }
+
+      return text;
+    },
+    [],
+  );
 
   const items = useMemo(() => getItems(), []);
 

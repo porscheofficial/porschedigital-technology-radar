@@ -1,4 +1,4 @@
-import { existsSync, readdirSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
@@ -57,5 +57,27 @@ describe("architecture invariants (filesystem)", () => {
   it("no-middleware: middleware.ts does not exist (static export)", () => {
     expect(existsSync(join(root, "src/middleware.ts"))).toBe(false);
     expect(existsSync(join(root, "middleware.ts"))).toBe(false);
+  });
+
+  it("no-component-helpers: src/components/**/*.tsx contains no top-level lowercase function declarations", () => {
+    const componentsDir = join(root, "src/components");
+    const componentFiles = walk(componentsDir)
+      .filter((f) => f.endsWith(".tsx"))
+      .filter((f) => !/[/\\]__tests__[/\\]/.test(f))
+      .filter((f) => !/\.test\.tsx?$/.test(f))
+      .filter((f) => !/[/\\]Icons[/\\]/.test(f))
+      .filter((f) => !/[/\\]SafeHtml[/\\]/.test(f));
+    const offenders: string[] = [];
+    for (const file of componentFiles) {
+      const content = readFileSync(file, "utf8");
+      // Lowercase first char excludes PascalCase sub-components AND `use*` hooks.
+      if (/^(?:export\s+)?function\s+[a-z]/m.test(content)) {
+        offenders.push(file);
+      }
+    }
+    expect(
+      offenders,
+      "Move helpers to src/lib/, convert to a sub-component (PascalCase) if they return JSX, or inline as a const arrow inside the component body. (see src/components/AGENTS.md → no-helpers-in-components)",
+    ).toEqual([]);
   });
 });

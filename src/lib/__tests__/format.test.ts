@@ -1,9 +1,13 @@
 import {
   format,
+  formatLinkLabel,
   formatRelease,
   formatReleaseCompact,
   formatReleaseShort,
   formatTitle,
+  matchesAbbreviation,
+  stripHtml,
+  truncate,
 } from "@/lib/format";
 
 vi.mock("@/lib/config", () => ({
@@ -80,5 +84,84 @@ describe("timezone safety", () => {
     const result = formatRelease("2024-01-01");
     expect(result).toContain("January");
     expect(result).toContain("2024");
+  });
+});
+
+describe("stripHtml", () => {
+  it("removes simple tags", () => {
+    expect(stripHtml("<p>hello</p>")).toBe("hello");
+  });
+
+  it("removes nested and attributed tags", () => {
+    expect(stripHtml('<div class="x"><strong>bold</strong> text</div>')).toBe(
+      "bold text",
+    );
+  });
+
+  it("trims surrounding whitespace", () => {
+    expect(stripHtml("  <p>spaced</p>  ")).toBe("spaced");
+  });
+
+  it("returns empty string for tag-only input", () => {
+    expect(stripHtml("<br/>")).toBe("");
+  });
+});
+
+describe("truncate", () => {
+  it("returns the original text when under the limit", () => {
+    expect(truncate("short", 10)).toBe("short");
+  });
+
+  it("returns the original text when exactly at the limit", () => {
+    expect(truncate("12345", 5)).toBe("12345");
+  });
+
+  it("appends a U+2026 ellipsis when over the limit", () => {
+    expect(truncate("123456", 5)).toBe("12345…");
+  });
+});
+
+describe("formatLinkLabel", () => {
+  it("uses the link name when provided", () => {
+    expect(
+      formatLinkLabel({ name: "Docs", url: "https://example.com/docs" }),
+    ).toBe("Docs");
+  });
+
+  it("falls back to hostname for a bare URL", () => {
+    expect(formatLinkLabel({ url: "https://example.com" })).toBe("example.com");
+  });
+
+  it("includes a non-root path with the hostname", () => {
+    expect(formatLinkLabel({ url: "https://example.com/some/path" })).toBe(
+      "example.com/some/path",
+    );
+  });
+
+  it("falls back to the raw url for invalid URLs", () => {
+    expect(formatLinkLabel({ url: "not a url" })).toBe("not a url");
+  });
+});
+
+describe("matchesAbbreviation", () => {
+  it("matches a full initials sequence", () => {
+    expect(matchesAbbreviation("React Testing Library", "rtl")).toBe(true);
+  });
+
+  it("matches a prefix of initials", () => {
+    expect(matchesAbbreviation("React Testing Library", "rt")).toBe(true);
+  });
+
+  it("is case-insensitive", () => {
+    expect(matchesAbbreviation("react testing library", "RTL")).toBe(true);
+  });
+
+  it("splits on hyphens, slashes, ampersands, and dots", () => {
+    expect(matchesAbbreviation("CI/CD", "cc")).toBe(true);
+    expect(matchesAbbreviation("rock-paper-scissors", "rps")).toBe(true);
+  });
+
+  it("returns false when initials don't match", () => {
+    expect(matchesAbbreviation("React Testing Library", "xyz")).toBe(false);
   });
 });

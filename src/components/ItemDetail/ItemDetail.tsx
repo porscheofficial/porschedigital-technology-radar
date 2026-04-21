@@ -14,35 +14,12 @@ import { SafeHtml } from "@/components/SafeHtml/SafeHtml";
 import { Tag } from "@/components/Tags/Tags";
 import { Team, Teams } from "@/components/Teams/Teams";
 import { getEditUrl, getLabel, getReleases, getRing } from "@/lib/data";
-import type { Item, ItemLink, Revision } from "@/lib/types";
-import { assetUrl, cn } from "@/lib/utils";
+import { formatLinkLabel, stripHtml, truncate } from "@/lib/format";
+import type { Item, Revision } from "@/lib/types";
+import { cn } from "@/lib/utils";
 import styles from "./ItemDetail.module.scss";
 
 const RECENT_RELEASE_COUNT = 3;
-
-function isNotMaintained(release: string) {
-  const latestReleases = getReleases().slice(-RECENT_RELEASE_COUNT);
-  return !latestReleases.includes(release);
-}
-
-function stripHtml(html: string): string {
-  return html.replace(/<[^>]*>/g, "").trim();
-}
-
-function truncate(text: string, maxLength: number): string {
-  if (text.length <= maxLength) return text;
-  return `${text.slice(0, maxLength).trimEnd()}…`;
-}
-
-function formatLinkLabel(link: ItemLink): string {
-  if (link.name) return link.name;
-  try {
-    const url = new URL(link.url);
-    return url.hostname.replace(/^www\./, "") + url.pathname.replace(/\/$/, "");
-  } catch {
-    return link.url;
-  }
-}
 
 interface ItemProps {
   item: Item;
@@ -54,6 +31,9 @@ export function ItemDetail({ item, quadrantTitle }: ItemProps) {
   const hiddenFromRadarText = getLabel("hiddenFromRadar");
   const editLink = getEditUrl({ id: item.id, release: item.release });
   const hasHistory = item.revisions !== undefined && item.revisions.length > 0;
+  const notMaintained = !getReleases()
+    .slice(-RECENT_RELEASE_COUNT)
+    .includes(item.release);
 
   const ringInfo = getRing(item.ring);
   const ringColor = ringInfo?.color || "#fff";
@@ -82,7 +62,7 @@ export function ItemDetail({ item, quadrantTitle }: ItemProps) {
 
   return (
     <>
-      {notMaintainedText && isNotMaintained(item.release) && (
+      {notMaintainedText && notMaintained && (
         <PInlineNotification
           description={notMaintainedText}
           state="info"

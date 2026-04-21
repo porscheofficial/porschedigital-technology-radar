@@ -83,7 +83,7 @@ The regulator's variety. Each row is one architectural property the harness pres
 | # | Invariant                                            | Feedback sensor                                     | Feedforward doc                |
 |---|------------------------------------------------------|-----------------------------------------------------|--------------------------------|
 | 1 | Static export only (no SSR/API/middleware)           | `architecture.test.ts` + `no-next-server-apis`      | `src/pages/AGENTS.md`          |
-| 2 | Pages Router topology (no `.test.tsx` in pages)      | `architecture.test.ts` (5 fs tests)                 | `src/pages/AGENTS.md`          |
+| 2 | Pages Router topology (no `.test.tsx` in pages)      | `architecture.test.ts` (6 fs tests)                 | `src/pages/AGENTS.md`          |
 | 3 | App Router scoped to `sitemap.ts`                    | `architecture.test.ts` + `app-router-only-sitemap`  | `src/app/AGENTS.md`            |
 | 4 | One importer of `data/data.json`                     | `data-accessor-only` (dep-cruiser)                  | `src/lib/AGENTS.md`            |
 | 5 | Component shape (`Name.tsx` + `Name.module.scss`)    | `architecture.test.ts` → `component-folder-shape`   | `src/components/AGENTS.md`     |
@@ -109,6 +109,14 @@ Plus one **bundle-budget** invariant added in Phase 3:
 |----|------------------------------------------------------|-----------------------------------------------------|--------------------------------|
 | 11 | JS / CSS / per-chunk sizes stay under explicit caps  | `check:build:budget` (`bundle-budget.json`)         | `src/pages/AGENTS.md`          |
 
+Plus one **component-purity** invariant added in Phase 4:
+
+| #  | Invariant                                            | Feedback sensor                                     | Feedforward doc                |
+|----|------------------------------------------------------|-----------------------------------------------------|--------------------------------|
+| 12 | No top-level helper functions in component files     | ESLint `no-restricted-syntax` + `architecture.test.ts` → `no-component-helpers` | `src/components/AGENTS.md` |
+
+Catches two failure modes at once: helper duplication across components (e.g. multiple components copy-pasting `stripHtml` instead of importing the canonical `@/lib/format` version) and component files accreting non-component logic. The fix is one of three: move pure helpers to `src/lib/`, convert JSX-returning helpers to PascalCase sub-components, or inline single-use render helpers as `const` arrows inside the component body.
+
 Plus framework-aware lints from `@next/eslint-plugin-next` (recommended set, with `no-img-element` and `no-html-link-for-pages` disabled per ADRs / our `assetUrl()` convention — see `eslint.config.mjs` header).
 
 ---
@@ -121,7 +129,7 @@ flowchart LR
     lsp --> precommit["pre-commit<br/>(husky → lint-staged → biome)"]
     precommit --> push["push"]
     push --> arch["check:arch<br/>(source-only, ~3s)"]
-    arch --> test["npm test<br/>(323 tests, ~4s)"]
+    arch --> test["npm test<br/>(6 fs invariants + unit/integration)"]
     test --> build["npm run build<br/>(static export → out/)"]
     build --> bld["check:build<br/>(routes + links)"]
     bld --> ship["ship"]
@@ -225,7 +233,7 @@ npm run check:build         # build-output sensors
   ├─ check:build:links      # no broken internal links
   └─ check:build:budget     # JS/CSS sizes within bundle-budget.json
 
-npm test                    # includes architecture.test.ts (5 fs invariants)
+npm test                    # includes architecture.test.ts (6 fs invariants)
 ```
 
 Read these as a single command set: `check:arch && build && check:build && test`. If all four are green, the harness has signed off.

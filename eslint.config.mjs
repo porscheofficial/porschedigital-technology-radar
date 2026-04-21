@@ -128,6 +128,74 @@ export default tseslint.config(
       ],
     },
   },
+  // 5) No top-level helper functions in component files.
+  //    Component files contain React components (PascalCase), sub-components,
+  //    and hooks (use*) only. Pure helpers belong in src/lib/; render helpers
+  //    tightly coupled to one component become a const arrow inside the
+  //    component body. (src/components/AGENTS.md → no-helpers-in-components)
+  //
+  //    NOTE: ESLint flat config OVERRIDES `no-restricted-syntax` (does not
+  //    merge arrays). This block matches a subset of `src/**/*.tsx`, so it
+  //    must RE-DECLARE every selector from block 3 above, otherwise component
+  //    files would lose the dangerouslySetInnerHTML / assetUrl / as-any
+  //    protections. Tests and SafeHtml.tsx are excluded so their later
+  //    exemption blocks don't need to come after this one.
+  {
+    files: ["src/components/**/*.tsx"],
+    ignores: [
+      "src/components/SafeHtml/SafeHtml.tsx",
+      "**/*.test.{ts,tsx}",
+      "**/__tests__/**",
+    ],
+    rules: {
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector: "JSXAttribute[name.name='dangerouslySetInnerHTML']",
+          message:
+            "dangerouslySetInnerHTML is only allowed inside src/components/SafeHtml/SafeHtml.tsx. (src/components/AGENTS.md)",
+        },
+        {
+          selector:
+            "JSXElement[openingElement.name.name!='Link'] > JSXOpeningElement > JSXAttribute[name.name=/^(href|src)$/] > Literal[value=/^\\/(?!\\/)/]",
+          message:
+            "Bare absolute href/src literal — wrap with assetUrl() from @/lib/utils. (Exempt: <Link> hrefs, which Next auto-prepends with basePath.)",
+        },
+        {
+          selector:
+            "JSXElement[openingElement.name.name!='Link'] > JSXOpeningElement > JSXAttribute[name.name=/^(href|src)$/] > JSXExpressionContainer > TemplateLiteral[expressions.length>0][quasis.0.value.raw=/^\\/(?!\\/)/]",
+          message:
+            "Bare absolute href/src template literal — wrap with assetUrl() from @/lib/utils. (Exempt: <Link> hrefs, which Next auto-prepends with basePath.)",
+        },
+        {
+          selector:
+            "JSXElement[openingElement.name.name='Link'] JSXAttribute[name.name='href'] CallExpression[callee.name='assetUrl']",
+          message:
+            'Do not wrap <Link> href with assetUrl() — Next.js auto-prepends basePath. Use a bare path like href="/foo" or href={`/${id}`}.',
+        },
+        {
+          selector: "TSAsExpression > TSAnyKeyword.typeAnnotation",
+          message:
+            "`as any` is forbidden. Use `unknown` and narrow, or type the value properly.",
+        },
+        // NEW: bans top-level lowercase function declarations in component
+        // files. Matches both `function foo()` and `export function foo()`
+        // at module scope. Sub-components (PascalCase) and hooks (`useFoo`)
+        // are unaffected because their identifiers don't start with [a-z]
+        // followed by anything other than `use[A-Z]`. The selector is
+        // intentionally simple; the architecture test in
+        // src/__tests__/architecture/architecture.test.ts is the
+        // belt-and-braces fs-level guard.
+        {
+          selector:
+            ":matches(Program, ExportNamedDeclaration) > FunctionDeclaration[id.name=/^[a-z]/]",
+          message:
+            "Helper functions are forbidden in component files. Move pure helpers to src/lib/, convert to a sub-component (PascalCase) if it returns JSX, or inline as a `const` arrow inside the component body. (src/components/AGENTS.md → no-helpers-in-components)",
+        },
+      ],
+    },
+  },
+
   {
     files: ["src/components/SafeHtml/SafeHtml.tsx"],
     rules: { "no-restricted-syntax": "off" },

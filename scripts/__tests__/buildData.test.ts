@@ -370,6 +370,8 @@ describe("buildData", () => {
         [
           "---",
           'title: "TypeScript"',
+          'summary: "Typed JavaScript"',
+          'ogImage: "/images/typescript-card.png"',
           "ring: adopt",
           "quadrant: languages-and-frameworks",
           "---",
@@ -435,6 +437,8 @@ describe("buildData", () => {
         [
           "---",
           'title: "TypeScript"',
+          'summary: "Typed JavaScript"',
+          'ogImage: "/images/typescript-card.png"',
           "ring: adopt",
           "quadrant: languages-and-frameworks",
           "---",
@@ -449,6 +453,8 @@ describe("buildData", () => {
       expect(result.id).toBe("typescript");
       expect(result.data).toMatchObject({
         title: "TypeScript",
+        summary: "Typed JavaScript",
+        ogImage: "/images/typescript-card.png",
         ring: "adopt",
         quadrant: "languages-and-frameworks",
       });
@@ -506,6 +512,7 @@ describe("buildData", () => {
         [
           "---",
           'title: "React Old"',
+          'summary: "Old summary"',
           "ring: adopt",
           "quadrant: languages-and-frameworks",
           "tags:",
@@ -521,6 +528,8 @@ describe("buildData", () => {
         [
           "---",
           'title: "React New"',
+          'summary: "New summary"',
+          'ogImage: "/images/react-card.png"',
           "ring: trial",
           "quadrant: tools",
           "tags:",
@@ -541,6 +550,8 @@ describe("buildData", () => {
         id: "react",
         release: "2024-02",
         title: "React New",
+        summary: "New summary",
+        ogImage: "/images/react-card.png",
         ring: "trial",
         quadrant: "tools",
         body: "<p>New body</p>",

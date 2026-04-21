@@ -3,6 +3,7 @@ import Custom404 from "@/pages/404";
 
 const mockState = vi.hoisted(() => ({
   getAppName: vi.fn(),
+  seoHeadProps: vi.fn(),
 }));
 
 vi.mock("next/head", () => ({
@@ -37,6 +38,13 @@ vi.mock("@/components/Icons/Search", () => ({
   default: () => <div data-testid="search-icon" />,
 }));
 
+vi.mock("@/components/SeoHead/SeoHead", () => ({
+  SeoHead: (props: any) => {
+    mockState.seoHeadProps(props);
+    return <div data-testid="seo-head" />;
+  },
+}));
+
 describe("Custom 404 page", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -59,12 +67,14 @@ describe("Custom 404 page", () => {
     ).toHaveAttribute("href", "/");
   });
 
-  it("renders the formatted page title", () => {
+  it("passes SEO props", () => {
     render(<Custom404 />);
 
-    expect(document.querySelector("title")?.textContent).toBe(
-      "404 - Page Not Found | Test Radar",
-    );
+    expect(mockState.seoHeadProps).toHaveBeenCalledWith({
+      title: "Not found",
+      description: "The requested technology radar page could not be found.",
+      path: "/404/",
+    });
   });
 
   it("renders the search illustration", () => {

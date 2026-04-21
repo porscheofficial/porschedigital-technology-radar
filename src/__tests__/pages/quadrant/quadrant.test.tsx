@@ -25,6 +25,7 @@ const mockState = vi.hoisted(() => ({
   groupItemsByRing: vi.fn(),
   sortByFeaturedAndTitle: vi.fn(),
   quadrantRadarProps: vi.fn(),
+  seoHeadProps: vi.fn(),
 }));
 
 vi.mock("next/head", () => ({
@@ -52,6 +53,13 @@ vi.mock("@/components/QuadrantRadar/QuadrantRadar", () => ({
   QuadrantRadar: (props: any) => {
     mockState.quadrantRadarProps(props);
     return <div data-testid="quadrant-radar" />;
+  },
+}));
+
+vi.mock("@/components/SeoHead/SeoHead", () => ({
+  SeoHead: (props: any) => {
+    mockState.seoHeadProps(props);
+    return <div data-testid="seo-head" />;
   },
 }));
 
@@ -199,6 +207,16 @@ describe("Quadrant detail page", () => {
       name: "Languages & Frameworks",
     });
     expect(headings.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("passes SEO props for the quadrant page", () => {
+    render(<QuadrantPage quadrantId={quadrant.id} />);
+
+    expect(mockState.seoHeadProps).toHaveBeenCalledWith({
+      title: quadrant.title,
+      description: quadrant.description,
+      path: `/${quadrant.id}/`,
+    });
   });
 
   it("renders QuadrantRadar with only featured items", () => {

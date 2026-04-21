@@ -33,6 +33,8 @@ describe("FrontmatterSchema", () => {
     const result = FrontmatterSchema.safeParse({
       ...validData,
       title: "TypeScript",
+      summary: "Type-safe JavaScript",
+      ogImage: "/images/typescript-card.png",
       featured: false,
       tags: ["language"],
       teams: ["platform"],
@@ -40,6 +42,8 @@ describe("FrontmatterSchema", () => {
     expect(result.success).toBe(true);
     if (result.success) {
       expect(result.data.title).toBe("TypeScript");
+      expect(result.data.summary).toBe("Type-safe JavaScript");
+      expect(result.data.ogImage).toBe("/images/typescript-card.png");
       expect(result.data.featured).toBe(false);
       expect(result.data.tags).toEqual(["language"]);
       expect(result.data.teams).toEqual(["platform"]);
@@ -106,6 +110,8 @@ describe("FrontmatterSchema", () => {
       expect(result.data.tags).toEqual([]);
       expect(result.data.teams).toEqual([]);
       expect(result.data.title).toBeUndefined();
+      expect(result.data.summary).toBeUndefined();
+      expect(result.data.ogImage).toBeUndefined();
     }
   });
 });

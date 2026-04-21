@@ -1,15 +1,19 @@
-import Head from "next/head";
 import { SafeHtml } from "@/components/SafeHtml/SafeHtml";
-import { formatTitle } from "@/lib/format";
+import { SeoHead } from "@/components/SeoHead/SeoHead";
+import { stripHtml, truncate } from "@/lib/format";
 import type { CustomPage } from "@/pages/_app";
 import about from "../../data/about.json";
 
 const HelpAndAbout: CustomPage = () => {
+  const description = truncate(stripHtml(about.body), 200);
+
   return (
     <>
-      <Head>
-        <title>{formatTitle("Help and About")}</title>
-      </Head>
+      <SeoHead
+        title="Help & About"
+        description={description}
+        path="/help-and-about-tech-radar/"
+      />
 
       <SafeHtml html={about.body} />
     </>

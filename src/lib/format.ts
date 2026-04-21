@@ -1,5 +1,5 @@
 import config from "@/lib/config";
-import type { ItemLink } from "@/lib/types";
+import type { Item, ItemLink } from "@/lib/types";
 
 export function format(text: string, context: Record<string, string>): string {
   return text.replace(/{(\w+)}/g, (match, key) => {
@@ -52,6 +52,25 @@ export function stripHtml(html: string): string {
 export function truncate(text: string, maxLength: number): string {
   if (text.length <= maxLength) return text;
   return `${text.slice(0, maxLength).trimEnd()}…`;
+}
+
+export function deriveSummary(item: Item): string {
+  if (item.summary) return item.summary;
+
+  const text = stripHtml(item.body).replace(/\s+/g, " ").trim();
+  const maxLength = 160;
+
+  if (text.length <= maxLength) return text;
+
+  const clipped = text.slice(0, maxLength + 1);
+  const lastSpace = clipped.lastIndexOf(" ");
+  const safeClip = (
+    lastSpace > maxLength * 0.6
+      ? clipped.slice(0, lastSpace)
+      : clipped.slice(0, maxLength)
+  ).trimEnd();
+
+  return `${safeClip}…`;
 }
 
 export function formatLinkLabel(link: ItemLink): string {

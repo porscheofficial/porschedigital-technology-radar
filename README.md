@@ -278,6 +278,7 @@ An array of social link objects shown in the footer.
 | Key                 | Description                                               | Default                                                                                             |
 | ------------------- | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
 | `title`             | Radar title shown in the header and page titles           | `"Technology Radar"`                                                                                |
+| `tagline`           | Shared subtitle used in the default Open Graph image      | `"Track what to adopt, trial, assess, and hold."`                                                   |
 | `imprint`           | Label for the imprint link in the footer                  | `"Legal Information"`                                                                               |
 | `footer`            | Text shown in the footer                                  | `"Based on the open-source Technology Radar by AOE GmbH, extensively modified by Porsche Digital."` |
 | `notUpdated`        | Warning shown on items not updated in the last 3 releases | `"This item was not updated in last three versions of the Radar."`                                  |
@@ -396,6 +397,7 @@ An array of social link objects shown in the footer.
   ],
   "labels": {
     "title": "ACME Tech Radar",
+    "tagline": "Track what to adopt, trial, assess, and hold.",
     "imprint": "Legal Notice",
     "footer": "Built with the Porsche Digital Technology Radar.",
     "notUpdated": "This item has not been reviewed in the last three releases.",
@@ -452,6 +454,8 @@ Supports full **Markdown** formatting.
 | `title`    | Yes      | Name of the technology                                                                                  |
 | `ring`     | Yes      | Ring placement. Must match one of the `id` values in `config.rings`.                                    |
 | `quadrant` | Yes      | Quadrant assignment. Must match one of the `id` values in `config.quadrants`.                           |
+| `summary`  | No       | Custom summary used for meta descriptions and link previews. Falls back to the first 160 characters of the item body. |
+| `ogImage`  | No       | Custom Open Graph image. Use a relative path under `public/` (for example `/images/react-card.png`) or a full `https://...` URL. |
 | `tags`     | No       | List of tags for filtering.                                                                             |
 | `teams`    | No       | List of teams currently using this technology.                                                          |
 | `links`    | No       | List of external links. Each entry has a `url` (required) and optional `name`. Shown on the detail page. |
@@ -468,6 +472,28 @@ Place images in `public/images/` and reference them in Markdown:
 ```markdown
 ![Architecture diagram](/images/architecture.png)
 ```
+
+## Open Graph images
+
+The build generates rich Open Graph / Twitter Card images for link previews.
+
+- `pnpm run build:og` creates a shared default card at `public/og/default.png`.
+- Every item detail page also gets a deterministic 1200×630 PNG at `public/og/<quadrant>/<id>.png`.
+- Generation is content-hash cached, so unchanged cards are skipped on later builds.
+
+To override the generated image for a single item, set `ogImage` in front-matter:
+
+```yaml
+ogImage: /images/custom-card.png
+```
+
+Relative paths must point to an existing asset under `public/`. You can also use a full external URL:
+
+```yaml
+ogImage: https://cdn.example.com/cards/react.png
+```
+
+When `ogImage` is omitted, the generator builds the per-item card automatically. When `summary` is omitted, the site derives the preview text from the rendered item body.
 
 ### Cross-linking blips
 
@@ -506,9 +532,41 @@ The build pipeline:
 
 1. `build:icons` — generates React icon components from SVGs in `src/icons/`
 2. `build:data` — parses `radar/` Markdown files into `data/data.json` and `data/about.json`
-3. `next build` — builds the static site into `out/`
+3. `build:og` — generates cached Open Graph PNGs in `public/og/`
+4. `next build` — builds the static site into `out/`
 
 The `pnpm run build` command runs all three steps in sequence.
+
+### Pre-commit hooks
+
+This repository runs two local pre-commit checks through Husky:
+
+- `lint-staged` → `biome check --write --no-errors-on-unmatched` for staged files
+- `pnpm run precommit:secrets` → staged-content secret scanning via TruffleHog
+
+The secret scan reads the **staged blob content**, not the working tree, so it
+still catches leaks correctly when you used partial staging such as
+`git add -p`.
+
+`trufflehog` is optional for local development. If the binary is missing, the
+hook prints a warning and exits successfully so contributors in fresh
+environments are not blocked.
+
+Install it locally with Homebrew:
+
+```bash
+brew install trufflehog
+```
+
+If you absolutely must bypass both pre-commit hooks in an emergency, Git still
+supports:
+
+```bash
+git commit --no-verify
+```
+
+That bypass is discouraged; the normal path is to fix the formatting issue or
+remove the secret from the staged content before committing.
 
 ### Strict mode
 
@@ -561,3 +619,4 @@ This project is open source under the [Apache License 2.0](./LICENSE).
 
 Originally based on the [AOE Technology Radar](https://github.com/AOEpeople/aoe_technology_radar).
 Maintained and developed by [Porsche Digital](https://www.porsche.digital/).
+

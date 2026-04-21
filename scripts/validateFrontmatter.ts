@@ -23,6 +23,8 @@ const LinkSchema = z.object({
 
 export const FrontmatterSchema = z.object({
   title: z.string().optional(),
+  summary: z.string().optional(),
+  ogImage: z.string().optional(),
   ring: z.enum(ringIds),
   quadrant: z.enum(quadrantIds),
   featured: z.boolean().default(true),

@@ -7,6 +7,11 @@ depcruise
 dependency-cruiser
 sonarjs
 knip
+satori
+resvg
+Resvg
+woff
+og
 jscpd
 trufflehog
 gitleaks
@@ -91,6 +96,7 @@ runtime-fetched
 basePath
 gitignored
 gitignore
+gitdir
 opencode
 opencodeai
 checkpath
@@ -645,3 +651,4 @@ worktrees
 footgun
 realpath
 lockfiles
+tmpdir

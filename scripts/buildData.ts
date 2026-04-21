@@ -253,6 +253,8 @@ export async function parseDirectory(
           existing.release = item.release;
           existing.body = item.body || existing.body;
           existing.title = item.title || existing.title;
+          existing.summary = item.summary;
+          existing.ogImage = item.ogImage;
           existing.ring = item.ring || existing.ring;
           existing.quadrant = item.quadrant || existing.quadrant;
           existing.tags = item.tags;
@@ -294,6 +296,8 @@ export async function parseDirectory(
           id,
           release: releaseDate,
           title: frontmatter.title ?? id,
+          summary: frontmatter.summary,
+          ogImage: frontmatter.ogImage,
           ring: frontmatter.ring,
           quadrant: frontmatter.quadrant,
           body,
@@ -317,6 +321,8 @@ export async function parseDirectory(
         existing.release = releaseDate;
         existing.body = body || existing.body;
         existing.title = frontmatter.title ?? existing.title;
+        existing.summary = frontmatter.summary;
+        existing.ogImage = frontmatter.ogImage;
         existing.ring = frontmatter.ring;
         existing.quadrant = frontmatter.quadrant;
         existing.tags = frontmatter.tags;

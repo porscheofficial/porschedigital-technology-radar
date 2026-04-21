@@ -1,9 +1,8 @@
-import Head from "next/head";
-
 import { DemoDisclaimer } from "@/components/DemoDisclaimer/DemoDisclaimer";
 import { MobileQuadrantNav } from "@/components/MobileQuadrantNav/MobileQuadrantNav";
 import { Radar } from "@/components/Radar/Radar";
 import { RadarFilters } from "@/components/RadarFilters/RadarFilters";
+import { SeoHead } from "@/components/SeoHead/SeoHead";
 import {
   getChartConfig,
   getItems,
@@ -17,7 +16,8 @@ import type { CustomPage } from "@/pages/_app";
 import styles from "./index.module.scss";
 
 const Home: CustomPage = () => {
-  const metaDescription = getLabel("metaDescription");
+  const title = getLabel("title");
+  const metaDescription = getLabel("tagline") || getLabel("metaDescription");
   const chartConfig = getChartConfig();
   const rings = getRings();
   const quadrants = getQuadrants();
@@ -25,11 +25,7 @@ const Home: CustomPage = () => {
 
   return (
     <>
-      <Head>
-        {metaDescription && (
-          <meta name="description" content={metaDescription} />
-        )}
-      </Head>
+      <SeoHead title={title} description={metaDescription || title} path="/" />
 
       {getToggle("showDemoDisclaimer") && <DemoDisclaimer />}
 

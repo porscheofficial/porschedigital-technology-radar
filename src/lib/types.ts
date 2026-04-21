@@ -25,6 +25,8 @@ export interface ItemLink {
 export interface Item {
   id: string;
   title: string;
+  summary?: string;
+  ogImage?: string;
   info?: string;
   body: string;
   featured: boolean;

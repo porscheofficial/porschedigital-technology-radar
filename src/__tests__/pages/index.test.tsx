@@ -3,6 +3,10 @@ import type { Item, Quadrant, Ring } from "@/lib/types";
 import { Flag } from "@/lib/types";
 import Home from "@/pages/index";
 
+const seoState = vi.hoisted(() => ({
+  props: vi.fn(),
+}));
+
 const mockData = vi.hoisted(() => ({
   getChartConfig: vi.fn(),
   getItems: vi.fn(),
@@ -46,6 +50,13 @@ vi.mock("@/components/MobileQuadrantNav/MobileQuadrantNav", () => ({
   MobileQuadrantNav: (props: any) => {
     mockData.mobileNavProps(props);
     return <nav data-testid="mobile-quadrant-nav" />;
+  },
+}));
+
+vi.mock("@/components/SeoHead/SeoHead", () => ({
+  SeoHead: (props: any) => {
+    seoState.props(props);
+    return <div data-testid="seo-head" />;
   },
 }));
 
@@ -110,14 +121,14 @@ describe("Home page", () => {
     mockData.getToggle.mockImplementation((key: string) => key === "showChart");
   });
 
-  it("renders the meta description from getLabel", () => {
+  it("passes SEO props for the homepage", () => {
     render(<Home />);
 
-    expect(
-      document
-        .querySelector('meta[name="description"]')
-        ?.getAttribute("content"),
-    ).toBe("Radar meta description");
+    expect(seoState.props).toHaveBeenCalledWith({
+      title: "Radar meta description",
+      description: "Radar meta description",
+      path: "/",
+    });
   });
 
   it("renders Radar when the showChart toggle is true", () => {

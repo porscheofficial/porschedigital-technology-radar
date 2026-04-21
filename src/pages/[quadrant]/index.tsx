@@ -4,11 +4,11 @@ import {
   PText,
 } from "@porsche-design-system/components-react/ssr";
 import type { GetStaticPaths, GetStaticProps } from "next";
-import Head from "next/head";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { QuadrantRadar } from "@/components/QuadrantRadar/QuadrantRadar";
+import { SeoHead } from "@/components/SeoHead/SeoHead";
 import { blipSvgMap } from "@/lib/blipIcons";
 import {
   getItems,
@@ -19,7 +19,7 @@ import {
   groupItemsByRing,
   sortByFeaturedAndTitle,
 } from "@/lib/data";
-import { formatTitle, stripHtml } from "@/lib/format";
+import { stripHtml } from "@/lib/format";
 import { useRadarHighlight } from "@/lib/RadarHighlightContext";
 import { Flag } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -110,10 +110,11 @@ const QuadrantPage: CustomPage<QuadrantPageProps> = ({ quadrantId }) => {
 
   return (
     <>
-      <Head>
-        <title>{formatTitle(quadrant.title)}</title>
-        <meta name="description" content={quadrant.description} />
-      </Head>
+      <SeoHead
+        title={quadrant.title}
+        description={quadrant.description}
+        path={`/${quadrant.id}/`}
+      />
 
       <div className={styles.page}>
         <div className={styles.mobileHeader}>

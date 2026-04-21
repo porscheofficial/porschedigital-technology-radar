@@ -10,12 +10,12 @@ import {
   PTableRow,
   PText,
 } from "@porsche-design-system/components-react/ssr";
-import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
 import { RingBadge } from "@/components/Badge/Badge";
+import { SeoHead } from "@/components/SeoHead/SeoHead";
 import { Team } from "@/components/Teams/Teams";
 import {
   getItemTrajectories,
@@ -24,7 +24,7 @@ import {
   getRing,
   getVersionDiffs,
 } from "@/lib/data";
-import { formatRelease, formatReleaseCompact, formatTitle } from "@/lib/format";
+import { formatRelease, formatReleaseCompact } from "@/lib/format";
 import type { CustomPage } from "@/pages/_app";
 import styles from "./history.module.scss";
 
@@ -47,12 +47,11 @@ const History: CustomPage = () => {
   const displayReleases = [...visibleReleases].reverse();
 
   const canCompare = focusIndex < displayReleases.length - 1;
+  const description = `Technology radar evolution across ${allReleases.length} versions.`;
 
   return (
     <>
-      <Head>
-        <title>{formatTitle("History")}</title>
-      </Head>
+      <SeoHead title="History" description={description} path="/history/" />
 
       <PHeading size="large" tag="h1">
         Changelog

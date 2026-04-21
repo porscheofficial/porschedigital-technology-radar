@@ -3,5 +3,9 @@
   "entry": ["scripts/*.ts"],
   "project": ["src/**/*.{ts,tsx}", "bin/**/*.{ts,js}", "scripts/**/*.ts"],
   "ignoreBinaries": ["osv-scanner", "trufflehog"],
-  "ignoreDependencies": ["html-validate"]
+  "ignoreDependencies": [
+    "html-validate",
+    "@fontsource/inter",
+    "@porsche-design-system/components-js"
+  ]
 }

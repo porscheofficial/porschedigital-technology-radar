@@ -22,6 +22,7 @@ const mockState = vi.hoisted(() => ({
   getReleases: vi.fn(),
   getRing: vi.fn(),
   getVersionDiffs: vi.fn(),
+  seoHeadProps: vi.fn(),
 }));
 
 vi.mock("next/head", () => ({
@@ -81,6 +82,13 @@ vi.mock("@/components/Teams/Teams", () => ({
       {team}:{variant ?? "default"}
     </span>
   ),
+}));
+
+vi.mock("@/components/SeoHead/SeoHead", () => ({
+  SeoHead: (props: any) => {
+    mockState.seoHeadProps(props);
+    return <div data-testid="seo-head" />;
+  },
 }));
 
 vi.mock("@/lib/config", () => ({

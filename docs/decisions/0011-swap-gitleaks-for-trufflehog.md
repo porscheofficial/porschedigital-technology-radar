@@ -86,3 +86,39 @@ flagged the same pattern when `osv-scanner` and `gitleaks` were added.
 - The invariant table in `docs/HARNESS.md` (#15) and the security section
   of the root `AGENTS.md` reference TruffleHog instead of gitleaks; the
   two-layer defense framing for #13 (sanitize) is unchanged.
+
+## Update — 2026-04-21: Worktree caveat and pre-commit gate
+
+### Context
+
+Local contributors increasingly work from Git worktrees, where `.git` is a
+text file pointing at the real gitdir instead of a directory. TruffleHog's
+`git` mode currently has an upstream worktree bug (`trufflesecurity/trufflehog`
+issue #4553). As of this ADR update, the fix is proposed in PR #4690 but has
+not shipped in a release.
+
+That bug only affects the local worktree path. CI runs against a normal fresh
+checkout, so the existing `check:sec:secrets` command remains correct there and
+was intentionally **not** changed.
+
+### Decision
+
+Add a complementary local pre-commit gate that scans only the staged blobs.
+
+- Husky runs `pnpm run precommit:secrets` after `lint-staged`.
+- The script materializes staged content into a temporary tmpdir mirror.
+- It invokes `trufflehog filesystem <tmpdir> --fail --results=verified,unknown --no-update --json`.
+- If the `trufflehog` binary is missing locally, the hook warns and exits 0 so
+  contributors are nudged to install it without blocking commits.
+
+Using `filesystem` mode sidesteps the worktree bug entirely while still giving
+developers a fail-fast local guard before a secret lands in history.
+
+### Consequences
+
+- CI keeps using `trufflehog git file://.` because that remains the right sensor
+  for committed history in a normal checkout.
+- Local developers get fast feedback on the exact staged payload, including
+  partial staging via `git add -p`.
+- When PR #4690 lands and is released, we can revisit whether local hooks can
+  switch back to `git` mode without the tmpdir mirror workaround.

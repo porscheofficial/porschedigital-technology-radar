@@ -9,6 +9,7 @@ const mockState = vi.hoisted(() => ({
   getItems: vi.fn(),
   getQuadrant: vi.fn(),
   itemDetailProps: vi.fn(),
+  seoHeadProps: vi.fn(),
 }));
 
 vi.mock("next/head", () => ({
@@ -19,6 +20,13 @@ vi.mock("@/components/ItemDetail/ItemDetail", () => ({
   ItemDetail: (props: any) => {
     mockState.itemDetailProps(props);
     return <div data-testid="item-detail">{props.item.title}</div>;
+  },
+}));
+
+vi.mock("@/components/SeoHead/SeoHead", () => ({
+  SeoHead: (props: any) => {
+    mockState.seoHeadProps(props);
+    return <div data-testid="seo-head" />;
   },
 }));
 
@@ -45,6 +53,7 @@ describe("Item detail page", () => {
   const item: Item = {
     id: "react",
     title: "React",
+    summary: "React summary",
     body: "<p>UI library</p>",
     featured: true,
     ring: "adopt",
@@ -67,6 +76,36 @@ describe("Item detail page", () => {
     render(<ItemPage quadrantId={quadrant.id} itemId={item.id} />);
 
     expect(screen.getByTestId("item-detail")).toHaveTextContent("React");
+  });
+
+  it("passes SEO props including article metadata image", () => {
+    render(<ItemPage quadrantId={quadrant.id} itemId={item.id} />);
+
+    expect(mockState.seoHeadProps).toHaveBeenCalledWith({
+      title: item.title,
+      description: item.summary,
+      path: `/${quadrant.id}/${item.id}/`,
+      image: `/og/${quadrant.id}/${item.id}.png`,
+      type: "article",
+    });
+    expect(
+      document
+        .querySelector('meta[property="article:section"]')
+        ?.getAttribute("content"),
+    ).toBe("Languages & Frameworks");
+  });
+
+  it("uses a custom ogImage when provided", () => {
+    mockState.getItem.mockReturnValue({
+      ...item,
+      ogImage: "/images/react-card.png",
+    });
+
+    render(<ItemPage quadrantId={quadrant.id} itemId={item.id} />);
+
+    expect(mockState.seoHeadProps).toHaveBeenCalledWith(
+      expect.objectContaining({ image: "/images/react-card.png" }),
+    );
   });
 
   it("renders ItemDetail with the correct props", () => {

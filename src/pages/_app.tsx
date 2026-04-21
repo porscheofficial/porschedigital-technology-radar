@@ -5,7 +5,6 @@ import Script from "next/script";
 
 import { Layout, type LayoutClass } from "@/components/Layout/Layout";
 import { getJsUrl } from "@/lib/data";
-import { formatTitle } from "@/lib/format";
 import { RadarHighlightProvider } from "@/lib/RadarHighlightContext";
 import "@/styles/_globals.scss";
 import "@/styles/_hljs.css";
@@ -30,7 +29,6 @@ export default function App({ Component, pageProps }: CustomAppProps) {
     <PorscheDesignSystemProvider theme="dark">
       <RadarHighlightProvider>
         <Head>
-          <title>{formatTitle()}</title>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
         </Head>
         <Layout layoutClass={Component.layoutClass}>

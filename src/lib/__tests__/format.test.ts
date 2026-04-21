@@ -1,4 +1,5 @@
 import {
+  deriveSummary,
   format,
   formatLinkLabel,
   formatRelease,
@@ -9,6 +10,7 @@ import {
   stripHtml,
   truncate,
 } from "@/lib/format";
+import { Flag } from "@/lib/types";
 
 vi.mock("@/lib/config", () => ({
   default: { labels: { title: "Test Radar" } },
@@ -118,6 +120,44 @@ describe("truncate", () => {
 
   it("appends a U+2026 ellipsis when over the limit", () => {
     expect(truncate("123456", 5)).toBe("12345…");
+  });
+});
+
+describe("deriveSummary", () => {
+  it("prefers an explicit summary when provided", () => {
+    expect(
+      deriveSummary({
+        id: "react",
+        title: "React",
+        summary: "Custom summary",
+        body: "<p>Ignored</p>",
+        featured: true,
+        ring: "adopt",
+        quadrant: "languages-and-frameworks",
+        flag: Flag.Default,
+        release: "2024-01",
+        position: [0, 0],
+      }),
+    ).toBe("Custom summary");
+  });
+
+  it("derives and truncates a summary from stripped html at a word boundary", () => {
+    const summary = deriveSummary({
+      id: "react",
+      title: "React",
+      body: "<p>React is a UI library used for building interfaces with reusable components and predictable composition patterns across many frontend applications in large organisations with shared design systems and long-lived products.</p>",
+      featured: true,
+      ring: "adopt",
+      quadrant: "languages-and-frameworks",
+      flag: Flag.Default,
+      release: "2024-01",
+      position: [0, 0],
+    });
+
+    expect(summary.length).toBeLessThanOrEqual(161);
+    expect(summary).toContain("React is a UI library");
+    expect(summary.endsWith("…")).toBe(true);
+    expect(summary).not.toContain("<p>");
   });
 });
 

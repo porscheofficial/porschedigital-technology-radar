@@ -4,6 +4,7 @@ import HelpAndAbout from "@/pages/help-and-about-tech-radar";
 const mockState = vi.hoisted(() => ({
   getAppName: vi.fn(),
   safeHtmlProps: vi.fn(),
+  seoHeadProps: vi.fn(),
 }));
 
 vi.mock("next/head", () => ({
@@ -25,6 +26,13 @@ vi.mock("@/components/SafeHtml/SafeHtml", () => ({
   },
 }));
 
+vi.mock("@/components/SeoHead/SeoHead", () => ({
+  SeoHead: (props: any) => {
+    mockState.seoHeadProps(props);
+    return <div data-testid="seo-head" />;
+  },
+}));
+
 vi.mock("../../../data/about.json", () => ({
   default: {
     body: "<p>About the radar</p>",
@@ -37,12 +45,14 @@ describe("Help and About page", () => {
     mockState.getAppName.mockReturnValue("Test Radar");
   });
 
-  it("renders the page title", () => {
+  it("passes SEO props", () => {
     render(<HelpAndAbout />);
 
-    expect(document.querySelector("title")?.textContent).toBe(
-      "Help and About | Test Radar",
-    );
+    expect(mockState.seoHeadProps).toHaveBeenCalledWith({
+      title: "Help & About",
+      description: "About the radar",
+      path: "/help-and-about-tech-radar/",
+    });
   });
 
   it("renders the SafeHtml component", () => {

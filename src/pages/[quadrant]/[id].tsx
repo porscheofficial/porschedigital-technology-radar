@@ -2,8 +2,9 @@ import type { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
 
 import { ItemDetail } from "@/components/ItemDetail/ItemDetail";
+import { SeoHead } from "@/components/SeoHead/SeoHead";
 import { getItem, getItems, getQuadrant } from "@/lib/data";
-import { formatTitle } from "@/lib/format";
+import { deriveSummary } from "@/lib/format";
 import type { CustomPage } from "@/pages/_app";
 
 interface ItemPageProps {
@@ -17,11 +18,20 @@ const ItemPage: CustomPage<ItemPageProps> = ({ quadrantId, itemId }) => {
 
   if (!quadrant || !item) return null;
 
+  const description = deriveSummary(item);
+  const image = item.ogImage || `/og/${quadrant.id}/${item.id}.png`;
+
   return (
     <>
+      <SeoHead
+        title={item.title}
+        description={description}
+        path={`/${quadrant.id}/${item.id}/`}
+        image={image}
+        type="article"
+      />
       <Head>
-        <title>{formatTitle(item.title, quadrant.title)}</title>
-        <meta name="description" content={quadrant.description} />
+        <meta property="article:section" content={quadrant.title} />
       </Head>
 
       <ItemDetail item={item} quadrantTitle={quadrant.title} />

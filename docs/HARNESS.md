@@ -101,6 +101,12 @@ flowchart LR
 
 Every feedback rule's failure message **cites the `AGENTS.md` doc that explains why** — closing the loop back to the feedforward arm. This is the single most important property of the harness.
 
+**Local-only complement:** Husky also runs `pnpm run precommit:secrets` before
+commit. It is intentionally **not** a `check:sec:*` arm; it is a fail-fast local
+guard that mirrors staged blobs into a tmpdir and scans them with
+`trufflehog filesystem` to work around the current TruffleHog worktree bug
+(issue #4553, fix PR #4690 pending release).
+
 ---
 
 ## 3. The invariant buckets
@@ -138,7 +144,7 @@ The regulator's variety. Each row is one architectural property the harness pres
 
 **Notes on #12** — catches two failure modes at once: helper duplication across components (e.g. multiple components copy-pasting `stripHtml` instead of importing the canonical `@/lib/format` version) and component files accreting non-component logic. The fix is one of three: move pure helpers to `src/lib/`, convert JSX-returning helpers to PascalCase sub-components, or inline single-use render helpers as `const` arrows inside the component body.
 
-**Notes on #13–#15** — the security arm. #13 is two-layer defense: `scripts/buildData.ts` calls `remarkRehype` without `allowDangerousHtml` *and* runs `rehypeSanitize` immediately after. The sensor enforces the second layer (the first is a one-keystroke regression that the second catches). #14 and #15 use Go binaries (`osv-scanner`, `trufflehog`) deliberately *not* added to `devDependencies` — CI runs the official actions, local devs install via `brew`. #15 originally used gitleaks; ADR-0011 swapped to TruffleHog to drop the gitleaks-action license gate and pick up secret verification. See ADR-0006 and ADR-0011.
+**Notes on #13–#15** — the security arm. #13 is two-layer defense: `scripts/buildData.ts` calls `remarkRehype` without `allowDangerousHtml` *and* runs `rehypeSanitize` immediately after. The sensor enforces the second layer (the first is a one-keystroke regression that the second catches). #14 and #15 use Go binaries (`osv-scanner`, `trufflehog`) deliberately *not* added to `devDependencies` — CI runs the official actions, local devs install via `brew`. #15 originally used gitleaks; ADR-0011 swapped to TruffleHog to drop the gitleaks-action license gate and pick up secret verification. Because TruffleHog currently has a worktree bug in `git` mode, local pre-commit uses `pnpm run precommit:secrets` as a complementary staged-blob scan via `filesystem` mode; CI keeps the committed-history `check:sec:secrets` sensor. See ADR-0006 and ADR-0011.
 
 **Notes on #16** — the clean-code arm opens with knip, the cheapest of four Phase-2 sensors. The remaining three (jscpd for duplication, Biome `useNamingConvention`, and eslint-plugin-sonarjs) ship as separate ADRs. `ignoreBinaries` in `knip.json` covers the `osv-scanner` / `trufflehog` system binaries so the security and clean-code arms don't fight. See ADR-0007.
 
@@ -171,7 +177,7 @@ A non-gating advisory workflow — **OpenSSF Scorecard** (`.github/workflows/sco
 ```mermaid
 flowchart LR
     edit["edit file"] --> lsp["LSP / TS<br/>(in editor)"]
-    lsp --> precommit["pre-commit<br/>(husky → lint-staged → biome)"]
+    lsp --> precommit["pre-commit<br/>(husky → lint-staged → biome → precommit:secrets)"]
     precommit --> push["push"]
     push --> arch["check:arch<br/>(source-only, ~3s)"]
     arch --> test["pnpm test<br/>(6 fs invariants + unit/integration)"]

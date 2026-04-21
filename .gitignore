@@ -17,6 +17,7 @@
 # generated
 /src/components/Icons/
 /dist/
+/public/og/
 
 /data/about.json
 /data/data.json

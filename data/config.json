@@ -1,4 +1,5 @@
 {
+  "baseUrl": "https://opensource.porsche.com",
   "toggles": {
     "showDemoDisclaimer": true
   }

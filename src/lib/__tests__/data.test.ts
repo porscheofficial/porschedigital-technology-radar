@@ -425,6 +425,28 @@ describe("getImprintUrl / getAbsoluteUrl", () => {
   it("returns absolute URL with path", () => {
     expect(getAbsoluteUrl("/about")).toBe("https://radar.example.com/about");
   });
+
+  it("preserves an already-absolute URL untouched", () => {
+    expect(getAbsoluteUrl("https://cdn.example.com/x.png")).toBe(
+      "https://cdn.example.com/x.png",
+    );
+  });
+
+  it("strips trailing slashes from baseUrl", () => {
+    expect(getAbsoluteUrl("/about")).not.toContain(".com//");
+  });
+
+  it("prefers NEXT_PUBLIC_BASE_URL over config.baseUrl when set", () => {
+    vi.stubEnv("NEXT_PUBLIC_BASE_URL", "https://env.example.com");
+    expect(getAbsoluteUrl("/about")).toBe("https://env.example.com/about");
+    vi.unstubAllEnvs();
+  });
+
+  it("returns just the path when both env and config baseUrl are empty", () => {
+    vi.stubEnv("NEXT_PUBLIC_BASE_URL", "");
+    expect(getAbsoluteUrl("/about")).toBe("/about");
+    vi.unstubAllEnvs();
+  });
 });
 
 describe("getItem", () => {

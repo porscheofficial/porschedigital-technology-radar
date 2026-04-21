@@ -135,7 +135,10 @@ export function getImprintUrl() {
 }
 
 export function getAbsoluteUrl(path: string = "/") {
-  return `${config.baseUrl}${path}`;
+  if (/^https?:\/\//.test(path)) return path;
+  const envBaseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  const baseUrl = (envBaseUrl ?? config.baseUrl ?? "").replace(/\/+$/, "");
+  return `${baseUrl}${assetUrl(path)}`;
 }
 
 export function getItem(id: string): Item | undefined {

@@ -19,7 +19,7 @@ Martin Fowler & Birgitta Böckeler frame it as a 2×2 grid:
 
 Two regulation principles drive the design:
 
-1. **Ashby's Law of Requisite Variety** — the regulator (harness) must have at least as much variety as the system it regulates. If the codebase has 7 invariants, you need 7 sensors.
+1. **Ashby's Law of Requisite Variety** — the regulator (harness) must have at least as much variety as the system it regulates. If the codebase has _N_ invariants, you need _N_ sensors.
 2. **Keep quality left** — distribute sensors across the change lifecycle so violations are caught at the cheapest possible point (editor → pre-commit → CI → after-build).
 
 This project currently fields the **computational column** of the grid in both rows. The inferential row is on the roadmap.
@@ -76,46 +76,26 @@ Every feedback rule's failure message **cites the `AGENTS.md` doc that explains 
 
 ---
 
-## 3. The seven invariant buckets
+## 3. The invariant buckets
 
-The regulator's variety. Each row is one architectural property the harness preserves; the columns show which sensor enforces it and which doc teaches it.
+The regulator's variety. Each row is one architectural property the harness preserves; the columns show which sensor enforces it, which doc teaches it, and which phase introduced it. Twelve buckets and counting — every time review catches a new class of issue, a row is added (see § 8).
 
-| # | Invariant                                            | Feedback sensor                                     | Feedforward doc                |
-|---|------------------------------------------------------|-----------------------------------------------------|--------------------------------|
-| 1 | Static export only (no SSR/API/middleware)           | `architecture.test.ts` + `no-next-server-apis`      | `src/pages/AGENTS.md`          |
-| 2 | Pages Router topology (no `.test.tsx` in pages)      | `architecture.test.ts` (6 fs tests)                 | `src/pages/AGENTS.md`          |
-| 3 | App Router scoped to `sitemap.ts`                    | `architecture.test.ts` + `app-router-only-sitemap`  | `src/app/AGENTS.md`            |
-| 4 | One importer of `data/data.json`                     | `data-accessor-only` (dep-cruiser)                  | `src/lib/AGENTS.md`            |
-| 5 | Component shape (`Name.tsx` + `Name.module.scss`)    | `architecture.test.ts` → `component-folder-shape`   | `src/components/AGENTS.md`     |
-| 6 | No type suppressions, `assetUrl()` for absolute URLs | ESLint `ban-ts-comment` + `no-restricted-syntax`    | `src/components/AGENTS.md`     |
-| 7 | Config / Zod schema documented in README             | `scripts/checkConfigReadmeSync.ts`                  | `data/AGENTS.md`               |
+| #  | Invariant                                              | Feedback sensor                                                                 | Feedforward doc            | Phase |
+|----|--------------------------------------------------------|----------------------------------------------------------------------------------|----------------------------|-------|
+| 1  | Static export only (no SSR/API/middleware)             | `architecture.test.ts` + `no-next-server-apis`                                  | `src/pages/AGENTS.md`      | 0     |
+| 2  | Pages Router topology (no `.test.tsx` in pages)        | `architecture.test.ts` (6 fs tests)                                             | `src/pages/AGENTS.md`      | 0     |
+| 3  | App Router scoped to `sitemap.ts`                      | `architecture.test.ts` → `app-router-only-sitemap`                              | `src/app/AGENTS.md`        | 0     |
+| 4  | One importer of `data/data.json`                       | `data-accessor-only` (dep-cruiser)                                              | `src/lib/AGENTS.md`        | 0     |
+| 5  | Component shape (`Name.tsx` + `Name.module.scss`)      | `architecture.test.ts` → `component-folder-shape`                               | `src/components/AGENTS.md` | 0     |
+| 6  | No type suppressions, `assetUrl()` for absolute URLs   | ESLint `ban-ts-comment` + `no-restricted-syntax`                                | `src/components/AGENTS.md` | 0     |
+| 7  | Config / Zod schema documented in README               | `scripts/checkConfigReadmeSync.ts`                                              | `data/AGENTS.md`           | 0     |
+| 8  | Every expected route file lands in `out/`              | `check:build:routes`                                                            | `src/pages/AGENTS.md`      | 1     |
+| 9  | No broken internal links in the built site             | `check:build:links` (linkinator)                                                | `src/pages/AGENTS.md`      | 1     |
+| 10 | Every `(Checked: …)` reference resolves to a live rule | `check:arch:doccoverage`                                                        | every `AGENTS.md`          | 2     |
+| 11 | JS / CSS / per-chunk sizes stay under explicit caps    | `check:build:budget` (`bundle-budget.json`)                                     | `src/pages/AGENTS.md`      | 3     |
+| 12 | No top-level helper functions in component files       | ESLint `no-restricted-syntax` + `architecture.test.ts` → `no-component-helpers` | `src/components/AGENTS.md` | 4     |
 
-Plus two **build-output** invariants added in Phase 1:
-
-| # | Invariant                                            | Feedback sensor                                     | Feedforward doc                |
-|---|------------------------------------------------------|-----------------------------------------------------|--------------------------------|
-| 8 | Every expected route file lands in `out/`            | `check:build:routes`                                | `src/pages/AGENTS.md`          |
-| 9 | No broken internal links in the built site           | `check:build:links` (linkinator)                    | `src/pages/AGENTS.md`          |
-
-Plus one **doc-coverage** invariant added in Phase 2:
-
-| #  | Invariant                                            | Feedback sensor                                     | Feedforward doc                |
-|----|------------------------------------------------------|-----------------------------------------------------|--------------------------------|
-| 10 | Every `(Checked: …)` reference resolves to a live rule | `check:arch:doccoverage`                          | every `AGENTS.md`              |
-
-Plus one **bundle-budget** invariant added in Phase 3:
-
-| #  | Invariant                                            | Feedback sensor                                     | Feedforward doc                |
-|----|------------------------------------------------------|-----------------------------------------------------|--------------------------------|
-| 11 | JS / CSS / per-chunk sizes stay under explicit caps  | `check:build:budget` (`bundle-budget.json`)         | `src/pages/AGENTS.md`          |
-
-Plus one **component-purity** invariant added in Phase 4:
-
-| #  | Invariant                                            | Feedback sensor                                     | Feedforward doc                |
-|----|------------------------------------------------------|-----------------------------------------------------|--------------------------------|
-| 12 | No top-level helper functions in component files     | ESLint `no-restricted-syntax` + `architecture.test.ts` → `no-component-helpers` | `src/components/AGENTS.md` |
-
-Catches two failure modes at once: helper duplication across components (e.g. multiple components copy-pasting `stripHtml` instead of importing the canonical `@/lib/format` version) and component files accreting non-component logic. The fix is one of three: move pure helpers to `src/lib/`, convert JSX-returning helpers to PascalCase sub-components, or inline single-use render helpers as `const` arrows inside the component body.
+**Notes on #12** — catches two failure modes at once: helper duplication across components (e.g. multiple components copy-pasting `stripHtml` instead of importing the canonical `@/lib/format` version) and component files accreting non-component logic. The fix is one of three: move pure helpers to `src/lib/`, convert JSX-returning helpers to PascalCase sub-components, or inline single-use render helpers as `const` arrows inside the component body.
 
 Plus framework-aware lints from `@next/eslint-plugin-next` (recommended set, with `no-img-element` and `no-html-link-for-pages` disabled per ADRs / our `assetUrl()` convention — see `eslint.config.mjs` header).
 
@@ -200,7 +180,7 @@ The arrow from sensor back to doc is what makes this an _engineered harness_ rat
 The harness is computational-only. The inferential column is the next frontier:
 
 - **/doc-gardener skill** — periodically audits whether the AGENTS.md files still describe reality. (`check:arch:doccoverage` is the computational floor for this; `/doc-gardener` is the inferential ceiling — it can spot stale prose, not just stale identifiers.)
-- **/review-radar skill** — LLM-as-judge against the seven invariants on a diff.
+- **/review-radar skill** — LLM-as-judge against the invariant table on a diff.
 - **Generator + evaluator loop** — Anthropic-style two-agent pattern for visual changes to the radar SVG.
 
 Also deliberately deferred: visual regression on the SVG, mutation testing, Lighthouse/axe — see roadmap notes in the project's planning artifacts.

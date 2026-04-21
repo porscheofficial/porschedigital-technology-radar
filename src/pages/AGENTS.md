@@ -13,6 +13,8 @@ This is the **only** router in the project. Static export only.
 - **No Next server APIs.** No imports from `next/headers`, `next/cache`, `next/server`, or `server-only`. Static export has no server. (Checked: `.dependency-cruiser.cjs` → `no-next-server-apis`.)
 - **All `href` and `src` strings starting with `/` MUST go through `assetUrl()`** from `@/lib/utils`. The site deploys under a configurable `basePath`. (Checked: `eslint.config.js` → `no-restricted-syntax` for absolute literals/templates.)
 - **Every page route must produce a file in `out/`.** New routes require updating `scripts/checkBuildOutput.ts` if they aren't covered by the data-driven loop (statics, quadrants, items). (Checked: `npm run check:build:routes` after `npm run build`.)
+- **Bundle stays under budget.** Total JS, total CSS, and per-chunk sizes are capped in `bundle-budget.json`. Bumping the budget requires a justifying commit message — see `docs/decisions/0005-bundle-budget-fs-walk.md`. (Checked: `npm run check:build:budget` after `npm run build`.)
+- **Framework-aware lints from `@next/eslint-plugin-next` (recommended set)** apply to `src/`. Two rules are deliberately disabled: `@next/next/no-img-element` (see ADR-0003) and `@next/next/no-html-link-for-pages` (we use `assetUrl()` with `<Link>`/`<a>`, which the rule misclassifies). (Checked: `eslint.config.js`.)
 
 ## Shape
 

@@ -59,6 +59,7 @@ flowchart LR
         subgraph BUILD["Build-output (npm run check:build)"]
             B1["check:build:routes<br/>(scripts/checkBuildOutput.ts)"]
             B2["check:build:links<br/>(linkinator)"]
+            B3["check:build:budget<br/>(scripts/checkBundleBudget.ts)"]
         end
     end
 
@@ -101,6 +102,14 @@ Plus one **doc-coverage** invariant added in Phase 2:
 | #  | Invariant                                            | Feedback sensor                                     | Feedforward doc                |
 |----|------------------------------------------------------|-----------------------------------------------------|--------------------------------|
 | 10 | Every `(Checked: …)` reference resolves to a live rule | `check:arch:doccoverage`                          | every `AGENTS.md`              |
+
+Plus one **bundle-budget** invariant added in Phase 3:
+
+| #  | Invariant                                            | Feedback sensor                                     | Feedforward doc                |
+|----|------------------------------------------------------|-----------------------------------------------------|--------------------------------|
+| 11 | JS / CSS / per-chunk sizes stay under explicit caps  | `check:build:budget` (`bundle-budget.json`)         | `src/pages/AGENTS.md`          |
+
+Plus framework-aware lints from `@next/eslint-plugin-next` (recommended set, with `no-img-element` and `no-html-link-for-pages` disabled per ADRs / our `assetUrl()` convention — see `eslint.config.js` header).
 
 ---
 
@@ -213,7 +222,8 @@ npm run check:arch          # source-only sensors (~3s)
 npm run build               # static export → out/
 npm run check:build         # build-output sensors
   ├─ check:build:routes     # every expected file present
-  └─ check:build:links      # no broken internal links
+  ├─ check:build:links      # no broken internal links
+  └─ check:build:budget     # JS/CSS sizes within bundle-budget.json
 
 npm test                    # includes architecture.test.ts (5 fs invariants)
 ```

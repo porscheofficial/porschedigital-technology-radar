@@ -1,9 +1,17 @@
 // ESLint runs in lint-only mode for architectural invariants Biome can't express.
 // Biome remains the formatter/linter for everything else.
-// Three rules only:
+//
+// Local architectural rules:
 //   1. no-asset-url-bypass — JSX href/src "/..." literals must be wrapped in assetUrl()
 //   2. safe-html-required — dangerouslySetInnerHTML only inside SafeHtml.tsx
-//   3. no-ts-suppression  — ban as-any / @ts-expect-error / @ts-expect-error
+//   3. no-ts-suppression  — ban as-any / @ts-expect-error / @ts-nocheck
+//
+// Plus @next/eslint-plugin-next recommended (with documented exceptions):
+//   - @next/next/no-img-element OFF — see docs/decisions/0003-no-next-image.md
+//   - @next/next/no-html-link-for-pages OFF — our internal-link convention is
+//     <Link href={assetUrl(...)}> and <a href={assetUrl(...)}>, both compatible
+//     with output:"export"; the Next rule's pages-dir scan misreports here.
+import nextPlugin from "@next/eslint-plugin-next";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
@@ -104,5 +112,15 @@ export default tseslint.config(
   {
     files: ["**/*.test.{ts,tsx}", "**/__tests__/**", "src/test/**"],
     rules: { "no-restricted-syntax": "off" },
+  },
+
+  {
+    files: ["src/**/*.{ts,tsx}"],
+    plugins: { "@next/next": nextPlugin },
+    rules: {
+      ...nextPlugin.configs.recommended.rules,
+      "@next/next/no-img-element": "off",
+      "@next/next/no-html-link-for-pages": "off",
+    },
   },
 );

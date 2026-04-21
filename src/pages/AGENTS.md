@@ -10,7 +10,9 @@ This is the **only** router in the project. Static export only.
 - **No `getServerSideProps`.** Use `getStaticProps` returning `{ props: {} }` and import data at module level from `@/lib/data`.
 - **`getStaticPaths` must use `fallback: false`.** Required for `output: "export"`.
 - **No `next/image`.** Use plain `<img>` with `assetUrl()` for src. (Checked: `.dependency-cruiser.cjs` → `no-next-image`.)
+- **No Next server APIs.** No imports from `next/headers`, `next/cache`, `next/server`, or `server-only`. Static export has no server. (Checked: `.dependency-cruiser.cjs` → `no-next-server-apis`.)
 - **All `href` and `src` strings starting with `/` MUST go through `assetUrl()`** from `@/lib/utils`. The site deploys under a configurable `basePath`. (Checked: `eslint.config.js` → `no-restricted-syntax` for absolute literals/templates.)
+- **Every page route must produce a file in `out/`.** New routes require updating `scripts/checkBuildOutput.ts` if they aren't covered by the data-driven loop (statics, quadrants, items). (Checked: `npm run check:build:routes` after `npm run build`.)
 
 ## Shape
 

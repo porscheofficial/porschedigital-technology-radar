@@ -16,6 +16,9 @@ module.exports = {
     },
 
     // ───── Static-export bans ──────────────────────────────────────
+    // NB: `to.path` matches the *resolved* path (e.g. node_modules/...),
+    // not the bare specifier from `import`. All external-module ban rules
+    // below therefore target the resolved path.
     {
       name: "no-next-image",
       comment:
@@ -23,14 +26,16 @@ module.exports = {
         "(AGENTS.md → Static Export Constraints)",
       severity: "error",
       from: { path: "^src" },
-      to: { path: "^next/image$" },
+      to: { path: "^node_modules/next/image(\\.|/|$)" },
     },
     {
       name: "no-css-in-js",
       comment: "Styling is SCSS Modules only. (src/components/AGENTS.md)",
       severity: "error",
       from: { path: "^src" },
-      to: { path: "^(styled-components|@emotion/.*|@stitches/.*)$" },
+      to: {
+        path: "^node_modules/(styled-components|@emotion/[^/]+|@stitches/[^/]+)(/|$)",
+      },
     },
     {
       name: "no-runtime-fetch-libs",
@@ -39,7 +44,22 @@ module.exports = {
         "(AGENTS.md → Static Export Constraints)",
       severity: "error",
       from: { path: "^src", pathNot: "(__tests__|\\.test\\.)" },
-      to: { path: "^(axios|swr|@tanstack/react-query|ky)$" },
+      to: {
+        path: "^node_modules/(axios|swr|@tanstack/react-query|ky)(/|$)",
+      },
+    },
+    {
+      name: "no-next-server-apis",
+      comment:
+        "These APIs require a Next.js server runtime and are incompatible " +
+        'with `output: "export"`. To fix: derive data at build time via ' +
+        "src/lib/data.ts, or expose a static helper. " +
+        "(src/pages/AGENTS.md → static-export contract)",
+      severity: "error",
+      from: { path: "^src" },
+      to: {
+        path: "^node_modules/(next/(headers|cache|server)|server-only)(\\.|/|$)",
+      },
     },
 
     // ───── Router topology ─────────────────────────────────────────
@@ -100,13 +120,18 @@ module.exports = {
   ],
 
   options: {
+    // No `includeOnly` / `exclude` filter on the cruise: dep-cruiser
+    // would otherwise drop external dependencies (e.g. `next/image`,
+    // `next/server`, `axios`) BEFORE rule evaluation, silently neutering
+    // every ban rule above. `doNotFollow` keeps node_modules out of
+    // *traversal* (so we don't descend into transitive deps) while still
+    // letting the dependency edge itself be evaluated against rules.
     doNotFollow: { path: "node_modules" },
     tsConfig: { fileName: "tsconfig.json" },
     enhancedResolveOptions: {
       exportsFields: ["exports"],
       conditionNames: ["import", "require", "node", "default"],
     },
-    includeOnly: "^(src|scripts|bin)",
     reporterOptions: {
       text: { highlightFocused: true },
     },

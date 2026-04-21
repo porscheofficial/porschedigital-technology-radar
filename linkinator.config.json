@@ -1,0 +1,6 @@
+{
+  "recurse": true,
+  "directoryListing": true,
+  "verbosity": "error",
+  "skip": ["^https?://(?!localhost)", "^mailto:", "^tel:", "^#", "^data:"]
+}

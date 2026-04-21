@@ -149,14 +149,19 @@ This repo runs a two-arm steering harness for agent work:
 - `scripts/AGENTS.md` — Build-time tooling, schema↔README invariant
 - `data/AGENTS.md` — Frontmatter, config, wiki links
 
-**Feedback** — `npm run check:arch` enforces the same rules:
+**Feedback (source-only)** — `npm run check:arch` enforces the same rules without needing a build:
 
-- `npm run check:arch:depcruise` — dependency-cruiser (`.dependency-cruiser.cjs`): import-graph rules (data accessor, no `next/image`, no CSS-in-JS, no runtime fetching, app-router scope, no cross-page imports, no cycles).
+- `npm run check:arch:depcruise` — dependency-cruiser (`.dependency-cruiser.cjs`): import-graph rules (data accessor, no `next/image`, no CSS-in-JS, no runtime fetching, no Next server APIs (`next/headers|cache|server`, `server-only`), app-router scope, no cross-page imports, no cycles). **Ban-rule patterns match resolved paths under `node_modules/...`, not bare specifiers** — see the banner comment in `.dependency-cruiser.cjs` before adding new bans.
 - `npm run check:arch:eslint` — ESLint flat config (`eslint.config.js`, lint-only): bans `as any` / `@ts-ignore`, requires `assetUrl()` for absolute URLs, restricts `dangerouslySetInnerHTML` to `SafeHtml.tsx`.
 - `npm run check:arch:readme` — `scripts/checkConfigReadmeSync.ts`: every `data/config.default.json` leaf key and every Zod field in `validateFrontmatter.ts` must appear in `README.md`.
 - `src/__tests__/architecture/architecture.test.ts` — fs-based invariants: no `.test.tsx` in `src/pages/`, `src/app/` only contains `sitemap.ts`, component folder shape, no `pages/api`, no `middleware.ts`.
 
-When a check fails, read its rule's `comment` (dep-cruiser) or message (ESLint) — each cites the AGENTS.md doc that explains why.
+**Feedback (build-output)** — `npm run check:build` validates the static export in `out/`. Run after `npm run build`:
+
+- `npm run check:build:routes` — `scripts/checkBuildOutput.ts`: asserts every expected route file exists in `out/` (statics, quadrant indexes, item pages from `data.json`). Closes the static-export contract: no silent route drops.
+- `npm run check:build:links` — `linkinator` (config in `linkinator.config.json`): crawls the built site from `out/index.html` and fails on broken internal links. External URLs are skipped via the `^https?://(?!localhost)` pattern.
+
+When a check fails, read its rule's `comment` (dep-cruiser) or message (ESLint/scripts) — each cites the AGENTS.md doc that explains why.
 
 ### Test Coverage Requirement
 

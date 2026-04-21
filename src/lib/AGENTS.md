@@ -17,8 +17,8 @@ The single source of truth for types, data accessors, config, and helpers. Pages
 
 - **No runtime data fetching.** No `axios`, `node-fetch`, `swr`, `react-query`, `@tanstack/react-query`. Everything is static. (Checked: `.dependency-cruiser.cjs` → `no-runtime-fetch-libs`.)
 - **No circular imports.** (Checked: `.dependency-cruiser.cjs` → `no-circular`.) Specifically: `data.ts` imports `format.ts`, so `format.ts` must not import `data.ts`.
-- **No `as any` / `@ts-ignore` / `@ts-expect-error`.** Use `unknown` + narrowing or fix the type. (Checked: `eslint.config.js`.)
-- **All `href`/`src` literals starting with `/`** must go through `assetUrl()`. This applies to logo paths and any URL strings constructed here. (Checked: `eslint.config.js`.)
+- **No `as any` / `@ts-ignore` / `@ts-expect-error`.** Use `unknown` + narrowing or fix the type. (Checked: `eslint.config.mjs`.)
+- **All `href`/`src` literals starting with `/`** must go through `assetUrl()`. This applies to logo paths and any URL strings constructed here. (Checked: `eslint.config.mjs`.)
 
 ## Tests
 

@@ -152,7 +152,7 @@ This repo runs a two-arm steering harness for agent work:
 **Feedback (source-only)** — `npm run check:arch` enforces the same rules without needing a build:
 
 - `npm run check:arch:depcruise` — dependency-cruiser (`.dependency-cruiser.cjs`): import-graph rules (data accessor, no `next/image`, no CSS-in-JS, no runtime fetching, no Next server APIs (`next/headers|cache|server`, `server-only`), app-router scope, no cross-page imports, no cycles). **Ban-rule patterns match resolved paths under `node_modules/...`, not bare specifiers** — see the banner comment in `.dependency-cruiser.cjs` before adding new bans.
-- `npm run check:arch:eslint` — ESLint flat config (`eslint.config.js`, lint-only): bans `as any` / `@ts-ignore`, requires `assetUrl()` for absolute URLs, restricts `dangerouslySetInnerHTML` to `SafeHtml.tsx`. Also runs `@next/eslint-plugin-next` (recommended set, with `no-img-element` and `no-html-link-for-pages` disabled — see ADR-0003 and the header of `eslint.config.js`).
+- `npm run check:arch:eslint` — ESLint flat config (`eslint.config.mjs`, lint-only): bans `as any` / `@ts-ignore`, requires `assetUrl()` for absolute URLs, restricts `dangerouslySetInnerHTML` to `SafeHtml.tsx`. Also runs `@next/eslint-plugin-next` (recommended set, with `no-img-element` and `no-html-link-for-pages` disabled — see ADR-0003 and the header of `eslint.config.mjs`).
 - `npm run check:arch:readme` — `scripts/checkConfigReadmeSync.ts`: every `data/config.default.json` leaf key and every Zod field in `validateFrontmatter.ts` must appear in `README.md`.
 - `npm run check:arch:doccoverage` — `scripts/checkDocCoverage.ts`: every `(Checked: …)` reference inside any `AGENTS.md` must point at a real dep-cruiser rule, architecture test, eslint rule, or npm script. Catches stale citations when rules get renamed or removed.
 - `src/__tests__/architecture/architecture.test.ts` — fs-based invariants: no `.test.tsx` in `src/pages/`, `src/app/` only contains `sitemap.ts`, component folder shape, no `pages/api`, no `middleware.ts`.
@@ -208,7 +208,7 @@ Any change to `data/config.default.json` or `scripts/validateFrontmatter.ts` (ne
 
 - A `check:arch:*` or `check:build:*` script (added, removed, renamed)
 - A `.dependency-cruiser.cjs` rule (added, removed, semantic change)
-- An `eslint.config.js` architectural rule
+- An `eslint.config.mjs` architectural rule
 - A `scripts/check*.ts` sensor
 - An `AGENTS.md` file (added, removed)
 - An invariant bucket in the seven-row table (sensor or doc citation changes)

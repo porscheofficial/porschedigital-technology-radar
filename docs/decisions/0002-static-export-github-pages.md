@@ -36,7 +36,7 @@ break in that environment.
 
 - `.dependency-cruiser.cjs` → `no-next-server-apis` bans the server-only
   module imports.
-- `eslint.config.js` → `no-restricted-syntax` rejects bare absolute
+- `eslint.config.mjs` → `no-restricted-syntax` rejects bare absolute
   `href`/`src` literals and template literals.
 - `src/__tests__/architecture/architecture.test.ts` → `no-pages-api`,
   `no-middleware` block forbidden directories/files.

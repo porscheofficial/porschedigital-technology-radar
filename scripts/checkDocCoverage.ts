@@ -9,7 +9,7 @@
 // Recognised reference shapes inside (Checked: …):
 //   `.dependency-cruiser.cjs` → `<rule-name>`
 //   `architecture.test.ts`    → `<test-id>`        (matches `it("<id>: …")`)
-//   `eslint.config.js`        → `<rule-name>`      (or bare file ref — file existence)
+//   `eslint.config.mjs`        → `<rule-name>`      (or bare file ref — file existence)
 //   `npm run <script-name>`
 //   `<bare-identifier>`                            (resolves against any of the above)
 import { readdirSync, readFileSync } from "node:fs";
@@ -33,7 +33,7 @@ const archTest = readFileSync(
   join(root, "src/__tests__/architecture/architecture.test.ts"),
   "utf8",
 );
-const eslintCfg = readFileSync(join(root, "eslint.config.js"), "utf8");
+const eslintCfg = readFileSync(join(root, "eslint.config.mjs"), "utf8");
 const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8")) as {
   scripts: Record<string, string>;
 };
@@ -61,7 +61,7 @@ const npmRe = /`npm run ([\w:-]+)`/g;
 const bareRe = /`([a-z][a-z0-9-]+)`/g;
 const knownFiles = new Set([
   ".dependency-cruiser.cjs",
-  "eslint.config.js",
+  "eslint.config.mjs",
   "architecture.test.ts",
 ]);
 
@@ -72,7 +72,7 @@ function validateFileRef(srcFile: string, id: string): string | null {
   if (srcFile === "architecture.test.ts") {
     return archTests.has(id) ? null : `architecture test \`${id}\``;
   }
-  if (srcFile === "eslint.config.js") {
+  if (srcFile === "eslint.config.mjs") {
     return eslintRules.has(id) ? null : `eslint rule \`${id}\``;
   }
   return null; // unknown file ref — skip silently

@@ -51,7 +51,7 @@ flowchart LR
         direction TB
         subgraph SRC["Source-only (npm run check:arch)"]
             S1["check:arch:depcruise<br/>(.dependency-cruiser.cjs)"]
-            S2["check:arch:eslint<br/>(eslint.config.js)"]
+            S2["check:arch:eslint<br/>(eslint.config.mjs)"]
             S3["check:arch:readme<br/>(scripts/checkConfigReadmeSync.ts)"]
             S4["check:arch:doccoverage<br/>(scripts/checkDocCoverage.ts)"]
             S5["architecture.test.ts<br/>(vitest, fs invariants)"]
@@ -109,7 +109,7 @@ Plus one **bundle-budget** invariant added in Phase 3:
 |----|------------------------------------------------------|-----------------------------------------------------|--------------------------------|
 | 11 | JS / CSS / per-chunk sizes stay under explicit caps  | `check:build:budget` (`bundle-budget.json`)         | `src/pages/AGENTS.md`          |
 
-Plus framework-aware lints from `@next/eslint-plugin-next` (recommended set, with `no-img-element` and `no-html-link-for-pages` disabled per ADRs / our `assetUrl()` convention — see `eslint.config.js` header).
+Plus framework-aware lints from `@next/eslint-plugin-next` (recommended set, with `no-img-element` and `no-html-link-for-pages` disabled per ADRs / our `assetUrl()` convention — see `eslint.config.mjs` header).
 
 ---
 

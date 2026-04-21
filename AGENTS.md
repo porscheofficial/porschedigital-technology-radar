@@ -178,6 +178,7 @@ Plus an advisory (non-gating) workflow: `.github/workflows/scorecard.yml` runs O
 **Feedback (clean-code)** — `npm run check:quality` enforces clean-code invariants. See ADR-0007 for the full rationale.
 
 - `npm run check:quality:knip` — [knip](https://knip.dev/): detects unused files, unused exports, unused dependencies, and unlisted dependencies/binaries. Config in `knip.json` (entry points, project glob, `ignoreBinaries` for `osv-scanner` and `gitleaks` which are system binaries per ADR-0006). Fail the build on any finding — the correct response is either to delete the dead code, declare the dep, or widen the ignore list with a justifying commit.
+- `npm run check:quality:jscpd` — [jscpd](https://github.com/kucherenko/jscpd): copy-paste / clone detector. Config in `.jscpd.json` (scope `src/` + `scripts/`, min-tokens 70, threshold 3%, ignores tests + SCSS modules + generated icons). The 3% ceiling allows the documented `Radar` ↔ `QuadrantRadar` mirror to stand and trips on new significant duplication. See ADR-0008 for the rationale and rejected alternatives.
 
 When a check fails, read its rule's `comment` (dep-cruiser) or message (ESLint/scripts) — each cites the AGENTS.md doc that explains why.
 

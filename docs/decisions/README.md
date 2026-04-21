@@ -41,6 +41,7 @@ ADRs cite the *decisions behind those rules*.
 | 0005 | Bundle budget enforced via fs walk, not @next/bundle-analyzer | accepted |
 | 0006 | Security harness (Phase 1)                     | accepted |
 | 0007 | Clean-code harness, Phase 2a: knip             | accepted |
+| 0008 | Clean-code harness, Phase 2b: jscpd            | accepted |
 
 ## When to write a new ADR
 

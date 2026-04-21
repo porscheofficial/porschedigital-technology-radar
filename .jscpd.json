@@ -1,0 +1,16 @@
+{
+  "$schema": "https://raw.githubusercontent.com/kucherenko/jscpd/master/packages/jscpd/schema.json",
+  "threshold": 3,
+  "minTokens": 70,
+  "reporters": ["console"],
+  "absolute": false,
+  "gitignore": true,
+  "path": ["src", "scripts"],
+  "ignore": [
+    "**/__tests__/**",
+    "**/*.test.*",
+    "**/*.module.scss",
+    "src/components/Icons/**",
+    "**/*.snap"
+  ]
+}

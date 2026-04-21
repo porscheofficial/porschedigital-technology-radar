@@ -1,6 +1,6 @@
 # ADR-0006 — Security harness (Phase 1)
 
-- Status: accepted
+- Status: accepted (secrets-scanner choice amended by ADR-0011)
 - Date: 2026-04-21
 
 ## Context

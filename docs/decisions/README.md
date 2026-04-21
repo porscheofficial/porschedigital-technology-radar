@@ -39,11 +39,12 @@ ADRs cite the *decisions behind those rules*.
 | 0003 | No `next/image`                                | accepted |
 | 0004 | `format.ts` reads config, not `data.ts`        | accepted |
 | 0005 | Bundle budget enforced via fs walk, not @next/bundle-analyzer | accepted |
-| 0006 | Security harness (Phase 1)                     | accepted |
+| 0006 | Security harness (Phase 1)                     | accepted (amended by 0011) |
 | 0007 | Clean-code harness, Phase 2a: knip             | accepted |
 | 0008 | Clean-code harness, Phase 2b: jscpd            | accepted |
 | 0009 | Clean-code harness, Phase 2c: useNamingConvention | accepted |
 | 0010 | Clean-code harness, Phase 2d: SonarJS           | accepted |
+| 0011 | Swap gitleaks for TruffleHog                    | accepted |
 
 ## When to write a new ADR
 

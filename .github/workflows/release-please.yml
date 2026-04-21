@@ -3,6 +3,14 @@ name: Release Please
 on:
   push:
     branches: [pdig]
+  workflow_dispatch:
+    inputs:
+      force_publish:
+        description: "Force publish current pdig HEAD to npm (recovery only)"
+        required: false
+        default: "false"
+        type: choice
+        options: ["false", "true"]
 
 permissions:
   contents: write
@@ -10,6 +18,7 @@ permissions:
 
 jobs:
   release-please:
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     outputs:
       release_created: ${{ steps.release.outputs.release_created }}
@@ -22,7 +31,11 @@ jobs:
 
   publish:
     needs: release-please
-    if: needs.release-please.outputs.release_created == 'true'
+    if: |
+      always() && (
+        needs.release-please.outputs.release_created == 'true' ||
+        (github.event_name == 'workflow_dispatch' && inputs.force_publish == 'true')
+      )
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -36,8 +49,16 @@ jobs:
           cache: npm
           registry-url: "https://registry.npmjs.org"
 
-      # Trusted Publishing requires npm >= 11.5.1 (Node 22 ships with npm 10.x)
-      - run: npm install -g npm@latest
+      # Trusted Publishing requires npm >= 11.5.1. Node 22 bundles npm 10.x,
+      # so we must upgrade. Installing into a separate prefix sidesteps the
+      # in-place self-upgrade race that corrupts the bundled npm and triggers
+      # "Cannot find module 'promise-retry'" on the next invocation.
+      - name: Install npm >= 11.5.1
+        run: |
+          npm install -g --prefix="$HOME/.npm-global" npm@latest
+          echo "$HOME/.npm-global/bin" >> "$GITHUB_PATH"
+
+      - run: npm --version
 
       - run: npm ci
 

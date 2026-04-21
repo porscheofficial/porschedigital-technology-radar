@@ -72,7 +72,7 @@ data/
   config.json        User config overrides
   config.default.json  Default config (DO NOT edit for customization)
   about.md / about.json  About page content
-  data.json          Generated (gitignored) — run `npm run build:data`
+  data.json          Generated (gitignored) — run `pnpm run build:data`
 
 scripts/             Build-time scripts (buildData.ts, validateFrontmatter.ts, positioner.ts, errorHandler.ts)
 bin/                 CLI entry point (techradar.ts — citty + consola + execa + chokidar)
@@ -103,40 +103,40 @@ Shared between `Radar` and `QuadrantRadar`. Manages tooltip positioning, visibil
 ## Commands
 
 ```bash
-npm run dev            # Dev server (portless)
-npm run build          # Full static build → out/
-npm run build:data     # Rebuild data/data.json from markdown
-npm run build:icons    # Rebuild Icons/ from src/icons/ SVGs
-npm run validate       # Validate frontmatter (Zod schema)
-npm run lint           # Biome check (lint + format)
-npm run lint:fix       # Biome check --write (auto-fix)
-npm run format         # Biome format --write
-npm run test           # Vitest run (all tests)
-npm run test:watch     # Vitest watch mode
-npm run test:coverage  # Vitest with coverage
+pnpm run dev            # Dev server (portless)
+pnpm run build          # Full static build → out/
+pnpm run build:data     # Rebuild data/data.json from markdown
+pnpm run build:icons    # Rebuild Icons/ from src/icons/ SVGs
+pnpm run validate       # Validate frontmatter (Zod schema)
+pnpm run lint           # Biome check (lint + format)
+pnpm run lint:fix       # Biome check --write (auto-fix)
+pnpm run format         # Biome format --write
+pnpm run test           # Vitest run (all tests)
+pnpm run test:watch     # Vitest watch mode
+pnpm run test:coverage  # Vitest with coverage
 ```
 
 ### Verification (run after any code change)
 
 ```bash
-npm run lint           # 0 errors, 0 warnings
+pnpm run lint           # 0 errors, 0 warnings
 npx tsc --noEmit       # 0 errors
-npm run test           # All pass
-npm run build          # Static export succeeds
+pnpm run test           # All pass
+pnpm run build          # Static export succeeds
 ```
 
 ## Definition of Done
 
 **Every code change is incomplete until ALL of the following pass:**
 
-1. `npm run lint` — 0 errors, 0 warnings
+1. `pnpm run lint` — 0 errors, 0 warnings
 2. `npx tsc --noEmit` — 0 type errors
-3. `npm run test` — all pass, no skipped tests (includes architecture invariants)
-4. `npm run check:arch` — architecture invariants hold (see "Steering Harness" below)
-5. `npm run check:sec` — security invariants hold (see "Steering Harness" below)
-6. `npm run check:quality` — clean-code invariants hold (see "Steering Harness" below)
-7. `npm run check:a11y` — accessibility invariants hold (see "Steering Harness" below)
-8. `npm run build` — static export succeeds
+3. `pnpm run test` — all pass, no skipped tests (includes architecture invariants)
+4. `pnpm run check:arch` — architecture invariants hold (see "Steering Harness" below)
+5. `pnpm run check:sec` — security invariants hold (see "Steering Harness" below)
+6. `pnpm run check:quality` — clean-code invariants hold (see "Steering Harness" below)
+7. `pnpm run check:a11y` — accessibility invariants hold (see "Steering Harness" below)
+8. `pnpm run build` — static export succeeds
 
 ## Steering Harness
 
@@ -152,46 +152,46 @@ This repo runs a five-arm steering harness for agent work:
 - `scripts/AGENTS.md` — Build-time tooling, schema↔README invariant
 - `data/AGENTS.md` — Frontmatter, config, wiki links
 
-**Feedback (source-only)** — `npm run check:arch` enforces the same rules without needing a build:
+**Feedback (source-only)** — `pnpm run check:arch` enforces the same rules without needing a build:
 
-- `npm run check:arch:depcruise` — dependency-cruiser (`.dependency-cruiser.cjs`): import-graph rules (data accessor, no `next/image`, no CSS-in-JS, no runtime fetching, no Next server APIs (`next/headers|cache|server`, `server-only`), app-router scope, no cross-page imports, no cycles). **Ban-rule patterns match resolved paths under `node_modules/...`, not bare specifiers** — see the banner comment in `.dependency-cruiser.cjs` before adding new bans.
-- `npm run check:arch:eslint` — ESLint flat config (`eslint.config.mjs`, lint-only): bans `as any` / `@ts-ignore`, requires `assetUrl()` for absolute URLs, restricts `dangerouslySetInnerHTML` to `SafeHtml.tsx`. Also runs `@next/eslint-plugin-next` (recommended set, with `no-img-element` and `no-html-link-for-pages` disabled — see ADR-0003 and the header of `eslint.config.mjs`).
-- `npm run check:arch:readme` — `scripts/checkConfigReadmeSync.ts`: every `data/config.default.json` leaf key and every Zod field in `validateFrontmatter.ts` must appear in `README.md`.
-- `npm run check:arch:doccoverage` — `scripts/checkDocCoverage.ts`: every `(Checked: …)` reference inside any `AGENTS.md` must point at a real dep-cruiser rule, architecture test, eslint rule, or npm script. Catches stale citations when rules get renamed or removed.
-- `npm run check:arch:wikilinks` — `scripts/checkWikiLinks.ts`: walks every `data/radar/**/*.md` and asserts every `[[id]]` / `[[id|label]]` resolves to a known blip via `preScanBlipLookup`. Source-only and side-effect-free: `scripts/buildData.ts` guards its `main()` with `if (require.main === module)` so importing the lookup doesn't trigger a full data build. See ADR-0012.
+- `pnpm run check:arch:depcruise` — dependency-cruiser (`.dependency-cruiser.cjs`): import-graph rules (data accessor, no `next/image`, no CSS-in-JS, no runtime fetching, no Next server APIs (`next/headers|cache|server`, `server-only`), app-router scope, no cross-page imports, no cycles). **Ban-rule patterns match resolved paths under `node_modules/...`, not bare specifiers** — see the banner comment in `.dependency-cruiser.cjs` before adding new bans.
+- `pnpm run check:arch:eslint` — ESLint flat config (`eslint.config.mjs`, lint-only): bans `as any` / `@ts-ignore`, requires `assetUrl()` for absolute URLs, restricts `dangerouslySetInnerHTML` to `SafeHtml.tsx`. Also runs `@next/eslint-plugin-next` (recommended set, with `no-img-element` and `no-html-link-for-pages` disabled — see ADR-0003 and the header of `eslint.config.mjs`).
+- `pnpm run check:arch:readme` — `scripts/checkConfigReadmeSync.ts`: every `data/config.default.json` leaf key and every Zod field in `validateFrontmatter.ts` must appear in `README.md`.
+- `pnpm run check:arch:doccoverage` — `scripts/checkDocCoverage.ts`: every `(Checked: …)` reference inside any `AGENTS.md` must point at a real dep-cruiser rule, architecture test, eslint rule, or npm script. Catches stale citations when rules get renamed or removed.
+- `pnpm run check:arch:wikilinks` — `scripts/checkWikiLinks.ts`: walks every `data/radar/**/*.md` and asserts every `[[id]]` / `[[id|label]]` resolves to a known blip via `preScanBlipLookup`. Source-only and side-effect-free: `scripts/buildData.ts` guards its `main()` with `if (require.main === module)` so importing the lookup doesn't trigger a full data build. See ADR-0012.
 - `src/__tests__/architecture/architecture.test.ts` — fs-based invariants: no `.test.tsx` in `src/pages/`, `src/app/` only contains `sitemap.ts`, component folder shape, no `pages/api`, no `middleware.ts`.
 
-**Feedback (build-output)** — `npm run check:build` validates the static export in `out/`. Run after `npm run build`:
+**Feedback (build-output)** — `pnpm run check:build` validates the static export in `out/`. Run after `pnpm run build`:
 
-- `npm run check:build:routes` — `scripts/checkBuildOutput.ts`: asserts every expected route file exists in `out/` (statics, quadrant indexes, item pages from `data.json`). Closes the static-export contract: no silent route drops.
-- `npm run check:build:links` — `linkinator` (config in `linkinator.config.json`): crawls the built site from `out/index.html` and fails on broken internal links. External URLs are skipped via the `^https?://(?!localhost)` pattern.
-- `npm run check:build:budget` — `scripts/checkBundleBudget.ts`: walks `out/_next/static/` and asserts total JS, total CSS, and per-chunk sizes stay under the caps in `bundle-budget.json`. Bumping the budget is a deliberate, diffable act — see ADR-0005.
-- `npm run check:build:html` — `scripts/checkHtmlValidate.ts` + `.htmlvalidate.json`: runs `html-validate` against `out/**/*.html`. Catches structural HTML errors (unclosed tags, duplicate ids, mismatched nesting) and markdown-layer escapes that bypass the source sanitizer. The disabled-rule set is curated for Next.js / React / PDS framework output; WCAG checks are deferred to a future real-browser a11y arm. Wrapper uses `node:child_process` `spawnSync` (execa 9 fails on Node 25 + tsx). See ADR-0014.
+- `pnpm run check:build:routes` — `scripts/checkBuildOutput.ts`: asserts every expected route file exists in `out/` (statics, quadrant indexes, item pages from `data.json`). Closes the static-export contract: no silent route drops.
+- `pnpm run check:build:links` — `linkinator` (config in `linkinator.config.json`): crawls the built site from `out/index.html` and fails on broken internal links. External URLs are skipped via the `^https?://(?!localhost)` pattern.
+- `pnpm run check:build:budget` — `scripts/checkBundleBudget.ts`: walks `out/_next/static/` and asserts total JS, total CSS, and per-chunk sizes stay under the caps in `bundle-budget.json`. Bumping the budget is a deliberate, diffable act — see ADR-0005.
+- `pnpm run check:build:html` — `scripts/checkHtmlValidate.ts` + `.htmlvalidate.json`: runs `html-validate` against `out/**/*.html`. Catches structural HTML errors (unclosed tags, duplicate ids, mismatched nesting) and markdown-layer escapes that bypass the source sanitizer. The disabled-rule set is curated for Next.js / React / PDS framework output; WCAG checks are deferred to a future real-browser a11y arm. Wrapper uses `node:child_process` `spawnSync` (execa 9 fails on Node 25 + tsx). See ADR-0014.
 
-**Feedback (security)** — `npm run check:sec` enforces the security invariants. See ADR-0006 for the full rationale.
+**Feedback (security)** — `pnpm run check:sec` enforces the security invariants. See ADR-0006 for the full rationale.
 
-- `npm run check:sec:sanitize` — `scripts/checkSanitize.ts`: asserts `rehype-sanitize` is imported and runs immediately after `remarkRehype` in `scripts/buildData.ts`, and that `allowDangerousHtml: true` appears nowhere in the file. Companion XSS regression suite in `scripts/__tests__/sanitize.test.ts` feeds `<script>`, `<iframe>`, inline event handlers, and `javascript:` URIs through the real pipeline. Two-layer defense: `remarkRehype` is called without `allowDangerousHtml`, and `rehypeSanitize` strips anything that slips through.
-- `npm run check:sec:deps` — `osv-scanner --lockfile=package-lock.json`: queries the public OSV.dev database for known CVEs in the npm graph. **Requires `osv-scanner` on PATH** (`brew install osv-scanner`). CI uses `google/osv-scanner-action`.
-- `npm run check:sec:secrets` — `trufflehog git file://. --no-update --fail --results=verified,unknown`: scans git history for committed secrets and API tokens, verifying matches against the live API of each provider. **Requires `trufflehog` on PATH** (`brew install trufflehog`). CI uses `trufflesecurity/trufflehog`. See ADR-0011 for the rationale (replaces gitleaks per ADR-0006 to avoid the gitleaks-action license gate).
-- `npm run check:sec:licenses` — `license-checker-rseidelsohn --production --excludePackages '<self>' --failOn 'GPL;AGPL;LGPL;SSPL;BUSL;CC-BY-NC'`: walks production dependencies and fails on copyleft (GPL/AGPL/LGPL), source-availability (SSPL/BUSL), and non-commercial (CC-BY-NC) license families. `--production` excludes devDependencies (build-time tools don't ship to users). `--excludePackages` skips the project's own self-listing — string must follow `package.json` version bumps. See ADR-0013.
+- `pnpm run check:sec:sanitize` — `scripts/checkSanitize.ts`: asserts `rehype-sanitize` is imported and runs immediately after `remarkRehype` in `scripts/buildData.ts`, and that `allowDangerousHtml: true` appears nowhere in the file. Companion XSS regression suite in `scripts/__tests__/sanitize.test.ts` feeds `<script>`, `<iframe>`, inline event handlers, and `javascript:` URIs through the real pipeline. Two-layer defense: `remarkRehype` is called without `allowDangerousHtml`, and `rehypeSanitize` strips anything that slips through.
+- `pnpm run check:sec:deps` — `osv-scanner --lockfile=pnpm-lock.yaml`: queries the public OSV.dev database for known CVEs in the npm graph. **Requires `osv-scanner` on PATH** (`brew install osv-scanner`). CI uses `google/osv-scanner-action`.
+- `pnpm run check:sec:secrets` — `trufflehog git file://. --no-update --fail --results=verified,unknown`: scans git history for committed secrets and API tokens, verifying matches against the live API of each provider. **Requires `trufflehog` on PATH** (`brew install trufflehog`). CI uses `trufflesecurity/trufflehog`. See ADR-0011 for the rationale (replaces gitleaks per ADR-0006 to avoid the gitleaks-action license gate).
+- `pnpm run check:sec:licenses` — `license-checker-rseidelsohn --production --excludePackages '<self>' --failOn 'GPL;AGPL;LGPL;SSPL;BUSL;CC-BY-NC'`: walks production dependencies and fails on copyleft (GPL/AGPL/LGPL), source-availability (SSPL/BUSL), and non-commercial (CC-BY-NC) license families. `--production` excludes devDependencies (build-time tools don't ship to users). `--excludePackages` skips the project's own self-listing — string must follow `package.json` version bumps. See ADR-0013.
 
 `osv-scanner` and `trufflehog` are deliberately NOT in `devDependencies` — they are Go binaries with no useful npm wrapper. CI runs the official actions; local devs install via Homebrew. Without them installed, the `:deps` and `:secrets` sensors exit with `command not found`. The `:sanitize` sensor needs no extra binary and is the primary local feedback loop.
 
 Plus an advisory (non-gating) workflow: `.github/workflows/scorecard.yml` runs OpenSSF Scorecard weekly and uploads SARIF to GitHub's code-scanning UI.
 
-**Feedback (clean-code)** — `npm run check:quality` enforces clean-code invariants. See ADR-0007 for the full rationale.
+**Feedback (clean-code)** — `pnpm run check:quality` enforces clean-code invariants. See ADR-0007 for the full rationale.
 
-- `npm run check:quality:knip` — [knip](https://knip.dev/): detects unused files, unused exports, unused dependencies, and unlisted dependencies/binaries. Config in `knip.json` (entry points, project glob, `ignoreBinaries` for `osv-scanner` and `trufflehog` which are system binaries per ADR-0006 / ADR-0011). Fail the build on any finding — the correct response is either to delete the dead code, declare the dep, or widen the ignore list with a justifying commit.
-- `npm run check:quality:jscpd` — [jscpd](https://github.com/kucherenko/jscpd): copy-paste / clone detector. Config in `.jscpd.json` (scope `src/` + `scripts/`, min-tokens 70, threshold 3%, ignores tests + SCSS modules + generated icons). The 3% ceiling allows the documented `Radar` ↔ `QuadrantRadar` mirror to stand and trips on new significant duplication. See ADR-0008 for the rationale and rejected alternatives.
-- `npm run check:quality:naming` — Biome `style/useNamingConvention` (config in `biome.jsonc`): enforces PascalCase for types/components/enums and camelCase for variables/functions/parameters across `src/` and `scripts/`. `strictCase: false` allows externally-dictated names (`PText`, `getXYPosition`, `JSON`, `IP`); test files are exempted via override since mock factories must mirror real PascalCase exports verbatim. Sensor uses `--only=` + `--diagnostic-level=error` to scope failures to source code while keeping test infos quiet. See ADR-0009.
-- `npm run check:quality:sonar` — [eslint-plugin-sonarjs](https://github.com/SonarSource/SonarJS): code-smell detector run through a dedicated flat config (`sonar.eslint.config.mjs`) so smell findings stay separate from `check:arch:eslint`'s architectural bans. Uses the `recommended` preset (~200 syntactic rules — cognitive complexity, dead stores, nested ternaries/functions, regex-injection, prototype pollution). Three rules disabled with rationale: `slow-regex` (build-time on trusted markdown), `pseudo-random` (visual blip jitter), `redundant-type-aliases` (intentional domain aliases). Two real smells suppressed per-line with `eslint-disable-next-line` citing the ADR. The architectural ESLint config loads the sonarjs plugin without enabling rules and sets `reportUnusedDisableDirectives: "off"` so per-line disables don't fail the arch arm. See ADR-0010.
-- `npm run check:quality:coverage` — `vitest run --coverage` with v8-provider thresholds in `vitest.config.ts` (lines 55, statements 55, branches 55, functions 60). Floors are set at the current measured baseline, not aspirational — bumping a floor is a deliberate diffable act per ADR-0008's anti-aspirational pattern. Vitest applies thresholds only when `--coverage` is enabled, so `npm test` (without coverage) is unaffected. See ADR-0015.
-- `npm run check:quality:spell` — [cspell](https://cspell.org/) on `**/*.md` only. Both `en` and `en-US` are accepted languages. Project-specific terms live in `cspell-words.txt`; generated content (`out/`, lock files, JSON, SVG, generated `Icons/`, `data/data.json`) and externally-authored radar items (`data/radar/**`) are excluded via `.cspell.json` `ignorePaths`. When a new ADR or HARNESS update introduces a new technical term, the gate fires; resolution is to add the term to `cspell-words.txt` in the same PR. See ADR-0016.
+- `pnpm run check:quality:knip` — [knip](https://knip.dev/): detects unused files, unused exports, unused dependencies, and unlisted dependencies/binaries. Config in `knip.json` (entry points, project glob, `ignoreBinaries` for `osv-scanner` and `trufflehog` which are system binaries per ADR-0006 / ADR-0011). Fail the build on any finding — the correct response is either to delete the dead code, declare the dep, or widen the ignore list with a justifying commit.
+- `pnpm run check:quality:jscpd` — [jscpd](https://github.com/kucherenko/jscpd): copy-paste / clone detector. Config in `.jscpd.json` (scope `src/` + `scripts/`, min-tokens 70, threshold 3%, ignores tests + SCSS modules + generated icons). The 3% ceiling allows the documented `Radar` ↔ `QuadrantRadar` mirror to stand and trips on new significant duplication. See ADR-0008 for the rationale and rejected alternatives.
+- `pnpm run check:quality:naming` — Biome `style/useNamingConvention` (config in `biome.jsonc`): enforces PascalCase for types/components/enums and camelCase for variables/functions/parameters across `src/` and `scripts/`. `strictCase: false` allows externally-dictated names (`PText`, `getXYPosition`, `JSON`, `IP`); test files are exempted via override since mock factories must mirror real PascalCase exports verbatim. Sensor uses `--only=` + `--diagnostic-level=error` to scope failures to source code while keeping test infos quiet. See ADR-0009.
+- `pnpm run check:quality:sonar` — [eslint-plugin-sonarjs](https://github.com/SonarSource/SonarJS): code-smell detector run through a dedicated flat config (`sonar.eslint.config.mjs`) so smell findings stay separate from `check:arch:eslint`'s architectural bans. Uses the `recommended` preset (~200 syntactic rules — cognitive complexity, dead stores, nested ternaries/functions, regex-injection, prototype pollution). Three rules disabled with rationale: `slow-regex` (build-time on trusted markdown), `pseudo-random` (visual blip jitter), `redundant-type-aliases` (intentional domain aliases). Two real smells suppressed per-line with `eslint-disable-next-line` citing the ADR. The architectural ESLint config loads the sonarjs plugin without enabling rules and sets `reportUnusedDisableDirectives: "off"` so per-line disables don't fail the arch arm. See ADR-0010.
+- `pnpm run check:quality:coverage` — `vitest run --coverage` with v8-provider thresholds in `vitest.config.ts` (lines 55, statements 55, branches 55, functions 60). Floors are set at the current measured baseline, not aspirational — bumping a floor is a deliberate diffable act per ADR-0008's anti-aspirational pattern. Vitest applies thresholds only when `--coverage` is enabled, so `pnpm test` (without coverage) is unaffected. See ADR-0015.
+- `pnpm run check:quality:spell` — [cspell](https://cspell.org/) on `**/*.md` only. Both `en` and `en-US` are accepted languages. Project-specific terms live in `cspell-words.txt`; generated content (`out/`, lock files, JSON, SVG, generated `Icons/`, `data/data.json`) and externally-authored radar items (`data/radar/**`) are excluded via `.cspell.json` `ignorePaths`. When a new ADR or HARNESS update introduces a new technical term, the gate fires; resolution is to add the term to `cspell-words.txt` in the same PR. See ADR-0016.
 
-**Feedback (a11y)** — `npm run check:a11y` enforces the accessibility invariants. See ADR-0018 for the full rationale.
+**Feedback (a11y)** — `pnpm run check:a11y` enforces the accessibility invariants. See ADR-0018 for the full rationale.
 
-- `npm run check:a11y:source` — [eslint-plugin-jsx-a11y](https://github.com/jsx-eslint/eslint-plugin-jsx-a11y) via a dedicated flat config (`a11y.eslint.config.mjs`) so a11y findings stay separate from `check:arch:eslint`'s architectural bans (mirrors the `sonar.eslint.config.mjs` split per ADR-0010). Runs the `recommended` ruleset against `src/**/*.{jsx,tsx}` to catch source-level a11y mistakes (missing `alt`, invalid ARIA, label-control associations, keyboard-handler pairing).
-- `npm run check:a11y:axe` — `scripts/checkA11y.ts`: walks every `out/**/*.html` and runs [axe-core](https://github.com/dequelabs/axe-core) inside a `jsdom` window. Fails on `serious` and `critical` impact only; lower severities are reported as info and do not block. A small set of axe rules is disabled at the sensor level with inline rationale (e.g. `color-contrast` needs a real browser, `landmark-one-main`/`region`/`page-has-heading-one` produce noise on PDS shells pre-hydration per ADR-0014). The thresholds are anti-aspirational per ADR-0008/0015 — bumping the policy is a deliberate diffable act.
+- `pnpm run check:a11y:source` — [eslint-plugin-jsx-a11y](https://github.com/jsx-eslint/eslint-plugin-jsx-a11y) via a dedicated flat config (`a11y.eslint.config.mjs`) so a11y findings stay separate from `check:arch:eslint`'s architectural bans (mirrors the `sonar.eslint.config.mjs` split per ADR-0010). Runs the `recommended` ruleset against `src/**/*.{jsx,tsx}` to catch source-level a11y mistakes (missing `alt`, invalid ARIA, label-control associations, keyboard-handler pairing).
+- `pnpm run check:a11y:axe` — `scripts/checkA11y.ts`: walks every `out/**/*.html` and runs [axe-core](https://github.com/dequelabs/axe-core) inside a `jsdom` window. Fails on `serious` and `critical` impact only; lower severities are reported as info and do not block. A small set of axe rules is disabled at the sensor level with inline rationale (e.g. `color-contrast` needs a real browser, `landmark-one-main`/`region`/`page-has-heading-one` produce noise on PDS shells pre-hydration per ADR-0014). The thresholds are anti-aspirational per ADR-0008/0015 — bumping the policy is a deliberate diffable act.
 
 When a check fails, read its rule's `comment` (dep-cruiser) or message (ESLint/scripts) — each cites the AGENTS.md doc that explains why.
 
@@ -223,7 +223,7 @@ MANDATORY: Every code change that adds or modifies logic MUST include correspond
 - Lib tests: `src/lib/__tests__/[name].test.ts`
 - Hook tests: `src/hooks/__tests__/[name].test.ts`
 
-NEVER mark a task complete if `npm run test` fails.
+NEVER mark a task complete if `pnpm run test` fails.
 NEVER skip writing tests by saying "tests can be added later."
 
 ## Conventions
@@ -257,7 +257,7 @@ If the harness gains an inferential sensor (skill, LLM judge), update Section 7 
 
 - 2-space indent, 80-char line width, double quotes, semicolons, trailing commas
 - `organizeImports: "on"` — Biome sorts imports automatically
-- Run `npm run lint:fix` before committing (also runs via lint-staged)
+- Run `pnpm run lint:fix` before committing (also runs via lint-staged)
 
 ### Commits
 
@@ -289,8 +289,8 @@ Conventional commits enforced by commitlint. Allowed types:
 ## Pitfalls
 
 1. **Page tests must NOT live in `src/pages/`** — Turbopack treats any `.tsx` in pages as a route. Put them in `src/__tests__/pages/`.
-2. **Icons are gitignored and auto-generated** — `npm run build:icons` or `postinstall` rebuilds them. Never edit `src/components/Icons/` manually.
-3. **`data/data.json` is gitignored** — must run `npm run build:data` after changing any `data/radar/**/*.md` files.
+2. **Icons are gitignored and auto-generated** — `pnpm run build:icons` or `postinstall` rebuilds them. Never edit `src/components/Icons/` manually.
+3. **`data/data.json` is gitignored** — must run `pnpm run build:data` after changing any `data/radar/**/*.md` files.
 4. **PostCSS config is CJS** — `postcss.config.js` uses `require()`. Vitest overrides it with empty config to avoid plugin resolution issues.
 5. **Date strings need `T00:00:00` suffix** — `toSafeDate()` in `format.ts` handles this. Raw date strings like `"2024-03"` parsed without the suffix will shift timezones.
 6. **Config deep-merge is manual** — only `colors`, `labels`, and `toggles` keys are deep-merged between `config.default.json` and `config.json`. Other keys are shallow-replaced.

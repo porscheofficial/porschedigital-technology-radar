@@ -28,7 +28,7 @@ ComponentName/
 ## Imports
 
 - Use the `@/*` path alias, never deep relative paths like `../../../lib/...`. (Checked: `.dependency-cruiser.cjs` → `no-deep-relative-imports` (warn).)
-- Auto-generated icons live in `Icons/` — never edit by hand. Run `npm run build:icons` to rebuild from `src/icons/`.
+- Auto-generated icons live in `Icons/` — never edit by hand. Run `pnpm run build:icons` to rebuild from `src/icons/`.
 
 ## Anatomy
 

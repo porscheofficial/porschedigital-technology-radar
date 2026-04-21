@@ -39,9 +39,9 @@ authentication surface of its own. The threat model focuses on:
    reaching the rendered HTML. Mitigated by `rehype-sanitize` (see
    `docs/decisions/0006-security-harness.md`).
 2. **Supply chain** — dependencies and GitHub Actions. Mitigated by:
-   - `osv-scanner` (npm CVEs) — `npm run check:sec:deps`.
-   - `trufflehog` (committed secrets) — `npm run check:sec:secrets`.
-   - `license-checker` (license-family policy) — `npm run check:sec:licenses`.
+   - `osv-scanner` (npm CVEs) — `pnpm run check:sec:deps`.
+   - `trufflehog` (committed secrets) — `pnpm run check:sec:secrets`.
+   - `license-checker` (license-family policy) — `pnpm run check:sec:licenses`.
    - All GitHub Actions pinned to commit SHAs
      (see `docs/decisions/0017-pin-actions-and-tighten-tokens.md`).
 3. **Hosting** — the static output runs under a configurable `basePath` on

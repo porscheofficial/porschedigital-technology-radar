@@ -5,7 +5,7 @@ Tests that **must not** sit next to source land here.
 ## Why this directory exists
 
 - **`src/__tests__/pages/`** — Page tests. They cannot live in `src/pages/` because Turbopack treats every `.tsx` in `pages/` as a route.
-- **`src/__tests__/architecture/`** — The architecture invariants test (`architecture.test.ts`). This is half of the feedback arm of the steering harness; the other half is `npm run check:arch` (dependency-cruiser + ESLint + README sync).
+- **`src/__tests__/architecture/`** — The architecture invariants test (`architecture.test.ts`). This is half of the feedback arm of the steering harness; the other half is `pnpm run check:arch` (dependency-cruiser + ESLint + README sync).
 
 ## Conventions
 

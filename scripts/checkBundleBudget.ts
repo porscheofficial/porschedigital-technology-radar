@@ -7,7 +7,7 @@ const staticDir = join(root, "out", "_next", "static");
 
 if (!existsSync(staticDir)) {
   consola.error(
-    "out/_next/static/ does not exist. Run `npm run build` before `npm run check:build`.",
+    "out/_next/static/ does not exist. Run `pnpm run build` before `pnpm run check:build`.",
   );
   process.exit(1);
 }

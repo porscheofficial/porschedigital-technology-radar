@@ -47,7 +47,7 @@ const outDir = path.join(root, "out");
 
 if (!existsSync(outDir)) {
   consola.error(
-    "out/ does not exist. Run `npm run build` before `npm run check:a11y:axe`.",
+    "out/ does not exist. Run `pnpm run build` before `pnpm run check:a11y:axe`.",
   );
   process.exit(1);
 }

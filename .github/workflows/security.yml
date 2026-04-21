@@ -26,7 +26,7 @@ jobs:
       - uses: google/osv-scanner-action/osv-scanner-action@e69cc6c86b31f1e7e23935bbe7031b50e51082de # v2.0.2
         with:
           scan-args: |-
-            --lockfile=package-lock.json
+            --lockfile=pnpm-lock.yaml
             --format=table
 
   secrets:
@@ -51,10 +51,11 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
-          cache: npm
-      - run: npm ci
-      - run: npm run check:sec:sanitize
-      - run: npx vitest run scripts/__tests__/sanitize.test.ts
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run check:sec:sanitize
+      - run: pnpm exec vitest run scripts/__tests__/sanitize.test.ts

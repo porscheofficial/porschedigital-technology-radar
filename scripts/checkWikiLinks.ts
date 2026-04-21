@@ -8,7 +8,7 @@
 //
 // Idempotent — does not write any files. Safe to wire into `check:arch`.
 //
-// Why a separate script (not just `npm run build:data -- --strict`):
+// Why a separate script (not just `pnpm run build:data -- --strict`):
 //   - check:arch must be source-only (no build-output side effects). A
 //     sensor that mutates data/data.json violates the four-arm separation
 //     documented in docs/HARNESS.md §2.

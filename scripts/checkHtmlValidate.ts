@@ -16,7 +16,7 @@ const binPath = path.join(root, "node_modules/.bin/html-validate");
 
 if (!existsSync(outDir)) {
   consola.error(
-    "out/ does not exist. Run `npm run build` before `npm run check:build:html`.",
+    "out/ does not exist. Run `pnpm run build` before `pnpm run check:build:html`.",
   );
   process.exit(1);
 }

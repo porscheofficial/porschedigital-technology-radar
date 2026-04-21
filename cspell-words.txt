@@ -640,3 +640,8 @@ unreviewable
 analyse
 Pysa
 recognises
+worktree
+worktrees
+footgun
+realpath
+lockfiles

@@ -10,7 +10,7 @@
 //   `.dependency-cruiser.cjs` → `<rule-name>`
 //   `architecture.test.ts`    → `<test-id>`        (matches `it("<id>: …")`)
 //   `eslint.config.mjs`        → `<rule-name>`      (or bare file ref — file existence)
-//   `npm run <script-name>`
+//   `pnpm run <script-name>`
 //   `<bare-identifier>`                            (resolves against any of the above)
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -57,7 +57,7 @@ const errors: string[] = [];
 const checkedRe = /\(Checked:\s*([^)]+?)\)/g;
 const fileArrowRe =
   /`(\.?[\w./-]+\.(?:cjs|js|ts|tsx))`\s*(?:→|->)\s*`([^`]+)`/g;
-const npmRe = /`npm run ([\w:-]+)`/g;
+const npmRe = /`pnpm run ([\w:-]+)`/g;
 const bareRe = /`([a-z][a-z0-9-]+)`/g;
 const knownFiles = new Set([
   ".dependency-cruiser.cjs",
@@ -93,7 +93,7 @@ for (const file of agentsFiles) {
     for (const a of body.matchAll(npmRe)) {
       resolved = true;
       if (!npmScripts.has(a[1])) {
-        errors.push(`${rel}: missing npm script \`${a[1]}\``);
+        errors.push(`${rel}: missing pnpm script \`${a[1]}\``);
       }
     }
 
@@ -122,7 +122,7 @@ if (errors.length) {
   for (const e of errors) consola.error(`  • ${e}`);
   consola.info(
     "Each (Checked: …) reference in AGENTS.md must point at a live rule, " +
-      "test, eslint rule, or npm script. Update the doc or revive the rule.",
+      "test, eslint rule, or pnpm script. Update the doc or revive the rule.",
   );
   process.exit(1);
 }

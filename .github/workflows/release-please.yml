@@ -49,16 +49,24 @@ jobs:
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
+      - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
-          cache: npm
+          cache: pnpm
           registry-url: "https://registry.npmjs.org"
 
-      # Trusted Publishing requires npm >= 11.5.1. Node 22 bundles npm 10.x,
-      # so we must upgrade. Installing into a separate prefix sidesteps the
-      # in-place self-upgrade race that corrupts the bundled npm and triggers
-      # "Cannot find module 'promise-retry'" on the next invocation.
+      # Trusted Publishing requires npm >= 11.5.1 for `npm publish` with OIDC.
+      # Node 22 bundles npm 10.x, so we must upgrade. Installing into a
+      # separate prefix sidesteps the in-place self-upgrade race that corrupts
+      # the bundled npm and triggers "Cannot find module 'promise-retry'" on
+      # the next invocation.
+      #
+      # We deliberately keep `npm publish` (not `pnpm publish`) for the
+      # publish step: pnpm publish forwards to npm under the hood and the
+      # OIDC Trusted Publishing flow is documented against npm@>=11.5.1.
+      # Installing dependencies still uses pnpm (see ADR-0019).
       #
       # The npm version is pinned (not @latest) to satisfy OpenSSF Scorecard
       # PinnedDependenciesID for npmCommand. Bump deliberately when needed.
@@ -70,6 +78,6 @@ jobs:
 
       - run: npm --version
 
-      - run: npm ci
+      - run: pnpm install --frozen-lockfile
 
       - run: npm publish

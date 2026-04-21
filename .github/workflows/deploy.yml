@@ -27,16 +27,20 @@ jobs:
       # comment records the human-readable tag at pin time. See ADR-0017.
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
+      # Corepack-managed pnpm. Version comes from `packageManager` in
+      # package.json. See ADR-0019.
+      - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
-          cache: npm
+          cache: pnpm
 
-      - run: npm ci
+      - run: pnpm install --frozen-lockfile
 
-      - run: npm run build:data
+      - run: pnpm run build:data
 
-      - run: npm run build
+      - run: pnpm run build
 
       - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
         with:

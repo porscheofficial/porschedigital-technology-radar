@@ -497,9 +497,9 @@ To work on the radar generator itself:
 ```bash
 git clone https://github.com/porscheofficial/porschedigital-technology-radar.git
 cd porschedigital-technology-radar
-npm install           # Also runs postinstall → build:icons
-npm run build:data    # Parse Markdown files into data/data.json
-npm run dev           # Start Next.js dev server
+pnpm install          # Also runs postinstall → build:icons
+pnpm run build:data   # Parse Markdown files into data/data.json
+pnpm run dev          # Start Next.js dev server
 ```
 
 The build pipeline:
@@ -508,7 +508,7 @@ The build pipeline:
 2. `build:data` — parses `radar/` Markdown files into `data/data.json` and `data/about.json`
 3. `next build` — builds the static site into `out/`
 
-The `npm run build` command runs all three steps in sequence.
+The `pnpm run build` command runs all three steps in sequence.
 
 ### Strict mode
 
@@ -524,7 +524,7 @@ npx techradar --strict dev
 **This repository** (development):
 
 ```bash
-npm run build:data -- --strict
+pnpm run build:data --strict
 ```
 
 In strict mode, the build fails on:

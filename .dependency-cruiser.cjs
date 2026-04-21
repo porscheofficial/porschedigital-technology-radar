@@ -128,6 +128,16 @@ module.exports = {
     // letting the dependency edge itself be evaluated against rules.
     doNotFollow: { path: "node_modules" },
     tsConfig: { fileName: "tsconfig.json" },
+    // pnpm puts real package files at
+    //   node_modules/.pnpm/<pkg>@<ver>/node_modules/<pkg>/...
+    // and the root `node_modules/<pkg>` is a symlink to that location.
+    // Without `preserveSymlinks` the resolver calls realpath and the
+    // resolved path becomes the `.pnpm/...` form — which the ban rules
+    // above (`^node_modules/next/image(\\.|/|$)`, etc.) would no longer
+    // match, silently neutering ADR-0003 / ADR-0006 / the runtime-fetch
+    // ban. Preserving symlinks keeps the `^node_modules/<pkg>/...` shape
+    // on both npm and pnpm layouts. See ADR-0019.
+    preserveSymlinks: true,
     enhancedResolveOptions: {
       exportsFields: ["exports"],
       conditionNames: ["import", "require", "node", "default"],

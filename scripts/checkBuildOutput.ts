@@ -7,7 +7,7 @@ const outDir = join(root, "out");
 
 if (!existsSync(outDir)) {
   consola.error(
-    "out/ does not exist. Run `npm run build` before `npm run check:build`.",
+    "out/ does not exist. Run `pnpm run build` before `pnpm run check:build`.",
   );
   process.exit(1);
 }
@@ -46,7 +46,7 @@ if (missing.length > 0) {
   consola.error(
     `${missing.length} expected route file(s) missing from out/. ` +
       "Each entry is a route promised by data.ts + getStaticPaths but not " +
-      "found in the static export. Re-run `npm run build:data && npm run build`. " +
+      "found in the static export. Re-run `pnpm run build:data && pnpm run build`. " +
       "(See src/pages/AGENTS.md → static-export contract.)",
   );
   for (const rel of missing) consola.error(`  out/${rel}`);

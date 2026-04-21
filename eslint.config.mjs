@@ -21,6 +21,7 @@
 //     `<a href={assetUrl(...)}>` (manual prefix), both compatible with
 //     output:"export"; the Next rule's pages-dir scan misreports here.
 import nextPlugin from "@next/eslint-plugin-next";
+import sonarjs from "eslint-plugin-sonarjs";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
@@ -40,7 +41,14 @@ export default tseslint.config(
       parser: tseslint.parser,
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
-    plugins: { "@typescript-eslint": tseslint.plugin },
+    linterOptions: {
+      // sonarjs disable directives live in source so they apply under the
+      // dedicated sonar config (sonar.eslint.config.mjs). The architectural
+      // arm only loads the plugin to resolve rule names — it never reports
+      // sonarjs problems, so disable directives appear "unused" here.
+      reportUnusedDisableDirectives: "off",
+    },
+    plugins: { "@typescript-eslint": tseslint.plugin, sonarjs },
     rules: {
       // 3) Forbid TS suppressions. (AGENTS.md → Hard Blocks)
       "@typescript-eslint/ban-ts-comment": [

@@ -47,11 +47,12 @@ export function Teams({
   return (
     <div className={cn(styles.teams)}>
       {allTeams.map((team) => {
-        const variant = addedTeams.includes(team)
-          ? "added"
-          : removedTeams.includes(team)
-            ? "removed"
-            : "default";
+        let variant: "added" | "removed" | "default" = "default";
+        if (addedTeams.includes(team)) {
+          variant = "added";
+        } else if (removedTeams.includes(team)) {
+          variant = "removed";
+        }
         return <Team key={team} team={team} variant={variant} />;
       })}
     </div>

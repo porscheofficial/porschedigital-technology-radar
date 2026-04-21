@@ -38,7 +38,7 @@ for (const key of configKeys) {
   if (!pattern.test(readme)) missingInReadme.push(key);
 }
 
-const schemaFieldRegex = /^\s*([a-zA-Z_][a-zA-Z0-9_]*):\s*z\.[a-zA-Z]/gm;
+const schemaFieldRegex = /^\s*([a-zA-Z_]\w*):\s*z\.[a-zA-Z]/gm;
 const schemaFields = [...frontmatter.matchAll(schemaFieldRegex)].map(
   (m) => m[1],
 );

@@ -6,7 +6,7 @@ import {
   PLinkPure,
 } from "@porsche-design-system/components-react/ssr";
 import Link from "next/link";
-import { type CSSProperties, useState } from "react";
+import { type CSSProperties, type ReactNode, useState } from "react";
 
 import { RingBadge } from "@/components/Badge/Badge";
 import { DescriptionEdit, RingChange, RingInitial } from "@/components/Icons";
@@ -238,27 +238,34 @@ function HistoryDateGroup({ revision, isFirstEntry }: HistoryDateGroupProps) {
   const isInitialEntry =
     isFirstEntry && !hasRingChange && !hasAddedTeams && !hasRemovedTeams;
 
+  let ringChangeRow: ReactNode = null;
+  if (hasRingChange) {
+    ringChangeRow = (
+      <div className={styles.changeRow}>
+        <RingChange className={styles.changeIconRing} />
+        <div className={styles.ringTransition}>
+          <RingBadge ring={previousRing} />
+          <span className={styles.ringArrow}>→</span>
+          <RingBadge ring={revision.ring} />
+        </div>
+      </div>
+    );
+  } else if (isInitialEntry) {
+    ringChangeRow = (
+      <div className={styles.changeRow}>
+        <RingInitial className={styles.changeIconRing} />
+        <RingBadge ring={revision.ring} />
+      </div>
+    );
+  }
+
   return (
     <div className={styles.dateGroup}>
       <div className={styles.dateLabel}>
         <span className={styles.dateLabelText}>{formattedDate}</span>
       </div>
       <div className={styles.changeList}>
-        {hasRingChange ? (
-          <div className={styles.changeRow}>
-            <RingChange className={styles.changeIconRing} />
-            <div className={styles.ringTransition}>
-              <RingBadge ring={previousRing} />
-              <span className={styles.ringArrow}>→</span>
-              <RingBadge ring={revision.ring} />
-            </div>
-          </div>
-        ) : isInitialEntry ? (
-          <div className={styles.changeRow}>
-            <RingInitial className={styles.changeIconRing} />
-            <RingBadge ring={revision.ring} />
-          </div>
-        ) : null}
+        {ringChangeRow}
 
         {hasBodyChange && <ExpandableDescription body={body} />}
 

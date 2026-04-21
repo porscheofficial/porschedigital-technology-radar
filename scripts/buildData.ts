@@ -222,6 +222,11 @@ export async function readMarkdownFile(
   return { id, data, body };
 }
 
+// Build-time directory walker: traverses month folders, parses each markdown
+// file, and aggregates errors. The branching is essential (per-file try/catch,
+// optional revisions, optional teams) and refactoring would fragment the
+// pipeline without reducing real complexity. See ADR-0010.
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export async function parseDirectory(
   dirPath: string,
   processor = defaultProcessor,

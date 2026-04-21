@@ -70,6 +70,7 @@ flowchart LR
             Q1["check:quality:knip<br/>(dead code + unlisted deps)"]
             Q2["check:quality:jscpd<br/>(copy-paste detection)"]
             Q3["check:quality:naming<br/>(useNamingConvention via Biome)"]
+            Q4["check:quality:sonar<br/>(eslint-plugin-sonarjs, dedicated config)"]
         end
     end
 
@@ -92,7 +93,7 @@ Every feedback rule's failure message **cites the `AGENTS.md` doc that explains 
 
 ## 3. The invariant buckets
 
-The regulator's variety. Each row is one architectural property the harness preserves; the columns show which sensor enforces it, which doc teaches it, and which phase introduced it. Eighteen buckets and counting — every time review catches a new class of issue, a row is added (see § 8).
+The regulator's variety. Each row is one architectural property the harness preserves; the columns show which sensor enforces it, which doc teaches it, and which phase introduced it. Nineteen buckets and counting — every time review catches a new class of issue, a row is added (see § 8).
 
 | #  | Invariant                                              | Feedback sensor                                                                 | Feedforward doc            | Phase |
 |----|--------------------------------------------------------|----------------------------------------------------------------------------------|----------------------------|-------|
@@ -114,16 +115,19 @@ The regulator's variety. Each row is one architectural property the harness pres
 | 16 | No dead code, unused exports, or unlisted deps         | `check:quality:knip` (`knip.json`)                                              | root `AGENTS.md`           | 6     |
 | 17 | No new significant copy-paste duplication              | `check:quality:jscpd` (`.jscpd.json`)                                           | root `AGENTS.md`           | 6     |
 | 18 | Naming conventions (PascalCase types, camelCase vars)  | `check:quality:naming` (Biome `style/useNamingConvention`)                      | root `AGENTS.md`           | 6     |
+| 19 | No high-signal code smells (cognitive complexity, nested ternaries) | `check:quality:sonar` (eslint-plugin-sonarjs, `sonar.eslint.config.mjs`) | root `AGENTS.md`           | 6     |
 
 **Notes on #12** — catches two failure modes at once: helper duplication across components (e.g. multiple components copy-pasting `stripHtml` instead of importing the canonical `@/lib/format` version) and component files accreting non-component logic. The fix is one of three: move pure helpers to `src/lib/`, convert JSX-returning helpers to PascalCase sub-components, or inline single-use render helpers as `const` arrows inside the component body.
 
 **Notes on #13–#15** — the security arm. #13 is two-layer defense: `scripts/buildData.ts` calls `remarkRehype` without `allowDangerousHtml` *and* runs `rehypeSanitize` immediately after. The sensor enforces the second layer (the first is a one-keystroke regression that the second catches). #14 and #15 use Go binaries (`osv-scanner`, `gitleaks`) deliberately *not* added to `devDependencies` — CI runs the official actions, local devs install via `brew`. See ADR-0006.
 
-**Notes on #16** — the clean-code arm opens with knip, the cheapest of four planned Phase-2 sensors (jscpd for duplication, `@typescript-eslint/naming-convention`, and the sonar successor still land as separate ADRs). `ignoreBinaries` in `knip.json` covers the `osv-scanner` / `gitleaks` system binaries so the security and clean-code arms don't fight. See ADR-0007.
+**Notes on #16** — the clean-code arm opens with knip, the cheapest of four Phase-2 sensors. The remaining three (jscpd for duplication, Biome `useNamingConvention`, and eslint-plugin-sonarjs) ship as separate ADRs. `ignoreBinaries` in `knip.json` covers the `osv-scanner` / `gitleaks` system binaries so the security and clean-code arms don't fight. See ADR-0007.
 
 **Notes on #17** — jscpd uses a percentage threshold (3%), not zero tolerance. The current 0.89% baseline is the documented `Radar` ↔ `QuadrantRadar` mirror — two views that intentionally evolve independently. The threshold catches new significant duplication while letting that mirror stand. Tests, SCSS modules, and the generated `Icons/` directory are excluded; their duplication is naturally high and produces noise without signal. See ADR-0008.
 
 **Notes on #18** — Biome owns naming (not `@typescript-eslint/naming-convention`) so the rule integrates with the existing `npm run lint` loop instead of forking a second source of truth. `strictCase` is `false` to allow externally-dictated names (`PText`, `getXYPosition`, `JSON`, `IP`); test files are exempted via override because mock factories must mirror real PascalCase exports verbatim. The sensor uses `--only=` + `--diagnostic-level=error` to scope failures to `src` and `scripts` while letting Biome's overrides keep tests quiet. See ADR-0009.
+
+**Notes on #19** — SonarJS runs through a *dedicated* flat config (`sonar.eslint.config.mjs`) so its smell findings stay separate from `check:arch:eslint`'s architectural bans. Three rules are disabled with rationale: `slow-regex` (build-time on trusted markdown, not runtime user input), `pseudo-random` (visual blip jitter, not security-sensitive), and `redundant-type-aliases` (domain string aliases are intentional). Two real smells are suppressed per-line with `eslint-disable-next-line` comments that cite this ADR (`parseDirectory` cognitive complexity, `useRadarTooltip` nested function). The architectural ESLint config loads the sonarjs plugin without enabling rules and sets `reportUnusedDisableDirectives: "off"` so the per-line disables don't fail `check:arch:eslint`. See ADR-0010.
 
 Plus framework-aware lints from `@next/eslint-plugin-next` (recommended set, with `no-img-element` and `no-html-link-for-pages` disabled per ADRs / our `assetUrl()` convention — see `eslint.config.mjs` header).
 
@@ -245,7 +249,8 @@ npm run check:sec           # security sensors
 npm run check:quality       # clean-code sensors
   ├─ check:quality:knip     # unused files / exports / deps
   ├─ check:quality:jscpd    # copy-paste detection
-  └─ check:quality:naming   # Biome useNamingConvention (src + scripts)
+  ├─ check:quality:naming   # Biome useNamingConvention (src + scripts)
+  └─ check:quality:sonar    # eslint-plugin-sonarjs (dedicated config)
 
 npm run build               # static export → out/
 npm run check:build         # build-output sensors

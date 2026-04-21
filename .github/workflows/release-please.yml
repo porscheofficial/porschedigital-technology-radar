@@ -12,18 +12,24 @@ on:
         type: choice
         options: ["false", "true"]
 
+# Default to read-only at workflow level. Each job that needs to write
+# elevates explicitly. See ADR-0017 for the token-permission policy.
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 jobs:
   release-please:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     outputs:
       release_created: ${{ steps.release.outputs.release_created }}
     steps:
-      - uses: googleapis/release-please-action@v4
+      # Pinned to commit SHA per OpenSSF Scorecard PinnedDependenciesID.
+      # See ADR-0017.
+      - uses: googleapis/release-please-action@8b8fd2cc23b2e18957157a9d923d75aa0c6f6ad5 # v4
         id: release
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -41,9 +47,9 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
           cache: npm
@@ -53,9 +59,13 @@ jobs:
       # so we must upgrade. Installing into a separate prefix sidesteps the
       # in-place self-upgrade race that corrupts the bundled npm and triggers
       # "Cannot find module 'promise-retry'" on the next invocation.
-      - name: Install npm >= 11.5.1
+      #
+      # The npm version is pinned (not @latest) to satisfy OpenSSF Scorecard
+      # PinnedDependenciesID for npmCommand. Bump deliberately when needed.
+      # See ADR-0017.
+      - name: Install pinned npm
         run: |
-          npm install -g --prefix="$HOME/.npm-global" npm@latest
+          npm install -g --prefix="$HOME/.npm-global" npm@11.5.1
           echo "$HOME/.npm-global/bin" >> "$GITHUB_PATH"
 
       - run: npm --version

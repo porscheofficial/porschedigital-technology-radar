@@ -39,7 +39,7 @@ ADRs cite the *decisions behind those rules*.
 | 0003 | No `next/image`                                | accepted |
 | 0004 | `format.ts` reads config, not `data.ts`        | accepted |
 | 0005 | Bundle budget enforced via fs walk, not @next/bundle-analyzer | accepted |
-| 0006 | Security harness (Phase 1)                     | accepted (amended by 0011) |
+| 0006 | Security harness (Phase 1)                     | accepted (amended by 0011, 0017) |
 | 0007 | Clean-code harness, Phase 2a: knip             | accepted |
 | 0008 | Clean-code harness, Phase 2b: jscpd            | accepted |
 | 0009 | Clean-code harness, Phase 2c: useNamingConvention | accepted |
@@ -50,6 +50,7 @@ ADRs cite the *decisions behind those rules*.
 | 0014 | Build harness: HTML structural validation      | accepted |
 | 0015 | Quality harness: test coverage floor           | accepted |
 | 0016 | Quality harness: spell-check on documentation  | accepted |
+| 0017 | Pin GitHub Actions to commit SHAs and tighten `GITHUB_TOKEN` permissions | accepted (amends 0006) |
 
 ## When to write a new ADR
 

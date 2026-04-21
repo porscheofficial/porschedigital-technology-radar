@@ -7,6 +7,8 @@ on:
   schedule:
     - cron: "17 4 * * 1"
 
+# Default to read-only at workflow level. Jobs only elevate when needed.
+# See ADR-0017 for the token-permission policy.
 permissions:
   contents: read
 
@@ -14,12 +16,14 @@ jobs:
   deps:
     name: OSV-Scanner (npm advisories)
     runs-on: ubuntu-latest
+    # No security-events:write — we emit table format, not SARIF.
     permissions:
       contents: read
-      security-events: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: google/osv-scanner-action/osv-scanner-action@v2.0.2
+      # Pinned to commit SHA per OpenSSF Scorecard PinnedDependenciesID.
+      # See ADR-0017.
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: google/osv-scanner-action/osv-scanner-action@e69cc6c86b31f1e7e23935bbe7031b50e51082de # v2.0.2
         with:
           scan-args: |-
             --lockfile=package-lock.json
@@ -28,20 +32,26 @@ jobs:
   secrets:
     name: TruffleHog (committed secrets)
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           fetch-depth: 0
-      - uses: trufflesecurity/trufflehog@main
+      # TruffleHog is pinned to a release SHA (not @main) per Scorecard
+      # PinnedDependenciesID. See ADR-0017.
+      - uses: trufflesecurity/trufflehog@47e7b7cd74f578e1e3145d48f669f22fd1330ca6 # v3.94.3
         with:
           extra_args: --results=verified,unknown
 
   sanitize:
     name: rehype-sanitize wiring + XSS regression
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
           cache: npm

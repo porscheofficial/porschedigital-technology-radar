@@ -3,7 +3,6 @@ import Head from "next/head";
 import Link from "next/link";
 import Search from "@/components/Icons/Search";
 import { formatTitle } from "@/lib/format";
-import { assetUrl } from "@/lib/utils";
 import styles from "./404.module.scss";
 
 export default function Custom404() {
@@ -18,7 +17,7 @@ export default function Custom404() {
           404 - Page Not Found
         </PHeading>
         <PText>
-          <Link href={assetUrl("/")}>Return to homepage</Link>
+          <Link href="/">Return to homepage</Link>
         </PText>
       </div>
     </>

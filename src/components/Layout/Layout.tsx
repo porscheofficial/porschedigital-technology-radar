@@ -30,17 +30,17 @@ export const Layout: FC<LayoutProps> = ({
         <div className={styles.headerGrid}>
           <div className={styles.headerStart}>
             {logoUrl ? (
-              <Link href={assetUrl("/")}>
+              <Link href="/">
                 <img src={logoUrl} alt="" className={styles.customLogo} />
               </Link>
             ) : (
               <PCrest href={assetUrl("/")} />
             )}
-            <Link href={assetUrl("/")} className={styles.brand}>
+            <Link href="/" className={styles.brand}>
               {getLabel("title")}
             </Link>
             {latestRelease && (
-              <Link href={assetUrl("/history")} className={styles.versionLabel}>
+              <Link href="/history" className={styles.versionLabel}>
                 {formatReleaseShort(latestRelease)}
               </Link>
             )}

@@ -248,7 +248,7 @@ export function SearchBar() {
                 }
               >
                 <Link
-                  href={assetUrl(`/${item.quadrant}/${item.id}`)}
+                  href={`/${item.quadrant}/${item.id}`}
                   className={styles.resultLink}
                   onClick={() => {
                     close();

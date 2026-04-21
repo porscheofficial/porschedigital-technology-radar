@@ -107,10 +107,7 @@ export function ItemDetail({ item, quadrantTitle }: ItemProps) {
             <div className={styles.ringName}>
               {ringInfo?.title || item.ring}
             </div>
-            <Link
-              href={assetUrl(`/${item.quadrant}`)}
-              className={styles.quadrantLabel}
-            >
+            <Link href={`/${item.quadrant}`} className={styles.quadrantLabel}>
               {quadrantTitle}
               <PIcon
                 name="arrow-head-right"

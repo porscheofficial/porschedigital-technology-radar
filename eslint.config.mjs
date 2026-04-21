@@ -2,15 +2,24 @@
 // Biome remains the formatter/linter for everything else.
 //
 // Local architectural rules:
-//   1. no-asset-url-bypass — JSX href/src "/..." literals must be wrapped in assetUrl()
-//   2. safe-html-required — dangerouslySetInnerHTML only inside SafeHtml.tsx
-//   3. no-ts-suppression  — ban as-any / @ts-expect-error / @ts-nocheck
+//   1. no-asset-url-bypass — JSX href/src "/..." literals must be wrapped in
+//      assetUrl(), EXCEPT when the JSX element is `<Link>` (next/link) or
+//      `useRouter().push(...)`. Next.js auto-prepends `basePath` to <Link>
+//      hrefs and router.push targets — wrapping with assetUrl() would double
+//      the basePath in production (e.g. /radar/radar/foo). For raw <a>, <img>,
+//      and PDS components (PCrest, PLinkPure, PLinkTile) which are NOT
+//      Next-aware, assetUrl() is required.
+//   2. no-asset-url-in-link — assetUrl() is FORBIDDEN inside `<Link>` href
+//      to prevent regression of the double-basePath bug.
+//   3. safe-html-required — dangerouslySetInnerHTML only inside SafeHtml.tsx
+//   4. no-ts-suppression  — ban as-any / @ts-expect-error / @ts-nocheck
 //
 // Plus @next/eslint-plugin-next recommended (with documented exceptions):
 //   - @next/next/no-img-element OFF — see docs/decisions/0003-no-next-image.md
 //   - @next/next/no-html-link-for-pages OFF — our internal-link convention is
-//     <Link href={assetUrl(...)}> and <a href={assetUrl(...)}>, both compatible
-//     with output:"export"; the Next rule's pages-dir scan misreports here.
+//     bare `<Link href="/...">` (Next prepends basePath) and
+//     `<a href={assetUrl(...)}>` (manual prefix), both compatible with
+//     output:"export"; the Next rule's pages-dir scan misreports here.
 import nextPlugin from "@next/eslint-plugin-next";
 import tseslint from "typescript-eslint";
 
@@ -46,19 +55,29 @@ export default tseslint.config(
       "no-restricted-syntax": [
         "error",
 
-        // 1) Bare absolute hrefs/srcs must use assetUrl().
+        // 1) Bare absolute hrefs/srcs must use assetUrl(), EXCEPT inside <Link>
+        //    where Next auto-prepends basePath.
         //    (src/components/AGENTS.md → Links and asset URLs)
         {
           selector:
-            "JSXAttribute[name.name=/^(href|src)$/] > Literal[value=/^\\/(?!\\/)/]",
+            "JSXElement[openingElement.name.name!='Link'] > JSXOpeningElement > JSXAttribute[name.name=/^(href|src)$/] > Literal[value=/^\\/(?!\\/)/]",
           message:
-            "Bare absolute href/src literal — wrap with assetUrl() from @/lib/utils.",
+            "Bare absolute href/src literal — wrap with assetUrl() from @/lib/utils. (Exempt: <Link> hrefs, which Next auto-prepends with basePath.)",
         },
         {
           selector:
-            "JSXAttribute[name.name=/^(href|src)$/] > JSXExpressionContainer > TemplateLiteral[expressions.length>0][quasis.0.value.raw=/^\\/(?!\\/)/]",
+            "JSXElement[openingElement.name.name!='Link'] > JSXOpeningElement > JSXAttribute[name.name=/^(href|src)$/] > JSXExpressionContainer > TemplateLiteral[expressions.length>0][quasis.0.value.raw=/^\\/(?!\\/)/]",
           message:
-            "Bare absolute href/src template literal — wrap with assetUrl() from @/lib/utils.",
+            "Bare absolute href/src template literal — wrap with assetUrl() from @/lib/utils. (Exempt: <Link> hrefs, which Next auto-prepends with basePath.)",
+        },
+
+        // 2) assetUrl() inside <Link> href is forbidden — Next.js auto-prepends
+        //    basePath to <Link> hrefs, so wrapping doubles the prefix.
+        {
+          selector:
+            "JSXElement[openingElement.name.name='Link'] JSXAttribute[name.name='href'] CallExpression[callee.name='assetUrl']",
+          message:
+            'Do not wrap <Link> href with assetUrl() — Next.js auto-prepends basePath. Use a bare path like href="/foo" or href={`/${id}`}.',
         },
 
         // 3) `as any` cast.
@@ -85,15 +104,21 @@ export default tseslint.config(
         },
         {
           selector:
-            "JSXAttribute[name.name=/^(href|src)$/] > Literal[value=/^\\/(?!\\/)/]",
+            "JSXElement[openingElement.name.name!='Link'] > JSXOpeningElement > JSXAttribute[name.name=/^(href|src)$/] > Literal[value=/^\\/(?!\\/)/]",
           message:
-            "Bare absolute href/src literal — wrap with assetUrl() from @/lib/utils.",
+            "Bare absolute href/src literal — wrap with assetUrl() from @/lib/utils. (Exempt: <Link> hrefs, which Next auto-prepends with basePath.)",
         },
         {
           selector:
-            "JSXAttribute[name.name=/^(href|src)$/] > JSXExpressionContainer > TemplateLiteral[expressions.length>0][quasis.0.value.raw=/^\\/(?!\\/)/]",
+            "JSXElement[openingElement.name.name!='Link'] > JSXOpeningElement > JSXAttribute[name.name=/^(href|src)$/] > JSXExpressionContainer > TemplateLiteral[expressions.length>0][quasis.0.value.raw=/^\\/(?!\\/)/]",
           message:
-            "Bare absolute href/src template literal — wrap with assetUrl() from @/lib/utils.",
+            "Bare absolute href/src template literal — wrap with assetUrl() from @/lib/utils. (Exempt: <Link> hrefs, which Next auto-prepends with basePath.)",
+        },
+        {
+          selector:
+            "JSXElement[openingElement.name.name='Link'] JSXAttribute[name.name='href'] CallExpression[callee.name='assetUrl']",
+          message:
+            'Do not wrap <Link> href with assetUrl() — Next.js auto-prepends basePath. Use a bare path like href="/foo" or href={`/${id}`}.',
         },
         {
           selector: "TSAsExpression > TSAnyKeyword.typeAnnotation",

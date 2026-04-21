@@ -43,3 +43,28 @@ describe("assetUrl", () => {
     );
   });
 });
+
+// Regression: assetUrl must prepend basePath in production builds. This is
+// the helper used for raw <a>, <img>, and PDS components (which are NOT
+// Next.js-aware). next/link must NOT wrap its href with assetUrl(), or the
+// basePath gets doubled (see eslint.config.mjs forbidding rule).
+describe("assetUrl with basePath", () => {
+  it("prepends basePath to absolute paths and trims trailing slash", async () => {
+    vi.resetModules();
+    vi.doMock("../../../next.config.js", () => ({
+      default: { basePath: "/porschedigital-technology-radar" },
+    }));
+    const { assetUrl: scopedAssetUrl } = await import("@/lib/utils");
+    expect(scopedAssetUrl("/languages-and-frameworks/vue")).toBe(
+      "/porschedigital-technology-radar/languages-and-frameworks/vue",
+    );
+    expect(scopedAssetUrl("images/logo.png")).toBe(
+      "/porschedigital-technology-radar/images/logo.png",
+    );
+    expect(scopedAssetUrl("https://example.com/img.png")).toBe(
+      "https://example.com/img.png",
+    );
+    vi.doUnmock("../../../next.config.js");
+    vi.resetModules();
+  });
+});

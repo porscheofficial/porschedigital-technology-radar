@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.2.4](https://github.com/porscheofficial/porschedigital-technology-radar/compare/v1.2.3...v1.2.4) (2026-04-22)
+
+
+### Bug Fixes
+
+* **cli:** skip nested node_modules when copying source to shadow workspace ([3111452](https://github.com/porscheofficial/porschedigital-technology-radar/commit/3111452389debfd679186f3d5099e58bfddeb7ab))
+
+
+### Documentation
+
+* document automated release process and scrub personal path from ADR-0022 ([2e30e59](https://github.com/porscheofficial/porschedigital-technology-radar/commit/2e30e59b72d64b96a539335bcbffb2960782ab7f))
+
 ## [1.2.3](https://github.com/porscheofficial/porschedigital-technology-radar/compare/v1.2.2...v1.2.3) (2026-04-22)
 
 

@@ -16,18 +16,30 @@ jobs:
   deps:
     name: OSV-Scanner (npm advisories)
     runs-on: ubuntu-latest
-    # No security-events:write — we emit table format, not SARIF.
+    # `security-events: write` is required to upload SARIF to code-scanning.
+    # See ADR-0025 (which amends ADR-0017's table-format rationale).
     permissions:
       contents: read
+      security-events: write
     steps:
       # Pinned to commit SHA per OpenSSF Scorecard PinnedDependenciesID.
       # See ADR-0017.
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
       - uses: google/osv-scanner-action/osv-scanner-action@e69cc6c86b31f1e7e23935bbe7031b50e51082de # v2.0.2
+        # `continue-on-error: true` keeps the SARIF upload step running even
+        # when OSV finds advisories — surfacing findings in the code-scanning
+        # UI is the goal; the gate remains red via the upload step's exit code.
+        continue-on-error: true
         with:
           scan-args: |-
             --lockfile=pnpm-lock.yaml
-            --format=table
+            --format=sarif
+            --output=osv-results.sarif
+      - name: Upload OSV SARIF to code-scanning
+        uses: github/codeql-action/upload-sarif@ce64ddcb0d8d890d2df4a9d1c04ff297367dea2a # v3
+        with:
+          sarif_file: osv-results.sarif
+          category: osv-scanner
 
   secrets:
     name: TruffleHog (committed secrets)

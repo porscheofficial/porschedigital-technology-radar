@@ -39,7 +39,7 @@ ADRs cite the *decisions behind those rules*.
 | 0003 | No `next/image`                                | accepted |
 | 0004 | `format.ts` reads config, not `data.ts`        | accepted |
 | 0005 | Bundle budget enforced via fs walk, not @next/bundle-analyzer | accepted |
-| 0006 | Security harness (Phase 1)                     | accepted (amended by 0011, 0017) |
+| 0006 | Security harness (Phase 1)                     | accepted (amended by 0011, 0017, 0025) |
 | 0007 | Clean-code harness, Phase 2a: knip             | accepted |
 | 0008 | Clean-code harness, Phase 2b: jscpd            | accepted |
 | 0009 | Clean-code harness, Phase 2c: useNamingConvention | accepted |
@@ -50,7 +50,7 @@ ADRs cite the *decisions behind those rules*.
 | 0014 | Build harness: HTML structural validation      | accepted |
 | 0015 | Quality harness: test coverage floor           | accepted |
 | 0016 | Quality harness: spell-check on documentation  | accepted |
-| 0017 | Pin GitHub Actions to commit SHAs and tighten `GITHUB_TOKEN` permissions | accepted (amends 0006) |
+| 0017 | Pin GitHub Actions to commit SHAs and tighten `GITHUB_TOKEN` permissions | accepted (amends 0006, amended by 0025) |
 | 0018 | A11y harness: jsx-a11y on source + axe-core on built HTML | accepted |
 | 0019 | Package manager: pnpm via Corepack             | accepted |
 | 0020 | Per-item Open Graph image generation           | accepted |
@@ -58,6 +58,7 @@ ADRs cite the *decisions behind those rules*.
 | 0022 | Pin `next` to `16.2.3` (no caret) until upstream regression #92580 is fixed | superseded by ADR-0023 |
 | 0023 | Fence module resolution to the shadow workspace (`outputFileTracingRoot` + webpack alias) | superseded by ADR-0024 (config retained as defense-in-depth) |
 | 0024 | Skip nested `node_modules/` when copying the shadow workspace | accepted (supersedes 0023) |
+| 0025 | CI workflow, npm provenance, and OSV SARIF upload | accepted (amends 0006, amends 0017) |
 
 ## When to write a new ADR
 

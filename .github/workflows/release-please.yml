@@ -80,4 +80,7 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - run: npm publish
+      # `--provenance` emits an SLSA build-provenance attestation to npm via the
+      # `id-token: write` permission already granted to this job. Lifts OpenSSF
+      # Scorecard `Signed-Releases` from -1 to 10. See ADR-0025.
+      - run: npm publish --provenance

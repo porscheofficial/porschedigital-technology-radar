@@ -213,7 +213,9 @@ A map of CSS color values that theme the entire radar.
 <details>
 <summary><strong><code>quadrants</code></strong></summary>
 
-An array of exactly 4 quadrant objects.
+An array of quadrant objects (1 or more). The radar geometry adapts automatically — arc sweep is `360° / N`, and labels follow the arcs. **3 to 6 is the comfortable range**; beyond 6 the per-quadrant arc becomes too narrow for readable labels and the blips start to crowd. Despite the name, "quadrant" here means "any radial segment of the radar"; the term is kept for backward compatibility.
+
+> **Heads up:** A future major release will rename `quadrants` to `segments` (config key, frontmatter attribute, and TypeScript types) to match the actual capability. A backward-compatibility shim will accept the old name with a deprecation warning, so existing radars will keep building.
 
 | Key           | Description                                      |
 | ------------- | ------------------------------------------------ |

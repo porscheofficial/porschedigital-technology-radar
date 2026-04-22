@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.2.2](https://github.com/porscheofficial/porschedigital-technology-radar/compare/v1.2.1...v1.2.2) (2026-04-22)
+
+
+### Bug Fixes
+
+* **deps:** pin next to 16.2.3 to dodge prerender regression in 16.2.4 (ADR-0022) ([0447fd1](https://github.com/porscheofficial/porschedigital-technology-radar/commit/0447fd1ed8d4656af90c7b99771bf4c7b0886e9a))
+
 ## [1.2.1](https://github.com/porscheofficial/porschedigital-technology-radar/compare/v1.2.0...v1.2.1) (2026-04-22)
 
 

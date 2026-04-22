@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.2.0](https://github.com/porscheofficial/porschedigital-technology-radar/compare/v1.1.0...v1.2.0) (2026-04-22)
+
+
+### Features
+
+* enrich link previews with per-item Open Graph images and add pre-commit secret scan ([37e12bb](https://github.com/porscheofficial/porschedigital-technology-radar/commit/37e12bb1ef48eff7f0aaf87212ba2b587931faa4))
+* make detail-page tag and team badges link to filtered home ([d5b9177](https://github.com/porscheofficial/porschedigital-technology-radar/commit/d5b9177dbc7b49d5f48454821900b2c2c34c82c0))
+* visual indicator for promoted/demoted changed blips ([707efec](https://github.com/porscheofficial/porschedigital-technology-radar/commit/707efecd77a0a7302950a621e84825e107706ec6))
+
+
+### Bug Fixes
+
+* **seo:** emit absolute canonical and Open Graph URLs ([8d075a1](https://github.com/porscheofficial/porschedigital-technology-radar/commit/8d075a1d7b6052d7671ee9689abdf4be7823e45c))
+
+
+### Build System
+
+* migrate package manager from npm to pnpm (ADR-0019) ([0ef2822](https://github.com/porscheofficial/porschedigital-technology-radar/commit/0ef2822763b9525d426bec0a5d5111994dfc35c0))
+
 ## [1.1.0](https://github.com/porscheofficial/porschedigital-technology-radar/compare/v1.0.4...v1.1.0) (2026-04-21)
 
 

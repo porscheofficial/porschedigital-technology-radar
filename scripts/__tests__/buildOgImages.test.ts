@@ -151,10 +151,10 @@ describe("buildOgImages", () => {
   it("writes a rendered image buffer to disk", async () => {
     const { writeOgImage } = await import("../buildOgImages");
 
-    writeOgImage("/tmp/public/og/react.png", Buffer.from([0x89, 0x50, 0x4e]));
+    writeOgImage("/fake/og/react.png", Buffer.from([0x89, 0x50, 0x4e]));
 
     expect(fsState.writes).toEqual([
-      { filePath: "/tmp/public/og/react.png", size: 3 },
+      { filePath: "/fake/og/react.png", size: 3 },
     ]);
   });
 });

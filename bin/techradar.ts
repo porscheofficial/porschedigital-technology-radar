@@ -216,9 +216,19 @@ function ensureBuildDir(): void {
   // Mirror the runtime split (build-time deps in `dependencies`, QA tools in
   // `devDependencies`) at the type-check layer: exclude QA-only scripts and
   // tests whose imports won't resolve once devDependencies are gone. See ADR-0021.
+  // Read+write atomically via try/catch instead of existsSync+read+write to
+  // avoid a TOCTOU race (CodeQL js/file-system-race) on the shared shadow dir.
   const tsconfigPath = join(BUILDER_DIR, "tsconfig.json");
-  if (existsSync(tsconfigPath)) {
-    const tsconfig = JSON.parse(readFileSync(tsconfigPath, "utf8"));
+  let tsconfigRaw: string | undefined;
+  try {
+    tsconfigRaw = readFileSync(tsconfigPath, "utf8");
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== "ENOENT") {
+      throw error;
+    }
+  }
+  if (tsconfigRaw !== undefined) {
+    const tsconfig = JSON.parse(tsconfigRaw);
     writeFileSync(
       tsconfigPath,
       `${JSON.stringify(sanitizeShadowTsconfig(tsconfig), null, 2)}\n`,

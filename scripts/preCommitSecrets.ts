@@ -1,4 +1,3 @@
-import crypto from "node:crypto";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -117,12 +116,12 @@ export async function main(): Promise<number> {
     return 0;
   }
 
-  const temporaryDirectory = path.join(
-    os.tmpdir(),
-    `precommit-secrets-${crypto.randomUUID()}`,
+  // `mkdtemp` atomically creates a uniquely-named directory with secure
+  // permissions (0o700), avoiding the world-readable insecure-tmp pattern
+  // flagged by CodeQL js/insecure-temporary-file.
+  const temporaryDirectory = await fs.mkdtemp(
+    path.join(os.tmpdir(), "precommit-secrets-"),
   );
-
-  await fs.mkdir(temporaryDirectory, { recursive: true });
 
   try {
     await materializeStagedContent(stagedFiles, temporaryDirectory);

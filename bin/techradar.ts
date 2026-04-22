@@ -14,6 +14,7 @@ import { watch } from "chokidar";
 import { defineCommand, runMain } from "citty";
 import consola from "consola";
 import { execa, execaSync } from "execa";
+import { sanitizeShadowTsconfig } from "./sanitizeShadowTsconfig";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -174,9 +175,11 @@ function ensureBuildDir(): void {
 
   cpSync(SOURCE_DIR, BUILDER_DIR, { recursive: true });
 
-  // Strip maintainer-only lifecycle scripts from the shadow copy so the
-  // consumer's `npm install` doesn't try to rebuild artifacts that are
-  // already shipped pre-built in the published tarball (dist/, Icons/).
+  // Strip maintainer-only lifecycle scripts and QA-only devDependencies from
+  // the shadow copy. Per ADR-0021 every build-time runtime dep lives in
+  // `dependencies`, so deleting `devDependencies` outright leaves the shadow
+  // install with exactly the set the build needs and avoids npm resolving
+  // QA-only peer-dep conflicts (e.g. eslint-plugin-jsx-a11y vs eslint@10).
   // Transitive dependencies' postinstall scripts (e.g. esbuild) still run.
   const pkgPath = join(BUILDER_DIR, "package.json");
   const pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
@@ -184,7 +187,20 @@ function ensureBuildDir(): void {
     delete pkg.scripts.prepare;
     delete pkg.scripts.postinstall;
   }
+  delete pkg.devDependencies;
   writeFileSync(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`);
+
+  // Mirror the runtime split (build-time deps in `dependencies`, QA tools in
+  // `devDependencies`) at the type-check layer: exclude QA-only scripts and
+  // tests whose imports won't resolve once devDependencies are gone. See ADR-0021.
+  const tsconfigPath = join(BUILDER_DIR, "tsconfig.json");
+  if (existsSync(tsconfigPath)) {
+    const tsconfig = JSON.parse(readFileSync(tsconfigPath, "utf8"));
+    writeFileSync(
+      tsconfigPath,
+      `${JSON.stringify(sanitizeShadowTsconfig(tsconfig), null, 2)}\n`,
+    );
+  }
 
   writeFileSync(HASH_FILE, currentHash);
 

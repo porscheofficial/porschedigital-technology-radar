@@ -8,55 +8,24 @@ importers:
 
   .:
     dependencies:
+      '@11ty/gray-matter':
+        specifier: ^2.0.1
+        version: 2.0.1
+      '@fontsource/inter':
+        specifier: ^5.2.8
+        version: 5.2.8
       '@porsche-design-system/components-js':
         specifier: 3.33.0
         version: 3.33.0
       '@porsche-design-system/components-react':
         specifier: ^3.33.0
         version: 3.33.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
-      sass:
-        specifier: ^1.99.0
-        version: 1.99.0
-    devDependencies:
-      '@11ty/gray-matter':
-        specifier: ^2.0.1
-        version: 2.0.1
-      '@biomejs/biome':
-        specifier: 2.4.11
-        version: 2.4.11
-      '@commitlint/cli':
-        specifier: ^19.8.0
-        version: 19.8.0(@types/node@22.14.1)(typescript@5.8.3)
-      '@commitlint/config-conventional':
-        specifier: ^19.8.0
-        version: 19.8.0
-      '@fontsource/inter':
-        specifier: ^5.2.8
-        version: 5.2.8
-      '@next/eslint-plugin-next':
-        specifier: ^16.2.4
-        version: 16.2.4
       '@resvg/resvg-js':
         specifier: ^2.6.2
         version: 2.6.2
-      '@testing-library/dom':
-        specifier: ^10.4.1
-        version: 10.4.1
-      '@testing-library/jest-dom':
-        specifier: ^6.9.1
-        version: 6.9.1
-      '@testing-library/react':
-        specifier: ^16.3.2
-        version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
-      '@testing-library/user-event':
-        specifier: ^14.6.1
-        version: 14.6.1(@testing-library/dom@10.4.1)
       '@types/hast':
         specifier: ^3.0.4
         version: 3.0.4
-      '@types/jsdom':
-        specifier: ^28.0.1
-        version: 28.0.1
       '@types/mdast':
         specifier: ^4.0.4
         version: 4.0.4
@@ -69,15 +38,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.14)
-      '@vitejs/plugin-react':
-        specifier: ^6.0.1
-        version: 6.0.1(vite@8.0.8(@types/node@22.14.1)(esbuild@0.27.7)(jiti@2.6.1)(sass@1.99.0)(tsx@4.19.3)(yaml@2.8.3))
-      '@vitest/coverage-v8':
-        specifier: ^4.1.4
-        version: 4.1.4(vitest@4.1.4)
-      axe-core:
-        specifier: ^4.11.3
-        version: 4.11.3
       chokidar:
         specifier: ^4.0.3
         version: 4.0.3
@@ -90,60 +50,15 @@ importers:
       consola:
         specifier: ^3.4.2
         version: 3.4.2
-      cspell:
-        specifier: ^10.0.0
-        version: 10.0.0
-      dependency-cruiser:
-        specifier: ^17.3.10
-        version: 17.3.10
-      eslint:
-        specifier: ^10.2.1
-        version: 10.2.1(jiti@2.6.1)
-      eslint-plugin-jsx-a11y:
-        specifier: ^6.10.2
-        version: 6.10.2(eslint@10.2.1(jiti@2.6.1))
-      eslint-plugin-sonarjs:
-        specifier: ^4.0.3
-        version: 4.0.3(eslint@10.2.1(jiti@2.6.1))
       execa:
         specifier: ^9.6.1
         version: 9.6.1
       hast:
         specifier: ^1.0.0
         version: 1.0.0
-      html-validate:
-        specifier: ^10.13.1
-        version: 10.13.1(vitest@4.1.4)
-      husky:
-        specifier: ^9.0.11
-        version: 9.1.7
-      jscpd:
-        specifier: ^4.0.9
-        version: 4.0.9
-      jsdom:
-        specifier: ^29.0.2
-        version: 29.0.2
-      knip:
-        specifier: 6.4.0
-        version: 6.4.0(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)
-      license-checker-rseidelsohn:
-        specifier: ^4.4.2
-        version: 4.4.2
-      linkinator:
-        specifier: ^7.6.1
-        version: 7.6.1
-      lint-staged:
-        specifier: ^15.2.7
-        version: 15.5.1
-      markdownlint-cli2:
-        specifier: ^0.21.0
-        version: 0.21.0
       next:
         specifier: ^16.2.3
         version: 16.2.3(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.99.0)
-      portless:
-        specifier: ^0.10.1
-        version: 0.10.1
       postcss-nested:
         specifier: ^6.0.1
         version: 6.2.0(postcss@8.5.9)
@@ -177,30 +92,115 @@ importers:
       remark-rehype:
         specifier: ^11.1.2
         version: 11.1.2
+      sass:
+        specifier: ^1.99.0
+        version: 1.99.0
       satori:
         specifier: ^0.26.0
         version: 0.26.0
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@2.6.1)(postcss@8.5.9)(tsx@4.19.3)(typescript@5.8.3)(yaml@2.8.3)
       tsx:
         specifier: ^4.15.8
         version: 4.19.3
       typescript:
         specifier: ^5
         version: 5.8.3
-      typescript-eslint:
-        specifier: ^8.59.0
-        version: 8.59.0(eslint@10.2.1(jiti@2.6.1))(typescript@5.8.3)
       unified:
         specifier: ^11.0.5
         version: 11.0.5
-      vitest:
-        specifier: ^4.1.4
-        version: 4.1.4(@types/node@22.14.1)(@vitest/coverage-v8@4.1.4)(jsdom@29.0.2)(vite@8.0.8(@types/node@22.14.1)(esbuild@0.27.7)(jiti@2.6.1)(sass@1.99.0)(tsx@4.19.3)(yaml@2.8.3))
       zod:
         specifier: ^4.3.6
         version: 4.3.6
+    devDependencies:
+      '@biomejs/biome':
+        specifier: 2.4.11
+        version: 2.4.11
+      '@commitlint/cli':
+        specifier: ^19.8.0
+        version: 19.8.0(@types/node@22.14.1)(typescript@5.8.3)
+      '@commitlint/config-conventional':
+        specifier: ^19.8.0
+        version: 19.8.0
+      '@next/eslint-plugin-next':
+        specifier: ^16.2.4
+        version: 16.2.4
+      '@testing-library/dom':
+        specifier: ^10.4.1
+        version: 10.4.1
+      '@testing-library/jest-dom':
+        specifier: ^6.9.1
+        version: 6.9.1
+      '@testing-library/react':
+        specifier: ^16.3.2
+        version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+      '@testing-library/user-event':
+        specifier: ^14.6.1
+        version: 14.6.1(@testing-library/dom@10.4.1)
+      '@types/jsdom':
+        specifier: ^28.0.1
+        version: 28.0.1
+      '@vitejs/plugin-react':
+        specifier: ^6.0.1
+        version: 6.0.1(vite@8.0.8(@types/node@22.14.1)(esbuild@0.27.7)(jiti@2.6.1)(sass@1.99.0)(tsx@4.19.3)(yaml@2.8.3))
+      '@vitest/coverage-v8':
+        specifier: ^4.1.4
+        version: 4.1.4(vitest@4.1.4)
+      axe-core:
+        specifier: ^4.11.3
+        version: 4.11.3
+      cspell:
+        specifier: ^10.0.0
+        version: 10.0.0
+      dependency-cruiser:
+        specifier: ^17.3.10
+        version: 17.3.10
+      eslint:
+        specifier: ^10.2.1
+        version: 10.2.1(jiti@2.6.1)
+      eslint-plugin-jsx-a11y:
+        specifier: ^6.10.2
+        version: 6.10.2(eslint@10.2.1(jiti@2.6.1))
+      eslint-plugin-sonarjs:
+        specifier: ^4.0.3
+        version: 4.0.3(eslint@10.2.1(jiti@2.6.1))
+      html-validate:
+        specifier: ^10.13.1
+        version: 10.13.1(vitest@4.1.4)
+      husky:
+        specifier: ^9.0.11
+        version: 9.1.7
+      jscpd:
+        specifier: ^4.0.9
+        version: 4.0.9
+      jsdom:
+        specifier: ^29.0.2
+        version: 29.0.2
+      knip:
+        specifier: 6.4.0
+        version: 6.4.0(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)
+      license-checker-rseidelsohn:
+        specifier: ^4.4.2
+        version: 4.4.2
+      linkinator:
+        specifier: ^7.6.1
+        version: 7.6.1
+      lint-staged:
+        specifier: ^15.2.7
+        version: 15.5.1
+      markdownlint-cli2:
+        specifier: ^0.21.0
+        version: 0.21.0
+      portless:
+        specifier: ^0.10.1
+        version: 0.10.1
+      tsup:
+        specifier: ^8.5.1
+        version: 8.5.1(jiti@2.6.1)(postcss@8.5.9)(tsx@4.19.3)(typescript@5.8.3)(yaml@2.8.3)
+      typescript-eslint:
+        specifier: ^8.59.0
+        version: 8.59.0(eslint@10.2.1(jiti@2.6.1))(typescript@5.8.3)
+      vitest:
+        specifier: ^4.1.4
+        version: 4.1.4(@types/node@22.14.1)(@vitest/coverage-v8@4.1.4)(jsdom@29.0.2)(vite@8.0.8(@types/node@22.14.1)(esbuild@0.27.7)(jiti@2.6.1)(sass@1.99.0)(tsx@4.19.3)(yaml@2.8.3))
 
 packages:
 

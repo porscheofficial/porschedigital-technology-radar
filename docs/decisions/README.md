@@ -54,6 +54,7 @@ ADRs cite the *decisions behind those rules*.
 | 0018 | A11y harness: jsx-a11y on source + axe-core on built HTML | accepted |
 | 0019 | Package manager: pnpm via Corepack             | accepted |
 | 0020 | Per-item Open Graph image generation           | accepted |
+| 0021 | Recategorize build-time deps so the consumer shadow workspace can install with `--omit=dev` | accepted |
 
 ## When to write a new ADR
 

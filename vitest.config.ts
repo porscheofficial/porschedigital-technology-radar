@@ -10,7 +10,11 @@ export default defineConfig({
     globals: true,
     css: { modules: { classNameStrategy: "non-scoped" } },
     setupFiles: ["./src/test/setup.ts"],
-    include: ["src/**/*.test.{ts,tsx}", "scripts/**/*.test.ts"],
+    include: [
+      "src/**/*.test.{ts,tsx}",
+      "scripts/**/*.test.ts",
+      "bin/**/*.test.ts",
+    ],
     coverage: {
       provider: "v8",
       include: ["src/**/*.{ts,tsx}"],

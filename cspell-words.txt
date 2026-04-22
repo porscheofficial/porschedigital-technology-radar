@@ -652,3 +652,13 @@ footgun
 realpath
 lockfiles
 tmpdir
+recategorize
+recategorization
+recategorized
+ERESOLVE
+prereq
+prerendering
+prerenders
+reqwest
+initialised
+behaviours

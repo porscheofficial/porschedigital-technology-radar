@@ -1,6 +1,6 @@
 # ADR-0023 — Fence module resolution to the shadow workspace (`outputFileTracingRoot` + webpack alias)
 
-- Status: accepted (supersedes ADR-0022)
+- Status: superseded by ADR-0024 (config retained as defense-in-depth)
 - Date: 2026-04-22
 
 ## Context

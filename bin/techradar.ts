@@ -173,7 +173,30 @@ function ensureBuildDir(): void {
     process.exit(1);
   }
 
-  cpSync(SOURCE_DIR, BUILDER_DIR, { recursive: true });
+  // Skip copying nested `node_modules/`: when consumer peer-dep conflicts
+  // force npm to hoist `next`/`react`/etc. *inside* the installed package,
+  // copying them across has two failure modes that together produce the
+  // dual-React `useContext` null prerender crash documented in ADR-0024:
+  //
+  //   1. `cpSync` with `recursive: true` rewrites relative symlinks to
+  //      absolute paths (Node default `verbatimSymlinks: false`). The source
+  //      `.bin/next -> ../next/dist/bin/next` becomes a hard absolute path
+  //      pointing back into the consumer's nested copy.
+  //   2. `npm install` will not regenerate a bin link if one already exists,
+  //      so `.techradar/node_modules/.bin/next` keeps pointing OUTSIDE
+  //      `.techradar/`.
+  //
+  // Result: `npm run build` inside `.techradar/` resolves `next` to the
+  // outside copy, which loads its own React at a different absolute path.
+  // Even when versions match, CommonJS module identity is path-based, so two
+  // React instances exist and `ReactSharedInternals` is null in workers.
+  //
+  // Letting `npm install` populate `node_modules/` from scratch guarantees
+  // every binary, dependency, and bin-link lives strictly inside `.techradar/`.
+  cpSync(SOURCE_DIR, BUILDER_DIR, {
+    recursive: true,
+    filter: (src) => !src.includes(`${PACKAGE_NAME}/node_modules`),
+  });
 
   // Strip maintainer-only lifecycle scripts and QA-only devDependencies from
   // the shadow copy. Per ADR-0021 every build-time runtime dep lives in

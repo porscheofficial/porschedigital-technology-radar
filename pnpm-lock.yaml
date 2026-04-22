@@ -57,7 +57,7 @@ importers:
         specifier: ^1.0.0
         version: 1.0.0
       next:
-        specifier: 16.2.3
+        specifier: ^16.2.3
         version: 16.2.3(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.99.0)
       postcss-nested:
         specifier: ^6.0.1

@@ -55,7 +55,8 @@ ADRs cite the *decisions behind those rules*.
 | 0019 | Package manager: pnpm via Corepack             | accepted |
 | 0020 | Per-item Open Graph image generation           | accepted |
 | 0021 | Recategorize build-time deps so the consumer shadow workspace can install with `--omit=dev` | accepted |
-| 0022 | Pin `next` to `16.2.3` (no caret) until upstream regression #92580 is fixed | accepted |
+| 0022 | Pin `next` to `16.2.3` (no caret) until upstream regression #92580 is fixed | superseded by ADR-0023 |
+| 0023 | Fence module resolution to the shadow workspace (`outputFileTracingRoot` + webpack alias) | accepted (supersedes 0022) |
 
 ## When to write a new ADR
 

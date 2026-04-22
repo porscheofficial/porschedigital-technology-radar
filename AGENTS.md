@@ -286,6 +286,28 @@ Conventional commits enforced by commitlint. Allowed types:
 - `next/image` is NOT used (static export + user-provided URLs)
 - `assetUrl()` helper prepends `basePath` from config
 
+## Release process
+
+**Releases are fully automated. Never bump versions, never `npm publish`, never write `chore: release` commits by hand.**
+
+The mechanics ([`.github/workflows/release-please.yml`](.github/workflows/release-please.yml), [`release-please-config.json`](release-please-config.json), [`.release-please-manifest.json`](.release-please-manifest.json)):
+
+1. Every push to `pdig` triggers [release-please](https://github.com/googleapis/release-please-action). It scans new conventional commits since the last release tag, computes the next semver bump from the commit types (`feat` → minor, `fix`/`sec`/`perf`/`refactor`/`rework`/`build`/`ci`/`cd`/`ops`/`update`/`doc`/`test` → patch, `!`/`BREAKING CHANGE` → major), and either opens or updates a "release PR" titled `chore(pdig): release X.Y.Z`. That PR rewrites `package.json` `version`, `.release-please-manifest.json`, and prepends a `CHANGELOG.md` block.
+2. Merging the release PR back into `pdig` produces the bot's `chore(pdig): release X.Y.Z` commit on `pdig` and a matching `vX.Y.Z` git tag.
+3. The same workflow's `publish` job then runs (`needs: release-please`, gated on `release_created == 'true'`): it checks out the tagged commit, installs deps with pnpm, installs pinned `npm@11.5.1`, and runs `npm publish` against npmjs.org via OIDC Trusted Publishing. No `NPM_TOKEN`, no human credentials.
+
+What this means in practice:
+
+- **Don't** edit `version` in `package.json` — release-please owns it. (`release-type: node` in `release-please-config.json`.)
+- **Don't** create `chore(...): release ...` commits — they are bot-authored only. If you see one, it came from a merged release PR.
+- **Don't** run `npm publish` locally. The OIDC publish only works from the GitHub Actions environment.
+- **Don't** push tags by hand.
+- **Do** land your work as a regular conventional-commit PR (`fix:`, `feat:`, `sec:`, etc. — see allowed types in the Conventions section). Release-please will pick it up on the next push to `pdig` and roll it into the open release PR.
+- For E2E testing against a real consumer with `npm pack`, do it on a throwaway local commit and **revert the version bump** before opening a PR. Local tarball testing must not leak into the committed `package.json`.
+- Recovery only: `workflow_dispatch` with `force_publish=true` republishes current `pdig` HEAD without a release PR. Use only if a publish job failed mid-flight after a release PR already merged.
+
+The only file `release-please-config.json` keeps in sync is `package.json` `version` (its `extra-files` array is empty). Anything else that embeds the version (e.g. the `--excludePackages '@porscheofficial/...@X.Y.Z'` literal in the `check:sec:licenses` script — see ADR-0013) drifts unless either added to `extra-files` or refactored to read the version dynamically. Treat any new "version-shaped string" outside `package.json.version` as a future drift hazard.
+
 ## Pitfalls
 
 1. **Page tests must NOT live in `src/pages/`** — Turbopack treats any `.tsx` in pages as a route. Put them in `src/__tests__/pages/`.

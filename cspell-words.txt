@@ -660,5 +660,6 @@ prereq
 prerendering
 prerenders
 reqwest
+npmjs
 initialised
 behaviours

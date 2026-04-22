@@ -138,6 +138,7 @@ vi.mock("../config", () => {
       showChart: true,
       showTagFilter: true,
       showTeamFilter: true,
+      showBlipChange: true,
     },
     colors: {
       foreground: "#FFF",
@@ -226,6 +227,7 @@ import {
   getFooterLogoUrl,
   getImprintUrl,
   getItem,
+  getItemChangeDirection,
   getItems,
   getItemTrajectories,
   getJsUrl,
@@ -546,5 +548,100 @@ describe("getVersionDiffs", () => {
     expect(march.teamChanges.some((t) => t.item.id === "kubernetes")).toBe(
       true,
     );
+  });
+});
+
+describe("getItemChangeDirection", () => {
+  it("returns promoted when the latest revision moves inward", () => {
+    const item: Item = {
+      ..._mockItems[2],
+      revisions: [
+        { release: "2024-01", ring: "hold" },
+        {
+          release: "2024-03",
+          ring: "assess",
+          previousRing: "hold",
+        },
+      ],
+    };
+
+    expect(getItemChangeDirection(item)).toBe("promoted");
+  });
+
+  it("returns demoted when the latest revision moves outward", () => {
+    const item: Item = {
+      ..._mockItems[0],
+      ring: "hold",
+      revisions: [
+        { release: "2024-01", ring: "trial" },
+        {
+          release: "2024-03",
+          ring: "hold",
+          previousRing: "trial",
+        },
+      ],
+    };
+
+    expect(getItemChangeDirection(item)).toBe("demoted");
+  });
+
+  it("returns null when there are no revisions", () => {
+    const item: Item = { ..._mockItems[0], revisions: [] };
+
+    expect(getItemChangeDirection(item)).toBeNull();
+  });
+
+  it("returns null when no revision has a previous ring", () => {
+    expect(getItemChangeDirection(_mockItems[0])).toBeNull();
+  });
+
+  it("uses the most recent ring change when the latest revision is a non-ring update", () => {
+    const item: Item = {
+      ..._mockItems[2],
+      ring: "assess",
+      revisions: [
+        { release: "2024-01", ring: "hold" },
+        {
+          release: "2024-03",
+          ring: "assess",
+          previousRing: "hold",
+        },
+        { release: "2024-06", ring: "assess" },
+      ],
+    };
+
+    expect(getItemChangeDirection(item)).toBe("promoted");
+  });
+
+  it("returns null when the latest revision stays in the same ring", () => {
+    const item: Item = {
+      ..._mockItems[0],
+      revisions: [
+        { release: "2024-01", ring: "trial" },
+        {
+          release: "2024-03",
+          ring: "adopt",
+          previousRing: "adopt",
+        },
+      ],
+    };
+
+    expect(getItemChangeDirection(item)).toBeNull();
+  });
+
+  it("returns null when the latest revision references an unknown ring", () => {
+    const item: Item = {
+      ..._mockItems[0],
+      revisions: [
+        { release: "2024-01", ring: "trial" },
+        {
+          release: "2024-03",
+          ring: "adopt",
+          previousRing: "unknown-ring",
+        },
+      ],
+    };
+
+    expect(getItemChangeDirection(item)).toBeNull();
   });
 });

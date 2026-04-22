@@ -5,6 +5,9 @@ import { Flag } from "@/lib/types";
 
 interface BlipProps {
   color: string;
+  direction?: "promoted" | "demoted";
+  centerX?: number;
+  centerY?: number;
   x: number;
   y: number;
 }
@@ -12,6 +15,9 @@ interface BlipProps {
 export const Blip = memo(function Blip({
   flag,
   color,
+  direction,
+  centerX,
+  centerY,
   x,
   y,
 }: BlipProps & { flag: Flag }) {
@@ -27,6 +33,9 @@ export const Blip = memo(function Blip({
           x={x}
           y={y}
           color={color}
+          direction={direction}
+          centerX={centerX}
+          centerY={centerY}
           blipSize={blipSize}
           halfBlipSize={halfBlipSize}
         />
@@ -59,22 +68,58 @@ function BlipChanged({
   x,
   y,
   color,
+  direction,
+  centerX,
+  centerY,
   blipSize,
   halfBlipSize,
-}: InternalBlipProps & { blipSize: number }) {
+}: InternalBlipProps & {
+  blipSize: number;
+  direction?: "promoted" | "demoted";
+  centerX?: number;
+  centerY?: number;
+}) {
   const tx = Math.round(x - halfBlipSize);
   const ty = Math.round(y - halfBlipSize);
+
+  let arcPath: string | null = null;
+  if (direction && centerX !== undefined && centerY !== undefined) {
+    const theta = Math.atan2(y - centerY, x - centerX);
+    const centerAngle = direction === "demoted" ? theta : theta + Math.PI;
+    const halfSweep = (55 * Math.PI) / 180;
+    const startAngle = centerAngle - halfSweep;
+    const endAngle = centerAngle + halfSweep;
+    const radius = blipSize * 0.875;
+    const startX = x + radius * Math.cos(startAngle);
+    const startY = y + radius * Math.sin(startAngle);
+    const endX = x + radius * Math.cos(endAngle);
+    const endY = y + radius * Math.sin(endAngle);
+
+    arcPath = `M ${startX} ${startY} A ${radius} ${radius} 0 0 1 ${endX} ${endY}`;
+  }
+
   return (
-    <rect
-      transform={`rotate(-45 ${tx} ${ty})`}
-      x={tx}
-      y={ty}
-      width={blipSize}
-      height={blipSize}
-      rx="3"
-      stroke="none"
-      fill={color}
-    />
+    <g>
+      {arcPath ? (
+        <path
+          d={arcPath}
+          fill="none"
+          stroke={color}
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+      ) : null}
+      <rect
+        transform={`rotate(-45 ${x} ${y})`}
+        x={tx}
+        y={ty}
+        width={blipSize}
+        height={blipSize}
+        rx="3"
+        stroke="none"
+        fill={color}
+      />
+    </g>
   );
 }
 

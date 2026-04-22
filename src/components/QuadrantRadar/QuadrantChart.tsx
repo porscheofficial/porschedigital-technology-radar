@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { type FC, memo, useMemo } from "react";
 import { Blip } from "@/components/Radar/Blip";
+import { getItemChangeDirection, getToggle } from "@/lib/data";
 import { useRadarHighlight } from "@/lib/RadarHighlightContext";
-import type { Item, Quadrant, Ring } from "@/lib/types";
+import { Flag, type Item, type Quadrant, type Ring } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import styles from "./QuadrantChart.module.scss";
 
@@ -36,6 +37,9 @@ const QuadrantChartInner: FC<QuadrantChartProps> = ({
   const hasHighlights = filterActive || highlightSet.size > 0;
 
   const center = size / 2;
+  const centerX = center;
+  const centerY = center;
+  const showBlipChange = getToggle("showBlipChange");
   const numQuadrants = allQuadrants.length;
   const sweep = numQuadrants > 0 ? 360 / numQuadrants : 90;
   const position = quadrant.position;
@@ -256,6 +260,10 @@ const QuadrantChartInner: FC<QuadrantChartProps> = ({
     const ring = rings.find((r) => r.id === item.ring);
     if (!ring) return null;
     const [x, y] = item.position;
+    const direction =
+      showBlipChange && item.flag === Flag.Changed
+        ? getItemChangeDirection(item)
+        : undefined;
 
     const isHighlighted = highlightSet.has(item.id);
     const isDimmed = hasHighlights && !isHighlighted;
@@ -275,7 +283,15 @@ const QuadrantChartInner: FC<QuadrantChartProps> = ({
         )}
         tabIndex={-1}
       >
-        <Blip flag={item.flag} color={quadrant.color} x={x} y={y} />
+        <Blip
+          flag={item.flag}
+          color={quadrant.color}
+          direction={direction ?? undefined}
+          centerX={direction ? centerX : undefined}
+          centerY={direction ? centerY : undefined}
+          x={x}
+          y={y}
+        />
       </Link>
     );
   };

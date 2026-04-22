@@ -12,6 +12,7 @@
     "showChart": true,
     "showTagFilter": true,
     "showTeamFilter": true,
+    "showBlipChange": true,
     "showDemoDisclaimer": false,
     "multiSelectFilters": true
   },

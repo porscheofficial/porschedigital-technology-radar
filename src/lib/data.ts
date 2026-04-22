@@ -214,6 +214,36 @@ export function getItemTrajectories(): ItemTrajectory[] {
     });
 }
 
+export function getItemChangeDirection(
+  item: Item,
+): "promoted" | "demoted" | null {
+  const revisions = item.revisions ?? [];
+  if (revisions.length === 0) return null;
+
+  // `flag === Changed` is set for any field change (body/teams/ring), but
+  // `previousRing` exists only on ring-move revisions. Walk newest→oldest
+  // to find the most recent directional move.
+  let ringChange: { previousRing: string; ring: string } | null = null;
+  for (let i = revisions.length - 1; i >= 0; i--) {
+    const rev = revisions[i];
+    if (rev?.previousRing && rev.previousRing !== rev.ring) {
+      ringChange = { previousRing: rev.previousRing, ring: rev.ring };
+      break;
+    }
+  }
+  if (!ringChange) return null;
+
+  const ringOrder = getRings().map((r) => r.id);
+  const fromIdx = ringOrder.indexOf(ringChange.previousRing);
+  const toIdx = ringOrder.indexOf(ringChange.ring);
+
+  if (fromIdx === -1 || toIdx === -1) return null;
+  if (toIdx < fromIdx) return "promoted";
+  if (toIdx > fromIdx) return "demoted";
+
+  return null;
+}
+
 export function getVersionDiffs(): VersionDiff[] {
   const releases = getReleases();
   const items = getItems();

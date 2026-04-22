@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { type FC, Fragment, memo, useMemo } from "react";
 import { Blip } from "@/components/Radar/Blip";
+import { getItemChangeDirection, getToggle } from "@/lib/data";
 import { useRadarHighlight } from "@/lib/RadarHighlightContext";
-import type { Item, Quadrant, Ring } from "@/lib/types";
+import { Flag, type Item, type Quadrant, type Ring } from "@/lib/types";
 import { assetUrl, cn } from "@/lib/utils";
 import styles from "./Chart.module.scss";
 
@@ -31,6 +32,9 @@ const ChartInner: FC<ChartProps> = ({
   const padding = size * CHART_PADDING_RATIO;
   const viewBoxSize = size + padding * 2;
   const viewBoxCenter = viewBoxSize / 2;
+  const centerX = viewBoxCenter;
+  const centerY = viewBoxCenter;
+  const showBlipChange = getToggle("showBlipChange");
 
   const numQuadrants = quadrants.length;
   const sweep = numQuadrants > 0 ? 360 / numQuadrants : 90;
@@ -125,6 +129,10 @@ const ChartInner: FC<ChartProps> = ({
     const [x, y] = item.position;
     const bx = x + padding;
     const by = y + padding;
+    const direction =
+      showBlipChange && item.flag === Flag.Changed
+        ? getItemChangeDirection(item)
+        : undefined;
 
     const isHighlighted = highlightSet.has(item.id);
     const isDimmed = hasHighlights && !isHighlighted;
@@ -144,7 +152,15 @@ const ChartInner: FC<ChartProps> = ({
         )}
         tabIndex={-1}
       >
-        <Blip flag={item.flag} color={quadrant.color} x={bx} y={by} />
+        <Blip
+          flag={item.flag}
+          color={quadrant.color}
+          direction={direction ?? undefined}
+          centerX={direction ? centerX : undefined}
+          centerY={direction ? centerY : undefined}
+          x={bx}
+          y={by}
+        />
       </Link>
     );
   };

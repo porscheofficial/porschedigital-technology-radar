@@ -186,6 +186,7 @@ All configuration lives in `data/config.json`. Any key you omit falls back to th
 | `showChart`      | Show the radar visualization on the homepage. | `true`  |
 | `showTagFilter`  | Show the tag filter below the radar.          | `true`  |
 | `showTeamFilter` | Show the team filter below the radar.         | `true`  |
+| `showBlipChange` | Show a directional arc on Changed blips indicating promotion (inward) or demotion (outward). | `true` |
 | `showDemoDisclaimer` | Show the demo-data disclaimer banner on the homepage. | `false` |
 | `multiSelectFilters` | Allow selecting multiple filters per dimension (OR semantics within, AND across). When `false`, each dimension allows only one active filter at a time. | `true` |
 
@@ -310,6 +311,7 @@ An array of social link objects shown in the footer.
     "showChart": true,
     "showTagFilter": true,
     "showTeamFilter": false,
+    "showBlipChange": true,
     "multiSelectFilters": true
   },
   "colors": {
@@ -619,4 +621,3 @@ This project is open source under the [Apache License 2.0](./LICENSE).
 
 Originally based on the [AOE Technology Radar](https://github.com/AOEpeople/aoe_technology_radar).
 Maintained and developed by [Porsche Digital](https://www.porsche.digital/).
-

@@ -48,8 +48,109 @@ describe("Blip", () => {
     expect(rect).toHaveAttribute("rx", "3");
     expect(rect).toHaveAttribute("x", "94");
     expect(rect).toHaveAttribute("y", "194");
-    expect(rect).toHaveAttribute("transform", "rotate(-45 94 194)");
+    expect(rect).toHaveAttribute("transform", "rotate(-45 100 200)");
     expect(mockGetChartConfig).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not render a change arc when direction is undefined", () => {
+    const { container } = render(
+      <svg role="img" aria-label="test">
+        <Blip flag={Flag.Changed} color="#00aa88" x={100} y={200} />
+      </svg>,
+    );
+
+    expect(container.querySelector("g path")).not.toBeInTheDocument();
+    expect(container.querySelector("g rect")).toBeInTheDocument();
+  });
+
+  it("renders a promoted change arc", () => {
+    const { container } = render(
+      <svg role="img" aria-label="test">
+        <Blip
+          flag={Flag.Changed}
+          color="#00aa88"
+          direction="promoted"
+          centerX={100}
+          centerY={100}
+          x={100}
+          y={200}
+        />
+      </svg>,
+    );
+
+    const arc = container.querySelector("g path");
+
+    expect(arc).toBeInTheDocument();
+    expect(arc).toHaveAttribute(
+      "d",
+      expect.stringContaining("A 10.5 10.5 0 0 1"),
+    );
+  });
+
+  it("renders a demoted change arc", () => {
+    const { container } = render(
+      <svg role="img" aria-label="test">
+        <Blip
+          flag={Flag.Changed}
+          color="#00aa88"
+          direction="demoted"
+          centerX={100}
+          centerY={100}
+          x={100}
+          y={200}
+        />
+      </svg>,
+    );
+
+    const arc = container.querySelector("g path");
+
+    expect(arc).toBeInTheDocument();
+    expect(arc).toHaveAttribute(
+      "d",
+      expect.stringContaining("A 10.5 10.5 0 0 1"),
+    );
+  });
+
+  it("uses the blip color for the change arc stroke", () => {
+    const { container } = render(
+      <svg role="img" aria-label="test">
+        <Blip
+          flag={Flag.Changed}
+          color="#123abc"
+          direction="promoted"
+          centerX={100}
+          centerY={100}
+          x={100}
+          y={200}
+        />
+      </svg>,
+    );
+
+    expect(container.querySelector("g path")).toHaveAttribute(
+      "stroke",
+      "#123abc",
+    );
+  });
+
+  it("renders the change arc before the diamond", () => {
+    const { container } = render(
+      <svg role="img" aria-label="test">
+        <Blip
+          flag={Flag.Changed}
+          color="#00aa88"
+          direction="promoted"
+          centerX={100}
+          centerY={100}
+          x={100}
+          y={200}
+        />
+      </svg>,
+    );
+
+    const group = container.querySelector("g");
+
+    expect(group?.children[0]?.tagName).toBe("path");
+    expect(group?.children[1]?.tagName).toBe("rect");
   });
 
   it("renders a default blip as a circle", () => {

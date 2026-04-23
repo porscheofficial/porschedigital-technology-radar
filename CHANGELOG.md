@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.2.6](https://github.com/porscheofficial/porschedigital-technology-radar/compare/v1.2.5...v1.2.6) (2026-04-23)
+
+
+### Bug Fixes
+
+* **a11y:** promote about-page section headings from h3 to h2 ([9fde2b2](https://github.com/porscheofficial/porschedigital-technology-radar/commit/9fde2b2000476c6c8c382ed7d00cd90ea6058798))
+* **radar:** align trajectory arc with history page semantics ([7d94f1e](https://github.com/porscheofficial/porschedigital-technology-radar/commit/7d94f1e97868e902ef3bf657956f809a166e53fa))
+* **radar:** read newest revision from reversed data.json ([1189f82](https://github.com/porscheofficial/porschedigital-technology-radar/commit/1189f8267ee0de7ffaeaf4736a3efa5a23571814))
+* **radar:** remove redundant svg &lt;title&gt; causing native tooltip on blip hover ([ca12e6f](https://github.com/porscheofficial/porschedigital-technology-radar/commit/ca12e6f3cfcbc3b3273f2bdf6f3626c669e195c9))
+
+
+### Documentation
+
+* add ADR 0026 for renaming default branch to main ([6424662](https://github.com/porscheofficial/porschedigital-technology-radar/commit/64246622edfd633c18bfe7e1ca2b4a59d67d971c))
+* **agents:** add Test Quality Requirement section ([6e69e76](https://github.com/porscheofficial/porschedigital-technology-radar/commit/6e69e76352d728b85712f3d69de12c5a83ff7ced))
+
+
+### CI/CD
+
+* rename default branch from pdig to main ([3cb5be1](https://github.com/porscheofficial/porschedigital-technology-radar/commit/3cb5be18e3aa38f3939ecad0308279340ddf1d0c))
+
 ## [1.2.5](https://github.com/porscheofficial/porschedigital-technology-radar/compare/v1.2.4...v1.2.5) (2026-04-23)
 
 

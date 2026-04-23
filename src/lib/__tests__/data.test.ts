@@ -556,12 +556,12 @@ describe("getItemChangeDirection", () => {
     const item: Item = {
       ..._mockItems[2],
       revisions: [
-        { release: "2024-01", ring: "hold" },
         {
           release: "2024-03",
           ring: "assess",
           previousRing: "hold",
         },
+        { release: "2024-01", ring: "hold" },
       ],
     };
 
@@ -573,12 +573,12 @@ describe("getItemChangeDirection", () => {
       ..._mockItems[0],
       ring: "hold",
       revisions: [
-        { release: "2024-01", ring: "trial" },
         {
           release: "2024-03",
           ring: "hold",
           previousRing: "trial",
         },
+        { release: "2024-01", ring: "trial" },
       ],
     };
 
@@ -600,13 +600,13 @@ describe("getItemChangeDirection", () => {
       ..._mockItems[2],
       ring: "assess",
       revisions: [
-        { release: "2024-01", ring: "hold" },
+        { release: "2024-06", ring: "assess" },
         {
           release: "2024-03",
           ring: "assess",
           previousRing: "hold",
         },
-        { release: "2024-06", ring: "assess" },
+        { release: "2024-01", ring: "hold" },
       ],
     };
 
@@ -617,12 +617,12 @@ describe("getItemChangeDirection", () => {
     const item: Item = {
       ..._mockItems[0],
       revisions: [
-        { release: "2024-01", ring: "trial" },
         {
           release: "2024-03",
           ring: "adopt",
           previousRing: "adopt",
         },
+        { release: "2024-01", ring: "trial" },
       ],
     };
 
@@ -633,15 +633,60 @@ describe("getItemChangeDirection", () => {
     const item: Item = {
       ..._mockItems[0],
       revisions: [
-        { release: "2024-01", ring: "trial" },
         {
           release: "2024-03",
           ring: "adopt",
           previousRing: "unknown-ring",
         },
+        { release: "2024-01", ring: "trial" },
       ],
     };
 
     expect(getItemChangeDirection(item)).toBeNull();
+  });
+});
+
+describe("revision ordering invariant", () => {
+  it("data.json stores each item's revisions newest-first", () => {
+    const items = getItems();
+    const violations: string[] = [];
+    for (const item of items) {
+      const releases = (item.revisions ?? []).map((r) => r.release);
+      if (releases.length < 2) continue;
+      const sorted = [...releases].sort().reverse();
+      if (JSON.stringify(releases) !== JSON.stringify(sorted)) {
+        violations.push(`${item.id}: ${releases.join(",")}`);
+      }
+    }
+    expect(violations).toEqual([]);
+  });
+});
+
+describe("radar arc ↔ history page consistency", () => {
+  it("getItemChangeDirection agrees with getVersionDiffs for the latest release", () => {
+    const items = getItems();
+    const diffs = getVersionDiffs();
+    if (diffs.length === 0) return;
+    const latest = diffs[0];
+    const promotedIds = new Set(latest.promoted.map((p) => p.item.id));
+    const demotedIds = new Set(latest.demoted.map((d) => d.item.id));
+
+    const disagreements: string[] = [];
+    for (const item of items) {
+      const dir = getItemChangeDirection(item);
+      const inLatest =
+        item.revisions?.[0]?.release === latest.release &&
+        (item.revisions?.length ?? 0) > 1;
+      if (!inLatest) continue;
+      const expected = promotedIds.has(item.id)
+        ? "promoted"
+        : demotedIds.has(item.id)
+          ? "demoted"
+          : null;
+      if (dir !== expected) {
+        disagreements.push(`${item.id}: arc=${dir}, history=${expected}`);
+      }
+    }
+    expect(disagreements).toEqual([]);
   });
 });

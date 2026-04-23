@@ -236,21 +236,34 @@ export function classifyRingMove(
   return null;
 }
 
+/**
+ * Returns the most recent revision of an item, or `undefined` if there are
+ * none.
+ *
+ * SOURCE OF TRUTH for the revision ordering convention. `data.json` stores
+ * revisions newest-first (see `scripts/buildData.ts` — the array is
+ * `.reverse()`d before serialization). All consumers MUST go through this
+ * helper instead of indexing the array directly: it is the single place where
+ * the convention lives, the single place that can break if the convention
+ * ever changes, and the single place that needs a test.
+ */
+export function getLatestRevision(item: Item): Revision | undefined {
+  return item.revisions?.[0];
+}
+
 export function getItemChangeDirection(
   item: Item,
 ): "promoted" | "demoted" | null {
-  const revisions = item.revisions ?? [];
-  if (revisions.length === 0) return null;
-
   // Only the latest revision counts. `Flag.Changed` fires for any edit
   // (body/teams/ring) in the latest release, but the trajectory arc must
   // mean the same thing as the History page: the ring moved in *this*
   // release. Walking back to find an older ring move would render an arc
   // for items whose latest change was a description tweak.
-  const latest = revisions[revisions.length - 1];
+  const latest = getLatestRevision(item);
+  if (!latest) return null;
   return classifyRingMove(
-    latest?.previousRing,
-    latest?.ring ?? "",
+    latest.previousRing,
+    latest.ring,
     getRings().map((r) => r.id),
   );
 }

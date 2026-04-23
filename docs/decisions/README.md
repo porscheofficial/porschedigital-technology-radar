@@ -59,6 +59,7 @@ ADRs cite the *decisions behind those rules*.
 | 0023 | Fence module resolution to the shadow workspace (`outputFileTracingRoot` + webpack alias) | superseded by ADR-0024 (config retained as defense-in-depth) |
 | 0024 | Skip nested `node_modules/` when copying the shadow workspace | accepted (supersedes 0023) |
 | 0025 | CI workflow, npm provenance, and OSV SARIF upload | accepted (amends 0006, amends 0017) |
+| 0026 | Rename default branch from `pdig` to `main`   | accepted |
 
 ## When to write a new ADR
 

@@ -214,34 +214,45 @@ export function getItemTrajectories(): ItemTrajectory[] {
     });
 }
 
+/**
+ * Classify a single revision's ring transition.
+ *
+ * Shared primitive between `getItemChangeDirection` (per-blip arc on the radar)
+ * and `getVersionDiffs` (history page promoted/demoted lists). Centralising
+ * this logic guarantees the radar arc and the history table can never disagree
+ * on what counts as a promotion or demotion.
+ */
+export function classifyRingMove(
+  previousRing: string | undefined,
+  ring: string,
+  ringOrder: string[],
+): "promoted" | "demoted" | null {
+  if (!previousRing || previousRing === ring) return null;
+  const fromIdx = ringOrder.indexOf(previousRing);
+  const toIdx = ringOrder.indexOf(ring);
+  if (fromIdx === -1 || toIdx === -1) return null;
+  if (toIdx < fromIdx) return "promoted";
+  if (toIdx > fromIdx) return "demoted";
+  return null;
+}
+
 export function getItemChangeDirection(
   item: Item,
 ): "promoted" | "demoted" | null {
   const revisions = item.revisions ?? [];
   if (revisions.length === 0) return null;
 
-  // `flag === Changed` is set for any field change (body/teams/ring), but
-  // `previousRing` exists only on ring-move revisions. Walk newest→oldest
-  // to find the most recent directional move.
-  let ringChange: { previousRing: string; ring: string } | null = null;
-  for (let i = revisions.length - 1; i >= 0; i--) {
-    const rev = revisions[i];
-    if (rev?.previousRing && rev.previousRing !== rev.ring) {
-      ringChange = { previousRing: rev.previousRing, ring: rev.ring };
-      break;
-    }
-  }
-  if (!ringChange) return null;
-
-  const ringOrder = getRings().map((r) => r.id);
-  const fromIdx = ringOrder.indexOf(ringChange.previousRing);
-  const toIdx = ringOrder.indexOf(ringChange.ring);
-
-  if (fromIdx === -1 || toIdx === -1) return null;
-  if (toIdx < fromIdx) return "promoted";
-  if (toIdx > fromIdx) return "demoted";
-
-  return null;
+  // Only the latest revision counts. `Flag.Changed` fires for any edit
+  // (body/teams/ring) in the latest release, but the trajectory arc must
+  // mean the same thing as the History page: the ring moved in *this*
+  // release. Walking back to find an older ring move would render an arc
+  // for items whose latest change was a description tweak.
+  const latest = revisions[revisions.length - 1];
+  return classifyRingMove(
+    latest?.previousRing,
+    latest?.ring ?? "",
+    getRings().map((r) => r.id),
+  );
 }
 
 export function getVersionDiffs(): VersionDiff[] {
@@ -278,22 +289,15 @@ export function getVersionDiffs(): VersionDiff[] {
           continue;
         }
 
-        if (rev.previousRing && rev.previousRing !== rev.ring) {
-          const fromIdx = ringOrder.indexOf(rev.previousRing);
-          const toIdx = ringOrder.indexOf(rev.ring);
-          if (toIdx < fromIdx) {
-            diff.promoted.push({
-              item,
-              from: rev.previousRing,
-              to: rev.ring,
-            });
-          } else {
-            diff.demoted.push({
-              item,
-              from: rev.previousRing,
-              to: rev.ring,
-            });
-          }
+        const direction = classifyRingMove(
+          rev.previousRing,
+          rev.ring,
+          ringOrder,
+        );
+        if (direction === "promoted" && rev.previousRing) {
+          diff.promoted.push({ item, from: rev.previousRing, to: rev.ring });
+        } else if (direction === "demoted" && rev.previousRing) {
+          diff.demoted.push({ item, from: rev.previousRing, to: rev.ring });
         }
 
         const added = rev.addedTeams || [];

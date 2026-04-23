@@ -595,7 +595,7 @@ describe("getItemChangeDirection", () => {
     expect(getItemChangeDirection(_mockItems[0])).toBeNull();
   });
 
-  it("uses the most recent ring change when the latest revision is a non-ring update", () => {
+  it("returns null when the latest revision is a non-ring update, even if an older revision moved rings", () => {
     const item: Item = {
       ..._mockItems[2],
       ring: "assess",
@@ -610,7 +610,7 @@ describe("getItemChangeDirection", () => {
       ],
     };
 
-    expect(getItemChangeDirection(item)).toBe("promoted");
+    expect(getItemChangeDirection(item)).toBeNull();
   });
 
   it("returns null when the latest revision stays in the same ring", () => {

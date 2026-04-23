@@ -4,6 +4,31 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.2.5](https://github.com/porscheofficial/porschedigital-technology-radar/compare/v1.2.4...v1.2.5) (2026-04-23)
+
+
+### Bug Fixes
+
+* **scripts:** preserve latest revision when ring moves without team or body delta ([9e49830](https://github.com/porscheofficial/porschedigital-technology-radar/commit/9e49830c79b0e1053cf753f1b80fa2df5085e50d))
+
+
+### Security
+
+* fix CodeQL findings for tmp file race and insecure tmp dir ([2c3186e](https://github.com/porscheofficial/porschedigital-technology-radar/commit/2c3186e234372044bec99f5c42d71d88aaa79d23))
+
+
+### Documentation
+
+* collapse README badges into a single row ([862382c](https://github.com/porscheofficial/porschedigital-technology-radar/commit/862382c2477d475d674322af75cee6c74f48069a))
+* document flexible quadrant count (1-6+) and lock invariant ([cb8ab7f](https://github.com/porscheofficial/porschedigital-technology-radar/commit/cb8ab7f4dfd4be02bab136c67b6af53c9bc86b4f))
+* refresh README badge lineup ([f9d98fa](https://github.com/porscheofficial/porschedigital-technology-radar/commit/f9d98fa27a8b0d779e7106c97cd5ae341c12a925))
+
+
+### CI/CD
+
+* add PR verify workflow, npm provenance, and OSV SARIF upload ([b968d84](https://github.com/porscheofficial/porschedigital-technology-radar/commit/b968d844ffd1f940a05268beed6b332382f88d6f))
+* build data before tsc and tests in verify workflow ([a3a4644](https://github.com/porscheofficial/porschedigital-technology-radar/commit/a3a464474b6f58b1c7e578cbe69d693ab366a5cf))
+
 ## [1.2.4](https://github.com/porscheofficial/porschedigital-technology-radar/compare/v1.2.3...v1.2.4) (2026-04-22)
 
 

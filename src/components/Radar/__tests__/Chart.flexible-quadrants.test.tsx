@@ -1,7 +1,7 @@
 import { render } from "@testing-library/react";
 
 import { Chart } from "@/components/Radar/Chart";
-import { Flag, type Item, type Quadrant, type Ring } from "@/lib/types";
+import type { Item, Quadrant, Ring } from "@/lib/types";
 
 vi.mock("@/lib/data", () => ({
   getToggle: vi.fn(() => false),

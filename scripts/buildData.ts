@@ -434,6 +434,14 @@ export function postProcessItems(items: Item[]): {
       revisions: item.revisions
         ?.filter((revision, index, revisions) => {
           if (index === 0) return true;
+          // Always keep the latest revision: it carries `previousRing` /
+          // `addedTeams` / `removedTeams` metadata that downstream consumers
+          // (`getItemChangeDirection`, `getVersionDiffs`) require. Dropping it
+          // because its fields equal the top-level item state is a tautology —
+          // the top-level state IS the latest revision (see line 320-329) — and
+          // strips the only signal of the most recent ring move. The renderer
+          // already handles "don't display the body twice" via `bodyInherited`.
+          if (index === revisions.length - 1) return true;
           const { ring, body } = revision;
           const prev = revisions[index - 1];
           const teamsChanged = prev

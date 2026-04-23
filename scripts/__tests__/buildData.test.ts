@@ -1011,6 +1011,46 @@ describe("buildData", () => {
       expect("teams" in (minimal ?? {})).toBe(false);
     });
 
+    it("retains the latest revision so previousRing survives a ring move with no team or body delta", () => {
+      // Regression: the post-process filter used to drop the latest revision
+      // when its fields equaled the top-level item state — which is always
+      // true, since the top-level state IS the latest revision. That stripped
+      // `previousRing`, breaking the change-direction arc and the History
+      // transition entry for items whose only recent change was a ring move.
+      const processed = buildData.postProcessItems([
+        createItem({
+          id: "aws-x-ray",
+          title: "AWS X-Ray",
+          body: "<p>Same body</p>",
+          ring: "hold",
+          release: "2026-02",
+          teams: ["platform"],
+          revisions: [
+            createRevision({
+              release: "2024-05",
+              ring: "assess",
+              body: "<p>Same body</p>",
+              teams: ["platform"],
+            }),
+            createRevision({
+              release: "2026-02",
+              ring: "hold",
+              body: "<p>Same body</p>",
+              teams: ["platform"],
+            }),
+          ],
+        }),
+      ]);
+
+      const item = processed.items.find((i) => i.id === "aws-x-ray");
+      expect(item?.revisions).toHaveLength(2);
+      expect(item?.revisions?.[0]).toMatchObject({
+        release: "2026-02",
+        ring: "hold",
+        previousRing: "assess",
+      });
+    });
+
     it("filters items by configured tags when config tags are present", async () => {
       const taggedBuildData = await loadBuildData(["keep"]);
       const processed = taggedBuildData.postProcessItems([

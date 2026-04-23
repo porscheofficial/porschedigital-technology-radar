@@ -226,6 +226,30 @@ MANDATORY: Every code change that adds or modifies logic MUST include correspond
 NEVER mark a task complete if `pnpm run test` fails.
 NEVER skip writing tests by saying "tests can be added later."
 
+### Test Quality Requirement
+
+A test that exists is not the same as a test that matters. When the same author writes the implementation and its tests in one sitting — humans do this; AI agents do this constantly — both can encode the same wrong assumption, both pass, and the bug ships green. Coverage tools, type checks, and lint do not detect this failure mode. The discipline below does.
+
+**The failure pattern.** Tests verify *the procedure described by the implementation* instead of *the contract demanded by the requirement*. They mirror the code instead of pinning it down. Symptoms: every test is a parametrized re-statement of the function body; flipping a key line in the implementation does not break any test; the requirement (in the user's words) does not appear as an executable assertion anywhere.
+
+**Three checks that must hold before declaring a change done:**
+
+1. **The requirement appears as a test.** Take the user's stated intent — verbatim if possible — and confirm at least one test fails when that intent is violated. If the requirement is *"X must agree with Y"*, the test asserts `X === Y` on real or representative data, not on hand-built fixtures that already encode the agreement. If the requirement is *"the latest revision determines the arc"*, the test feeds inputs where "latest" is unambiguous in the runtime data shape, not in the convenient reading order of a fixture.
+
+2. **Cross-component contracts have consistency tests.** Whenever two functions are documented as agreeing (radar arc ↔ history page, encoder ↔ decoder, getter ↔ setter, build-time data ↔ runtime accessor), there must be one test that asserts the agreement directly, iterating real or representative items and failing if the two ever disagree. Per-function unit tests on each side individually do not catch drift between them.
+
+3. **Mental mutation check.** Before claiming done, pick the most load-bearing line of the change and ask: *"if I flipped this — `revisions[0]` to `revisions[length-1]`, `<` to `<=`, `&&` to `||`, the order of two arguments — would any test fail?"* If the answer is *"no, but the requirement would be violated"*, the tests are inadequate and must be strengthened before commit. This is poor-man's mutation testing as a thinking step; it costs nothing and catches the failure pattern at the moment of authorship.
+
+**Anti-patterns that signal a weak test:**
+
+- The test fixture is structured the way the implementation iterates it (oldest-first when the function reads index `length-1`, newest-first when it reads index `0`) instead of the way the *runtime data* is shaped. The fixture and the implementation should agree because both follow reality, not because they were written together.
+- The test name describes the function's behavior (`returns null when previousRing is undefined`) instead of the requirement (`does not render an arc for description-only edits`). Behavioral names tend to lock in the implementation; requirement names tend to lock in the contract.
+- A bug fix ships without a test that, applied to the original buggy implementation, fails. If the test passes against both the broken and the fixed code, it is not a regression test — it is decoration.
+
+**Conventions for high-leverage code.** In `src/lib/` (the load-bearing pure-logic layer) and `scripts/` (build-time pipeline), prefer one *named helper* per non-obvious convention over scattering the assumption across call sites. The helper's docstring becomes the convention's home, and a single test pins it. See `getLatestRevision` in `src/lib/data.ts` as the canonical example: revisions are persisted newest-first by `scripts/buildData.ts`, and that fact lives in exactly one place that consumers MUST go through.
+
+This subsection is enforced by author discipline, not by a sensor. The harness can prove that *some* test exists (coverage thresholds in `vitest.config.ts`); it cannot prove the test means anything. That proof is your job, every time.
+
 ## Conventions
 
 ### Configuration ↔ README Sync

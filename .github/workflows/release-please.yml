@@ -2,11 +2,11 @@ name: Release Please
 
 on:
   push:
-    branches: [pdig]
+    branches: [main]
   workflow_dispatch:
     inputs:
       force_publish:
-        description: "Force publish current pdig HEAD to npm (recovery only)"
+        description: "Force publish current main HEAD to npm (recovery only)"
         required: false
         default: "false"
         type: choice
@@ -33,7 +33,7 @@ jobs:
         id: release
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          target-branch: pdig
+          target-branch: main
 
   publish:
     needs: release-please

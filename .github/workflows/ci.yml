@@ -3,7 +3,7 @@ name: CI
 on:
   pull_request:
   push:
-    branches: [pdig]
+    branches: [main]
 
 # Default to read-only at workflow level. Jobs only elevate when needed.
 # See ADR-0017 for the token-permission policy.

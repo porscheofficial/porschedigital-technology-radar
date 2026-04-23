@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [pdig]
+    branches: [main]
 
 env:
   NEXT_PUBLIC_BASE_PATH: /porschedigital-technology-radar

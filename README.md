@@ -1,12 +1,12 @@
 # Porsche Digital Technology Radar
 
-[![GitHub Pages Deploy](https://img.shields.io/github/actions/workflow/status/porscheofficial/porschedigital-technology-radar/deploy.yml?branch=pdig&label=deploy&logo=github)](https://github.com/porscheofficial/porschedigital-technology-radar/actions/workflows/deploy.yml)
+[![GitHub Pages Deploy](https://img.shields.io/github/actions/workflow/status/porscheofficial/porschedigital-technology-radar/deploy.yml?branch=main&label=deploy&logo=github)](https://github.com/porscheofficial/porschedigital-technology-radar/actions/workflows/deploy.yml)
 [![npm version](https://img.shields.io/npm/v/@porscheofficial/porschedigital-technology-radar?logo=npm)](https://www.npmjs.com/package/@porscheofficial/porschedigital-technology-radar)
 [![npm downloads](https://img.shields.io/npm/dw/@porscheofficial/porschedigital-technology-radar?logo=npm&label=downloads)](https://www.npmjs.com/package/@porscheofficial/porschedigital-technology-radar)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=nextdotjs&logoColor=white)](https://nextjs.org/)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/porscheofficial/porschedigital-technology-radar/badge)](https://scorecard.dev/viewer/?uri=github.com/porscheofficial/porschedigital-technology-radar)
-[![CodeQL](https://img.shields.io/github/actions/workflow/status/porscheofficial/porschedigital-technology-radar/codeql.yml?branch=pdig&label=CodeQL&logo=github)](https://github.com/porscheofficial/porschedigital-technology-radar/actions/workflows/codeql.yml)
+[![CodeQL](https://img.shields.io/github/actions/workflow/status/porscheofficial/porschedigital-technology-radar/codeql.yml?branch=main&label=CodeQL&logo=github)](https://github.com/porscheofficial/porschedigital-technology-radar/actions/workflows/codeql.yml)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-FE5196?logo=conventionalcommits&logoColor=white)](https://www.conventionalcommits.org)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue)](./LICENSE)
 

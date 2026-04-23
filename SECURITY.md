@@ -26,7 +26,7 @@ remediation plan or fix within **30 days** for high-severity issues.
 
 Only the latest published release of
 `@porscheofficial/porschedigital-technology-radar` on npm and the current
-`pdig` branch on GitHub receive security fixes. Older releases are not
+`main` branch on GitHub receive security fixes. Older releases are not
 patched.
 
 ## Security Posture

@@ -269,7 +269,6 @@ const ChartInner: FC<ChartProps> = ({
       role="img"
       aria-label="Technology radar chart"
     >
-      <title>Technology radar chart</title>
       {quadrants.map((quadrant) => (
         <g key={quadrant.id} data-quadrant={quadrant.id}>
           {renderGlow(quadrant.position, quadrant.color)}

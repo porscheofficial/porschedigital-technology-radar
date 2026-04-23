@@ -331,7 +331,6 @@ const QuadrantChartInner: FC<QuadrantChartProps> = ({
       role="img"
       aria-label="Quadrant radar chart"
     >
-      <title>Quadrant radar chart</title>
       {renderGlow()}
       {renderRingHighlights()}
       {rings.map((ring) => (

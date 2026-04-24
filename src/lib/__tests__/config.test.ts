@@ -11,15 +11,15 @@ describe("config module", () => {
       expect(config).toHaveProperty("editUrl");
       expect(config).toHaveProperty("toggles");
       expect(config).toHaveProperty("colors");
-      expect(config).toHaveProperty("quadrants");
+      expect(config).toHaveProperty("segments");
       expect(config).toHaveProperty("rings");
       expect(config).toHaveProperty("flags");
       expect(config).toHaveProperty("chart");
       expect(config).toHaveProperty("labels");
     });
 
-    it("has exactly 4 quadrants by default", () => {
-      expect(config.quadrants).toHaveLength(4);
+    it("has exactly 4 segments by default", () => {
+      expect(config.segments).toHaveLength(4);
     });
 
     it("has exactly 4 rings by default", () => {
@@ -65,9 +65,9 @@ describe("config module", () => {
     });
   });
 
-  describe("quadrant structure", () => {
-    it("every quadrant has id, title, description, color", () => {
-      for (const q of config.quadrants) {
+  describe("segment structure", () => {
+    it("every segment has id, title, description, color", () => {
+      for (const q of config.segments) {
         expect(q.id).toEqual(expect.any(String));
         expect(q.title).toEqual(expect.any(String));
         expect(q.description).toEqual(expect.any(String));
@@ -75,8 +75,8 @@ describe("config module", () => {
       }
     });
 
-    it("quadrant ids are unique", () => {
-      const ids = config.quadrants.map((q) => q.id);
+    it("segment ids are unique", () => {
+      const ids = config.segments.map((q) => q.id);
       expect(new Set(ids).size).toBe(ids.length);
     });
   });
@@ -127,7 +127,7 @@ describe("config deep merge (with partial user config)", () => {
     const merged = {
       ...defaultConfig,
       ...userOverrides,
-    } as typeof defaultConfig;
+    } as unknown as import("@/lib/config").Config;
 
     if (userOverrides.colors && typeof userOverrides.colors === "object") {
       merged.colors = {
@@ -188,14 +188,14 @@ describe("config deep merge (with partial user config)", () => {
     expect(result.baseUrl).toBe("https://custom.example.com");
   });
 
-  it("quadrants can be fully replaced", () => {
-    const customQuadrants = [
+  it("segments can be fully replaced", () => {
+    const customSegments = [
       { id: "q1", title: "Q1", description: "", color: "#111111" },
       { id: "q2", title: "Q2", description: "", color: "#222222" },
     ];
-    const result = mergeConfig({ quadrants: customQuadrants });
-    expect(result.quadrants).toHaveLength(2);
-    expect(result.quadrants[0].id).toBe("q1");
+    const result = mergeConfig({ segments: customSegments });
+    expect(result.segments).toHaveLength(2);
+    expect(result.segments[0].id).toBe("q1");
   });
 
   it("rings can be fully replaced", () => {

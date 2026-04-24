@@ -12,7 +12,7 @@ const _mockItems: Item[] = [
     body: "<p>TypeScript is great</p>",
     featured: true,
     ring: "adopt",
-    quadrant: "languages-and-frameworks",
+    segment: "languages-and-frameworks",
     flag: Flag.Default,
     tags: ["language"],
     release: "2024-03",
@@ -29,7 +29,7 @@ const _mockItems: Item[] = [
     body: "<p>React is a UI library</p>",
     featured: false,
     ring: "trial",
-    quadrant: "languages-and-frameworks",
+    segment: "languages-and-frameworks",
     flag: Flag.New,
     tags: ["frontend"],
     release: "2024-03",
@@ -43,7 +43,7 @@ const _mockItems: Item[] = [
     body: "<p>K8s</p>",
     featured: false,
     ring: "assess",
-    quadrant: "platforms-and-operations",
+    segment: "platforms-and-operations",
     flag: Flag.Changed,
     tags: ["infrastructure"],
     release: "2024-01",
@@ -73,7 +73,7 @@ vi.mock("../../../data/data.json", () => ({
         body: "<p>TypeScript is great</p>",
         featured: true,
         ring: "adopt",
-        quadrant: "languages-and-frameworks",
+        segment: "languages-and-frameworks",
         flag: "default",
         tags: ["language"],
         release: "2024-03",
@@ -90,7 +90,7 @@ vi.mock("../../../data/data.json", () => ({
         body: "<p>React is a UI library</p>",
         featured: false,
         ring: "trial",
-        quadrant: "languages-and-frameworks",
+        segment: "languages-and-frameworks",
         flag: "new",
         tags: ["frontend"],
         release: "2024-03",
@@ -104,7 +104,7 @@ vi.mock("../../../data/data.json", () => ({
         body: "<p>K8s</p>",
         featured: false,
         ring: "assess",
-        quadrant: "platforms-and-operations",
+        segment: "platforms-and-operations",
         flag: "changed",
         tags: ["infrastructure"],
         release: "2024-01",
@@ -144,7 +144,7 @@ vi.mock("../config", () => {
       foreground: "#FFF",
       background: "#000",
     },
-    quadrants: [
+    segments: [
       {
         id: "languages-and-frameworks",
         title: "Languages & Frameworks",
@@ -233,18 +233,18 @@ import {
   getJsUrl,
   getLabel,
   getLogoUrl,
-  getQuadrant,
-  getQuadrants,
   getReleases,
   getRing,
   getRings,
+  getSegment,
+  getSegments,
   getSocialLinks,
   getTags,
   getTeams,
   getToggle,
   getVersionDiffs,
-  groupItemsByQuadrant,
   groupItemsByRing,
+  groupItemsBySegment,
   sortByFeaturedAndTitle,
 } from "@/lib/data";
 
@@ -349,18 +349,18 @@ describe("getEditUrl", () => {
   });
 });
 
-describe("getQuadrants", () => {
-  it("returns quadrants with position", () => {
-    const quads = getQuadrants();
+describe("getSegments", () => {
+  it("returns segments with position", () => {
+    const quads = getSegments();
     expect(quads).toHaveLength(2);
     expect(quads[0].position).toBe(1);
     expect(quads[1].position).toBe(2);
   });
 });
 
-describe("getQuadrant", () => {
-  it("finds quadrant by id", () => {
-    expect(getQuadrant("languages-and-frameworks")?.title).toBe(
+describe("getSegment", () => {
+  it("finds segment by id", () => {
+    expect(getSegment("languages-and-frameworks")?.title).toBe(
       "Languages & Frameworks",
     );
   });
@@ -371,7 +371,7 @@ describe("getItems", () => {
     expect(getItems()).toHaveLength(3);
   });
 
-  it("filters by quadrant", () => {
+  it("filters by segment", () => {
     const items = getItems("languages-and-frameworks");
     expect(items).toHaveLength(2);
   });
@@ -388,13 +388,13 @@ describe("getItems", () => {
     expect(getItems()).toHaveLength(3);
   });
 
-  it("combines quadrant + featured filters", () => {
+  it("combines segment + featured filters", () => {
     const items = getItems("languages-and-frameworks", true);
     expect(items).toHaveLength(1);
     expect(items[0].id).toBe("typescript");
   });
 
-  it("returns empty when quadrant has no featured items", () => {
+  it("returns empty when segment has no featured items", () => {
     const items = getItems("platforms-and-operations", true);
     expect(items).toHaveLength(0);
   });
@@ -489,9 +489,9 @@ describe("groupItemsByRing", () => {
   });
 });
 
-describe("groupItemsByQuadrant", () => {
-  it("groups items by quadrant id", () => {
-    const groups = groupItemsByQuadrant(getItems());
+describe("groupItemsBySegment", () => {
+  it("groups items by segment id", () => {
+    const groups = groupItemsBySegment(getItems());
     expect(groups["languages-and-frameworks"]).toHaveLength(2);
     expect(groups["platforms-and-operations"]).toHaveLength(1);
   });

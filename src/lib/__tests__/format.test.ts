@@ -40,13 +40,11 @@ describe("format", () => {
 
 describe("formatTitle", () => {
   it("joins parts with pipe separator and appends app name", () => {
-    expect(formatTitle("Quadrant")).toBe("Quadrant | Test Radar");
+    expect(formatTitle("Segment")).toBe("Segment | Test Radar");
   });
 
   it("joins multiple parts", () => {
-    expect(formatTitle("Item", "Quadrant")).toBe(
-      "Item | Quadrant | Test Radar",
-    );
+    expect(formatTitle("Item", "Segment")).toBe("Item | Segment | Test Radar");
   });
 });
 
@@ -133,7 +131,7 @@ describe("deriveSummary", () => {
         body: "<p>Ignored</p>",
         featured: true,
         ring: "adopt",
-        quadrant: "languages-and-frameworks",
+        segment: "languages-and-frameworks",
         flag: Flag.Default,
         release: "2024-01",
         position: [0, 0],
@@ -148,7 +146,7 @@ describe("deriveSummary", () => {
       body: "<p>React is a UI library used for building interfaces with reusable components and predictable composition patterns across many frontend applications in large organisations with shared design systems and long-lived products.</p>",
       featured: true,
       ring: "adopt",
-      quadrant: "languages-and-frameworks",
+      segment: "languages-and-frameworks",
       flag: Flag.Default,
       release: "2024-01",
       position: [0, 0],

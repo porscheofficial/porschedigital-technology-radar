@@ -45,21 +45,21 @@ A Technology Radar makes technology decisions visible across your organization. 
 
 ## ✨ Features
 
-- **Visual technology landscape** — See your entire technology portfolio at a glance, organized by quadrant and maturity ring
+- **Visual technology landscape** — See your entire technology portfolio at a glance, organized by segment and maturity ring
 - **Track decisions over time** — Full revision history per technology and a trajectory view across releases, so you can see how assessments evolved
 - **Team visibility** — Understand which teams use which technologies, enabling informed staffing and knowledge-sharing decisions
 - **Searchable and filterable** — Find technologies instantly by name, tag, team, or status with real-time highlighting across the radar. Supports configurable multi-select or single-select filtering with shareable filter URLs
-- **Your branding, your rules** — Fully customizable colors, logos, quadrants, rings, and labels via a single `config.json`
+- **Your branding, your rules** — Fully customizable colors, logos, segments, rings, and labels via a single `config.json`
 - **Zero infrastructure** — Static site that deploys to GitHub Pages, Netlify, or any hosting. No servers, no databases, no runtime dependencies
 - **Content as code** — Technologies are plain Markdown files in Git. Review changes in PRs, track history with commits, collaborate with your existing workflow
 
 ## 📸 Screenshots
 
-### Quadrant Detail
+### Segment Detail
 
-Drill into a single quadrant with a zoomed mini-radar and a grouped technology list.
+Drill into a single segment with a zoomed mini-radar and a grouped technology list.
 
-![Quadrant detail page](./docs/assets/screenshot-quadrant.png)
+![Segment detail page](./docs/assets/screenshot-quadrant.png)
 
 ### Technology Detail
 
@@ -111,7 +111,7 @@ npx techradar init
 
 Edit the scaffolded files to match your organization:
 
-- `config.json` — branding, quadrants, rings, colors (see [Configuration](#configuration))
+- `config.json` — branding, segments, rings, colors (see [Configuration](#configuration))
 - `radar/` — your technology items as Markdown (see [Radar Items](#radar-items))
 - `about.md` — content for the help & about page
 - `public/` — favicon, images, background image
@@ -211,18 +211,22 @@ A map of CSS color values that theme the entire radar.
 </details>
 
 <details>
-<summary><strong><code>quadrants</code></strong></summary>
+<summary><strong><code>segments</code></strong></summary>
 
-An array of quadrant objects (1 or more). The radar geometry adapts automatically — arc sweep is `360° / N`, and labels follow the arcs. **3 to 6 is the comfortable range**; beyond 6 the per-quadrant arc becomes too narrow for readable labels and the blips start to crowd. Despite the name, "quadrant" here means "any radial segment of the radar"; the term is kept for backward compatibility.
+An array of segment objects (1 or more). The radar geometry adapts automatically — arc sweep is `360° / N`, and labels follow the arcs. **3 to 6 is the comfortable range**; beyond 6 the per-segment arc becomes too narrow for readable labels and the blips start to crowd.
 
-> **Heads up:** A future major release will rename `quadrants` to `segments` (config key, frontmatter attribute, and TypeScript types) to match the actual capability. A backward-compatibility shim will accept the old name with a deprecation warning, so existing radars will keep building.
+### Backward compatibility
+
+Forks using `quadrants:` in `data/config.json` continue working but emit `[deprecated] config key "quadrants" is renamed to "segments"...` at build time. Migration: rename the key.
+Markdown frontmatter `quadrant: <slug>` continues working but emits `[deprecated] frontmatter key "quadrant" is renamed to "segment" in <file>.` Migration: rename the field.
+Both shims will be removed in a future major release. See ADR-0025.
 
 | Key           | Description                                      |
 | ------------- | ------------------------------------------------ |
 | `id`          | Identifier used in radar Markdown files and URLs |
-| `title`       | Display title of the quadrant                    |
-| `description` | Shown on the homepage and quadrant detail page   |
-| `color`       | CSS color for the quadrant arc and its blips     |
+| `title`       | Display title of the segment                    |
+| `description` | Shown on the homepage and segment detail page   |
+| `color`       | CSS color for the segment arc and its blips     |
 
 </details>
 
@@ -326,7 +330,7 @@ An array of social link objects shown in the footer.
     "border": "#2A2A40",
     "tag": "#2A2A40"
   },
-  "quadrants": [
+  "segments": [
     {
       "id": "languages-and-frameworks",
       "title": "Languages & Frameworks",
@@ -434,7 +438,7 @@ Each file has a YAML front-matter header followed by Markdown content:
 ---
 title: "React"
 ring: adopt
-quadrant: languages-and-frameworks
+segment: languages-and-frameworks
 tags:
   - frontend
   - javascript
@@ -457,7 +461,7 @@ Supports full **Markdown** formatting.
 | ---------- | -------- | ------------------------------------------------------------------------------------------------------- |
 | `title`    | Yes      | Name of the technology                                                                                  |
 | `ring`     | Yes      | Ring placement. Must match one of the `id` values in `config.rings`.                                    |
-| `quadrant` | Yes      | Quadrant assignment. Must match one of the `id` values in `config.quadrants`.                           |
+| `segment`  | Yes      | Segment assignment. Must match one of the `id` values in `config.segments`.                           |
 | `summary`  | No       | Custom summary used for meta descriptions and link previews. Falls back to the first 160 characters of the item body. |
 | `ogImage`  | No       | Custom Open Graph image. Use a relative path under `public/` (for example `/images/react-card.png`) or a full `https://...` URL. |
 | `tags`     | No       | List of tags for filtering.                                                                             |
@@ -482,7 +486,7 @@ Place images in `public/images/` and reference them in Markdown:
 The build generates rich Open Graph / Twitter Card images for link previews.
 
 - `pnpm run build:og` creates a shared default card at `public/og/default.png`.
-- Every item detail page also gets a deterministic 1200×630 PNG at `public/og/<quadrant>/<id>.png`.
+- Every item detail page also gets a deterministic 1200×630 PNG at `public/og/<segment>/<id>.png`.
 - Generation is content-hash cached, so unchanged cards are skipped on later builds.
 
 To override the generated image for a single item, set `ogImage` in front-matter:
@@ -501,7 +505,7 @@ When `ogImage` is omitted, the generator builds the per-item card automatically.
 
 ### Cross-linking blips
 
-Use wiki-link syntax to link between radar items. The build resolves each link to the correct URL based on the item's quadrant:
+Use wiki-link syntax to link between radar items. The build resolves each link to the correct URL based on the item's segment:
 
 ```markdown
 We use [[typescript]] alongside [[react]] for our frontend stack.
@@ -591,7 +595,7 @@ pnpm run build:data --strict
 
 In strict mode, the build fails on:
 
-- Invalid frontmatter (missing or invalid `ring`, `quadrant`, etc.)
+- Invalid frontmatter (missing or invalid `ring`, `segment`, etc.)
 - Unresolved wiki-links (e.g., `[[nonexistent-item]]`)
 
 This is recommended for CI pipelines to catch issues before deployment.

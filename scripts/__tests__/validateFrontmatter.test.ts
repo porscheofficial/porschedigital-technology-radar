@@ -2,21 +2,31 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { consola } from "consola";
-import {
-  FrontmatterSchema,
-  parseRadarFrontmatter,
-  validateRadarFiles,
-} from "../validateFrontmatter";
 
-vi.mock("consola", () => ({
-  consola: {
-    warn: vi.fn(),
-    error: vi.fn(),
-    success: vi.fn(),
-    start: vi.fn(),
-    fatal: vi.fn(),
-  },
-}));
+async function importValidateFrontmatterModule() {
+  return import("../validateFrontmatter");
+}
+
+function mockSegmentConfig() {
+  vi.doMock("../../data/config.json", () => ({
+    default: {
+      segments: [
+        {
+          id: "languages-and-frameworks",
+          title: "Languages & Frameworks",
+          description: "Config used by validateFrontmatter tests.",
+          color: "#4A9E7E",
+        },
+        {
+          id: "methods-and-patterns",
+          title: "Methods & Patterns",
+          description: "Second valid test segment.",
+          color: "#5B8DB8",
+        },
+      ],
+    },
+  }));
+}
 
 // ---------------------------------------------------------------------------
 // FrontmatterSchema
@@ -28,7 +38,19 @@ describe("FrontmatterSchema", () => {
     segment: "languages-and-frameworks",
   };
 
-  it("accepts minimal valid frontmatter", () => {
+  beforeEach(() => {
+    vi.resetModules();
+    mockSegmentConfig();
+  });
+
+  afterEach(() => {
+    vi.doUnmock("../../data/config.json");
+    vi.resetModules();
+    vi.restoreAllMocks();
+  });
+
+  it("accepts minimal valid frontmatter", async () => {
+    const { FrontmatterSchema } = await importValidateFrontmatterModule();
     const result = FrontmatterSchema.safeParse(validData);
     expect(result.success).toBe(true);
     if (result.success) {
@@ -40,7 +62,8 @@ describe("FrontmatterSchema", () => {
     }
   });
 
-  it("accepts full valid frontmatter", () => {
+  it("accepts full valid frontmatter", async () => {
+    const { FrontmatterSchema } = await importValidateFrontmatterModule();
     const result = FrontmatterSchema.safeParse({
       ...validData,
       title: "TypeScript",
@@ -61,19 +84,22 @@ describe("FrontmatterSchema", () => {
     }
   });
 
-  it("rejects missing ring", () => {
+  it("rejects missing ring", async () => {
+    const { FrontmatterSchema } = await importValidateFrontmatterModule();
     const result = FrontmatterSchema.safeParse({
       segment: "languages-and-frameworks",
     });
     expect(result.success).toBe(false);
   });
 
-  it("rejects missing segment", () => {
+  it("rejects missing segment", async () => {
+    const { FrontmatterSchema } = await importValidateFrontmatterModule();
     const result = FrontmatterSchema.safeParse({ ring: "adopt" });
     expect(result.success).toBe(false);
   });
 
-  it("rejects invalid ring value", () => {
+  it("rejects invalid ring value", async () => {
+    const { FrontmatterSchema } = await importValidateFrontmatterModule();
     const result = FrontmatterSchema.safeParse({
       ring: "invalid-ring",
       segment: "languages-and-frameworks",
@@ -81,7 +107,8 @@ describe("FrontmatterSchema", () => {
     expect(result.success).toBe(false);
   });
 
-  it("rejects invalid segment value", () => {
+  it("rejects invalid segment value", async () => {
+    const { FrontmatterSchema } = await importValidateFrontmatterModule();
     const result = FrontmatterSchema.safeParse({
       ring: "adopt",
       segment: "invalid-segment",
@@ -89,7 +116,8 @@ describe("FrontmatterSchema", () => {
     expect(result.success).toBe(false);
   });
 
-  it("rejects non-boolean featured", () => {
+  it("rejects non-boolean featured", async () => {
+    const { FrontmatterSchema } = await importValidateFrontmatterModule();
     const result = FrontmatterSchema.safeParse({
       ...validData,
       featured: "yes",
@@ -97,7 +125,8 @@ describe("FrontmatterSchema", () => {
     expect(result.success).toBe(false);
   });
 
-  it("rejects non-array tags", () => {
+  it("rejects non-array tags", async () => {
+    const { FrontmatterSchema } = await importValidateFrontmatterModule();
     const result = FrontmatterSchema.safeParse({
       ...validData,
       tags: "not-an-array",
@@ -105,7 +134,8 @@ describe("FrontmatterSchema", () => {
     expect(result.success).toBe(false);
   });
 
-  it("rejects non-array teams", () => {
+  it("rejects non-array teams", async () => {
+    const { FrontmatterSchema } = await importValidateFrontmatterModule();
     const result = FrontmatterSchema.safeParse({
       ...validData,
       teams: "not-an-array",
@@ -113,7 +143,8 @@ describe("FrontmatterSchema", () => {
     expect(result.success).toBe(false);
   });
 
-  it("applies defaults for optional fields", () => {
+  it("applies defaults for optional fields", async () => {
+    const { FrontmatterSchema } = await importValidateFrontmatterModule();
     const result = FrontmatterSchema.safeParse(validData);
     expect(result.success).toBe(true);
     if (result.success) {
@@ -133,17 +164,32 @@ describe("FrontmatterSchema", () => {
 
 describe("parseRadarFrontmatter", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.resetModules();
+    mockSegmentConfig();
+    vi.spyOn(consola, "warn").mockImplementation(() => undefined);
+    vi.spyOn(consola, "error").mockImplementation(() => undefined);
+  });
+
+  afterEach(() => {
+    vi.doUnmock("../../data/config.json");
+    vi.resetModules();
+    vi.restoreAllMocks();
   });
 
   describe("backward compatibility shim (ADR-0025)", () => {
-    it("renames quadrant to segment and warns", () => {
+    it("existing radar markdown with only quadrant frontmatter continues to parse as segment", async () => {
+      const { parseRadarFrontmatter } = await importValidateFrontmatterModule();
       const data = { ring: "adopt", quadrant: "languages-and-frameworks" };
       const result = parseRadarFrontmatter(data, "legacy.md");
 
       expect(result).not.toBeNull();
       expect(result?.segment).toBe("languages-and-frameworks");
-      expect((result as any)?.quadrant).toBeUndefined();
+      expect(data).toEqual({
+        ring: "adopt",
+        segment: "languages-and-frameworks",
+      });
+      expect(result && "quadrant" in result).toBe(false);
+      expect(consola.warn).toHaveBeenCalledTimes(1);
       expect(consola.warn).toHaveBeenCalledWith(
         expect.stringContaining(
           '[deprecated] frontmatter key "quadrant" is renamed to "segment" in legacy.md.',
@@ -151,7 +197,8 @@ describe("parseRadarFrontmatter", () => {
       );
     });
 
-    it("does not warn when only segment is provided", () => {
+    it("current radar markdown using segment frontmatter does not get a deprecation warning", async () => {
+      const { parseRadarFrontmatter } = await importValidateFrontmatterModule();
       const data = { ring: "adopt", segment: "languages-and-frameworks" };
       const result = parseRadarFrontmatter(data, "modern.md");
 
@@ -160,7 +207,8 @@ describe("parseRadarFrontmatter", () => {
       expect(consola.warn).not.toHaveBeenCalled();
     });
 
-    it("prefers segment when both are provided and does not warn", () => {
+    it("migrated segment frontmatter is not clobbered by legacy quadrant when both keys are present", async () => {
+      const { parseRadarFrontmatter } = await importValidateFrontmatterModule();
       const data = {
         ring: "adopt",
         segment: "languages-and-frameworks",
@@ -170,11 +218,17 @@ describe("parseRadarFrontmatter", () => {
 
       expect(result).not.toBeNull();
       expect(result?.segment).toBe("languages-and-frameworks");
+      expect(data).toEqual({
+        ring: "adopt",
+        segment: "languages-and-frameworks",
+        quadrant: "ignored-legacy-value",
+      });
       expect(consola.warn).not.toHaveBeenCalled();
     });
   });
 
-  it("returns parsed data for valid frontmatter", () => {
+  it("returns parsed data for valid frontmatter", async () => {
+    const { parseRadarFrontmatter } = await importValidateFrontmatterModule();
     const result = parseRadarFrontmatter(
       { ring: "adopt", segment: "languages-and-frameworks" },
       "test.md",
@@ -183,12 +237,14 @@ describe("parseRadarFrontmatter", () => {
     expect(result?.ring).toBe("adopt");
   });
 
-  it("returns null for invalid frontmatter", () => {
+  it("returns null for invalid frontmatter", async () => {
+    const { parseRadarFrontmatter } = await importValidateFrontmatterModule();
     const result = parseRadarFrontmatter({ ring: "bad" }, "test.md");
     expect(result).toBeNull();
   });
 
-  it("returns null for empty data", () => {
+  it("returns null for empty data", async () => {
+    const { parseRadarFrontmatter } = await importValidateFrontmatterModule();
     const result = parseRadarFrontmatter({}, "test.md");
     expect(result).toBeNull();
   });
@@ -202,10 +258,17 @@ describe("validateRadarFiles", () => {
   let tmpDir: string;
 
   beforeEach(() => {
+    vi.resetModules();
+    mockSegmentConfig();
+    vi.spyOn(consola, "warn").mockImplementation(() => undefined);
+    vi.spyOn(consola, "error").mockImplementation(() => undefined);
     tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "validate-test-"));
   });
 
   afterEach(() => {
+    vi.doUnmock("../../data/config.json");
+    vi.resetModules();
+    vi.restoreAllMocks();
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
@@ -215,7 +278,8 @@ describe("validateRadarFiles", () => {
     fs.writeFileSync(fullPath, content);
   }
 
-  it("returns 0 errors for valid files", () => {
+  it("returns 0 errors for valid files", async () => {
+    const { validateRadarFiles } = await importValidateFrontmatterModule();
     writeFile(
       "item-a.md",
       "---\nring: adopt\nsegment: languages-and-frameworks\n---\nContent",
@@ -227,7 +291,8 @@ describe("validateRadarFiles", () => {
     expect(validateRadarFiles(tmpDir)).toBe(0);
   });
 
-  it("counts errors for invalid files", () => {
+  it("counts errors for invalid files", async () => {
+    const { validateRadarFiles } = await importValidateFrontmatterModule();
     writeFile(
       "valid.md",
       "---\nring: adopt\nsegment: languages-and-frameworks\n---\nOK",
@@ -236,11 +301,13 @@ describe("validateRadarFiles", () => {
     expect(validateRadarFiles(tmpDir)).toBe(1);
   });
 
-  it("returns 0 for empty directory", () => {
+  it("returns 0 for empty directory", async () => {
+    const { validateRadarFiles } = await importValidateFrontmatterModule();
     expect(validateRadarFiles(tmpDir)).toBe(0);
   });
 
-  it("traverses nested directories", () => {
+  it("traverses nested directories", async () => {
+    const { validateRadarFiles } = await importValidateFrontmatterModule();
     writeFile(
       "2024-01/item.md",
       "---\nring: adopt\nsegment: languages-and-frameworks\n---\nNested",
@@ -249,7 +316,8 @@ describe("validateRadarFiles", () => {
     expect(validateRadarFiles(tmpDir)).toBe(1);
   });
 
-  it("ignores non-markdown files", () => {
+  it("ignores non-markdown files", async () => {
+    const { validateRadarFiles } = await importValidateFrontmatterModule();
     writeFile("readme.txt", "not markdown");
     writeFile(
       "item.md",

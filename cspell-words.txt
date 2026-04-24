@@ -63,8 +63,6 @@ svgr
 zod
 slugify
 dataset
-quadrant
-quadrants
 PDS
 preScan
 preScanBlipLookup
@@ -665,3 +663,5 @@ initialised
 behaviours
 SLSA
 relitigating
+codemod
+codemods

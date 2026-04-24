@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import type { Item, Quadrant, Ring } from "@/lib/types";
+import type { Item, Ring, Segment } from "@/lib/types";
 import { Flag } from "@/lib/types";
 import Home from "@/pages/index";
 
@@ -11,7 +11,7 @@ const mockData = vi.hoisted(() => ({
   getChartConfig: vi.fn(),
   getItems: vi.fn(),
   getLabel: vi.fn(),
-  getQuadrants: vi.fn(),
+  getSegments: vi.fn(),
   getRings: vi.fn(),
   getToggle: vi.fn(),
   radarProps: vi.fn(),
@@ -30,7 +30,7 @@ vi.mock("@/lib/data", () => ({
   getChartConfig: mockData.getChartConfig,
   getItems: mockData.getItems,
   getLabel: mockData.getLabel,
-  getQuadrants: mockData.getQuadrants,
+  getSegments: mockData.getSegments,
   getRings: mockData.getRings,
   getToggle: mockData.getToggle,
 }));
@@ -46,10 +46,10 @@ vi.mock("@/components/RadarFilters/RadarFilters", () => ({
   RadarFilters: () => <div data-testid="radar-filters" />,
 }));
 
-vi.mock("@/components/MobileQuadrantNav/MobileQuadrantNav", () => ({
-  MobileQuadrantNav: (props: any) => {
+vi.mock("@/components/MobileSegmentNav/MobileSegmentNav", () => ({
+  MobileSegmentNav: (props: any) => {
     mockData.mobileNavProps(props);
-    return <nav data-testid="mobile-quadrant-nav" />;
+    return <nav data-testid="mobile-segment-nav" />;
   },
 }));
 
@@ -61,7 +61,7 @@ vi.mock("@/components/SeoHead/SeoHead", () => ({
 }));
 
 describe("Home page", () => {
-  const quadrants: Quadrant[] = [
+  const segments: Segment[] = [
     {
       id: "languages-and-frameworks",
       title: "Languages & Frameworks",
@@ -104,7 +104,7 @@ describe("Home page", () => {
       body: "<p>React</p>",
       featured: true,
       ring: "adopt",
-      quadrant: "languages-and-frameworks",
+      segment: "languages-and-frameworks",
       flag: Flag.Default,
       release: "2024-01",
       position: [0.1, 0.2],
@@ -116,7 +116,7 @@ describe("Home page", () => {
     mockData.getChartConfig.mockReturnValue({ size: 640, blipSize: 12 });
     mockData.getItems.mockReturnValue(items);
     mockData.getLabel.mockReturnValue("Radar meta description");
-    mockData.getQuadrants.mockReturnValue(quadrants);
+    mockData.getSegments.mockReturnValue(segments);
     mockData.getRings.mockReturnValue(rings);
     mockData.getToggle.mockImplementation((key: string) => key === "showChart");
   });
@@ -148,7 +148,7 @@ describe("Home page", () => {
 
     expect(mockData.radarProps).toHaveBeenCalledWith({
       size: 640,
-      quadrants,
+      segments,
       rings,
       items,
     });
@@ -169,25 +169,25 @@ describe("Home page", () => {
     expect(screen.queryByTestId("radar-filters")).not.toBeInTheDocument();
   });
 
-  it("renders MobileQuadrantNav when showChart is true", () => {
+  it("renders MobileSegmentNav when showChart is true", () => {
     render(<Home />);
 
-    expect(screen.getByTestId("mobile-quadrant-nav")).toBeInTheDocument();
+    expect(screen.getByTestId("mobile-segment-nav")).toBeInTheDocument();
   });
 
-  it("passes quadrants to MobileQuadrantNav", () => {
+  it("passes segments to MobileSegmentNav", () => {
     render(<Home />);
 
     expect(mockData.mobileNavProps).toHaveBeenCalledWith({
-      quadrants,
+      segments,
     });
   });
 
-  it("does not render MobileQuadrantNav when showChart is false", () => {
+  it("does not render MobileSegmentNav when showChart is false", () => {
     mockData.getToggle.mockReturnValue(false);
 
     render(<Home />);
 
-    expect(screen.queryByTestId("mobile-quadrant-nav")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("mobile-segment-nav")).not.toBeInTheDocument();
   });
 });

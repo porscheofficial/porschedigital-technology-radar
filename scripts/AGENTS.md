@@ -7,7 +7,7 @@ Run at build/validate time only. Never imported by `src/`.
 | File | Purpose |
 | --- | --- |
 | `buildData.ts` | Walks `data/radar/**/*.md`, validates frontmatter, renders markdown → HTML, emits `data/data.json`. |
-| `validateFrontmatter.ts` | **The Zod schema for radar item frontmatter.** Single source of truth shared by `buildData.ts` and `pnpm run validate`. |
+| `validateFrontmatter.ts` | **The Zod schema for radar item frontmatter.** Single source of truth shared by `buildData.ts` and `pnpm run validate`. Handles the legacy `quadrant` → `segment` frontmatter shim (ADR-0025). |
 | `remarkWikiLink.ts` | Remark plugin: resolves `[[id]]` and `[[id|label]]` to internal links using the blip lookup table. |
 | `positioner.ts` | Computes blip coordinates within rings/segments. |
 | `errorHandler.ts` | Consola-based error reporting helpers. |

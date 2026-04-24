@@ -6,7 +6,7 @@ Source-of-truth content for the radar. Markdown items + JSON config.
 
 ```
 data/
-  radar/<period>/<quadrant>/<id>.md    Radar items (one per blip)
+  radar/<period>/<segment>/<id>.md    Radar items (one per blip)
   config.json                          User config overrides (deep-merged ON TOP of default)
   config.default.json                  Project defaults — DO NOT EDIT for customization
   about.md                             About-page body content
@@ -19,7 +19,8 @@ data/
 - **`data.json` is gitignored and generated.** Run `pnpm run build:data` after any change under `data/radar/**` or to the schema.
 - **Item frontmatter must satisfy the Zod schema in `scripts/validateFrontmatter.ts`.** Run `pnpm run validate` to check.
 - **Date strings in frontmatter:** use plain `YYYY-MM` or `YYYY-MM-DD`. The `toSafeDate()` helper in `format.ts` appends `T00:00:00` to avoid timezone shifts. Do not pre-suffix.
-- **Config edits go in `data/config.json`**, not `data/config.default.json`. Only deep-merge keys are: `colors`, `labels`, `toggles`. All other top-level keys (`quadrants`, `rings`, `flags`, `chart`, `social`, `imprint`, `basePath`, etc.) are shallow-replaced.
+- **Config edits go in `data/config.json`**, not `data/config.default.json`. Only deep-merge keys are: `colors`, `labels`, `toggles`. All other top-level keys (`segments`, `rings`, `flags`, `chart`, `social`, `imprint`, `basePath`, etc.) are shallow-replaced.
+- **Back-compat shim:** The legacy `quadrant` frontmatter field maps to `segment` with a warning. See `docs/decisions/0025-rename-quadrant-to-segment.md`.
 - **Configuration ↔ README sync is enforced.** Any change to `config.default.json` keys or to the frontmatter Zod schema must also update the corresponding tables in `README.md`. (Checked: `pnpm run check:arch:readme`.)
 
 ## Wiki-style links

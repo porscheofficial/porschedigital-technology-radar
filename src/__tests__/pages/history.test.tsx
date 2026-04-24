@@ -3,8 +3,8 @@ import userEvent from "@testing-library/user-event";
 import type {
   Item,
   ItemTrajectory,
-  Quadrant,
   Ring,
+  Segment,
   VersionDiff,
 } from "@/lib/types";
 import { Flag } from "@/lib/types";
@@ -18,7 +18,7 @@ const mockState = vi.hoisted(() => ({
   },
   getAppName: vi.fn(),
   getItemTrajectories: vi.fn(),
-  getQuadrant: vi.fn(),
+  getSegment: vi.fn(),
   getReleases: vi.fn(),
   getRing: vi.fn(),
   getVersionDiffs: vi.fn(),
@@ -98,7 +98,7 @@ vi.mock("@/lib/config", () => ({
 vi.mock("@/lib/data", () => ({
   getAppName: mockState.getAppName,
   getItemTrajectories: mockState.getItemTrajectories,
-  getQuadrant: mockState.getQuadrant,
+  getSegment: mockState.getSegment,
   getReleases: mockState.getReleases,
   getRing: mockState.getRing,
   getVersionDiffs: mockState.getVersionDiffs,
@@ -150,7 +150,7 @@ describe("History page", () => {
     },
   ];
 
-  const quadrants: Quadrant[] = [
+  const segments: Segment[] = [
     {
       id: "languages-and-frameworks",
       title: "Languages & Frameworks",
@@ -174,7 +174,7 @@ describe("History page", () => {
       body: "<p>API</p>",
       featured: true,
       ring: "adopt",
-      quadrant: "languages-and-frameworks",
+      segment: "languages-and-frameworks",
       flag: Flag.Default,
       release: "2024-01",
       position: [0.1, 0.2],
@@ -187,7 +187,7 @@ describe("History page", () => {
       body: "<p>CMS</p>",
       featured: false,
       ring: "hold",
-      quadrant: "platforms-and-operations",
+      segment: "platforms-and-operations",
       flag: Flag.Changed,
       release: "2024-01",
       position: [0.2, 0.3],
@@ -200,7 +200,7 @@ describe("History page", () => {
       body: "<p>AI</p>",
       featured: false,
       ring: "trial",
-      quadrant: "languages-and-frameworks",
+      segment: "languages-and-frameworks",
       flag: Flag.New,
       release: "2024-01",
       position: [0.3, 0.4],
@@ -248,8 +248,8 @@ describe("History page", () => {
     mockState.router.push.mockReset();
     mockState.getAppName.mockReturnValue("Test Radar");
     mockState.getItemTrajectories.mockReturnValue(trajectories);
-    mockState.getQuadrant.mockImplementation((id: string) =>
-      quadrants.find((quadrant) => quadrant.id === id),
+    mockState.getSegment.mockImplementation((id: string) =>
+      segments.find((segment) => segment.id === id),
     );
     mockState.getReleases.mockReturnValue(releases);
     mockState.getRing.mockImplementation((id: string) =>
@@ -353,7 +353,7 @@ describe("History page", () => {
     expect(screen.getAllByText("Legacy CMS").length).toBeGreaterThan(0);
   });
 
-  it("renders the new items group with quadrant details", () => {
+  it("renders the new items group with segment details", () => {
     render(<History />);
 
     expect(screen.getByText("✦ New")).toBeInTheDocument();

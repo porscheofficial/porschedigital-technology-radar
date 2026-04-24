@@ -23,7 +23,7 @@ scripts/validateFrontmatter.ts (Zod schema + frontmatter validation — shared)
         |
         v
 scripts/buildData.ts        (@11ty/gray-matter + unified/rehype + consola)
-  ├─ preScanBlipLookup()    (pass 1: extract id→quadrant map from frontmatter)
+  ├─ preScanBlipLookup()    (pass 1: extract id→segment map from frontmatter)
   └─ parseDirectory()       (pass 2: full markdown→HTML with wiki-link resolution)
         |
         v
@@ -33,7 +33,7 @@ scripts/remarkWikiLink.ts   (remark plugin: [[id]] / [[id|label]] → internal l
 data/data.json              (generated, gitignored)
         |
         v
-src/lib/data.ts             (typed accessors: getItems, getQuadrants, getRings, ...)
+src/lib/data.ts             (typed accessors: getItems, getSegments, getRings, ...)
         |
         v
 Pages & Components          (import data at module level, no runtime fetching)
@@ -48,8 +48,8 @@ Pages & Components          (import data at module level, no runtime fetching)
 | `/`                          | `src/pages/index.tsx`                     | Full radar SVG + filters             |
 | `/history`                   | `src/pages/history.tsx`                   | Changelog: trajectory matrix + diffs |
 | `/help-and-about-tech-radar` | `src/pages/help-and-about-tech-radar.tsx` | About page                           |
-| `/[quadrant]`                | `src/pages/[quadrant]/index.tsx`          | Quadrant detail with mini-radar      |
-| `/[quadrant]/[id]`           | `src/pages/[quadrant]/[id].tsx`           | Item detail with revisions           |
+| `/[segment]`                | `src/pages/[segment]/index.tsx`          | Segment detail with mini-radar      |
+| `/[segment]/[id]`           | `src/pages/[segment]/[id].tsx`           | Item detail with revisions           |
 | `/404`                       | `src/pages/404.tsx`                       | Custom 404                           |
 
 `src/app/sitemap.ts` is the ONLY App Router file (hybrid for sitemap generation).
@@ -82,7 +82,7 @@ bin/                 CLI entry point (techradar.ts — citty + consola + execa +
 
 - **`Layout`**: Header/main/footer shell, wraps all pages
 - **`Radar`** + **`Chart`** + **`Blip`** + **`Label`**: Full radar SVG visualization
-- **`QuadrantRadar`** + **`QuadrantChart`**: Zoomed single-quadrant view
+- **`SegmentRadar`** + **`SegmentChart`**: Zoomed single-segment view
 - **`RadarFilters`**: Flag/tag/team filter pills
 - **`SearchBar`**: Combobox with abbreviation matching and highlight
 - **`ItemDetail`**: Item page body with revision history
@@ -98,7 +98,7 @@ bin/                 CLI entry point (techradar.ts — citty + consola + execa +
 
 ### Hook: `useRadarTooltip`
 
-Shared between `Radar` and `QuadrantRadar`. Manages tooltip positioning, visibility, RAF-based animation, and persistent tooltips synced with `highlightedIds` from context.
+Shared between `Radar` and `SegmentRadar`. Manages tooltip positioning, visibility, RAF-based animation, and persistent tooltips synced with `highlightedIds` from context.
 
 ## Commands
 
@@ -163,7 +163,7 @@ This repo runs a five-arm steering harness for agent work:
 
 **Feedback (build-output)** — `pnpm run check:build` validates the static export in `out/`. Run after `pnpm run build`:
 
-- `pnpm run check:build:routes` — `scripts/checkBuildOutput.ts`: asserts every expected route file exists in `out/` (statics, quadrant indexes, item pages from `data.json`). Closes the static-export contract: no silent route drops.
+- `pnpm run check:build:routes` — `scripts/checkBuildOutput.ts`: asserts every expected route file exists in `out/` (statics, segment indexes, item pages from `data.json`). Closes the static-export contract: no silent route drops.
 - `pnpm run check:build:links` — `linkinator` (config in `linkinator.config.json`): crawls the built site from `out/index.html` and fails on broken internal links. External URLs are skipped via the `^https?://(?!localhost)` pattern.
 - `pnpm run check:build:budget` — `scripts/checkBundleBudget.ts`: walks `out/_next/static/` and asserts total JS, total CSS, and per-chunk sizes stay under the caps in `bundle-budget.json`. Bumping the budget is a deliberate, diffable act — see ADR-0005.
 - `pnpm run check:build:html` — `scripts/checkHtmlValidate.ts` + `.htmlvalidate.json`: runs `html-validate` against `out/**/*.html`. Catches structural HTML errors (unclosed tags, duplicate ids, mismatched nesting) and markdown-layer escapes that bypass the source sanitizer. The disabled-rule set is curated for Next.js / React / PDS framework output; WCAG checks are deferred to a future real-browser a11y arm. Wrapper uses `node:child_process` `spawnSync` (execa 9 fails on Node 25 + tsx). See ADR-0014.
@@ -182,7 +182,7 @@ Plus an advisory (non-gating) workflow: `.github/workflows/scorecard.yml` runs O
 **Feedback (clean-code)** — `pnpm run check:quality` enforces clean-code invariants. See ADR-0007 for the full rationale.
 
 - `pnpm run check:quality:knip` — [knip](https://knip.dev/): detects unused files, unused exports, unused dependencies, and unlisted dependencies/binaries. Config in `knip.json` (entry points, project glob, `ignoreBinaries` for `osv-scanner` and `trufflehog` which are system binaries per ADR-0006 / ADR-0011). Fail the build on any finding — the correct response is either to delete the dead code, declare the dep, or widen the ignore list with a justifying commit.
-- `pnpm run check:quality:jscpd` — [jscpd](https://github.com/kucherenko/jscpd): copy-paste / clone detector. Config in `.jscpd.json` (scope `src/` + `scripts/`, min-tokens 70, threshold 3%, ignores tests + SCSS modules + generated icons). The 3% ceiling allows the documented `Radar` ↔ `QuadrantRadar` mirror to stand and trips on new significant duplication. See ADR-0008 for the rationale and rejected alternatives.
+- `pnpm run check:quality:jscpd` — [jscpd](https://github.com/kucherenko/jscpd): copy-paste / clone detector. Config in `.jscpd.json` (scope `src/` + `scripts/`, min-tokens 70, threshold 3%, ignores tests + SCSS modules + generated icons). The 3% ceiling allows the documented `Radar` ↔ `SegmentRadar` mirror to stand and trips on new significant duplication. See ADR-0008 for the rationale and rejected alternatives.
 - `pnpm run check:quality:naming` — Biome `style/useNamingConvention` (config in `biome.jsonc`): enforces PascalCase for types/components/enums and camelCase for variables/functions/parameters across `src/` and `scripts/`. `strictCase: false` allows externally-dictated names (`PText`, `getXYPosition`, `JSON`, `IP`); test files are exempted via override since mock factories must mirror real PascalCase exports verbatim. Sensor uses `--only=` + `--diagnostic-level=error` to scope failures to source code while keeping test infos quiet. See ADR-0009.
 - `pnpm run check:quality:sonar` — [eslint-plugin-sonarjs](https://github.com/SonarSource/SonarJS): code-smell detector run through a dedicated flat config (`sonar.eslint.config.mjs`) so smell findings stay separate from `check:arch:eslint`'s architectural bans. Uses the `recommended` preset (~200 syntactic rules — cognitive complexity, dead stores, nested ternaries/functions, regex-injection, prototype pollution). Three rules disabled with rationale: `slow-regex` (build-time on trusted markdown), `pseudo-random` (visual blip jitter), `redundant-type-aliases` (intentional domain aliases). Two real smells suppressed per-line with `eslint-disable-next-line` citing the ADR. The architectural ESLint config loads the sonarjs plugin without enabling rules and sets `reportUnusedDisableDirectives: "off"` so per-line disables don't fail the arch arm. See ADR-0010.
 - `pnpm run check:quality:coverage` — `vitest run --coverage` with v8-provider thresholds in `vitest.config.ts` (lines 55, statements 55, branches 55, functions 60). Floors are set at the current measured baseline, not aspirational — bumping a floor is a deliberate diffable act per ADR-0008's anti-aspirational pattern. Vitest applies thresholds only when `--coverage` is enabled, so `pnpm test` (without coverage) is unaffected. See ADR-0015.
@@ -341,4 +341,6 @@ The only file `release-please-config.json` keeps in sync is `package.json` `vers
 5. **Date strings need `T00:00:00` suffix** — `toSafeDate()` in `format.ts` handles this. Raw date strings like `"2024-03"` parsed without the suffix will shift timezones.
 6. **Config deep-merge is manual** — only `colors`, `labels`, and `toggles` keys are deep-merged between `config.default.json` and `config.json`. Other keys are shallow-replaced.
 7. **Module-level data imports are intentional** — `data.ts` accessors read from the statically imported `data.json`. This is safe because all data is available at build time.
-8. **All links and asset URLs must use `assetUrl()`** — The site is deployed under a configurable `basePath` (e.g., `/technology-radar`). Never hardcode `href="/"` or `href={`/${slug}`}` — always wrap with `assetUrl()` from `@/lib/utils` (e.g., `assetUrl("/")`, `assetUrl(`/${quadrant.id}`)`) so links work correctly in all deployment environments.
+8. **All links and asset URLs must use `assetUrl()`** — The site is deployed under a configurable `basePath` (e.g., `/technology-radar`). Never hardcode `href="/"` or `href={`/${slug}`}` — always wrap with `assetUrl()` from `@/lib/utils` (e.g., `assetUrl("/")`, `assetUrl(`/${segment.id}`)`) so links work correctly in all deployment environments.
+
+9. **Back-compat rename (ADR-0025)** — `quadrant` is renamed to `segment` across the codebase. Markdown frontmatter and `config.json` support the old names with build-time warnings. See ADR-0025.

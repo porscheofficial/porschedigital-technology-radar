@@ -32,14 +32,15 @@ describe("config back-compat shim", () => {
     vi.restoreAllMocks();
   });
 
-  it("existing forks with quadrants config key continue working through getSegments", async () => {
+  it("existing consumer projects with quadrants config key continue working through getSegments", async () => {
     mockedUserConfig.default = {
       quadrants: [
         {
           id: "legacy-platforms",
           title: "Legacy Platforms",
           color: "#000000",
-          description: "Imported from a fork still using quadrants.",
+          description:
+            "Imported from a consumer project still using quadrants.",
         },
         {
           id: "legacy-tools",
@@ -57,7 +58,7 @@ describe("config back-compat shim", () => {
         id: "legacy-platforms",
         title: "Legacy Platforms",
         color: "#000000",
-        description: "Imported from a fork still using quadrants.",
+        description: "Imported from a consumer project still using quadrants.",
       },
       {
         id: "legacy-tools",
@@ -71,7 +72,7 @@ describe("config back-compat shim", () => {
         id: "legacy-platforms",
         title: "Legacy Platforms",
         color: "#000000",
-        description: "Imported from a fork still using quadrants.",
+        description: "Imported from a consumer project still using quadrants.",
         position: 1,
       },
       {
@@ -89,7 +90,7 @@ describe("config back-compat shim", () => {
     );
   });
 
-  it("modern forks already using segments config key do not get a deprecation warning", async () => {
+  it("modern consumer projects already using segments config key do not get a deprecation warning", async () => {
     mockedUserConfig.default = {
       segments: [
         {

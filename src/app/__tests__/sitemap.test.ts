@@ -1,10 +1,10 @@
 const mockData = vi.hoisted(() => ({
   getAbsoluteUrl: vi.fn((path = "") => `https://example.com${path}`),
   getItems: vi.fn(() => [
-    { id: "react", quadrant: "languages-and-frameworks" },
-    { id: "kubernetes", quadrant: "platforms-and-operations" },
+    { id: "react", segment: "languages-and-frameworks" },
+    { id: "kubernetes", segment: "platforms-and-operations" },
   ]),
-  getQuadrants: vi.fn(() => [
+  getSegments: vi.fn(() => [
     { id: "languages-and-frameworks" },
     { id: "platforms-and-operations" },
   ]),
@@ -13,7 +13,7 @@ const mockData = vi.hoisted(() => ({
 vi.mock("@/lib/data", () => ({
   getAbsoluteUrl: mockData.getAbsoluteUrl,
   getItems: mockData.getItems,
-  getQuadrants: mockData.getQuadrants,
+  getSegments: mockData.getSegments,
 }));
 
 import sitemap from "@/app/sitemap";
@@ -46,14 +46,14 @@ describe("sitemap", () => {
     expect(about?.priority).toBe(0.9);
   });
 
-  it("includes entries for each quadrant with priority 0.8", () => {
+  it("includes entries for each segment with priority 0.8", () => {
     const result = sitemap();
-    const quadrantEntries = result.filter((entry) => entry.priority === 0.8);
-    expect(quadrantEntries).toHaveLength(2);
-    expect(quadrantEntries[0].url).toBe(
+    const segmentEntries = result.filter((entry) => entry.priority === 0.8);
+    expect(segmentEntries).toHaveLength(2);
+    expect(segmentEntries[0].url).toBe(
       "https://example.com/languages-and-frameworks/",
     );
-    expect(quadrantEntries[1].url).toBe(
+    expect(segmentEntries[1].url).toBe(
       "https://example.com/platforms-and-operations/",
     );
   });
@@ -77,18 +77,16 @@ describe("sitemap", () => {
     }
   });
 
-  it("total entries = 2 static + quadrants + items", () => {
+  it("total entries = 2 static + segments + items", () => {
     const result = sitemap();
-    // 1 homepage + 1 about + 2 quadrants + 2 items = 6
     expect(result).toHaveLength(6);
   });
 
-  it("returns empty quadrant/item sections when data is empty", () => {
-    mockData.getQuadrants.mockReturnValue([]);
+  it("returns empty segment/item sections when data is empty", () => {
+    mockData.getSegments.mockReturnValue([]);
     mockData.getItems.mockReturnValue([]);
 
     const result = sitemap();
-    // Only homepage + about
     expect(result).toHaveLength(2);
   });
 });

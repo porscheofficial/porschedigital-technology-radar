@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import type { Item, Quadrant, Ring } from "@/lib/types";
+import type { Item, Ring, Segment } from "@/lib/types";
 import { Flag } from "@/lib/types";
-import QuadrantPage from "@/pages/[quadrant]/index";
+import SegmentPage from "@/pages/[segment]/index";
 
 const mockState = vi.hoisted(() => ({
   highlight: {
@@ -18,13 +18,13 @@ const mockState = vi.hoisted(() => ({
   },
   getAppName: vi.fn(),
   getItems: vi.fn(),
-  getQuadrant: vi.fn(),
-  getQuadrants: vi.fn(),
+  getSegment: vi.fn(),
+  getSegments: vi.fn(),
   getRing: vi.fn(),
   getRings: vi.fn(),
   groupItemsByRing: vi.fn(),
   sortByFeaturedAndTitle: vi.fn(),
-  quadrantRadarProps: vi.fn(),
+  segmentRadarProps: vi.fn(),
   seoHeadProps: vi.fn(),
 }));
 
@@ -49,10 +49,10 @@ vi.mock("@porsche-design-system/components-react/ssr", () => ({
   PText: ({ children, ...props }: any) => <p {...props}>{children}</p>,
 }));
 
-vi.mock("@/components/QuadrantRadar/QuadrantRadar", () => ({
-  QuadrantRadar: (props: any) => {
-    mockState.quadrantRadarProps(props);
-    return <div data-testid="quadrant-radar" />;
+vi.mock("@/components/SegmentRadar/SegmentRadar", () => ({
+  SegmentRadar: (props: any) => {
+    mockState.segmentRadarProps(props);
+    return <div data-testid="segment-radar" />;
   },
 }));
 
@@ -75,16 +75,16 @@ vi.mock("@/lib/config", () => ({
 vi.mock("@/lib/data", () => ({
   getAppName: mockState.getAppName,
   getItems: mockState.getItems,
-  getQuadrant: mockState.getQuadrant,
-  getQuadrants: mockState.getQuadrants,
+  getSegment: mockState.getSegment,
+  getSegments: mockState.getSegments,
   getRing: mockState.getRing,
   getRings: mockState.getRings,
   groupItemsByRing: mockState.groupItemsByRing,
   sortByFeaturedAndTitle: mockState.sortByFeaturedAndTitle,
 }));
 
-describe("Quadrant detail page", () => {
-  const quadrant: Quadrant = {
+describe("Segment detail page", () => {
+  const segment: Segment = {
     id: "languages-and-frameworks",
     title: "Languages & Frameworks",
     description: "Programming languages and frameworks",
@@ -92,8 +92,8 @@ describe("Quadrant detail page", () => {
     position: 1,
   };
 
-  const quadrants: Quadrant[] = [
-    quadrant,
+  const segments: Segment[] = [
+    segment,
     {
       id: "platforms-and-operations",
       title: "Platforms & Operations",
@@ -137,7 +137,7 @@ describe("Quadrant detail page", () => {
       body: "<p>UI library</p>",
       featured: true,
       ring: "adopt",
-      quadrant: quadrant.id,
+      segment: segment.id,
       flag: Flag.Default,
       release: "2024-01",
       position: [0.1, 0.2],
@@ -148,7 +148,7 @@ describe("Quadrant detail page", () => {
       body: "<p>Runtime</p>",
       featured: false,
       ring: "trial",
-      quadrant: quadrant.id,
+      segment: segment.id,
       flag: Flag.New,
       release: "2024-01",
       position: [0.2, 0.3],
@@ -159,7 +159,7 @@ describe("Quadrant detail page", () => {
       body: "<p>Framework</p>",
       featured: false,
       ring: "trial",
-      quadrant: quadrant.id,
+      segment: segment.id,
       flag: Flag.Changed,
       release: "2024-01",
       position: [0.3, 0.4],
@@ -185,10 +185,10 @@ describe("Quadrant detail page", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockState.getAppName.mockReturnValue("Test Radar");
-    mockState.getQuadrant.mockImplementation((id: string) =>
-      quadrants.find((entry) => entry.id === id),
+    mockState.getSegment.mockImplementation((id: string) =>
+      segments.find((entry) => entry.id === id),
     );
-    mockState.getQuadrants.mockReturnValue(quadrants);
+    mockState.getSegments.mockReturnValue(segments);
     mockState.getRings.mockReturnValue(rings);
     mockState.getItems.mockReturnValue([...items]);
     mockState.groupItemsByRing.mockReturnValue(groupedItems);
@@ -200,8 +200,8 @@ describe("Quadrant detail page", () => {
     );
   });
 
-  it("renders the quadrant title heading", () => {
-    render(<QuadrantPage quadrantId={quadrant.id} />);
+  it("renders the segment title heading", () => {
+    render(<SegmentPage segmentId={segment.id} />);
 
     const headings = screen.getAllByRole("heading", {
       name: "Languages & Frameworks",
@@ -209,24 +209,24 @@ describe("Quadrant detail page", () => {
     expect(headings.length).toBeGreaterThanOrEqual(1);
   });
 
-  it("passes SEO props for the quadrant page", () => {
-    render(<QuadrantPage quadrantId={quadrant.id} />);
+  it("passes SEO props for the segment page", () => {
+    render(<SegmentPage segmentId={segment.id} />);
 
     expect(mockState.seoHeadProps).toHaveBeenCalledWith({
-      title: quadrant.title,
-      description: quadrant.description,
-      path: `/${quadrant.id}/`,
+      title: segment.title,
+      description: segment.description,
+      path: `/${segment.id}/`,
     });
   });
 
-  it("renders QuadrantRadar with only featured items", () => {
-    render(<QuadrantPage quadrantId={quadrant.id} />);
+  it("renders SegmentRadar with only featured items", () => {
+    render(<SegmentPage segmentId={segment.id} />);
 
-    expect(screen.getByTestId("quadrant-radar")).toBeInTheDocument();
-    expect(mockState.quadrantRadarProps).toHaveBeenCalledWith(
+    expect(screen.getByTestId("segment-radar")).toBeInTheDocument();
+    expect(mockState.segmentRadarProps).toHaveBeenCalledWith(
       expect.objectContaining({
-        quadrant,
-        allQuadrants: quadrants,
+        segment,
+        allSegments: segments,
         rings,
         items: [items[0]], // Only featured items (React)
       }),
@@ -234,7 +234,7 @@ describe("Quadrant detail page", () => {
   });
 
   it("renders ring sections with items grouped by ring", () => {
-    render(<QuadrantPage quadrantId={quadrant.id} />);
+    render(<SegmentPage segmentId={segment.id} />);
 
     expect(screen.getByRole("heading", { name: "Adopt" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Trial" })).toBeInTheDocument();
@@ -244,7 +244,7 @@ describe("Quadrant detail page", () => {
   });
 
   it("renders item links with the correct hrefs", () => {
-    render(<QuadrantPage quadrantId={quadrant.id} />);
+    render(<SegmentPage segmentId={segment.id} />);
 
     expect(screen.getByRole("link", { name: /React/ })).toHaveAttribute(
       "href",
@@ -257,7 +257,7 @@ describe("Quadrant detail page", () => {
   });
 
   it("shows flag tags only for non-default items", () => {
-    render(<QuadrantPage quadrantId={quadrant.id} />);
+    render(<SegmentPage segmentId={segment.id} />);
 
     expect(screen.getByText("new")).toBeInTheDocument();
     expect(screen.getByText("changed")).toBeInTheDocument();
@@ -265,14 +265,14 @@ describe("Quadrant detail page", () => {
   });
 
   it("shows Hidden tag for non-featured items", () => {
-    render(<QuadrantPage quadrantId={quadrant.id} />);
+    render(<SegmentPage segmentId={segment.id} />);
 
     const hiddenTags = screen.getAllByText("Hidden");
     expect(hiddenTags).toHaveLength(2);
   });
 
   it("updates highlighted ids on item hover", () => {
-    render(<QuadrantPage quadrantId={quadrant.id} />);
+    render(<SegmentPage segmentId={segment.id} />);
 
     const denoLink = screen.getByRole("link", { name: /Deno/ });
     fireEvent.mouseEnter(denoLink);
@@ -290,8 +290,8 @@ describe("Quadrant detail page", () => {
     );
   });
 
-  it("returns null when the quadrant is not found", () => {
-    const { container } = render(<QuadrantPage quadrantId="missing" />);
+  it("returns null when the segment is not found", () => {
+    const { container } = render(<SegmentPage segmentId="missing" />);
 
     expect(container).toBeEmptyDOMElement();
   });

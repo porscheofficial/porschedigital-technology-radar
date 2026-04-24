@@ -19,9 +19,9 @@ import { SeoHead } from "@/components/SeoHead/SeoHead";
 import { Team } from "@/components/Teams/Teams";
 import {
   getItemTrajectories,
-  getQuadrant,
   getReleases,
   getRing,
+  getSegment,
   getVersionDiffs,
 } from "@/lib/data";
 import { formatRelease, formatReleaseCompact } from "@/lib/format";
@@ -138,7 +138,7 @@ const History: CustomPage = () => {
                     ? allReleases[firstAppearanceIdx]
                     : null;
 
-                const itemHref = `/${item.quadrant}/${item.id}`;
+                const itemHref = `/${item.segment}/${item.id}`;
 
                 return (
                   <PTableRow
@@ -267,7 +267,7 @@ const History: CustomPage = () => {
                   {diff.promoted.map(({ item, from, to }) => (
                     <Link
                       key={item.id}
-                      href={`/${item.quadrant}/${item.id}`}
+                      href={`/${item.segment}/${item.id}`}
                       className={styles.changeItem}
                     >
                       <span className={styles.changeIcon}>▲</span>
@@ -286,7 +286,7 @@ const History: CustomPage = () => {
                   {diff.demoted.map(({ item, from, to }) => (
                     <Link
                       key={item.id}
-                      href={`/${item.quadrant}/${item.id}`}
+                      href={`/${item.segment}/${item.id}`}
                       className={styles.changeItem}
                     >
                       <span className={styles.changeIconDown}>▼</span>
@@ -305,14 +305,14 @@ const History: CustomPage = () => {
                   {diff.newItems.map(({ item, ring }) => (
                     <Link
                       key={item.id}
-                      href={`/${item.quadrant}/${item.id}`}
+                      href={`/${item.segment}/${item.id}`}
                       className={styles.changeItem}
                     >
                       <span className={styles.changeIconNew}>✦</span>
                       <span className={styles.changeName}>{item.title}</span>
                       <RingBadge ring={ring} size="small" />
                       <span className={styles.changeDetail}>
-                        {getQuadrant(item.quadrant)?.title}
+                        {getSegment(item.segment)?.title}
                       </span>
                     </Link>
                   ))}
@@ -332,7 +332,7 @@ const History: CustomPage = () => {
                   {diff.teamChanges.map(({ item, added, removed }) => (
                     <Link
                       key={item.id}
-                      href={`/${item.quadrant}/${item.id}`}
+                      href={`/${item.segment}/${item.id}`}
                       className={styles.changeItem}
                     >
                       <span className={styles.changeIcon}>

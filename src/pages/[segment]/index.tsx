@@ -7,15 +7,15 @@ import type { GetStaticPaths, GetStaticProps } from "next";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { QuadrantRadar } from "@/components/QuadrantRadar/QuadrantRadar";
+import { SegmentRadar } from "@/components/SegmentRadar/SegmentRadar";
 import { SeoHead } from "@/components/SeoHead/SeoHead";
 import { blipSvgMap } from "@/lib/blipIcons";
 import {
   getItems,
-  getQuadrant,
-  getQuadrants,
   getRing,
   getRings,
+  getSegment,
+  getSegments,
   groupItemsByRing,
   sortByFeaturedAndTitle,
 } from "@/lib/data";
@@ -24,20 +24,20 @@ import { useRadarHighlight } from "@/lib/RadarHighlightContext";
 import { Flag } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import type { CustomPage } from "@/pages/_app";
-import styles from "./quadrant.module.scss";
+import styles from "./segment.module.scss";
 
-interface QuadrantPageProps {
-  quadrantId: string;
+interface SegmentPageProps {
+  segmentId: string;
 }
 
-const QuadrantPage: CustomPage<QuadrantPageProps> = ({ quadrantId }) => {
-  const quadrant = getQuadrant(quadrantId);
-  const allQuadrants = getQuadrants();
+const SegmentPage: CustomPage<SegmentPageProps> = ({ segmentId }) => {
+  const segment = getSegment(segmentId);
+  const allSegments = getSegments();
   const rings = getRings();
   const { setHighlight } = useRadarHighlight();
 
-  const items = quadrant
-    ? getItems(quadrant.id).sort(sortByFeaturedAndTitle)
+  const items = segment
+    ? getItems(segment.id).sort(sortByFeaturedAndTitle)
     : [];
   const featuredItems = items.filter((item) => item.featured);
 
@@ -106,39 +106,39 @@ const QuadrantPage: CustomPage<QuadrantPageProps> = ({ quadrantId }) => {
     setHighlight([], false);
   }, [setHighlight]);
 
-  if (!quadrant || !items) return null;
+  if (!segment || !items) return null;
 
   return (
     <>
       <SeoHead
-        title={quadrant.title}
-        description={quadrant.description}
-        path={`/${quadrant.id}/`}
+        title={segment.title}
+        description={segment.description}
+        path={`/${segment.id}/`}
       />
 
       <div className={styles.page}>
         <div className={styles.mobileHeader}>
           <PHeading size="large" tag="h1">
-            {quadrant.title}
+            {segment.title}
           </PHeading>
-          {quadrant.description && (
-            <PText className={styles.description}>{quadrant.description}</PText>
+          {segment.description && (
+            <PText className={styles.description}>{segment.description}</PText>
           )}
         </div>
 
         <div className={styles.stickyCol}>
           <div className={styles.radarWrap}>
             <PHeading size="x-large" tag="h1">
-              {quadrant.title}
+              {segment.title}
             </PHeading>
-            {quadrant.description && (
+            {segment.description && (
               <PText className={styles.description}>
-                {quadrant.description}
+                {segment.description}
               </PText>
             )}
-            <QuadrantRadar
-              quadrant={quadrant}
-              allQuadrants={allQuadrants}
+            <SegmentRadar
+              segment={segment}
+              allSegments={allSegments}
               rings={rings}
               items={featuredItems}
               activeRings={activeRings}
@@ -182,7 +182,7 @@ const QuadrantPage: CustomPage<QuadrantPageProps> = ({ quadrantId }) => {
 
                 <ul className={styles.itemList}>
                   {ringItems.map((item) => {
-                    const href = `/${item.quadrant}/${item.id}`;
+                    const href = `/${item.segment}/${item.id}`;
                     return (
                       <li
                         key={item.id}
@@ -241,19 +241,19 @@ const QuadrantPage: CustomPage<QuadrantPageProps> = ({ quadrantId }) => {
   );
 };
 
-export default QuadrantPage;
+export default SegmentPage;
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const quadrants = getQuadrants();
-  const paths = quadrants.map((quadrant) => ({
-    params: { quadrant: quadrant.id },
+  const segments = getSegments();
+  const paths = segments.map((segment) => ({
+    params: { segment: segment.id },
   }));
 
   return { paths, fallback: false };
 };
 
-export const getStaticProps: GetStaticProps<QuadrantPageProps> = async ({
+export const getStaticProps: GetStaticProps<SegmentPageProps> = async ({
   params,
 }) => {
-  return { props: { quadrantId: params?.quadrant as string } };
+  return { props: { segmentId: params?.segment as string } };
 };

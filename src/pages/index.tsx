@@ -1,5 +1,5 @@
 import { DemoDisclaimer } from "@/components/DemoDisclaimer/DemoDisclaimer";
-import { MobileQuadrantNav } from "@/components/MobileQuadrantNav/MobileQuadrantNav";
+import { MobileSegmentNav } from "@/components/MobileSegmentNav/MobileSegmentNav";
 import { Radar } from "@/components/Radar/Radar";
 import { RadarFilters } from "@/components/RadarFilters/RadarFilters";
 import { SeoHead } from "@/components/SeoHead/SeoHead";
@@ -7,8 +7,8 @@ import {
   getChartConfig,
   getItems,
   getLabel,
-  getQuadrants,
   getRings,
+  getSegments,
   getToggle,
 } from "@/lib/data";
 import type { CustomPage } from "@/pages/_app";
@@ -20,7 +20,7 @@ const Home: CustomPage = () => {
   const metaDescription = getLabel("tagline") || getLabel("metaDescription");
   const chartConfig = getChartConfig();
   const rings = getRings();
-  const quadrants = getQuadrants();
+  const segments = getSegments();
   const items = getItems(undefined, true);
 
   return (
@@ -31,11 +31,11 @@ const Home: CustomPage = () => {
 
       {getToggle("showChart") && (
         <>
-          <MobileQuadrantNav quadrants={quadrants} />
+          <MobileSegmentNav segments={segments} />
           <div className={styles.desktopRadar}>
             <Radar
               size={chartConfig.size}
-              quadrants={quadrants}
+              segments={segments}
               rings={rings}
               items={items}
             />

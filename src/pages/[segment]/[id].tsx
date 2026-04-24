@@ -3,38 +3,38 @@ import Head from "next/head";
 
 import { ItemDetail } from "@/components/ItemDetail/ItemDetail";
 import { SeoHead } from "@/components/SeoHead/SeoHead";
-import { getItem, getItems, getQuadrant } from "@/lib/data";
+import { getItem, getItems, getSegment } from "@/lib/data";
 import { deriveSummary } from "@/lib/format";
 import type { CustomPage } from "@/pages/_app";
 
 interface ItemPageProps {
-  quadrantId: string;
+  segmentId: string;
   itemId: string;
 }
 
-const ItemPage: CustomPage<ItemPageProps> = ({ quadrantId, itemId }) => {
-  const quadrant = getQuadrant(quadrantId);
+const ItemPage: CustomPage<ItemPageProps> = ({ segmentId, itemId }) => {
+  const segment = getSegment(segmentId);
   const item = getItem(itemId);
 
-  if (!quadrant || !item) return null;
+  if (!segment || !item) return null;
 
   const description = deriveSummary(item);
-  const image = item.ogImage || `/og/${quadrant.id}/${item.id}.png`;
+  const image = item.ogImage || `/og/${segment.id}/${item.id}.png`;
 
   return (
     <>
       <SeoHead
         title={item.title}
         description={description}
-        path={`/${quadrant.id}/${item.id}/`}
+        path={`/${segment.id}/${item.id}/`}
         image={image}
         type="article"
       />
       <Head>
-        <meta property="article:section" content={quadrant.title} />
+        <meta property="article:section" content={segment.title} />
       </Head>
 
-      <ItemDetail item={item} quadrantTitle={quadrant.title} />
+      <ItemDetail item={item} segmentTitle={segment.title} />
     </>
   );
 };
@@ -44,7 +44,7 @@ export default ItemPage;
 export const getStaticPaths: GetStaticPaths = async () => {
   const items = getItems();
   const paths = items.map((item) => ({
-    params: { quadrant: item.quadrant, id: item.id },
+    params: { segment: item.segment, id: item.id },
   }));
 
   return { paths, fallback: false };
@@ -55,7 +55,7 @@ export const getStaticProps: GetStaticProps<ItemPageProps> = async ({
 }) => {
   return {
     props: {
-      quadrantId: params?.quadrant as string,
+      segmentId: params?.segment as string,
       itemId: params?.id as string,
     },
   };

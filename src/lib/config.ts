@@ -1,5 +1,5 @@
 import consola from "consola";
-import defaultConfigRaw from "../../data/config.default.json";
+import defaultConfig from "../../data/config.default.json";
 import _userConfig from "../../data/config.json";
 import type { Segment } from "./types";
 
@@ -9,15 +9,9 @@ type DeepPartial<T> = T extends object
     }
   : T;
 
-// Map default config from quadrants -> segments since data/config.default.json
-// isn't updated in this wave.
-const { quadrants: defaultQuadrants, ...restDefault } = defaultConfigRaw;
-const defaultConfig = {
-  ...restDefault,
-  segments: defaultQuadrants as unknown as Segment[],
+export type Config = Omit<typeof defaultConfig, "segments"> & {
+  segments: Segment[];
 };
-
-export type Config = typeof defaultConfig;
 type UserConfig = DeepPartial<Config> & { quadrants?: unknown[] };
 
 const userConfig = _userConfig as UserConfig;

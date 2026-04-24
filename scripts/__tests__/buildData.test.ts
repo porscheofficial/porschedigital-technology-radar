@@ -11,7 +11,7 @@ const mockConfigState = vi.hoisted(() => ({
       { id: "assess", title: "Assess", radius: 0.85 },
       { id: "hold", title: "Hold", radius: 1 },
     ],
-    quadrants: [
+    segments: [
       {
         id: "languages-and-frameworks",
         title: "L&F",
@@ -80,7 +80,7 @@ vi.mock("node:fs", async (importOriginal) => {
       return [
         "---",
         "ring: adopt",
-        "quadrant: languages-and-frameworks",
+        "segment: languages-and-frameworks",
         "title: Mock Item",
         "tags:",
         "  - keep",
@@ -174,7 +174,7 @@ function createItem(overrides: Partial<Item> = {}): Item {
     body: "<p>Body</p>",
     featured: true,
     ring: "adopt",
-    quadrant: "languages-and-frameworks",
+    segment: "languages-and-frameworks",
     flag: Flag.Default,
     release: "2024-03",
     position: [0, 0],
@@ -322,7 +322,7 @@ describe("buildData", () => {
   describe("wiki-link integration", () => {
     it("resolves wiki-links via createProcessor with a blip lookup", async () => {
       const lookup = new Map([
-        ["react", { title: "React", quadrant: "languages-and-frameworks" }],
+        ["react", { title: "React", segment: "languages-and-frameworks" }],
       ]);
       const processor = buildData.createProcessor(lookup);
       const html = await buildData.convertToHtml(
@@ -339,7 +339,7 @@ describe("buildData", () => {
       const lookup = new Map([
         [
           "kubernetes",
-          { title: "Kubernetes", quadrant: "platforms-and-operations" },
+          { title: "Kubernetes", segment: "platforms-and-operations" },
         ],
       ]);
       const processor = buildData.createProcessor(lookup);
@@ -373,7 +373,7 @@ describe("buildData", () => {
           'summary: "Typed JavaScript"',
           'ogImage: "/images/typescript-card.png"',
           "ring: adopt",
-          "quadrant: languages-and-frameworks",
+          "segment: languages-and-frameworks",
           "---",
           "Body",
         ].join("\n"),
@@ -384,7 +384,7 @@ describe("buildData", () => {
           "---",
           'title: "React"',
           "ring: trial",
-          "quadrant: languages-and-frameworks",
+          "segment: languages-and-frameworks",
           "---",
           "Body",
         ].join("\n"),
@@ -395,18 +395,18 @@ describe("buildData", () => {
       expect(lookup.size).toBe(2);
       expect(lookup.get("typescript")).toEqual({
         title: "TypeScript",
-        quadrant: "languages-and-frameworks",
+        segment: "languages-and-frameworks",
       });
       expect(lookup.get("react")).toEqual({
         title: "React",
-        quadrant: "languages-and-frameworks",
+        segment: "languages-and-frameworks",
       });
     });
 
     it("preScanBlipLookup uses id as title when title is omitted", () => {
       writeFile(
         "2024-01/my-tool.md",
-        "---\nring: adopt\nquadrant: tools\n---\nBody",
+        "---\nring: adopt\nsegment: tools\n---\nBody",
       );
 
       const lookup = buildData.preScanBlipLookup(tmpDir);
@@ -416,11 +416,11 @@ describe("buildData", () => {
     it("preScanBlipLookup skips files with invalid frontmatter", () => {
       writeFile(
         "2024-01/valid.md",
-        "---\ntitle: Valid\nring: adopt\nquadrant: tools\n---\nBody",
+        "---\ntitle: Valid\nring: adopt\nsegment: tools\n---\nBody",
       );
       writeFile(
         "2024-01/invalid.md",
-        "---\nring: bad-ring\nquadrant: tools\n---\nBody",
+        "---\nring: bad-ring\nsegment: tools\n---\nBody",
       );
 
       const lookup = buildData.preScanBlipLookup(tmpDir);
@@ -440,7 +440,7 @@ describe("buildData", () => {
           'summary: "Typed JavaScript"',
           'ogImage: "/images/typescript-card.png"',
           "ring: adopt",
-          "quadrant: languages-and-frameworks",
+          "segment: languages-and-frameworks",
           "---",
           "Body with [link](/tools/tooling.html)",
         ].join("\n"),
@@ -456,7 +456,7 @@ describe("buildData", () => {
         summary: "Typed JavaScript",
         ogImage: "/images/typescript-card.png",
         ring: "adopt",
-        quadrant: "languages-and-frameworks",
+        segment: "languages-and-frameworks",
       });
       expect(result.body).toContain("<p>");
       expect(result.body).toContain('href="/technology-radar/tools/tooling/"');
@@ -471,7 +471,7 @@ describe("buildData", () => {
           "---",
           'title: "TypeScript"',
           "ring: adopt",
-          "quadrant: languages-and-frameworks",
+          "segment: languages-and-frameworks",
           "tags:",
           "  - language",
           "teams:",
@@ -492,7 +492,7 @@ describe("buildData", () => {
         release: "2024-01",
         title: "TypeScript",
         ring: "adopt",
-        quadrant: "languages-and-frameworks",
+        segment: "languages-and-frameworks",
         tags: ["language"],
         teams: ["frontend", "platform"],
       });
@@ -514,7 +514,7 @@ describe("buildData", () => {
           'title: "React Old"',
           'summary: "Old summary"',
           "ring: adopt",
-          "quadrant: languages-and-frameworks",
+          "segment: languages-and-frameworks",
           "tags:",
           "  - frontend",
           "teams:",
@@ -531,7 +531,7 @@ describe("buildData", () => {
           'summary: "New summary"',
           'ogImage: "/images/react-card.png"',
           "ring: trial",
-          "quadrant: tools",
+          "segment: tools",
           "tags:",
           "  - ui",
           "teams:",
@@ -553,7 +553,7 @@ describe("buildData", () => {
         summary: "New summary",
         ogImage: "/images/react-card.png",
         ring: "trial",
-        quadrant: "tools",
+        segment: "tools",
         body: "<p>New body</p>",
         tags: ["ui"],
         teams: ["beta"],
@@ -579,7 +579,7 @@ describe("buildData", () => {
           "---",
           'title: "Item"',
           "ring: adopt",
-          "quadrant: languages-and-frameworks",
+          "segment: languages-and-frameworks",
           "teams:",
           "  - alpha",
           "---",
@@ -592,7 +592,7 @@ describe("buildData", () => {
           "---",
           'title: "Item"',
           "ring: adopt",
-          "quadrant: languages-and-frameworks",
+          "segment: languages-and-frameworks",
           "---",
           "Body",
         ].join("\n"),
@@ -620,7 +620,7 @@ describe("buildData", () => {
           "---",
           'title: "Item"',
           "ring: adopt",
-          "quadrant: languages-and-frameworks",
+          "segment: languages-and-frameworks",
           "tags:",
           "  - frontend",
           "---",
@@ -633,7 +633,7 @@ describe("buildData", () => {
           "---",
           'title: "Item"',
           "ring: adopt",
-          "quadrant: languages-and-frameworks",
+          "segment: languages-and-frameworks",
           "---",
           "Body",
         ].join("\n"),
@@ -653,7 +653,7 @@ describe("buildData", () => {
           "---",
           'title: "Item"',
           "ring: adopt",
-          "quadrant: languages-and-frameworks",
+          "segment: languages-and-frameworks",
           "links:",
           "  - url: https://old.example.com",
           "    name: Old Link",
@@ -667,7 +667,7 @@ describe("buildData", () => {
           "---",
           'title: "Item"',
           "ring: adopt",
-          "quadrant: languages-and-frameworks",
+          "segment: languages-and-frameworks",
           "links:",
           "  - url: https://new.example.com",
           "    name: New Link",
@@ -693,7 +693,7 @@ describe("buildData", () => {
           "---",
           'title: "Item"',
           "ring: adopt",
-          "quadrant: languages-and-frameworks",
+          "segment: languages-and-frameworks",
           "links:",
           "  - url: https://example.com",
           "    name: Example",
@@ -707,7 +707,7 @@ describe("buildData", () => {
           "---",
           'title: "Item"',
           "ring: adopt",
-          "quadrant: languages-and-frameworks",
+          "segment: languages-and-frameworks",
           "---",
           "Body",
         ].join("\n"),
@@ -722,11 +722,11 @@ describe("buildData", () => {
     it("marks bodyInherited when a later duplicate has the same body", async () => {
       writeFile(
         "2024-01/vue.md",
-        "---\nring: adopt\nquadrant: languages-and-frameworks\n---\nSame body",
+        "---\nring: adopt\nsegment: languages-and-frameworks\n---\nSame body",
       );
       writeFile(
         "vue.md",
-        "---\nring: trial\nquadrant: languages-and-frameworks\n---\nSame body",
+        "---\nring: trial\nsegment: languages-and-frameworks\n---\nSame body",
       );
 
       const result = await buildData.parseDirectory(tmpDir);
@@ -739,11 +739,11 @@ describe("buildData", () => {
     it("marks bodyInherited when a later duplicate has an empty body", async () => {
       writeFile(
         "2024-01/vue.md",
-        "---\nring: adopt\nquadrant: languages-and-frameworks\n---\nOriginal body",
+        "---\nring: adopt\nsegment: languages-and-frameworks\n---\nOriginal body",
       );
       writeFile(
         "vue.md",
-        "---\nring: assess\nquadrant: languages-and-frameworks\n---\n",
+        "---\nring: assess\nsegment: languages-and-frameworks\n---\n",
       );
 
       const result = await buildData.parseDirectory(tmpDir);
@@ -756,11 +756,11 @@ describe("buildData", () => {
     it("marks bodyInherited in the directory-merge path (dated subdirectories)", async () => {
       writeFile(
         "2024-01/ab-testing.md",
-        "---\nring: assess\nquadrant: tools\nteams:\n  - alpha\n---\nShared description",
+        "---\nring: assess\nsegment: tools\nteams:\n  - alpha\n---\nShared description",
       );
       writeFile(
         "2025-01/ab-testing.md",
-        "---\nring: assess\nquadrant: tools\nteams:\n  - alpha\n  - beta\n---\nShared description",
+        "---\nring: assess\nsegment: tools\nteams:\n  - alpha\n  - beta\n---\nShared description",
       );
 
       const result = await buildData.parseDirectory(tmpDir);
@@ -775,11 +775,11 @@ describe("buildData", () => {
     it("does not mark bodyInherited when body differs across dated subdirectories", async () => {
       writeFile(
         "2024-01/item.md",
-        "---\nring: adopt\nquadrant: tools\n---\nOriginal body",
+        "---\nring: adopt\nsegment: tools\n---\nOriginal body",
       );
       writeFile(
         "2025-01/item.md",
-        "---\nring: adopt\nquadrant: tools\n---\nUpdated body",
+        "---\nring: adopt\nsegment: tools\n---\nUpdated body",
       );
 
       const result = await buildData.parseDirectory(tmpDir);
@@ -797,7 +797,7 @@ describe("buildData", () => {
           "---",
           'title: "Zeta"',
           "ring: adopt",
-          "quadrant: languages-and-frameworks",
+          "segment: languages-and-frameworks",
           "---",
           "Valid",
         ].join("\n"),
@@ -808,14 +808,14 @@ describe("buildData", () => {
           "---",
           'title: "Alpha"',
           "ring: trial",
-          "quadrant: tools",
+          "segment: tools",
           "---",
           "Valid",
         ].join("\n"),
       );
       writeFile(
         "group-b/2024-01/invalid.md",
-        "---\nring: bad-ring\nquadrant: tools\n---\nBroken",
+        "---\nring: bad-ring\nsegment: tools\n---\nBroken",
       );
 
       const result = await buildData.parseDirectory(tmpDir);

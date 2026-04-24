@@ -18,7 +18,7 @@ vi.mock("consola", () => ({
 }));
 
 function createLookup(
-  entries: Record<string, { title: string; quadrant: string }> = {},
+  entries: Record<string, { title: string; segment: string }> = {},
 ): BlipLookup {
   return new Map(Object.entries(entries));
 }
@@ -37,9 +37,9 @@ async function process(markdown: string, lookup: BlipLookup, strict = false) {
 }
 
 const lookup = createLookup({
-  typescript: { title: "TypeScript", quadrant: "languages-and-frameworks" },
-  react: { title: "React", quadrant: "languages-and-frameworks" },
-  kubernetes: { title: "Kubernetes", quadrant: "platforms-and-operations" },
+  typescript: { title: "TypeScript", segment: "languages-and-frameworks" },
+  react: { title: "React", segment: "languages-and-frameworks" },
+  kubernetes: { title: "Kubernetes", segment: "platforms-and-operations" },
 });
 
 describe("remarkWikiLink", () => {

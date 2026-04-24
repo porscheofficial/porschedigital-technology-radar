@@ -1,7 +1,7 @@
-import type { Quadrant, Ring } from "@/lib/types";
+import type { Ring, Segment } from "@/lib/types";
 import Positioner from "../positioner";
 
-function createQuadrants(): Quadrant[] {
+function createSegments(): Segment[] {
   return [
     {
       id: "languages-and-frameworks",
@@ -83,7 +83,7 @@ function getPolar(position: [number, number], size: number) {
 describe("Positioner", () => {
   const size = 800;
   const center = size / 2;
-  const quadrants = createQuadrants();
+  const segments = createSegments();
   const rings = createRings();
 
   it("computes Euclidean distance", () => {
@@ -91,18 +91,18 @@ describe("Positioner", () => {
     expect(Positioner.getDistance([5, 5], [5, 5])).toBe(0);
   });
 
-  it("constructor computes ring dimensions and quadrant angles", () => {
-    const positioner = new Positioner(size, quadrants, rings);
+  it("constructor computes ring dimensions and segment angles", () => {
+    const positioner = new Positioner(size, segments, rings);
     const internal = positioner as unknown as {
       ringDimensions: Record<string, [number, number]>;
-      quadrantAngles: Record<string, number>;
+      segmentAngles: Record<string, number>;
       sweep: number;
       centerRadius: number;
     };
 
     expect(internal.centerRadius).toBe(400);
     expect(internal.sweep).toBe(90);
-    expect(internal.quadrantAngles).toEqual({
+    expect(internal.segmentAngles).toEqual({
       "languages-and-frameworks": 270,
       "methods-and-patterns": 0,
       "platforms-and-operations": 90,
@@ -115,7 +115,7 @@ describe("Positioner", () => {
   });
 
   it("returns positions within chart bounds and the correct ring radius", () => {
-    const positioner = new Positioner(size, quadrants, rings);
+    const positioner = new Positioner(size, segments, rings);
 
     for (const ring of rings) {
       const position = positioner.getNextPosition(
@@ -139,8 +139,8 @@ describe("Positioner", () => {
     }
   });
 
-  it("keeps positions within the correct quadrant angular sweep", () => {
-    const positioner = new Positioner(size, quadrants, rings);
+  it("keeps positions within the correct segment angular sweep", () => {
+    const positioner = new Positioner(size, segments, rings);
     // Ranges account for ±1° rounding tolerance because Positioner
     // rounds pixel coordinates (Math.round) and the test recovers
     // the angle via atan2, which amplifies sub-pixel rounding error.
@@ -158,11 +158,11 @@ describe("Positioner", () => {
       tools: [190 - roundingTolerance, 260 + roundingTolerance],
     };
 
-    for (const quadrant of quadrants) {
+    for (const segment of segments) {
       for (let i = 0; i < 20; i++) {
-        const position = positioner.getNextPosition(quadrant.id, "adopt");
+        const position = positioner.getNextPosition(segment.id, "adopt");
         const { angle } = getPolar(position, size);
-        const [start, end] = expectedRanges[quadrant.id];
+        const [start, end] = expectedRanges[segment.id];
 
         expect(angle).toBeGreaterThanOrEqual(start);
         expect(angle).toBeLessThanOrEqual(end);
@@ -170,8 +170,8 @@ describe("Positioner", () => {
     }
   });
 
-  it("does not return identical positions on repeated placement for the same quadrant and ring", () => {
-    const positioner = new Positioner(size, quadrants, rings);
+  it("does not return identical positions on repeated placement for the same segment and ring", () => {
+    const positioner = new Positioner(size, segments, rings);
     const positions = Array.from({ length: 10 }, () =>
       positioner.getNextPosition("tools", "hold"),
     );

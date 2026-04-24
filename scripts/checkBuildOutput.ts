@@ -12,9 +12,9 @@ if (!existsSync(outDir)) {
   process.exit(1);
 }
 
-type Quadrant = { id: string };
-type Item = { id: string; quadrant: string };
-type Config = { quadrants: Quadrant[] };
+type Segment = { id: string };
+type Item = { id: string; segment: string };
+type Config = { segments: Segment[] };
 
 const data = JSON.parse(readFileSync(join(root, "data/data.json"), "utf8")) as {
   items: Item[];
@@ -26,7 +26,7 @@ const defaultConfig = JSON.parse(
 const userConfig = JSON.parse(
   readFileSync(join(root, "data/config.json"), "utf8"),
 ) as Partial<Config>;
-const quadrants: Quadrant[] = userConfig.quadrants ?? defaultConfig.quadrants;
+const segments: Segment[] = userConfig.segments ?? defaultConfig.segments;
 
 const expected: string[] = [
   "index.html",
@@ -35,9 +35,9 @@ const expected: string[] = [
   "history/index.html",
   "help-and-about-tech-radar/index.html",
 ];
-for (const q of quadrants) expected.push(`${q.id}/index.html`);
+for (const q of segments) expected.push(`${q.id}/index.html`);
 for (const item of data.items) {
-  expected.push(`${item.quadrant}/${item.id}/index.html`);
+  expected.push(`${item.segment}/${item.id}/index.html`);
 }
 
 const missing = expected.filter((rel) => !existsSync(join(outDir, rel)));
@@ -55,5 +55,5 @@ if (missing.length > 0) {
 
 consola.success(
   `out/ contains all ${expected.length} expected route files ` +
-    `(${quadrants.length} quadrants, ${data.items.length} items, 5 statics).`,
+    `(${segments.length} segments, ${data.items.length} items, 5 statics).`,
 );

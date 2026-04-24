@@ -3,7 +3,7 @@ import path from "node:path";
 const mockConfigState = vi.hoisted(() => ({
   value: {
     rings: [{ id: "adopt", title: "Adopt", radius: 1 }],
-    quadrants: [{ id: "tools", title: "Tools", color: "#000" }],
+    segments: [{ id: "tools", title: "Tools", color: "#000" }],
     chart: { size: 800 },
     tags: [] as string[],
   },
@@ -81,7 +81,7 @@ vi.mock("node:fs", async (importOriginal) => {
       return [
         "---",
         "ring: adopt",
-        "quadrant: tools",
+        "segment: tools",
         "title: Mock",
         "---",
         "Mock body",

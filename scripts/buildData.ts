@@ -31,10 +31,10 @@ const {
   chart: { size },
 } = config;
 
-const quadrants = config.quadrants.map((q, i) => ({ ...q, position: i + 1 }));
+const segments = config.segments.map((q, i) => ({ ...q, position: i + 1 }));
 const configTags = (config as { tags?: string[] }).tags ?? [];
 
-const positioner = new Positioner(size, quadrants, rings);
+const positioner = new Positioner(size, segments, rings);
 const isStrict = process.argv.slice(2).includes("--strict");
 
 consola.info(`Build mode: ${isStrict ? "strict" : "lenient"}`);
@@ -196,7 +196,7 @@ export function preScanBlipLookup(dirPath: string): BlipLookup {
         if (frontmatter) {
           lookup.set(id, {
             title: frontmatter.title ?? id,
-            quadrant: frontmatter.quadrant,
+            segment: frontmatter.segment,
           });
         }
       }
@@ -256,7 +256,7 @@ export async function parseDirectory(
           existing.summary = item.summary;
           existing.ogImage = item.ogImage;
           existing.ring = item.ring || existing.ring;
-          existing.quadrant = item.quadrant || existing.quadrant;
+          existing.segment = item.segment || existing.segment;
           existing.tags = item.tags;
           existing.teams = item.teams;
           existing.links = item.links;
@@ -299,7 +299,7 @@ export async function parseDirectory(
           summary: frontmatter.summary,
           ogImage: frontmatter.ogImage,
           ring: frontmatter.ring,
-          quadrant: frontmatter.quadrant,
+          segment: frontmatter.segment,
           body,
           featured: frontmatter.featured,
           flag: Flag.Default,
@@ -324,7 +324,7 @@ export async function parseDirectory(
         existing.summary = frontmatter.summary;
         existing.ogImage = frontmatter.ogImage;
         existing.ring = frontmatter.ring;
-        existing.quadrant = frontmatter.quadrant;
+        existing.segment = frontmatter.segment;
         existing.tags = frontmatter.tags;
         existing.teams = teams;
         existing.links = frontmatter.links;
@@ -425,7 +425,7 @@ export function postProcessItems(items: Item[]): {
     const lastRevision = item.revisions?.[item.revisions.length - 1];
     const processedItem = {
       ...item,
-      position: positioner.getNextPosition(item.quadrant, item.ring),
+      position: positioner.getNextPosition(item.segment, item.ring),
       flag: getFlag(item, releases),
       ...(lastRevision?.addedTeams && { addedTeams: lastRevision.addedTeams }),
       ...(lastRevision?.removedTeams && {

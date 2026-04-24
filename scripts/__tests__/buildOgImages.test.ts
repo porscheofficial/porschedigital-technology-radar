@@ -102,7 +102,7 @@ describe("buildOgImages", () => {
       body: "<p>UI library</p>",
       featured: true,
       ring: "adopt",
-      quadrant: "languages-and-frameworks",
+      segment: "languages-and-frameworks",
       flag: Flag.Default,
       release: "2024-01",
       position: [0, 0],
@@ -110,7 +110,7 @@ describe("buildOgImages", () => {
 
     const png = await renderItemOgImagePng({
       item,
-      quadrant: {
+      segment: {
         id: "languages-and-frameworks",
         title: "Languages & Frameworks",
         color: "#4A9E7E",
@@ -134,7 +134,7 @@ describe("buildOgImages", () => {
     const input = {
       title: "React",
       ring: { id: "adopt", title: "Adopt", color: "#4A9E7E" },
-      quadrant: {
+      segment: {
         id: "languages-and-frameworks",
         title: "Languages & Frameworks",
         color: "#4A9E7E",

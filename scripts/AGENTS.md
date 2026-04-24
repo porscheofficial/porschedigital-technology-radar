@@ -9,7 +9,7 @@ Run at build/validate time only. Never imported by `src/`.
 | `buildData.ts` | Walks `data/radar/**/*.md`, validates frontmatter, renders markdown → HTML, emits `data/data.json`. |
 | `validateFrontmatter.ts` | **The Zod schema for radar item frontmatter.** Single source of truth shared by `buildData.ts` and `pnpm run validate`. |
 | `remarkWikiLink.ts` | Remark plugin: resolves `[[id]]` and `[[id|label]]` to internal links using the blip lookup table. |
-| `positioner.ts` | Computes blip coordinates within rings/quadrants. |
+| `positioner.ts` | Computes blip coordinates within rings/segments. |
 | `errorHandler.ts` | Consola-based error reporting helpers. |
 | `checkConfigReadmeSync.ts` | Asserts that every leaf key in `data/config.default.json` and every Zod field in `validateFrontmatter.ts` is documented in `README.md`. Run via `pnpm run check:arch:readme`. |
 

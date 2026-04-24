@@ -8,10 +8,10 @@ import type { Plugin } from "unified";
 
 export interface BlipLookupEntry {
   title: string;
-  quadrant: string;
+  segment: string;
 }
 
-/** id → { title, quadrant } */
+/** id → { title, segment } */
 export type BlipLookup = Map<string, BlipLookupEntry>;
 
 export interface RemarkWikiLinkOptions {
@@ -43,7 +43,7 @@ const WIKI_LINK_RE = /\[\[([^\]|]+?)(?:\|([^\]]+?))?\]\]/g;
 
 /**
  * Remark plugin: resolve `[[id]]` and `[[id|label]]` wiki-links to internal
- * anchor nodes pointing at `/${quadrant}/${id}`.
+ * anchor nodes pointing at `/${segment}/${id}`.
  *
  * Unresolved links are logged as warnings (or errors in strict mode) and
  * rendered as plain text.
@@ -127,7 +127,7 @@ export function splitWikiLinks(
     if (entry) {
       const linkNode: Link = {
         type: "link",
-        url: `/${entry.quadrant}/${id}`,
+        url: `/${entry.segment}/${id}`,
         children: [{ type: "text", value: label ?? entry.title }],
       };
       result.push(linkNode);

@@ -31,7 +31,7 @@ interface OgDataFile {
   items: Item[];
 }
 
-type OgQuadrant = {
+type OgSegment = {
   id: string;
   title: string;
   color: string;
@@ -45,7 +45,7 @@ type OgRing = {
 
 interface ItemOgContext {
   item: Item;
-  quadrant: OgQuadrant;
+  segment: OgSegment;
   ring: OgRing;
 }
 
@@ -57,7 +57,7 @@ interface DefaultOgContext {
 export interface ItemOgCacheInput {
   title: string;
   ring: OgRing;
-  quadrant: OgQuadrant;
+  segment: OgSegment;
   ogImage?: string;
   templateVersion?: number;
 }
@@ -127,14 +127,14 @@ function createOgRoot(children: React.ReactNode) {
   );
 }
 
-function createItemOgMarkup({ item, quadrant, ring }: ItemOgContext) {
+function createItemOgMarkup({ item, segment, ring }: ItemOgContext) {
   return createOgRoot([
     React.createElement("div", {
       key: "band",
       style: {
         width: "24px",
         height: "100%",
-        background: quadrant.color,
+        background: segment.color,
       },
     }),
     React.createElement(
@@ -215,7 +215,7 @@ function createItemOgMarkup({ item, quadrant, ring }: ItemOgContext) {
                   color: getContentColor(),
                 },
               },
-              `${ring.title} · ${quadrant.title}`,
+              `${ring.title} · ${segment.title}`,
             ),
           ],
         ),
@@ -348,7 +348,7 @@ export async function renderDefaultOgImagePng(context: DefaultOgContext) {
 export function createItemOgCacheHash({
   title,
   ring,
-  quadrant,
+  segment,
   ogImage,
   templateVersion = TEMPLATE_VERSION,
 }: ItemOgCacheInput) {
@@ -358,7 +358,7 @@ export function createItemOgCacheHash({
       JSON.stringify({
         title,
         ring,
-        quadrant,
+        segment,
         ogImage,
         templateVersion,
       }),
@@ -402,10 +402,10 @@ async function buildDefaultImage(cache: OgCache) {
 }
 
 async function buildItemImage(context: ItemOgContext, cache: OgCache) {
-  const cacheKey = `${context.quadrant.id}/${context.item.id}`;
+  const cacheKey = `${context.segment.id}/${context.item.id}`;
   const outputPath = path.join(
     OG_OUTPUT_DIR,
-    context.quadrant.id,
+    context.segment.id,
     `${context.item.id}.png`,
   );
   const hash = createItemOgCacheHash({
@@ -415,10 +415,10 @@ async function buildItemImage(context: ItemOgContext, cache: OgCache) {
       title: context.ring.title,
       color: context.ring.color,
     },
-    quadrant: {
-      id: context.quadrant.id,
-      title: context.quadrant.title,
-      color: context.quadrant.color,
+    segment: {
+      id: context.segment.id,
+      title: context.segment.title,
+      color: context.segment.color,
     },
     ogImage: context.item.ogImage,
   });
@@ -435,8 +435,8 @@ async function buildItemImage(context: ItemOgContext, cache: OgCache) {
 
 export async function buildOgImages() {
   const data = loadDataFile();
-  const quadrantById = new Map(
-    config.quadrants.map((quadrant) => [quadrant.id, quadrant]),
+  const segmentById = new Map(
+    config.segments.map((segment) => [segment.id, segment]),
   );
   const ringById = new Map(config.rings.map((ring) => [ring.id, ring]));
   const cache = loadCache();
@@ -456,16 +456,16 @@ export async function buildOgImages() {
       continue;
     }
 
-    const quadrant = quadrantById.get(item.quadrant);
+    const segment = segmentById.get(item.segment);
     const ring = ringById.get(item.ring);
 
-    if (!quadrant || !ring) {
+    if (!segment || !ring) {
       throw new Error(
-        `Missing config for item ${item.id} (${item.quadrant}/${item.ring})`,
+        `Missing config for item ${item.id} (${item.segment}/${item.ring})`,
       );
     }
 
-    if (await buildItemImage({ item, quadrant, ring }, cache)) {
+    if (await buildItemImage({ item, segment, ring }, cache)) {
       generated += 1;
     } else {
       skipped += 1;

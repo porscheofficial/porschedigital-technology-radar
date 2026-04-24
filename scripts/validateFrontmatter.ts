@@ -10,7 +10,7 @@ import config from "../src/lib/config";
 // ---------------------------------------------------------------------------
 
 const ringIds = config.rings.map((r) => r.id) as [string, ...string[]];
-const quadrantIds = config.quadrants.map((q) => q.id) as [string, ...string[]];
+const segmentIds = config.segments.map((q) => q.id) as [string, ...string[]];
 
 // ---------------------------------------------------------------------------
 // Zod frontmatter schema — validates at parse boundary
@@ -26,7 +26,7 @@ export const FrontmatterSchema = z.object({
   summary: z.string().optional(),
   ogImage: z.string().optional(),
   ring: z.enum(ringIds),
-  quadrant: z.enum(quadrantIds),
+  segment: z.enum(segmentIds),
   featured: z.boolean().default(true),
   tags: z.array(z.string()).default([]),
   teams: z.array(z.string()).default([]),
@@ -43,6 +43,15 @@ export function parseRadarFrontmatter(
   data: Record<string, unknown>,
   filePath: string,
 ): Frontmatter | null {
+  // Backward compatibility shim (ADR-0025)
+  if (data.quadrant !== undefined && data.segment === undefined) {
+    data.segment = data.quadrant;
+    delete data.quadrant;
+    consola.warn(
+      `[deprecated] frontmatter key "quadrant" is renamed to "segment" in ${filePath}.`,
+    );
+  }
+
   const result = FrontmatterSchema.safeParse(data);
   if (!result.success) {
     for (const issue of result.error.issues) {

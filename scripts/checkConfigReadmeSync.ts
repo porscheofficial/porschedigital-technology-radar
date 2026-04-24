@@ -9,7 +9,7 @@ const frontmatterPath = path.join(root, "scripts/validateFrontmatter.ts");
 
 function flattenLeafKeys(obj: unknown, prefix = ""): string[] {
   // Only emit keys whose value is a primitive (string/number/boolean/null).
-  // Skips arrays entirely — array-shaped configs (quadrants, rings, social)
+  // Skips arrays entirely — array-shaped configs (segments, rings, social)
   // are documented structurally in README, not key-by-key.
   if (obj === null || typeof obj !== "object" || Array.isArray(obj)) return [];
   const out: string[] = [];

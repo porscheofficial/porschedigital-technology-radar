@@ -1,7 +1,7 @@
 ---
 title: "Trunk-Based Development"
 ring: trial
-quadrant: methods-and-patterns
+segment: methods-and-patterns
 tags:
   - devops
 teams:

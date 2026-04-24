@@ -1,7 +1,7 @@
 ---
 title: "SwiftUI"
 ring: assess
-quadrant: languages-and-frameworks
+segment: languages-and-frameworks
 tags:
   - mobile
 teams:

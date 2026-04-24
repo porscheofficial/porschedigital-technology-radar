@@ -1,7 +1,7 @@
 ---
 title: "Rust"
 ring: trial
-quadrant: languages-and-frameworks
+segment: languages-and-frameworks
 tags:
   - backend
 teams:

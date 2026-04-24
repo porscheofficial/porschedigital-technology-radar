@@ -1,7 +1,7 @@
 ---
 title: "Tauri"
 ring: hold
-quadrant: tools
+segment: tools
 tags:
   - desktop
   - frontend

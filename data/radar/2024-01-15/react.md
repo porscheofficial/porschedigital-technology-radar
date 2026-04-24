@@ -1,7 +1,7 @@
 ---
 title: "React"
 ring: trial
-quadrant: languages-and-frameworks
+segment: languages-and-frameworks
 tags:
   - frontend
 teams:

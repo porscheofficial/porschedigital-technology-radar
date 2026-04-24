@@ -1,7 +1,7 @@
 ---
 title: "Kubernetes"
 ring: adopt
-quadrant: platforms-and-operations
+segment: platforms-and-operations
 tags:
   - devops
   - backend

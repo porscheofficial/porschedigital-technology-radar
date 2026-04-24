@@ -1,7 +1,7 @@
 ---
 title: "Nx"
 ring: trial
-quadrant: tools
+segment: tools
 tags:
   - devops
   - frontend

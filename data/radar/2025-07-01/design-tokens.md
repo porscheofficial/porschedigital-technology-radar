@@ -1,7 +1,7 @@
 ---
 title: "Design Tokens"
 ring: adopt
-quadrant: methods-and-patterns
+segment: methods-and-patterns
 tags:
   - frontend
   - devops

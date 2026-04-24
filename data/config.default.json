@@ -26,7 +26,7 @@
     "border": "#404044",
     "tag": "#404044"
   },
-  "quadrants": [
+  "segments": [
     {
       "id": "languages-and-frameworks",
       "title": "Languages & Frameworks",

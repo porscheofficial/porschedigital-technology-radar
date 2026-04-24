@@ -1,7 +1,7 @@
 ---
 title: "Vitest"
 ring: adopt
-quadrant: tools
+segment: tools
 tags:
   - testing
   - frontend

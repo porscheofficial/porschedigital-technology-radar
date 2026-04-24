@@ -1,7 +1,7 @@
 ---
 title: "Backstage"
 ring: assess
-quadrant: platforms-and-operations
+segment: platforms-and-operations
 tags:
   - devops
 teams:

@@ -1,7 +1,7 @@
 ---
 title: "Elm"
 ring: assess
-quadrant: languages-and-frameworks
+segment: languages-and-frameworks
 tags:
   - frontend
 teams:

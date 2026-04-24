@@ -1,7 +1,7 @@
 ---
 title: "Pair Programming"
 ring: assess
-quadrant: methods-and-patterns
+segment: methods-and-patterns
 tags:
   - testing
 teams:

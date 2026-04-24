@@ -1,7 +1,7 @@
 ---
 title: "Storybook"
 ring: trial
-quadrant: tools
+segment: tools
 tags:
   - frontend
   - testing

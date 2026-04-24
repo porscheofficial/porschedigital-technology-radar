@@ -1,7 +1,7 @@
 ---
 title: "TypeScript"
 ring: adopt
-quadrant: languages-and-frameworks
+segment: languages-and-frameworks
 tags:
   - frontend
   - backend

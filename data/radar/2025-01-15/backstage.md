@@ -1,7 +1,7 @@
 ---
 title: "Backstage"
 ring: trial
-quadrant: platforms-and-operations
+segment: platforms-and-operations
 tags:
   - devops
 teams:

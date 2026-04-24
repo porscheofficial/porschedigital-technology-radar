@@ -1,7 +1,7 @@
 ---
 title: "Dash0"
 ring: trial
-quadrant: platforms-and-operations
+segment: platforms-and-operations
 tags:
   - devops
   - backend

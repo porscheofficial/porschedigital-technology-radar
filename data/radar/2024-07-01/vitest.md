@@ -1,7 +1,7 @@
 ---
 title: "Vitest"
 ring: trial
-quadrant: tools
+segment: tools
 tags:
   - testing
   - frontend

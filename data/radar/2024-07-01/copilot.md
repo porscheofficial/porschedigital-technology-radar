@@ -1,7 +1,7 @@
 ---
 title: "GitHub Copilot"
 ring: assess
-quadrant: tools
+segment: tools
 tags:
   - ai
 teams:

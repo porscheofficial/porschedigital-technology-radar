@@ -1,7 +1,7 @@
 ---
 title: "Figma"
 ring: trial
-quadrant: tools
+segment: tools
 tags:
   - frontend
 teams:

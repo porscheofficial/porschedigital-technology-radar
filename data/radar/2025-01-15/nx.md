@@ -1,7 +1,7 @@
 ---
 title: "Nx"
 ring: assess
-quadrant: tools
+segment: tools
 tags:
   - devops
   - frontend

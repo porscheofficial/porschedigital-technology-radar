@@ -1,7 +1,7 @@
 ---
 title: "GitHub Actions"
 ring: adopt
-quadrant: platforms-and-operations
+segment: platforms-and-operations
 tags:
   - devops
 teams:

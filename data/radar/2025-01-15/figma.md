@@ -1,7 +1,7 @@
 ---
 title: "Figma"
 ring: adopt
-quadrant: tools
+segment: tools
 tags:
   - frontend
 teams:

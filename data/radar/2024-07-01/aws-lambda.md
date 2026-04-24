@@ -1,7 +1,7 @@
 ---
 title: "AWS Lambda"
 ring: trial
-quadrant: platforms-and-operations
+segment: platforms-and-operations
 tags:
   - backend
   - devops

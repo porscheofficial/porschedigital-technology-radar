@@ -1,7 +1,7 @@
 ---
 title: "Architecture Decision Records"
 ring: trial
-quadrant: methods-and-patterns
+segment: methods-and-patterns
 tags:
   - devops
 teams:

@@ -1,7 +1,7 @@
 ---
 title: "TypeScript"
 ring: assess
-quadrant: languages-and-frameworks
+segment: languages-and-frameworks
 tags:
   - frontend
   - backend

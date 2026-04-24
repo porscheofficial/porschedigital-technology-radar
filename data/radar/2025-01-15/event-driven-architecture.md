@@ -1,7 +1,7 @@
 ---
 title: "Event-Driven Architecture"
 ring: trial
-quadrant: methods-and-patterns
+segment: methods-and-patterns
 tags:
   - backend
   - data

@@ -1,7 +1,7 @@
 ---
 title: "Storybook"
 ring: adopt
-quadrant: tools
+segment: tools
 tags:
   - frontend
   - testing

@@ -60,6 +60,7 @@ ADRs cite the *decisions behind those rules*.
 | 0024 | Skip nested `node_modules/` when copying the shadow workspace | accepted (supersedes 0023) |
 | 0025 | CI workflow, npm provenance, and OSV SARIF upload | accepted (amends 0006, amends 0017) |
 | 0026 | Rename default branch from `pdig` to `main`   | accepted |
+| 0025 | Rename quadrant to segment                     | accepted |
 
 ## When to write a new ADR
 

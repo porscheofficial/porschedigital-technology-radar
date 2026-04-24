@@ -220,7 +220,7 @@ export function getItemTrajectories(): ItemTrajectory[] {
  * this logic guarantees the radar arc and the history table can never disagree
  * on what counts as a promotion or demotion.
  */
-export function classifyRingMove(
+function classifyRingMove(
   previousRing: string | undefined,
   ring: string,
   ringOrder: string[],
@@ -245,7 +245,7 @@ export function classifyRingMove(
  * the convention lives, the single place that can break if the convention
  * ever changes, and the single place that needs a test.
  */
-export function getLatestRevision(item: Item): Revision | undefined {
+function getLatestRevision(item: Item): Revision | undefined {
   return item.revisions?.[0];
 }
 

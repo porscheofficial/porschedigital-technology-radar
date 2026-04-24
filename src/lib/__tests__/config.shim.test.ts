@@ -1,9 +1,5 @@
-import fs from "node:fs";
-import path from "node:path";
 import consola from "consola";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-
-const dataJsonPath = path.resolve(__dirname, "../../../data/data.json");
 
 const { mockedUserConfig } = vi.hoisted(() => ({
   mockedUserConfig: {
@@ -13,6 +9,10 @@ const { mockedUserConfig } = vi.hoisted(() => ({
 
 vi.mock("../../../data/config.json", () => mockedUserConfig);
 
+vi.mock("../../../data/data.json", () => ({
+  default: { releases: [], tags: [], items: [] },
+}));
+
 describe("config back-compat shim", () => {
   async function importConfigPipeline() {
     const { default: config } = await import("@/lib/config");
@@ -21,23 +21,13 @@ describe("config back-compat shim", () => {
     return { config, getSegments };
   }
 
-  function writeMinimalRadarData() {
-    fs.writeFileSync(
-      dataJsonPath,
-      JSON.stringify({ releases: [], tags: [], items: [] }),
-      "utf8",
-    );
-  }
-
   beforeEach(() => {
     vi.resetModules();
-    writeMinimalRadarData();
     mockedUserConfig.default = {};
     vi.spyOn(consola, "warn").mockImplementation(() => {});
   });
 
   afterEach(() => {
-    fs.rmSync(dataJsonPath, { force: true });
     vi.resetModules();
     vi.restoreAllMocks();
   });

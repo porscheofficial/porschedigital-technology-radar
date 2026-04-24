@@ -3,19 +3,19 @@ import { type FC, memo, useMemo } from "react";
 import { Blip } from "@/components/Radar/Blip";
 import { getItemChangeDirection, getToggle } from "@/lib/data";
 import { useRadarHighlight } from "@/lib/RadarHighlightContext";
-import { Flag, type Item, type Quadrant, type Ring } from "@/lib/types";
+import { Flag, type Item, type Ring, type Segment } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import styles from "./QuadrantChart.module.scss";
+import styles from "./SegmentChart.module.scss";
 
-const QUADRANT_PADDING_RATIO = 0.08;
+const SEGMENT_PADDING_RATIO = 0.08;
 
-export interface QuadrantChartProps {
+export interface SegmentChartProps {
   /** Full radar size used during position generation (default 800). */
   size?: number;
-  /** The single quadrant to render. */
-  quadrant: Quadrant;
-  /** All quadrants — needed to compute sweep angle (360/N). */
-  allQuadrants: Quadrant[];
+  /** The single segment to render. */
+  segment: Segment;
+  /** All segments — needed to compute sweep angle (360/N). */
+  allSegments: Segment[];
   rings: Ring[];
   items: Item[];
   /** Which ring IDs are currently "active" (visible in viewport). */
@@ -23,10 +23,10 @@ export interface QuadrantChartProps {
   className?: string;
 }
 
-const QuadrantChartInner: FC<QuadrantChartProps> = ({
+const SegmentChartInner: FC<SegmentChartProps> = ({
   size = 800,
-  quadrant,
-  allQuadrants,
+  segment,
+  allSegments,
   rings = [],
   items = [],
   activeRings,
@@ -40,9 +40,9 @@ const QuadrantChartInner: FC<QuadrantChartProps> = ({
   const centerX = center;
   const centerY = center;
   const showBlipChange = getToggle("showBlipChange");
-  const numQuadrants = allQuadrants.length;
-  const sweep = numQuadrants > 0 ? 360 / numQuadrants : 90;
-  const position = quadrant.position;
+  const numSegments = allSegments.length;
+  const sweep = numSegments > 0 ? 360 / numSegments : 90;
+  const position = segment.position;
 
   const getStartAngle = (pos: number): number => {
     return (270 + (pos - 1) * sweep) % 360;
@@ -54,7 +54,7 @@ const QuadrantChartInner: FC<QuadrantChartProps> = ({
 
   const toRad = (deg: number) => ((deg - 90) * Math.PI) / 180;
 
-  const pad = size * QUADRANT_PADDING_RATIO;
+  const pad = size * SEGMENT_PADDING_RATIO;
 
   const samplePoints: { x: number; y: number }[] = [{ x: center, y: center }];
   for (let a = startAngle; a <= endAngle; a += sweep / 16) {
@@ -96,7 +96,6 @@ const QuadrantChartInner: FC<QuadrantChartProps> = ({
   const vbW = side;
   const vbH = side;
 
-  // --- Polar helpers (no padding offset — positions are raw from data) ---
   const polarToCartesian = (
     radius: number,
     angleInDegrees: number,
@@ -129,7 +128,6 @@ const QuadrantChartInner: FC<QuadrantChartProps> = ({
     ].join(" ");
   };
 
-  // Filled arc sector for ring highlighting
   const describeFilledArc = (
     innerRadius: number,
     outerRadius: number,
@@ -170,7 +168,6 @@ const QuadrantChartInner: FC<QuadrantChartProps> = ({
     ].join(" ");
   };
 
-  // --- Glow ---
   const renderGlow = () => {
     const gradientId = `qc-glow-${position}`;
     const midRad = toRad(midAngle);
@@ -192,8 +189,8 @@ const QuadrantChartInner: FC<QuadrantChartProps> = ({
             cy={center}
             r={center}
           >
-            <stop offset="0%" stopColor={quadrant.color} stopOpacity={0.5} />
-            <stop offset="100%" stopColor={quadrant.color} stopOpacity={0} />
+            <stop offset="0%" stopColor={segment.color} stopOpacity={0.5} />
+            <stop offset="100%" stopColor={segment.color} stopOpacity={0} />
           </radialGradient>
         </defs>
         <rect
@@ -207,7 +204,6 @@ const QuadrantChartInner: FC<QuadrantChartProps> = ({
     );
   };
 
-  // --- Ring highlight (filled sector for active ring) ---
   const renderRingHighlights = () => {
     if (!activeRings || activeRings.size === 0) return null;
     return rings.map((ring, index) => {
@@ -218,7 +214,7 @@ const QuadrantChartInner: FC<QuadrantChartProps> = ({
         <path
           key={`ring-hl-${ring.id}`}
           d={describeFilledArc(innerRadius, outerRadius)}
-          fill={quadrant.color}
+          fill={segment.color}
           opacity={0.08}
           className={styles.ringHighlight}
         />
@@ -226,14 +222,12 @@ const QuadrantChartInner: FC<QuadrantChartProps> = ({
     });
   };
 
-  // --- Ring labels ---
   const renderRingLabels = () => {
     return rings.map((ring, index) => {
       const outerRadius = ring.radius || 1;
       const innerRadius = rings[index - 1]?.radius || 0;
       const midRadius = ((outerRadius + innerRadius) / 2) * center;
 
-      // Place label along the bisector of this quadrant
       const p = polarToCartesian(midRadius, midAngle);
 
       return (
@@ -255,7 +249,6 @@ const QuadrantChartInner: FC<QuadrantChartProps> = ({
     });
   };
 
-  // --- Blips ---
   const renderItem = (item: Item) => {
     const ring = rings.find((r) => r.id === item.ring);
     if (!ring) return null;
@@ -271,10 +264,10 @@ const QuadrantChartInner: FC<QuadrantChartProps> = ({
     return (
       <Link
         key={item.id}
-        href={`/${item.quadrant}/${item.id}`}
+        href={`/${item.segment}/${item.id}`}
         aria-label={item.title}
         data-tooltip={item.title}
-        data-tooltip-color={quadrant.color}
+        data-tooltip-color={segment.color}
         data-item-id={item.id}
         className={cn(
           hasHighlights && styles.blip,
@@ -285,7 +278,7 @@ const QuadrantChartInner: FC<QuadrantChartProps> = ({
       >
         <Blip
           flag={item.flag}
-          color={quadrant.color}
+          color={segment.color}
           direction={direction ?? undefined}
           centerX={direction ? centerX : undefined}
           centerY={direction ? centerY : undefined}
@@ -296,7 +289,6 @@ const QuadrantChartInner: FC<QuadrantChartProps> = ({
     );
   };
 
-  // --- Boundary lines from center to outer edge ---
   const renderBoundaryLines = () => {
     const outerR = center;
     const s = polarToCartesian(outerR, startAngle);
@@ -308,7 +300,7 @@ const QuadrantChartInner: FC<QuadrantChartProps> = ({
           y1={center}
           x2={s.x}
           y2={s.y}
-          stroke={quadrant.color}
+          stroke={segment.color}
           strokeWidth={1}
         />
         <line
@@ -316,7 +308,7 @@ const QuadrantChartInner: FC<QuadrantChartProps> = ({
           y1={center}
           x2={e.x}
           y2={e.y}
-          stroke={quadrant.color}
+          stroke={segment.color}
           strokeWidth={1}
         />
       </g>
@@ -329,7 +321,7 @@ const QuadrantChartInner: FC<QuadrantChartProps> = ({
       viewBox={`${vbX} ${vbY} ${vbW} ${vbH}`}
       preserveAspectRatio="xMidYMid meet"
       role="img"
-      aria-label="Quadrant radar chart"
+      aria-label="Segment radar chart"
     >
       {renderGlow()}
       {renderRingHighlights()}
@@ -338,7 +330,7 @@ const QuadrantChartInner: FC<QuadrantChartProps> = ({
           key={ring.id}
           d={describeArc(ring.radius || 0.5)}
           fill="none"
-          stroke={quadrant.color}
+          stroke={segment.color}
           strokeWidth={ring.strokeWidth || 2}
         />
       ))}
@@ -349,4 +341,4 @@ const QuadrantChartInner: FC<QuadrantChartProps> = ({
   );
 };
 
-export const QuadrantChart = memo(QuadrantChartInner);
+export const SegmentChart = memo(SegmentChartInner);

@@ -1,20 +1,20 @@
 import { type CSSProperties, type FC, useRef } from "react";
 import { Chart } from "@/components/Radar/Chart";
 import { useRadarTooltip } from "@/hooks/useRadarTooltip";
-import type { Item, Quadrant, Ring } from "@/lib/types";
+import type { Item, Ring, Segment } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import styles from "./Radar.module.scss";
 
 interface RadarProps {
   size?: number;
-  quadrants: Quadrant[];
+  segments: Segment[];
   rings: Ring[];
   items: Item[];
 }
 
 export const Radar: FC<RadarProps> = ({
   size = 800,
-  quadrants = [],
+  segments = [],
   rings = [],
   items = [],
 }) => {
@@ -40,7 +40,7 @@ export const Radar: FC<RadarProps> = ({
       <Chart
         className={styles.chart}
         size={size}
-        quadrants={quadrants}
+        segments={segments}
         rings={rings}
         items={items}
       />

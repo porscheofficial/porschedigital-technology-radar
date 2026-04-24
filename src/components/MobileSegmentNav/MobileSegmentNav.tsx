@@ -1,18 +1,18 @@
 import { PLinkTile, PText } from "@porsche-design-system/components-react/ssr";
 
-import type { Quadrant } from "@/lib/types";
+import type { Segment } from "@/lib/types";
 import { assetUrl } from "@/lib/utils";
 
-import styles from "./MobileQuadrantNav.module.scss";
+import styles from "./MobileSegmentNav.module.scss";
 
-interface MobileQuadrantNavProps {
-  quadrants: Quadrant[];
+interface MobileSegmentNavProps {
+  segments: Segment[];
 }
 
-export function MobileQuadrantNav({ quadrants }: MobileQuadrantNavProps) {
+export function MobileSegmentNav({ segments }: MobileSegmentNavProps) {
   return (
-    <nav aria-label="Quadrants" className={styles.grid}>
-      {quadrants.map((q) => (
+    <nav aria-label="Segments" className={styles.grid}>
+      {segments.map((q) => (
         <PLinkTile
           key={q.id}
           href={assetUrl(`/${q.id}`)}

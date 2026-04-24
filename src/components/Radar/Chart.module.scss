@@ -20,7 +20,7 @@
   opacity: 1;
 }
 
-.quadrantLabel {
+.segmentLabel {
   text-decoration: none;
   opacity: 0.5;
   transition: opacity 200ms ease;
@@ -35,7 +35,7 @@
     display: none;
   }
 
-  .quadrantLabel {
+  .segmentLabel {
     visibility: hidden;
   }
 }

@@ -1,11 +1,11 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import type { QuadrantChartProps } from "@/components/QuadrantRadar/QuadrantChart";
-import type { Item, Quadrant, Ring } from "@/lib/types";
+import type { SegmentChartProps } from "@/components/SegmentRadar/SegmentChart";
+import type { Item, Ring, Segment } from "@/lib/types";
 import { Flag } from "@/lib/types";
-import { QuadrantRadar } from "../QuadrantRadar";
+import { SegmentRadar } from "../SegmentRadar";
 
-const quadrantChartMock = vi.hoisted(() =>
-  vi.fn((_: QuadrantChartProps) => <svg data-testid="quadrant-chart" />),
+const segmentChartMock = vi.hoisted(() =>
+  vi.fn((_: SegmentChartProps) => <svg data-testid="segment-chart" />),
 );
 
 const mockTooltip = vi.hoisted(() => ({
@@ -19,13 +19,13 @@ const mockTooltip = vi.hoisted(() => ({
   })),
 }));
 
-vi.mock("@/components/QuadrantRadar/QuadrantChart", () => ({
-  QuadrantChart: quadrantChartMock,
+vi.mock("@/components/SegmentRadar/SegmentChart", () => ({
+  SegmentChart: segmentChartMock,
 }));
 
 vi.mock("@/hooks/useRadarTooltip", () => mockTooltip);
 
-const quadrant: Quadrant = {
+const segment: Segment = {
   id: "platforms",
   title: "Platforms",
   description: "Platform technologies",
@@ -33,8 +33,8 @@ const quadrant: Quadrant = {
   position: 1,
 };
 
-const allQuadrants: Quadrant[] = [
-  quadrant,
+const allSegments: Segment[] = [
+  segment,
   {
     id: "tools",
     title: "Tools",
@@ -62,21 +62,21 @@ const items: Item[] = [
     body: "React body",
     featured: true,
     ring: "adopt",
-    quadrant: "platforms",
+    segment: "platforms",
     flag: Flag.Default,
     release: "2025-01-01",
     position: [100, 200],
   },
 ];
 
-describe("QuadrantRadar", () => {
+describe("SegmentRadar", () => {
   beforeEach(() => {
-    quadrantChartMock.mockClear();
+    segmentChartMock.mockClear();
     mockTooltip.useRadarTooltip.mockReset();
     mockTooltip.useRadarTooltip.mockReturnValue({
       tooltip: {
         show: true,
-        text: "Quadrant tooltip",
+        text: "Segment tooltip",
         x: 15,
         y: 25,
         color: "#ff6600",
@@ -122,24 +122,24 @@ describe("QuadrantRadar", () => {
     });
   });
 
-  it("renders the quadrant radar container, chart, tooltip, persistent links, and mouse handlers", () => {
+  it("renders the segment radar container, chart, tooltip, persistent links, and mouse handlers", () => {
     const activeRings = new Set(["adopt"]);
 
     render(
-      <QuadrantRadar
-        quadrant={quadrant}
-        allQuadrants={allQuadrants}
+      <SegmentRadar
+        segment={segment}
+        allSegments={allSegments}
         rings={rings}
         items={items}
         activeRings={activeRings}
       />,
     );
 
-    const container = screen.getByRole("img", { name: "Quadrant radar" });
+    const container = screen.getByRole("img", { name: "Segment radar" });
 
     expect(container).toBeInTheDocument();
-    expect(screen.getByTestId("quadrant-chart")).toBeInTheDocument();
-    expect(screen.getByText("Quadrant tooltip")).toBeInTheDocument();
+    expect(screen.getByTestId("segment-chart")).toBeInTheDocument();
+    expect(screen.getByText("Segment tooltip")).toBeInTheDocument();
 
     const links = screen.getAllByRole("link");
     expect(links).toHaveLength(2);
@@ -159,10 +159,10 @@ describe("QuadrantRadar", () => {
 
     expect(tooltipState.handleMouseMove).toHaveBeenCalledTimes(1);
     expect(tooltipState.handleMouseLeave).toHaveBeenCalledTimes(1);
-    expect(quadrantChartMock).toHaveBeenCalledWith(
+    expect(segmentChartMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        quadrant,
-        allQuadrants,
+        segment,
+        allSegments,
         rings,
         items,
         activeRings,

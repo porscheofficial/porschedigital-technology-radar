@@ -11,7 +11,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { getItems, getLabel, getQuadrant, getRing } from "@/lib/data";
+import { getItems, getLabel, getRing, getSegment } from "@/lib/data";
 import { matchesAbbreviation } from "@/lib/format";
 import { useRadarHighlight } from "@/lib/RadarHighlightContext";
 import type { Item } from "@/lib/types";
@@ -130,7 +130,7 @@ export function SearchBar() {
           e.preventDefault();
           if (activeIndex >= 0 && activeIndex < results.length) {
             const item = results[activeIndex];
-            router.push(`/${item.quadrant}/${item.id}`);
+            router.push(`/${item.segment}/${item.id}`);
             close();
             setQuery("");
             inputRef.current?.blur();
@@ -227,7 +227,7 @@ export function SearchBar() {
           onMouseDown={(e) => e.preventDefault()}
         >
           {results.map((item, index) => {
-            const quadrant = getQuadrant(item.quadrant);
+            const segment = getSegment(item.segment);
             const ring = getRing(item.ring);
             return (
               <div
@@ -243,7 +243,7 @@ export function SearchBar() {
                 }
               >
                 <Link
-                  href={`/${item.quadrant}/${item.id}`}
+                  href={`/${item.segment}/${item.id}`}
                   className={styles.resultLink}
                   onClick={() => {
                     close();
@@ -256,7 +256,7 @@ export function SearchBar() {
                     {highlightMatch(item.title, query)}
                   </span>
                   <span className={styles.resultMeta}>
-                    {quadrant?.title}
+                    {segment?.title}
                     {ring ? ` · ${ring.title}` : ""}
                   </span>
                 </Link>

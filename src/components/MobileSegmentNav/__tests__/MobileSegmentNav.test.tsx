@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import type { ComponentProps } from "react";
-import type { Quadrant } from "@/lib/types";
-import { MobileQuadrantNav } from "../MobileQuadrantNav";
+import type { Segment } from "@/lib/types";
+import { MobileSegmentNav } from "../MobileSegmentNav";
 
 vi.mock("@/lib/utils", () => ({
   assetUrl: (path: string) => `/base${path}`,
@@ -29,8 +29,8 @@ vi.mock("@porsche-design-system/components-react/ssr", () => ({
   ),
 }));
 
-describe("MobileQuadrantNav", () => {
-  const quadrants: Quadrant[] = [
+describe("MobileSegmentNav", () => {
+  const segments: Segment[] = [
     {
       id: "languages-and-frameworks",
       title: "Languages & Frameworks",
@@ -62,22 +62,22 @@ describe("MobileQuadrantNav", () => {
   ];
 
   it("renders a nav element with accessible label", () => {
-    render(<MobileQuadrantNav quadrants={quadrants} />);
+    render(<MobileSegmentNav segments={segments} />);
 
     expect(
-      screen.getByRole("navigation", { name: "Quadrants" }),
+      screen.getByRole("navigation", { name: "Segments" }),
     ).toBeInTheDocument();
   });
 
-  it("renders a link tile for each quadrant", () => {
-    render(<MobileQuadrantNav quadrants={quadrants} />);
+  it("renders a link tile for each segment", () => {
+    render(<MobileSegmentNav segments={segments} />);
 
     const links = screen.getAllByRole("link");
     expect(links).toHaveLength(4);
   });
 
-  it("links to the correct quadrant pages", () => {
-    render(<MobileQuadrantNav quadrants={quadrants} />);
+  it("links to the correct segment pages", () => {
+    render(<MobileSegmentNav segments={segments} />);
 
     const links = screen.getAllByRole("link");
     expect(links[0]).toHaveAttribute("href", "/base/languages-and-frameworks");
@@ -86,8 +86,8 @@ describe("MobileQuadrantNav", () => {
     expect(links[3]).toHaveAttribute("href", "/base/tools");
   });
 
-  it("passes quadrant title as description", () => {
-    render(<MobileQuadrantNav quadrants={quadrants} />);
+  it("passes segment title as description", () => {
+    render(<MobileSegmentNav segments={segments} />);
 
     const links = screen.getAllByRole("link");
     expect(links[0]).toHaveAttribute(
@@ -97,19 +97,17 @@ describe("MobileQuadrantNav", () => {
     expect(links[3]).toHaveAttribute("data-description", "Tools");
   });
 
-  it("renders a color swatch with the quadrant color", () => {
-    const { container } = render(
-      <MobileQuadrantNav quadrants={[quadrants[0]]} />,
-    );
+  it("renders a color swatch with the segment color", () => {
+    const { container } = render(<MobileSegmentNav segments={[segments[0]]} />);
 
     const swatch = container.querySelector("[style]");
     expect(swatch).toHaveStyle({ backgroundColor: "#4A9E7E" });
   });
 
-  it("renders nothing when quadrants array is empty", () => {
-    render(<MobileQuadrantNav quadrants={[]} />);
+  it("renders nothing when segments array is empty", () => {
+    render(<MobileSegmentNav segments={[]} />);
 
-    const nav = screen.getByRole("navigation", { name: "Quadrants" });
+    const nav = screen.getByRole("navigation", { name: "Segments" });
     expect(nav.children).toHaveLength(0);
   });
 });

@@ -1,21 +1,21 @@
 import { type CSSProperties, type FC, useRef } from "react";
-import { QuadrantChart } from "@/components/QuadrantRadar/QuadrantChart";
+import { SegmentChart } from "@/components/SegmentRadar/SegmentChart";
 import { useRadarTooltip } from "@/hooks/useRadarTooltip";
-import type { Item, Quadrant, Ring } from "@/lib/types";
+import type { Item, Ring, Segment } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import styles from "./QuadrantRadar.module.scss";
+import styles from "./SegmentRadar.module.scss";
 
-interface QuadrantRadarProps {
-  quadrant: Quadrant;
-  allQuadrants: Quadrant[];
+interface SegmentRadarProps {
+  segment: Segment;
+  allSegments: Segment[];
   rings: Ring[];
   items: Item[];
   activeRings?: Set<string>;
 }
 
-export const QuadrantRadar: FC<QuadrantRadarProps> = ({
-  quadrant,
-  allQuadrants,
+export const SegmentRadar: FC<SegmentRadarProps> = ({
+  segment,
+  allSegments,
   rings,
   items,
   activeRings,
@@ -33,16 +33,16 @@ export const QuadrantRadar: FC<QuadrantRadarProps> = ({
   return (
     <div
       ref={radarRef}
-      className={styles.quadrantRadar}
+      className={styles.segmentRadar}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       role="img"
-      aria-label="Quadrant radar"
+      aria-label="Segment radar"
     >
-      <QuadrantChart
+      <SegmentChart
         className={styles.chart}
-        quadrant={quadrant}
-        allQuadrants={allQuadrants}
+        segment={segment}
+        allSegments={allSegments}
         rings={rings}
         items={items}
         activeRings={activeRings}

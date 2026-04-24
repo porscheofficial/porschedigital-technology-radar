@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import type { ChartProps } from "@/components/Radar/Chart";
-import type { Item, Quadrant, Ring } from "@/lib/types";
+import type { Item, Ring, Segment } from "@/lib/types";
 import { Flag } from "@/lib/types";
 import { Radar } from "../Radar";
 
@@ -25,7 +25,7 @@ vi.mock("@/components/Radar/Chart", () => ({
 
 vi.mock("@/hooks/useRadarTooltip", () => mockTooltip);
 
-const quadrants: Quadrant[] = [
+const segments: Segment[] = [
   {
     id: "platforms",
     title: "Platforms",
@@ -53,7 +53,7 @@ const items: Item[] = [
     body: "React body",
     featured: true,
     ring: "adopt",
-    quadrant: "platforms",
+    segment: "platforms",
     flag: Flag.Default,
     release: "2025-01-01",
     position: [100, 200],
@@ -115,7 +115,7 @@ describe("Radar", () => {
 
   it("renders the radar container, chart, tooltip, persistent links, and mouse handlers", () => {
     render(
-      <Radar size={640} quadrants={quadrants} rings={rings} items={items} />,
+      <Radar size={640} segments={segments} rings={rings} items={items} />,
     );
 
     const container = screen.getByRole("img", { name: "Technology radar" });
@@ -145,7 +145,7 @@ describe("Radar", () => {
     expect(chartMock).toHaveBeenCalledWith(
       expect.objectContaining({
         size: 640,
-        quadrants,
+        segments,
         rings,
         items,
       }),
@@ -154,12 +154,12 @@ describe("Radar", () => {
   });
 
   it("uses 800 as the default chart size", () => {
-    render(<Radar quadrants={quadrants} rings={rings} items={items} />);
+    render(<Radar segments={segments} rings={rings} items={items} />);
 
     expect(chartMock).toHaveBeenCalledWith(
       expect.objectContaining({
         size: 800,
-        quadrants,
+        segments,
         rings,
         items,
       }),

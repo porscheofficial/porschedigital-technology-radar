@@ -3,7 +3,7 @@ import { type FC, Fragment, memo, useMemo } from "react";
 import { Blip } from "@/components/Radar/Blip";
 import { getItemChangeDirection, getToggle } from "@/lib/data";
 import { useRadarHighlight } from "@/lib/RadarHighlightContext";
-import { Flag, type Item, type Quadrant, type Ring } from "@/lib/types";
+import { Flag, type Item, type Ring, type Segment } from "@/lib/types";
 import { assetUrl, cn } from "@/lib/utils";
 import styles from "./Chart.module.scss";
 
@@ -12,7 +12,7 @@ const LABEL_PADDING_RATIO = 0.55;
 
 export interface ChartProps {
   size?: number;
-  quadrants: Quadrant[];
+  segments: Segment[];
   rings: Ring[];
   items: Item[];
   className?: string;
@@ -20,7 +20,7 @@ export interface ChartProps {
 
 const ChartInner: FC<ChartProps> = ({
   size = 800,
-  quadrants = [],
+  segments = [],
   rings = [],
   items = [],
   className,
@@ -36,12 +36,12 @@ const ChartInner: FC<ChartProps> = ({
   const centerY = viewBoxCenter;
   const showBlipChange = getToggle("showBlipChange");
 
-  const numQuadrants = quadrants.length;
-  const sweep = numQuadrants > 0 ? 360 / numQuadrants : 90;
+  const numSegments = segments.length;
+  const sweep = numSegments > 0 ? 360 / numSegments : 90;
 
-  // Compute start angle for each quadrant position (1-indexed).
-  // Position 1 starts at 270° (top-left for 4 quadrants), each subsequent
-  // quadrant advances by `sweep` degrees clockwise.
+  // Compute start angle for each segment position (1-indexed).
+  // Position 1 starts at 270° (top-left for 4 segments), each subsequent
+  // segment advances by `sweep` degrees clockwise.
   const getStartAngle = (position: number): number => {
     return (270 + (position - 1) * sweep) % 360;
   };
@@ -124,8 +124,8 @@ const ChartInner: FC<ChartProps> = ({
 
   const renderItem = (item: Item) => {
     const ring = rings.find((r) => r.id === item.ring);
-    const quadrant = quadrants.find((q) => q.id === item.quadrant);
-    if (!ring || !quadrant) return null;
+    const segment = segments.find((q) => q.id === item.segment);
+    if (!ring || !segment) return null;
     const [x, y] = item.position;
     const bx = x + padding;
     const by = y + padding;
@@ -140,10 +140,10 @@ const ChartInner: FC<ChartProps> = ({
     return (
       <Link
         key={item.id}
-        href={`/${item.quadrant}/${item.id}`}
+        href={`/${item.segment}/${item.id}`}
         aria-label={item.title}
         data-tooltip={item.title}
-        data-tooltip-color={quadrant.color}
+        data-tooltip-color={segment.color}
         data-item-id={item.id}
         className={cn(
           hasHighlights && styles.blip,
@@ -154,7 +154,7 @@ const ChartInner: FC<ChartProps> = ({
       >
         <Blip
           flag={item.flag}
-          color={quadrant.color}
+          color={segment.color}
           direction={direction ?? undefined}
           centerX={direction ? centerX : undefined}
           centerY={direction ? centerY : undefined}
@@ -166,8 +166,8 @@ const ChartInner: FC<ChartProps> = ({
   };
 
   const renderRingLabels = () => {
-    // Place ring labels along each quadrant boundary line.
-    // For N quadrants we place labels on the first boundary (position 1 start angle).
+    // Place ring labels along each segment boundary line.
+    // For N segments we place labels on the first boundary (position 1 start angle).
     // We also place a mirrored set on the opposite boundary for readability.
     const labelAngle = getStartAngle(1);
     const oppositeAngle = (labelAngle + 180) % 360;
@@ -205,15 +205,15 @@ const ChartInner: FC<ChartProps> = ({
     });
   };
 
-  const renderQuadrantLabels = () => {
+  const renderSegmentLabels = () => {
     const labelRadius = center + padding * LABEL_PADDING_RATIO;
 
-    return quadrants.map((quadrant) => {
-      const pos = quadrant.position;
+    return segments.map((segment) => {
+      const pos = segment.position;
       const startAngle = getStartAngle(pos);
       const endAngle = startAngle + sweep;
       const midAngle = startAngle + sweep / 2;
-      const pathId = `quadrant-arc-${pos}`;
+      const pathId = `segment-arc-${pos}`;
 
       // Determine if the arc midpoint is in the bottom half (90°–270° range).
       // For bottom arcs, we reverse the path direction so text reads left-to-right.
@@ -237,21 +237,18 @@ const ChartInner: FC<ChartProps> = ({
           <defs>
             <path id={pathId} d={d} fill="none" />
           </defs>
-          <a
-            href={assetUrl(`/${quadrant.id}`)}
-            className={styles.quadrantLabel}
-          >
+          <a href={assetUrl(`/${segment.id}`)} className={styles.segmentLabel}>
             <text>
               <textPath
                 href={`#${pathId}`}
                 startOffset="50%"
                 textAnchor="middle"
-                fill={quadrant.color}
+                fill={segment.color}
                 fontSize="20"
                 fontWeight="700"
                 letterSpacing="0.12em"
               >
-                {quadrant.title.toUpperCase()}
+                {segment.title.toUpperCase()}
               </textPath>
             </text>
           </a>
@@ -269,16 +266,16 @@ const ChartInner: FC<ChartProps> = ({
       role="img"
       aria-label="Technology radar chart"
     >
-      {quadrants.map((quadrant) => (
-        <g key={quadrant.id} data-quadrant={quadrant.id}>
-          {renderGlow(quadrant.position, quadrant.color)}
+      {segments.map((segment) => (
+        <g key={segment.id} data-segment={segment.id}>
+          {renderGlow(segment.position, segment.color)}
           {rings.map((ring) => (
             <path
-              key={`${ring.id}-${quadrant.id}`}
-              data-key={`${ring.id}-${quadrant.id}`}
-              d={describeArc(ring.radius || 0.5, quadrant.position)}
+              key={`${ring.id}-${segment.id}`}
+              data-key={`${ring.id}-${segment.id}`}
+              d={describeArc(ring.radius || 0.5, segment.position)}
               fill="none"
-              stroke={quadrant.color}
+              stroke={segment.color}
               strokeWidth={ring.strokeWidth || 2}
             />
           ))}
@@ -286,7 +283,7 @@ const ChartInner: FC<ChartProps> = ({
       ))}
       <g className={styles.ringLabels}>{renderRingLabels()}</g>
       <g className={styles.items}>{items.map((item) => renderItem(item))}</g>
-      <g>{renderQuadrantLabels()}</g>
+      <g>{renderSegmentLabels()}</g>
     </svg>
   );
 };

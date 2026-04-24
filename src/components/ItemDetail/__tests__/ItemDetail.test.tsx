@@ -101,7 +101,7 @@ function createItem(overrides: Partial<Item> = {}): Item {
     body: "<p>Item <strong>body</strong></p>",
     featured: true,
     ring: "adopt",
-    quadrant: "languages-and-frameworks",
+    segment: "languages-and-frameworks",
     flag: Flag.Default,
     tags: ["frontend", "typescript"],
     release: "2025-07-01",
@@ -116,9 +116,7 @@ function renderItemDetail(overrides: Partial<Item> = {}) {
   const item = createItem(overrides);
   return {
     item,
-    ...render(
-      <ItemDetail item={item} quadrantTitle="Languages & Frameworks" />,
-    ),
+    ...render(<ItemDetail item={item} segmentTitle="Languages & Frameworks" />),
   };
 }
 
@@ -146,7 +144,7 @@ describe("ItemDetail", () => {
     });
   });
 
-  it("renders the item title, ring, quadrant link, tags, teams, body, and edit link", () => {
+  it("renders the item title, ring, segment link, tags, teams, body, and edit link", () => {
     renderItemDetail();
 
     expect(screen.getByText("React")).toBeInTheDocument();

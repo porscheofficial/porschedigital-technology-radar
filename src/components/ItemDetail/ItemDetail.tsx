@@ -29,10 +29,10 @@ const RECENT_RELEASE_COUNT = 3;
 
 interface ItemProps {
   item: Item;
-  quadrantTitle: string;
+  segmentTitle: string;
 }
 
-export function ItemDetail({ item, quadrantTitle }: ItemProps) {
+export function ItemDetail({ item, segmentTitle }: ItemProps) {
   const notMaintainedText = getLabel("notUpdated");
   const hiddenFromRadarText = getLabel("hiddenFromRadar");
   const editLink = getEditUrl({ id: item.id, release: item.release });
@@ -100,8 +100,8 @@ export function ItemDetail({ item, quadrantTitle }: ItemProps) {
             <div className={styles.ringName}>
               {ringInfo?.title || item.ring}
             </div>
-            <Link href={`/${item.quadrant}`} className={styles.quadrantLabel}>
-              {quadrantTitle}
+            <Link href={`/${item.segment}`} className={styles.segmentLabel}>
+              {segmentTitle}
               <PIcon
                 name="arrow-head-right"
                 size="xx-small"

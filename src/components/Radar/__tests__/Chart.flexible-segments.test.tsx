@@ -1,7 +1,7 @@
 import { render } from "@testing-library/react";
 
 import { Chart } from "@/components/Radar/Chart";
-import type { Item, Quadrant, Ring } from "@/lib/types";
+import type { Item, Ring, Segment } from "@/lib/types";
 
 vi.mock("@/lib/data", () => ({
   getToggle: vi.fn(() => false),
@@ -25,11 +25,11 @@ const COLORS = [
   "#00aaaa",
 ];
 
-function makeQuadrants(n: number): Quadrant[] {
+function makeSegments(n: number): Segment[] {
   return Array.from({ length: n }, (_, i) => ({
     id: `q${i + 1}`,
-    title: `Quadrant ${i + 1}`,
-    description: `Quadrant ${i + 1} description`,
+    title: `Segment ${i + 1}`,
+    description: `Segment ${i + 1} description`,
     color: COLORS[i] ?? "#888888",
     position: i + 1,
   }));
@@ -56,18 +56,18 @@ const rings: Ring[] = [
 
 const items: Item[] = [];
 
-describe("Chart with flexible quadrant counts", () => {
+describe("Chart with flexible segment counts", () => {
   for (const n of [1, 2, 3, 4, 5, 6]) {
-    it(`renders ${n} quadrant(s) without error and produces N×rings arc paths + N labels`, () => {
-      const quadrants = makeQuadrants(n);
+    it(`renders ${n} segment(s) without error and produces N×rings arc paths + N labels`, () => {
+      const segments = makeSegments(n);
       const { container } = render(
-        <Chart size={800} quadrants={quadrants} rings={rings} items={items} />,
+        <Chart size={800} segments={segments} rings={rings} items={items} />,
       );
 
-      const quadrantGroups = container.querySelectorAll("g[data-quadrant]");
-      expect(quadrantGroups).toHaveLength(n);
+      const segmentGroups = container.querySelectorAll("g[data-segment]");
+      expect(segmentGroups).toHaveLength(n);
 
-      const arcPaths = container.querySelectorAll("g[data-quadrant] > path");
+      const arcPaths = container.querySelectorAll("g[data-segment] > path");
       expect(arcPaths).toHaveLength(n * rings.length);
 
       const gradients = container.querySelectorAll("radialGradient");
@@ -84,21 +84,21 @@ describe("Chart with flexible quadrant counts", () => {
     });
   }
 
-  it("emits SVG arc with largeArcFlag=1 when sweep > 180° (1 quadrant, 360°)", () => {
-    const quadrants = makeQuadrants(1);
+  it("emits SVG arc with largeArcFlag=1 when sweep > 180° (1 segment, 360°)", () => {
+    const segments = makeSegments(1);
     const { container } = render(
-      <Chart size={800} quadrants={quadrants} rings={rings} items={items} />,
+      <Chart size={800} segments={segments} rings={rings} items={items} />,
     );
-    const firstArc = container.querySelector("g[data-quadrant] path");
+    const firstArc = container.querySelector("g[data-segment] path");
     expect(firstArc?.getAttribute("d")).toMatch(/A \d+ \d+ 0 1 0/);
   });
 
-  it("emits SVG arc with largeArcFlag=0 when sweep < 180° (5 quadrants, 72°)", () => {
-    const quadrants = makeQuadrants(5);
+  it("emits SVG arc with largeArcFlag=0 when sweep < 180° (5 segments, 72°)", () => {
+    const segments = makeSegments(5);
     const { container } = render(
-      <Chart size={800} quadrants={quadrants} rings={rings} items={items} />,
+      <Chart size={800} segments={segments} rings={rings} items={items} />,
     );
-    const firstArc = container.querySelector("g[data-quadrant] path");
+    const firstArc = container.querySelector("g[data-segment] path");
     expect(firstArc?.getAttribute("d")).toMatch(/A \d+ \d+ 0 0 0/);
   });
 });

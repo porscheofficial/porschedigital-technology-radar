@@ -9,7 +9,7 @@ type DeepPartial<T> = T extends object
     }
   : T;
 
-export type Config = Omit<typeof defaultConfig, "segments"> & {
+type Config = Omit<typeof defaultConfig, "segments"> & {
   segments: Segment[];
 };
 type UserConfig = DeepPartial<Config> & { quadrants?: unknown[] };

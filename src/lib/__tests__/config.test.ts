@@ -127,7 +127,7 @@ describe("config deep merge (with partial user config)", () => {
     const merged = {
       ...defaultConfig,
       ...userOverrides,
-    } as unknown as import("@/lib/config").Config;
+    } as unknown as typeof import("@/lib/config").default;
 
     if (userOverrides.colors && typeof userOverrides.colors === "object") {
       merged.colors = {

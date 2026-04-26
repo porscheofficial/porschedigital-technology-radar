@@ -1,4 +1,4 @@
-# ADR-0025 — Rename quadrant to segment
+# ADR-0028 — Rename quadrant to segment
 
 - Status: accepted
 - Date: 2026-04-24

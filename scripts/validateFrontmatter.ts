@@ -43,7 +43,7 @@ export function parseRadarFrontmatter(
   data: Record<string, unknown>,
   filePath: string,
 ): Frontmatter | null {
-  // Backward compatibility shim (ADR-0025)
+  // Backward compatibility shim (ADR-0028)
   if (data.quadrant !== undefined && data.segment === undefined) {
     data.segment = data.quadrant;
     delete data.quadrant;

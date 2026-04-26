@@ -16,7 +16,7 @@ type UserConfig = DeepPartial<Config> & { quadrants?: unknown[] };
 
 const userConfig = _userConfig as UserConfig;
 
-// ADR-0025: Rename quadrant to segment.
+// ADR-0028: Rename quadrant to segment.
 // This shim MUST run at module top-level (synchronously) because consumers
 // like scripts/validateFrontmatter.ts read config.segments at their own module load time.
 if (userConfig.quadrants !== undefined && userConfig.segments === undefined) {

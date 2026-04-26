@@ -343,4 +343,4 @@ The only file `release-please-config.json` keeps in sync is `package.json` `vers
 7. **Module-level data imports are intentional** — `data.ts` accessors read from the statically imported `data.json`. This is safe because all data is available at build time.
 8. **All links and asset URLs must use `assetUrl()`** — The site is deployed under a configurable `basePath` (e.g., `/technology-radar`). Never hardcode `href="/"` or `href={`/${slug}`}` — always wrap with `assetUrl()` from `@/lib/utils` (e.g., `assetUrl("/")`, `assetUrl(`/${segment.id}`)`) so links work correctly in all deployment environments.
 
-9. **Back-compat rename (ADR-0025)** — `quadrant` is renamed to `segment` across the codebase. Markdown frontmatter and `config.json` support the old names with build-time warnings. See ADR-0025.
+9. **Back-compat rename (ADR-0028)** — `quadrant` is renamed to `segment` across the codebase. Markdown frontmatter and `config.json` support the old names with build-time warnings. See ADR-0028.

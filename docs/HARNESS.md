@@ -56,6 +56,7 @@ flowchart LR
             S4["check:arch:doccoverage<br/>(scripts/checkDocCoverage.ts)"]
             S5["architecture.test.ts<br/>(vitest, fs invariants)"]
             S6["check:arch:wikilinks<br/>(scripts/checkWikiLinks.ts)"]
+            S7["check:arch:adr<br/>(scripts/checkAdrUnique.ts)"]
         end
         subgraph BUILD["Build-output (pnpm run check:build)"]
             B1["check:build:routes<br/>(scripts/checkBuildOutput.ts)"]
@@ -141,6 +142,7 @@ The regulator's variety. Each row is one architectural property the harness pres
 | 24 | No misspellings in load-bearing prose                  | `check:quality:spell` (`cspell`, `.cspell.json`, `cspell-words.txt`)            | root `AGENTS.md`           | 7     |
 | 25 | JSX accessibility patterns at edit time                | `check:a11y:source` (`eslint-plugin-jsx-a11y` via `a11y.eslint.config.mjs`)     | root `AGENTS.md`           | 8     |
 | 26 | No serious/critical axe violations in built HTML       | `check:a11y:axe` (`scripts/checkA11y.ts`, axe-core via jsdom)                   | root `AGENTS.md`           | 8     |
+| 27 | ADR file numbers in `docs/decisions/` are unique and match their `# ADR-NNNN` heading | `check:arch:adr` (`scripts/checkAdrUnique.ts`) | `docs/decisions/README.md` | 9     |
 
 **Notes on #12** — catches two failure modes at once: helper duplication across components (e.g. multiple components copy-pasting `stripHtml` instead of importing the canonical `@/lib/format` version) and component files accreting non-component logic. The fix is one of three: move pure helpers to `src/lib/`, convert JSX-returning helpers to PascalCase sub-components, or inline single-use render helpers as `const` arrows inside the component body.
 
@@ -278,6 +280,7 @@ pnpm run check:arch          # source-only sensors (~3s)
   ├─ check:arch:readme      # config ↔ README
   ├─ check:arch:doccoverage # AGENTS.md (Checked: …) refs resolve
   └─ check:arch:wikilinks   # data/radar/**/*.md [[id]] refs resolve
+   check:arch:adr         # docs/decisions/ ADR numbers unique + heading matches
 
 pnpm run check:sec           # security sensors
   ├─ check:sec:sanitize     # rehype-sanitize wired in buildData.ts

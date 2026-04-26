@@ -219,7 +219,7 @@ An array of segment objects (1 or more). The radar geometry adapts automatically
 
 Forks using `quadrants:` in `data/config.json` continue working but emit `[deprecated] config key "quadrants" is renamed to "segments"...` at build time. Migration: rename the key.
 Markdown frontmatter `quadrant: <slug>` continues working but emits `[deprecated] frontmatter key "quadrant" is renamed to "segment" in <file>.` Migration: rename the field.
-Both shims will be removed in a future major release. See ADR-0025.
+Both shims will be removed in a future major release. See ADR-0028.
 
 | Key           | Description                                      |
 | ------------- | ------------------------------------------------ |

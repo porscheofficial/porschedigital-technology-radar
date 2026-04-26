@@ -176,7 +176,7 @@ describe("parseRadarFrontmatter", () => {
     vi.restoreAllMocks();
   });
 
-  describe("backward compatibility shim (ADR-0025)", () => {
+  describe("backward compatibility shim (ADR-0028)", () => {
     it("existing radar markdown with only quadrant frontmatter continues to parse as segment", async () => {
       const { parseRadarFrontmatter } = await importValidateFrontmatterModule();
       const data = { ring: "adopt", quadrant: "languages-and-frameworks" };

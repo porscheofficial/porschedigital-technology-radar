@@ -3,6 +3,7 @@ import { type FC, memo, useMemo } from "react";
 import { Blip } from "@/components/Radar/Blip";
 import { getItemChangeDirection, getToggle } from "@/lib/data";
 import { useRadarHighlight } from "@/lib/RadarHighlightContext";
+import { describeFilledArc } from "@/lib/radarGeometry";
 import { Flag, type Item, type Ring, type Segment } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import styles from "./SegmentChart.module.scss";
@@ -128,46 +129,6 @@ const SegmentChartInner: FC<SegmentChartProps> = ({
     ].join(" ");
   };
 
-  const describeFilledArc = (
-    innerRadius: number,
-    outerRadius: number,
-  ): string => {
-    const innerR = innerRadius * center;
-    const outerR = outerRadius * center;
-    const largeArcFlag = sweep > 180 ? 1 : 0;
-
-    const outerStart = polarToCartesian(outerR, startAngle);
-    const outerEnd = polarToCartesian(outerR, endAngle);
-    const innerStart = polarToCartesian(innerR, endAngle);
-    const innerEnd = polarToCartesian(innerR, startAngle);
-
-    return [
-      "M",
-      outerStart.x,
-      outerStart.y,
-      "A",
-      outerR,
-      outerR,
-      0,
-      largeArcFlag,
-      1,
-      outerEnd.x,
-      outerEnd.y,
-      "L",
-      innerStart.x,
-      innerStart.y,
-      "A",
-      innerR,
-      innerR,
-      0,
-      largeArcFlag,
-      0,
-      innerEnd.x,
-      innerEnd.y,
-      "Z",
-    ].join(" ");
-  };
-
   const renderGlow = () => {
     const gradientId = `qc-glow-${position}`;
     const midRad = toRad(midAngle);
@@ -208,12 +169,19 @@ const SegmentChartInner: FC<SegmentChartProps> = ({
     if (!activeRings || activeRings.size === 0) return null;
     return rings.map((ring, index) => {
       if (!activeRings.has(ring.id)) return null;
-      const innerRadius = rings[index - 1]?.radius || 0;
-      const outerRadius = ring.radius || 1;
+      const innerRadius = (rings[index - 1]?.radius || 0) * center;
+      const outerRadius = (ring.radius || 1) * center;
       return (
         <path
           key={`ring-hl-${ring.id}`}
-          d={describeFilledArc(innerRadius, outerRadius)}
+          d={describeFilledArc(
+            center,
+            center,
+            innerRadius,
+            outerRadius,
+            startAngle,
+            endAngle,
+          )}
           fill={segment.color}
           opacity={0.08}
           className={styles.ringHighlight}

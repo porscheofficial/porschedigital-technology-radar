@@ -8,6 +8,32 @@
   text-transform: uppercase;
 }
 
+.wedges path {
+  fill-opacity: 0;
+  transition: fill-opacity 200ms ease;
+  // Hit-test against the actual filled path geometry, not the bounding
+  // box of the parent <a>. Without this, the inner-ring (Adopt) wedge's
+  // bounding rect overlaps the outer rings in the same segment and
+  // intercepts clicks intended for them. `fill` (not `visibleFill`) so
+  // the area still responds even though `fill-opacity: 0`.
+  pointer-events: fill;
+  cursor: pointer;
+}
+
+.wedge {
+  outline: none;
+}
+
+.wedge:hover path,
+.wedge:focus-visible path {
+  fill-opacity: 0.08;
+}
+
+.wedge:focus-visible path {
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
 .blip {
   transition: opacity 300ms ease;
 }

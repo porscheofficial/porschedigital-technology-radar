@@ -3,6 +3,7 @@ import { type FC, Fragment, memo, useMemo } from "react";
 import { Blip } from "@/components/Radar/Blip";
 import { getItemChangeDirection, getToggle } from "@/lib/data";
 import { useRadarHighlight } from "@/lib/RadarHighlightContext";
+import { describeFilledArc } from "@/lib/radarGeometry";
 import { Flag, type Item, type Ring, type Segment } from "@/lib/types";
 import { assetUrl, cn } from "@/lib/utils";
 import styles from "./Chart.module.scss";
@@ -18,6 +19,47 @@ export interface ChartProps {
   className?: string;
 }
 
+interface WedgeProps {
+  segmentId: string;
+  segmentColor: string;
+  ringId: string;
+  d: string;
+  ids: string[];
+  ariaLabel: string;
+  onPreview: (ids: string[]) => void;
+}
+
+const Wedge: FC<WedgeProps> = ({
+  segmentId,
+  segmentColor,
+  ringId,
+  d,
+  ids,
+  ariaLabel,
+  onPreview,
+}) => {
+  const enter = () => onPreview(ids);
+  const leave = () => onPreview([]);
+  return (
+    <a
+      href={assetUrl(`/${segmentId}#ring-${ringId}`)}
+      aria-label={ariaLabel}
+      className={styles.wedge}
+      onMouseEnter={enter}
+      onMouseLeave={leave}
+      onFocus={enter}
+      onBlur={leave}
+    >
+      <path
+        d={d}
+        fill={segmentColor}
+        data-segment={segmentId}
+        data-ring={ringId}
+      />
+    </a>
+  );
+};
+
 const ChartInner: FC<ChartProps> = ({
   size = 800,
   segments = [],
@@ -25,7 +67,8 @@ const ChartInner: FC<ChartProps> = ({
   items = [],
   className,
 }) => {
-  const { highlightedIds, filterActive } = useRadarHighlight();
+  const { highlightedIds, filterActive, setHighlightPreview } =
+    useRadarHighlight();
   const highlightSet = useMemo(() => new Set(highlightedIds), [highlightedIds]);
   const hasHighlights = filterActive || highlightSet.size > 0;
   const center = size / 2;
@@ -38,6 +81,17 @@ const ChartInner: FC<ChartProps> = ({
 
   const numSegments = segments.length;
   const sweep = numSegments > 0 ? 360 / numSegments : 90;
+
+  const itemsBySegmentRing = useMemo(() => {
+    const map = new Map<string, string[]>();
+    for (const item of items) {
+      const key = `${item.segment}::${item.ring}`;
+      const list = map.get(key);
+      if (list) list.push(item.id);
+      else map.set(key, [item.id]);
+    }
+    return map;
+  }, [items]);
 
   // Compute start angle for each segment position (1-indexed).
   // Position 1 starts at 270° (top-left for 4 segments), each subsequent
@@ -257,6 +311,40 @@ const ChartInner: FC<ChartProps> = ({
     });
   };
 
+  const renderWedges = () => {
+    return segments.flatMap((segment) => {
+      const startAngle = getStartAngle(segment.position);
+      const endAngle = startAngle + sweep;
+      return rings.map((ring, index) => {
+        const innerRadius = (rings[index - 1]?.radius ?? 0) * center;
+        const outerRadius = (ring.radius ?? 1) * center;
+        const d = describeFilledArc(
+          viewBoxCenter,
+          viewBoxCenter,
+          innerRadius,
+          outerRadius,
+          startAngle,
+          endAngle,
+        );
+        const ids = itemsBySegmentRing.get(`${segment.id}::${ring.id}`) ?? [];
+        const itemWord = ids.length === 1 ? "item" : "items";
+        const ariaLabel = `${segment.title}, ${ring.title} (${ids.length} ${itemWord})`;
+        return (
+          <Wedge
+            key={`wedge-${segment.id}-${ring.id}`}
+            segmentId={segment.id}
+            segmentColor={segment.color}
+            ringId={ring.id}
+            d={d}
+            ids={ids}
+            ariaLabel={ariaLabel}
+            onPreview={setHighlightPreview}
+          />
+        );
+      });
+    });
+  };
+
   return (
     <svg
       className={className}
@@ -281,6 +369,7 @@ const ChartInner: FC<ChartProps> = ({
           ))}
         </g>
       ))}
+      <g className={styles.wedges}>{renderWedges()}</g>
       <g className={styles.ringLabels}>{renderRingLabels()}</g>
       <g className={styles.items}>{items.map((item) => renderItem(item))}</g>
       <g>{renderSegmentLabels()}</g>

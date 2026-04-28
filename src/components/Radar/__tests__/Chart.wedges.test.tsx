@@ -1,0 +1,191 @@
+import { fireEvent, render } from "@testing-library/react";
+
+import { Chart } from "@/components/Radar/Chart";
+import { Flag, type Item, type Ring, type Segment } from "@/lib/types";
+
+const setHighlightPreview = vi.fn();
+
+vi.mock("@/lib/data", () => ({
+  getToggle: vi.fn(() => false),
+  getItemChangeDirection: vi.fn(() => undefined),
+  getChartConfig: vi.fn(() => ({ size: 800, blipSize: 12 })),
+}));
+
+vi.mock("@/lib/RadarHighlightContext", () => ({
+  useRadarHighlight: vi.fn(() => ({
+    highlightedIds: [],
+    filterActive: false,
+    setHighlightPreview,
+  })),
+}));
+
+const segments: Segment[] = [
+  {
+    id: "platforms",
+    title: "Platforms",
+    description: "",
+    color: "#aa0000",
+    position: 1,
+  },
+  {
+    id: "tools",
+    title: "Tools",
+    description: "",
+    color: "#00aa00",
+    position: 2,
+  },
+  {
+    id: "languages",
+    title: "Languages",
+    description: "",
+    color: "#0000aa",
+    position: 3,
+  },
+  {
+    id: "techniques",
+    title: "Techniques",
+    description: "",
+    color: "#aaaa00",
+    position: 4,
+  },
+];
+
+const rings: Ring[] = [
+  {
+    id: "adopt",
+    title: "Adopt",
+    description: "",
+    color: "#00aa88",
+    radius: 0.4,
+    strokeWidth: 2,
+  },
+  {
+    id: "trial",
+    title: "Trial",
+    description: "",
+    color: "#0088aa",
+    radius: 0.7,
+    strokeWidth: 2,
+  },
+  {
+    id: "assess",
+    title: "Assess",
+    description: "",
+    color: "#aa8800",
+    radius: 0.9,
+    strokeWidth: 2,
+  },
+  {
+    id: "hold",
+    title: "Hold",
+    description: "",
+    color: "#888888",
+    radius: 1.0,
+    strokeWidth: 2,
+  },
+];
+
+const items: Item[] = [
+  {
+    id: "react",
+    title: "React",
+    body: "",
+    featured: false,
+    release: "2024-01",
+    segment: "tools",
+    ring: "adopt",
+    flag: Flag.Default,
+    position: [100, 100],
+    revisions: [],
+  },
+  {
+    id: "vue",
+    title: "Vue",
+    body: "",
+    featured: false,
+    release: "2024-01",
+    segment: "tools",
+    ring: "adopt",
+    flag: Flag.Default,
+    position: [120, 120],
+    revisions: [],
+  },
+  {
+    id: "rust",
+    title: "Rust",
+    body: "",
+    featured: false,
+    release: "2024-01",
+    segment: "languages",
+    ring: "trial",
+    flag: Flag.Default,
+    position: [200, 200],
+    revisions: [],
+  },
+];
+
+describe("Chart wedges", () => {
+  beforeEach(() => {
+    setHighlightPreview.mockClear();
+  });
+
+  it("renders one wedge per (segment, ring) pair", () => {
+    const { container } = render(
+      <Chart size={800} segments={segments} rings={rings} items={items} />,
+    );
+    const wedges = container.querySelectorAll('a[href*="#ring-"]');
+    expect(wedges).toHaveLength(segments.length * rings.length);
+  });
+
+  it("wedge href targets /{segment}#ring-{ring}", () => {
+    const { container } = render(
+      <Chart size={800} segments={segments} rings={rings} items={items} />,
+    );
+    const wedge = container.querySelector('a[href$="/tools#ring-adopt"]');
+    expect(wedge).not.toBeNull();
+  });
+
+  it("wedge aria-label includes segment title, ring title, and item count", () => {
+    const { container } = render(
+      <Chart size={800} segments={segments} rings={rings} items={items} />,
+    );
+    const wedge = container.querySelector('a[href$="/tools#ring-adopt"]');
+    expect(wedge).not.toBeNull();
+    expect(wedge?.getAttribute("aria-label")).toBe("Tools, Adopt (2 items)");
+
+    const empty = container.querySelector('a[href$="/platforms#ring-adopt"]');
+    expect(empty?.getAttribute("aria-label")).toBe(
+      "Platforms, Adopt (0 items)",
+    );
+
+    const single = container.querySelector('a[href$="/languages#ring-trial"]');
+    expect(single?.getAttribute("aria-label")).toBe(
+      "Languages, Trial (1 item)",
+    );
+  });
+
+  it("hovering a wedge calls setHighlightPreview with the matching item ids", () => {
+    const { container } = render(
+      <Chart size={800} segments={segments} rings={rings} items={items} />,
+    );
+    const wedge = container.querySelector('a[href$="/tools#ring-adopt"]');
+    expect(wedge).not.toBeNull();
+    if (!wedge) return;
+
+    fireEvent.mouseEnter(wedge);
+    expect(setHighlightPreview).toHaveBeenLastCalledWith(["react", "vue"]);
+
+    fireEvent.mouseLeave(wedge);
+    expect(setHighlightPreview).toHaveBeenLastCalledWith([]);
+  });
+
+  it("wedge contains an SVG path with non-empty d attribute", () => {
+    const { container } = render(
+      <Chart size={800} segments={segments} rings={rings} items={items} />,
+    );
+    const wedge = container.querySelector('a[href$="/tools#ring-adopt"]');
+    const path = wedge?.querySelector("path");
+    expect(path).not.toBeNull();
+    expect(path?.getAttribute("d")?.length ?? 0).toBeGreaterThan(0);
+  });
+});

@@ -13,10 +13,10 @@ import { isAbsolute, join } from "node:path";
 import { consola } from "consola";
 
 const argDir = process.argv[2];
+const resolveArgDir = (dir: string): string =>
+  isAbsolute(dir) ? dir : join(process.cwd(), dir);
 const adrDir = argDir
-  ? isAbsolute(argDir)
-    ? argDir
-    : join(process.cwd(), argDir)
+  ? resolveArgDir(argDir)
   : join(process.cwd(), "docs/decisions");
 const filenameRe = /^(\d{4})-[\w-]+\.md$/;
 const headingRe = /^#\s*ADR-(\d{4})\b/m;

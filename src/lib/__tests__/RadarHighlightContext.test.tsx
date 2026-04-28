@@ -316,6 +316,61 @@ describe("RadarHighlightContext", () => {
     expect(result.current.highlightedIds).toEqual(["k8s"]);
   });
 
+  it("setHighlightPreview sets suppressTooltips when ids are non-empty", () => {
+    const { result } = renderHook(() => useRadarHighlight(), { wrapper });
+
+    expect(result.current.suppressTooltips).toBe(false);
+
+    act(() => {
+      result.current.setHighlightPreview(["ts", "react"]);
+    });
+
+    expect(result.current.highlightedIds).toEqual(["ts", "react"]);
+    expect(result.current.filterActive).toBe(true);
+    expect(result.current.suppressTooltips).toBe(true);
+  });
+
+  it("setHighlightPreview([]) clears suppressTooltips and direct highlight", () => {
+    const { result } = renderHook(() => useRadarHighlight(), { wrapper });
+
+    act(() => {
+      result.current.setHighlightPreview(["ts"]);
+    });
+    expect(result.current.suppressTooltips).toBe(true);
+
+    act(() => {
+      result.current.setHighlightPreview([]);
+    });
+
+    expect(result.current.highlightedIds).toEqual([]);
+    expect(result.current.suppressTooltips).toBe(false);
+  });
+
+  it("setHighlight after preview clears suppressTooltips", () => {
+    const { result } = renderHook(() => useRadarHighlight(), { wrapper });
+
+    act(() => {
+      result.current.setHighlightPreview(["ts"]);
+    });
+    expect(result.current.suppressTooltips).toBe(true);
+
+    act(() => {
+      result.current.setHighlight(["react"], true);
+    });
+
+    expect(result.current.highlightedIds).toEqual(["react"]);
+    expect(result.current.suppressTooltips).toBe(false);
+  });
+
+  it("exposes suppressTooltips via context value", () => {
+    const { result } = renderHook(() => useRadarHighlight(), { wrapper });
+
+    expect(result.current).toHaveProperty("suppressTooltips");
+    expect(typeof result.current.suppressTooltips).toBe("boolean");
+    expect(result.current).toHaveProperty("setHighlightPreview");
+    expect(typeof result.current.setHighlightPreview).toBe("function");
+  });
+
   it("removes query params when all filters are cleared", async () => {
     const { result } = renderHook(() => useRadarHighlight(), { wrapper });
 

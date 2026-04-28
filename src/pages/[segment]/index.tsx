@@ -154,6 +154,7 @@ const SegmentPage: CustomPage<SegmentPageProps> = ({ segmentId }) => {
             return (
               <section
                 key={ring.id}
+                id={`ring-${ring.id}`}
                 ref={setRingRef(ring.id)}
                 className={styles.ringSection}
                 data-ring={ring.id}

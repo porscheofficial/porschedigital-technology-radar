@@ -40,7 +40,8 @@ const INITIAL_TOOLTIP: TooltipState = {
 export function useRadarTooltip(
   containerRef: RefObject<HTMLDivElement | null>,
 ) {
-  const { highlightedIds, filterActive } = useRadarHighlight();
+  const { highlightedIds, filterActive, suppressTooltips } =
+    useRadarHighlight();
 
   const [tooltip, setTooltip] = useState<TooltipState>(INITIAL_TOOLTIP);
   const [tooltipMap, setTooltipMap] = useState<Map<string, PersistentTooltip>>(
@@ -64,6 +65,12 @@ export function useRadarTooltip(
     if (rafRef.current) {
       cancelAnimationFrame(rafRef.current);
       rafRef.current = 0;
+    }
+
+    if (suppressTooltips) {
+      setTooltipMap((prev) => (prev.size === 0 ? prev : new Map()));
+      setShownIds((prev) => (prev.size === 0 ? prev : new Set()));
+      return;
     }
 
     if (currentHighlightSet.size === 0) {
@@ -140,7 +147,7 @@ export function useRadarTooltip(
         setShownIds(new Set(currentHighlightSet));
       });
     });
-  }, [highlightedIds, containerRef]);
+  }, [highlightedIds, suppressTooltips, containerRef]);
 
   const tooltipStyle = useMemo(
     () =>

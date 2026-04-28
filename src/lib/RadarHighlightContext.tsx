@@ -36,6 +36,7 @@ function toggleValue(
 interface HighlightState {
   directIds: string[];
   directActive: boolean;
+  suppressTooltips: boolean;
   activeFlags: ReadonlySet<string>;
   activeTags: ReadonlySet<string>;
   activeTeams: ReadonlySet<string>;
@@ -44,6 +45,7 @@ interface HighlightState {
 const initialState: HighlightState = {
   directIds: [],
   directActive: false,
+  suppressTooltips: false,
   activeFlags: emptySet,
   activeTags: emptySet,
   activeTeams: emptySet,
@@ -51,6 +53,7 @@ const initialState: HighlightState = {
 
 type Action =
   | { type: "SET_DIRECT"; ids: string[]; active: boolean }
+  | { type: "SET_DIRECT_PREVIEW"; ids: string[] }
   | { type: "TOGGLE_FLAG"; flag: string }
   | { type: "TOGGLE_TAG"; tag: string }
   | { type: "TOGGLE_TEAM"; team: string }
@@ -65,7 +68,19 @@ type Action =
 function reducer(state: HighlightState, action: Action): HighlightState {
   switch (action.type) {
     case "SET_DIRECT":
-      return { ...state, directIds: action.ids, directActive: action.active };
+      return {
+        ...state,
+        directIds: action.ids,
+        directActive: action.active,
+        suppressTooltips: false,
+      };
+    case "SET_DIRECT_PREVIEW":
+      return {
+        ...state,
+        directIds: action.ids,
+        directActive: action.ids.length > 0,
+        suppressTooltips: action.ids.length > 0,
+      };
     case "TOGGLE_FLAG":
       return {
         ...state,
@@ -116,10 +131,12 @@ function matchesFilters(
 interface RadarHighlightContextValue {
   highlightedIds: string[];
   filterActive: boolean;
+  suppressTooltips: boolean;
   activeFlags: ReadonlySet<string>;
   activeTags: ReadonlySet<string>;
   activeTeams: ReadonlySet<string>;
   setHighlight: (ids: string[], active: boolean) => void;
+  setHighlightPreview: (ids: string[]) => void;
   toggleFlag: (flag: string) => void;
   toggleTag: (tag: string) => void;
   toggleTeam: (team: string) => void;
@@ -129,10 +146,12 @@ interface RadarHighlightContextValue {
 const RadarHighlightContext = createContext<RadarHighlightContextValue>({
   highlightedIds: [],
   filterActive: false,
+  suppressTooltips: false,
   activeFlags: emptySet,
   activeTags: emptySet,
   activeTeams: emptySet,
   setHighlight: () => {},
+  setHighlightPreview: () => {},
   toggleFlag: () => {},
   toggleTag: () => {},
   toggleTeam: () => {},
@@ -266,6 +285,10 @@ export const RadarHighlightProvider: FC<{ children: ReactNode }> = ({
       dispatch({ type: "SET_DIRECT", ids, active }),
     [],
   );
+  const setHighlightPreview = useCallback(
+    (ids: string[]) => dispatch({ type: "SET_DIRECT_PREVIEW", ids }),
+    [],
+  );
   const toggleFlag = useCallback(
     (flag: string) => dispatch({ type: "TOGGLE_FLAG", flag }),
     [],
@@ -287,10 +310,12 @@ export const RadarHighlightProvider: FC<{ children: ReactNode }> = ({
     () => ({
       highlightedIds,
       filterActive,
+      suppressTooltips: state.suppressTooltips,
       activeFlags: state.activeFlags,
       activeTags: state.activeTags,
       activeTeams: state.activeTeams,
       setHighlight,
+      setHighlightPreview,
       toggleFlag,
       toggleTag,
       toggleTeam,
@@ -299,10 +324,12 @@ export const RadarHighlightProvider: FC<{ children: ReactNode }> = ({
     [
       highlightedIds,
       filterActive,
+      state.suppressTooltips,
       state.activeFlags,
       state.activeTags,
       state.activeTeams,
       setHighlight,
+      setHighlightPreview,
       toggleFlag,
       toggleTag,
       toggleTeam,

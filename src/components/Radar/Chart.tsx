@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { type FC, Fragment, memo, useMemo } from "react";
+import { type FC, Fragment, memo, useMemo, useRef } from "react";
 import { Blip } from "@/components/Radar/Blip";
 import { getItemChangeDirection, getToggle } from "@/lib/data";
 import { useRadarHighlight } from "@/lib/RadarHighlightContext";
 import { describeFilledArc } from "@/lib/radarGeometry";
 import { Flag, type Item, type Ring, type Segment } from "@/lib/types";
-import { assetUrl, cn } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import styles from "./Chart.module.scss";
 
 const CHART_PADDING_RATIO = 0.09;
@@ -38,17 +38,38 @@ const Wedge: FC<WedgeProps> = ({
   ariaLabel,
   onPreview,
 }) => {
-  const enter = () => onPreview(ids);
-  const leave = () => onPreview([]);
+  // Once a click has been committed and navigation is in flight, ignore any
+  // mouseLeave/blur events that would otherwise clear the highlight and cause
+  // a visible "all blips equal" flash before the new page renders.
+  const committedRef = useRef(false);
+  const enter = () => {
+    if (committedRef.current) return;
+    onPreview(ids);
+  };
+  const leave = () => {
+    if (committedRef.current) return;
+    onPreview([]);
+  };
+  // Reuse preview semantics on commit (suppressTooltips=true) so persistent
+  // labels don't appear for every blip in the wedge after navigation. Touch
+  // taps that skip hover still get state set here; the committedRef gate
+  // prevents any subsequent blur from clearing it.
+  const commit = () => {
+    if (committedRef.current) return;
+    committedRef.current = true;
+    onPreview(ids);
+  };
   return (
-    <a
-      href={assetUrl(`/${segmentId}#ring-${ringId}`)}
+    <Link
+      href={`/${segmentId}#ring-${ringId}`}
       aria-label={ariaLabel}
       className={styles.wedge}
       onMouseEnter={enter}
       onMouseLeave={leave}
       onFocus={enter}
       onBlur={leave}
+      onPointerDown={commit}
+      onClick={commit}
     >
       <path
         d={d}
@@ -56,7 +77,7 @@ const Wedge: FC<WedgeProps> = ({
         data-segment={segmentId}
         data-ring={ringId}
       />
-    </a>
+    </Link>
   );
 };
 
@@ -291,7 +312,7 @@ const ChartInner: FC<ChartProps> = ({
           <defs>
             <path id={pathId} d={d} fill="none" />
           </defs>
-          <a href={assetUrl(`/${segment.id}`)} className={styles.segmentLabel}>
+          <Link href={`/${segment.id}`} className={styles.segmentLabel}>
             <text>
               <textPath
                 href={`#${pathId}`}
@@ -305,7 +326,7 @@ const ChartInner: FC<ChartProps> = ({
                 {segment.title.toUpperCase()}
               </textPath>
             </text>
-          </a>
+          </Link>
         </g>
       );
     });

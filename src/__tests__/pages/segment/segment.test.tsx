@@ -274,6 +274,8 @@ describe("Segment detail page", () => {
   it("updates highlighted ids on item hover", () => {
     render(<SegmentPage segmentId={segment.id} />);
 
+    mockState.highlight.setHighlight.mockClear();
+
     const denoLink = screen.getByRole("link", { name: /Deno/ });
     fireEvent.mouseEnter(denoLink);
     fireEvent.mouseLeave(denoLink);
@@ -288,6 +290,12 @@ describe("Segment detail page", () => {
       [],
       false,
     );
+  });
+
+  it("resets the inbound highlight on mount so mini-radar hover tooltips work", () => {
+    render(<SegmentPage segmentId={segment.id} />);
+
+    expect(mockState.highlight.setHighlight).toHaveBeenCalledWith([], false);
   });
 
   it("returns null when the segment is not found", () => {

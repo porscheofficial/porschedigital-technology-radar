@@ -153,6 +153,11 @@ export function SearchBar() {
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
+      // Only react when the search dropdown is actually open. Otherwise an
+      // unrelated click (e.g. a radar wedge) would invoke close(), which
+      // resets the radar highlight via setHighlight([], false) and wipes a
+      // highlight set moments earlier by another component.
+      if (!isOpen) return;
       if (
         containerRef.current &&
         !containerRef.current.contains(e.target as Node)
@@ -166,17 +171,23 @@ export function SearchBar() {
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [close]);
+  }, [close, isOpen]);
 
   useEffect(() => {
+    // Reset only the search UI on route change. Do NOT call close() here:
+    // close() resets the radar highlight via setHighlight([], false), which
+    // would wipe a highlight set by another component (e.g. a wedge click)
+    // moments before navigation, causing a visible "all blips equal" flash
+    // on the homepage and a reset mini-radar on the destination page.
     const handleRouteChange = () => {
-      close();
+      setIsOpen(false);
+      setActiveIndex(-1);
       setQuery("");
       inputRef.current?.blur();
     };
     router.events.on("routeChangeStart", handleRouteChange);
     return () => router.events.off("routeChangeStart", handleRouteChange);
-  }, [router.events, close]);
+  }, [router.events]);
 
   const searchPlaceholder = getLabel("searchPlaceholder");
 

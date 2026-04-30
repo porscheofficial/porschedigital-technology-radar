@@ -179,6 +179,35 @@ describe("Chart wedges", () => {
     expect(setHighlightPreview).toHaveBeenLastCalledWith([]);
   });
 
+  it("clicking a wedge commits via setHighlightPreview (preview semantics suppress tooltips)", () => {
+    const { container } = render(
+      <Chart size={800} segments={segments} rings={rings} items={items} />,
+    );
+    const wedge = container.querySelector('a[href$="/tools#ring-adopt"]');
+    expect(wedge).not.toBeNull();
+    if (!wedge) return;
+
+    fireEvent.pointerDown(wedge);
+    expect(setHighlightPreview).toHaveBeenLastCalledWith(["react", "vue"]);
+  });
+
+  it("mouseLeave after click does NOT clear the highlight (committed lock)", () => {
+    const { container } = render(
+      <Chart size={800} segments={segments} rings={rings} items={items} />,
+    );
+    const wedge = container.querySelector('a[href$="/tools#ring-adopt"]');
+    expect(wedge).not.toBeNull();
+    if (!wedge) return;
+
+    fireEvent.mouseEnter(wedge);
+    fireEvent.pointerDown(wedge);
+    setHighlightPreview.mockClear();
+
+    fireEvent.mouseLeave(wedge);
+    fireEvent.blur(wedge);
+    expect(setHighlightPreview).not.toHaveBeenCalled();
+  });
+
   it("wedge contains an SVG path with non-empty d attribute", () => {
     const { container } = render(
       <Chart size={800} segments={segments} rings={rings} items={items} />,

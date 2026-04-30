@@ -46,6 +46,15 @@ const SegmentPage: CustomPage<SegmentPageProps> = ({ segmentId }) => {
   const [activeRings, setActiveRings] = useState<Set<string>>(new Set());
   const ringRefs = useRef<Map<string, HTMLElement>>(new Map());
 
+  // Reset any inbound highlight on mount. A wedge click on the homepage
+  // commits via setHighlightPreview (suppressTooltips: true) so blips stay
+  // dimmed during navigation; that state survives via the provider in _app.
+  // Without this reset the mini-radar's hover tooltips stay disabled
+  // (useRadarTooltip skips hover when highlightedIds is non-empty).
+  useEffect(() => {
+    setHighlight([], false);
+  }, [setHighlight]);
+
   const setRingRef = useCallback(
     (ringId: string) => (el: HTMLElement | null) => {
       if (el) {

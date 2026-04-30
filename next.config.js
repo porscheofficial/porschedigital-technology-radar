@@ -32,6 +32,7 @@ const nextConfig = {
   trailingSlash: true,
   reactStrictMode: true,
   outputFileTracingRoot: __dirname,
+  allowedDevOrigins: ["**.localhost"],
   sassOptions: {
     loadPaths: [path.join(__dirname, "node_modules")],
   },

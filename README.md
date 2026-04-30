@@ -67,7 +67,7 @@ Each technology has its own page with ring status, description, tags, teams, and
 
 ![Technology detail page](./docs/assets/screenshot-detail.png)
 
-### History & Changelog
+### Changelog
 
 Track how technology assessments evolved across releases with the trajectory matrix.
 
@@ -291,6 +291,7 @@ An array of social link objects shown in the footer.
 | `notUpdated`        | Warning shown on items not updated in the last 3 releases | `"This item was not updated in last three versions of the Radar."`                                  |
 | `hiddenFromRadar`   | Info shown on items hidden from the radar chart           | `"This technology is currently hidden from the radar chart."`                                       |
 | `searchPlaceholder` | Placeholder text in the search input                      | `"What are you looking for?"`                                                                       |
+| `searchPlaceholderLong` | Longer placeholder shown inside the spotlight popup   | `"Search technologies, or type > to run an action…"`                                                |
 | `metaDescription`   | HTML meta description for SEO                             | `""`                                                                                                |
 
 </details>

@@ -1,5 +1,6 @@
 import {
   deriveSummary,
+  extractSnippet,
   format,
   formatLinkLabel,
   formatRelease,
@@ -7,10 +8,12 @@ import {
   formatReleaseShort,
   formatTitle,
   matchesAbbreviation,
+  plainTextBodyFor,
+  searchableTextFor,
   stripHtml,
   truncate,
 } from "@/lib/format";
-import { Flag } from "@/lib/types";
+import { Flag, type Item } from "@/lib/types";
 
 vi.mock("@/lib/config", () => ({
   default: { labels: { title: "Test Radar" } },
@@ -201,5 +204,103 @@ describe("matchesAbbreviation", () => {
 
   it("returns false when initials don't match", () => {
     expect(matchesAbbreviation("React Testing Library", "xyz")).toBe(false);
+  });
+});
+
+describe("searchableTextFor", () => {
+  const baseItem: Item = {
+    id: "react",
+    title: "React",
+    body: "<p>full body</p>",
+    featured: false,
+    ring: "adopt",
+    segment: "languages-and-frameworks",
+    flag: Flag.Default,
+    release: "2024-01",
+    position: [0, 0],
+  };
+
+  it("includes title, summary, tags, and teams in lowercase", () => {
+    const text = searchableTextFor({
+      ...baseItem,
+      title: "React",
+      summary: "A UI library",
+      tags: ["Frontend", "JS"],
+      teams: ["Web Platform"],
+    });
+    expect(text).toContain("react");
+    expect(text).toContain("a ui library");
+    expect(text).toContain("frontend");
+    expect(text).toContain("js");
+    expect(text).toContain("web platform");
+  });
+
+  it("excludes body content to keep the haystack tight", () => {
+    const text = searchableTextFor({
+      ...baseItem,
+      body: "<p>secret body keyword that should not be searchable</p>",
+    });
+    expect(text).not.toContain("secret body keyword");
+  });
+
+  it("handles missing optional fields gracefully", () => {
+    expect(searchableTextFor(baseItem)).toBe("react ");
+  });
+});
+
+describe("plainTextBodyFor", () => {
+  const baseItem: Item = {
+    id: "react",
+    title: "React",
+    body: "<p>Hello <strong>world</strong>, this is a <em>body</em>.</p>",
+    featured: false,
+    ring: "adopt",
+    segment: "languages-and-frameworks",
+    flag: Flag.Default,
+    release: "2024-01",
+    position: [0, 0],
+  };
+
+  it("strips html, lowercases, and collapses whitespace", () => {
+    expect(plainTextBodyFor(baseItem)).toBe("hello world, this is a body.");
+  });
+
+  it("returns empty string when body is missing", () => {
+    expect(plainTextBodyFor({ ...baseItem, body: "" })).toBe("");
+  });
+
+  it("memoizes per item reference", () => {
+    const item: Item = { ...baseItem, body: "<p>Cached</p>" };
+    const first = plainTextBodyFor(item);
+    const second = plainTextBodyFor(item);
+    expect(first).toBe("cached");
+    expect(second).toBe(first);
+  });
+});
+
+describe("extractSnippet", () => {
+  it("returns null when query is not found", () => {
+    expect(extractSnippet("hello world", "missing")).toBeNull();
+  });
+
+  it("returns null for empty query", () => {
+    expect(extractSnippet("hello world", "  ")).toBeNull();
+  });
+
+  it("returns the full text when shorter than the context window", () => {
+    expect(extractSnippet("hello world", "world", 60)).toBe("hello world");
+  });
+
+  it("ellipsizes both sides when match is in the middle of long text", () => {
+    const text = "a".repeat(100) + " needle " + "b".repeat(100);
+    const snippet = extractSnippet(text, "needle", 20);
+    expect(snippet).not.toBeNull();
+    expect(snippet?.startsWith("…")).toBe(true);
+    expect(snippet?.endsWith("…")).toBe(true);
+    expect(snippet).toContain("needle");
+  });
+
+  it("is case-insensitive in matching", () => {
+    expect(extractSnippet("Hello World", "world", 60)).toContain("World");
   });
 });

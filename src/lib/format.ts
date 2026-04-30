@@ -91,3 +91,72 @@ export function matchesAbbreviation(title: string, query: string): boolean {
     .join("");
   return initials.startsWith(query.toLowerCase());
 }
+
+/**
+ * Lowercase haystack of an item's most-recall-able fields for substring
+ * search. Excludes `body`: it is HTML, balloons the index, and dilutes
+ * ranking. Use a dedicated full-text index instead if body search is needed.
+ */
+export function searchableTextFor(item: Item): string {
+  return [
+    item.title,
+    item.summary ?? "",
+    ...(item.tags ?? []),
+    ...(item.teams ?? []),
+  ]
+    .join(" ")
+    .toLowerCase();
+}
+
+const plainTextBodyCache = new WeakMap<Item, string>();
+
+/**
+ * Plain-text projection of `item.body` (HTML), memoized per item via
+ * WeakMap so each item is stripped at most once per session. Whitespace
+ * collapsed and lowercased for substring search.
+ */
+export function plainTextBodyFor(item: Item): string {
+  const cached = plainTextBodyCache.get(item);
+  if (cached !== undefined) return cached;
+  const text = stripHtml(item.body ?? "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+  plainTextBodyCache.set(item, text);
+  return text;
+}
+
+/**
+ * Returns a contextual snippet around the first occurrence of `query`
+ * inside `text` (case-insensitive), bounded by `ctx` chars on each side
+ * and prefixed/suffixed with an ellipsis when clipped. Returns `null`
+ * when the query is not found.
+ */
+export function extractSnippet(
+  text: string,
+  query: string,
+  ctx = 60,
+): string | null {
+  const q = query.trim();
+  if (!q || !text) return null;
+  const idx = text.toLowerCase().indexOf(q.toLowerCase());
+  if (idx === -1) return null;
+
+  const rawStart = Math.max(0, idx - ctx);
+  const rawEnd = Math.min(text.length, idx + q.length + ctx);
+
+  let start = rawStart;
+  if (start > 0) {
+    const space = text.indexOf(" ", start);
+    if (space !== -1 && space < idx) start = space + 1;
+  }
+  let end = rawEnd;
+  if (end < text.length) {
+    const space = text.lastIndexOf(" ", end);
+    if (space !== -1 && space > idx + q.length) end = space;
+  }
+
+  const prefix = start > 0 ? "…" : "";
+  const suffix = end < text.length ? "…" : "";
+  return `${prefix}${text.slice(start, end).trim()}${suffix}`;
+}

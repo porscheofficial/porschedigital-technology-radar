@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { FC, ReactNode } from "react";
 
 import { Footer } from "@/components/Footer/Footer";
-import { SearchBar } from "@/components/SearchBar/SearchBar";
+import { SpotlightSearch } from "@/components/SpotlightSearch/SpotlightSearch";
 import { getLabel, getLogoUrl, getReleases, getToggle } from "@/lib/data";
 import { formatReleaseShort } from "@/lib/format";
 import { assetUrl, cn } from "@/lib/utils";
@@ -40,23 +40,23 @@ export const Layout: FC<LayoutProps> = ({
               {getLabel("title")}
             </Link>
             {latestRelease && (
-              <Link href="/history" className={styles.versionLabel}>
+              <Link href="/changelog" className={styles.versionLabel}>
                 {formatReleaseShort(latestRelease)}
               </Link>
             )}
           </div>
 
           <div className={styles.headerEnd}>
-            {getToggle("showSearch") && <SearchBar />}
+            {getToggle("showSearch") && <SpotlightSearch />}
             {latestRelease && (
               <PLinkPure
-                href={assetUrl("/history")}
+                href={assetUrl("/changelog")}
                 icon="clock"
                 hideLabel={true}
                 theme="dark"
-                className={cn(styles.actionButton, styles.historyLink)}
+                className={cn(styles.actionButton, styles.changelogLink)}
               >
-                History
+                Changelog
               </PLinkPure>
             )}
             <PLinkPure

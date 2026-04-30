@@ -1,4 +1,4 @@
-import { execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -10,9 +10,11 @@ const sensor = join(repoRoot, "scripts/checkAdrUnique.ts");
 let workdir: string;
 
 function runSensor(): { code: number; output: string } {
+  // execFileSync with arg array (no shell) — avoids shell-command-injection (CodeQL js/shell-command-injection-from-environment).
   try {
-    const stdout = execSync(
-      `pnpm exec tsx ${sensor} ${join(workdir, "docs/decisions")} 2>&1`,
+    const stdout = execFileSync(
+      "pnpm",
+      ["exec", "tsx", sensor, join(workdir, "docs/decisions")],
       {
         cwd: repoRoot,
         encoding: "utf8",

@@ -166,6 +166,9 @@
     "onlyBuiltDependencies": [
       "esbuild",
       "@parcel/watcher"
-    ]
+    ],
+    "overrides": {
+      "postcss@<8.5.10": ">=8.5.10"
+    }
   }
 }

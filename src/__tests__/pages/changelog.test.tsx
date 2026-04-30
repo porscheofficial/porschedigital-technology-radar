@@ -8,7 +8,7 @@ import type {
   VersionDiff,
 } from "@/lib/types";
 import { Flag } from "@/lib/types";
-import History from "@/pages/history";
+import Changelog from "@/pages/changelog";
 
 const mockState = vi.hoisted(() => ({
   router: {
@@ -104,7 +104,7 @@ vi.mock("@/lib/data", () => ({
   getVersionDiffs: mockState.getVersionDiffs,
 }));
 
-describe("History page", () => {
+describe("Changelog page", () => {
   const releases = [
     "2023-01",
     "2023-03",
@@ -259,7 +259,7 @@ describe("History page", () => {
   });
 
   it("renders the Changelog heading", () => {
-    render(<History />);
+    render(<Changelog />);
 
     expect(
       screen.getByRole("heading", { name: "Changelog" }),
@@ -267,7 +267,7 @@ describe("History page", () => {
   });
 
   it("renders the page section links in the TOC", () => {
-    render(<History />);
+    render(<Changelog />);
 
     expect(
       screen.getByRole("link", { name: "Ring trajectory" }),
@@ -278,7 +278,7 @@ describe("History page", () => {
   });
 
   it("renders release links in the TOC for each diff", () => {
-    render(<History />);
+    render(<Changelog />);
 
     expect(screen.getByRole("link", { name: "Jan 24" })).toHaveAttribute(
       "href",
@@ -291,7 +291,7 @@ describe("History page", () => {
   });
 
   it("renders the ring trajectory table with the last six release columns by default", () => {
-    render(<History />);
+    render(<Changelog />);
 
     expect(
       screen.getByRole("table", { name: "Ring trajectory across releases" }),
@@ -307,7 +307,7 @@ describe("History page", () => {
 
   it("shows all releases when the toggle is clicked", async () => {
     const user = userEvent.setup();
-    render(<History />);
+    render(<Changelog />);
 
     await user.click(
       screen.getByRole("button", { name: "Show all 7 versions" }),
@@ -321,7 +321,7 @@ describe("History page", () => {
 
   it("shows fewer releases again after toggling back", async () => {
     const user = userEvent.setup();
-    render(<History />);
+    render(<Changelog />);
 
     await user.click(
       screen.getByRole("button", { name: "Show all 7 versions" }),
@@ -337,7 +337,7 @@ describe("History page", () => {
   });
 
   it("renders the detailed changelog section for each diff", () => {
-    render(<History />);
+    render(<Changelog />);
 
     expect(screen.getByText("January 2024")).toBeInTheDocument();
     expect(screen.getByText("November 2023")).toBeInTheDocument();
@@ -345,7 +345,7 @@ describe("History page", () => {
   });
 
   it("renders promoted and demoted change groups", () => {
-    render(<History />);
+    render(<Changelog />);
 
     expect(screen.getByText("▲ Promoted")).toBeInTheDocument();
     expect(screen.getAllByText("Platform API").length).toBeGreaterThan(0);
@@ -354,7 +354,7 @@ describe("History page", () => {
   });
 
   it("renders the new items group with segment details", () => {
-    render(<History />);
+    render(<Changelog />);
 
     expect(screen.getByText("✦ New")).toBeInTheDocument();
     expect(screen.getAllByText("AI Assistant").length).toBeGreaterThan(0);
@@ -364,7 +364,7 @@ describe("History page", () => {
   });
 
   it("renders team change groups with added and removed teams", () => {
-    render(<History />);
+    render(<Changelog />);
 
     expect(screen.getByText(/Team changes/)).toBeInTheDocument();
     expect(screen.getByTestId("team-platform-added")).toBeInTheDocument();
@@ -372,14 +372,14 @@ describe("History page", () => {
   });
 
   it("renders the baseline message for an empty diff", () => {
-    render(<History />);
+    render(<Changelog />);
 
     expect(screen.getByText(/Initial radar version/)).toBeInTheDocument();
   });
 
   it("navigates to the item detail page when a trajectory row is clicked", async () => {
     const user = userEvent.setup();
-    render(<History />);
+    render(<Changelog />);
 
     const row = screen
       .getByRole("link", { name: "Platform API" })

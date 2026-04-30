@@ -216,8 +216,8 @@ export function getItemTrajectories(): ItemTrajectory[] {
  * Classify a single revision's ring transition.
  *
  * Shared primitive between `getItemChangeDirection` (per-blip arc on the radar)
- * and `getVersionDiffs` (history page promoted/demoted lists). Centralising
- * this logic guarantees the radar arc and the history table can never disagree
+ * and `getVersionDiffs` (changelog page promoted/demoted lists). Centralising
+ * this logic guarantees the radar arc and the changelog table can never disagree
  * on what counts as a promotion or demotion.
  */
 function classifyRingMove(
@@ -254,7 +254,7 @@ export function getItemChangeDirection(
 ): "promoted" | "demoted" | null {
   // Only the latest revision counts. `Flag.Changed` fires for any edit
   // (body/teams/ring) in the latest release, but the trajectory arc must
-  // mean the same thing as the History page: the ring moved in *this*
+  // mean the same thing as the Changelog page: the ring moved in *this*
   // release. Walking back to find an older ring move would render an arc
   // for items whose latest change was a description tweak.
   const latest = getLatestRevision(item);

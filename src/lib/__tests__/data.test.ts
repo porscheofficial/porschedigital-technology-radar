@@ -662,7 +662,7 @@ describe("revision ordering invariant", () => {
   });
 });
 
-describe("radar arc ↔ history page consistency", () => {
+describe("radar arc ↔ changelog page consistency", () => {
   it("getItemChangeDirection agrees with getVersionDiffs for the latest release", () => {
     const items = getItems();
     const diffs = getVersionDiffs();
@@ -684,7 +684,7 @@ describe("radar arc ↔ history page consistency", () => {
           ? "demoted"
           : null;
       if (dir !== expected) {
-        disagreements.push(`${item.id}: arc=${dir}, history=${expected}`);
+        disagreements.push(`${item.id}: arc=${dir}, changelog=${expected}`);
       }
     }
     expect(disagreements).toEqual([]);

@@ -32,7 +32,7 @@ const expected: string[] = [
   "index.html",
   "404.html",
   "sitemap.xml",
-  "history/index.html",
+  "changelog/index.html",
   "help-and-about-tech-radar/index.html",
 ];
 for (const q of segments) expected.push(`${q.id}/index.html`);

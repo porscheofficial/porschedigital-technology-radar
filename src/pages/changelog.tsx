@@ -26,11 +26,11 @@ import {
 } from "@/lib/data";
 import { formatRelease, formatReleaseCompact } from "@/lib/format";
 import type { CustomPage } from "@/pages/_app";
-import styles from "./history.module.scss";
+import styles from "./changelog.module.scss";
 
 const MAX_VISIBLE_VERSIONS = 6;
 
-const History: CustomPage = () => {
+const Changelog: CustomPage = () => {
   const allReleases = getReleases();
   const trajectories = getItemTrajectories();
   const diffs = getVersionDiffs();
@@ -51,7 +51,7 @@ const History: CustomPage = () => {
 
   return (
     <>
-      <SeoHead title="History" description={description} path="/history/" />
+      <SeoHead title="Changelog" description={description} path="/changelog/" />
 
       <PHeading size="large" tag="h1">
         Changelog
@@ -363,4 +363,4 @@ const History: CustomPage = () => {
   );
 };
 
-export default History;
+export default Changelog;

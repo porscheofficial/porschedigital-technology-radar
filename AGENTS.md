@@ -46,7 +46,7 @@ Pages & Components          (import data at module level, no runtime fetching)
 | Route                        | File                                      | Description                          |
 | ---------------------------- | ----------------------------------------- | ------------------------------------ |
 | `/`                          | `src/pages/index.tsx`                     | Full radar SVG + filters             |
-| `/history`                   | `src/pages/history.tsx`                   | Changelog: trajectory matrix + diffs |
+| `/changelog`                 | `src/pages/changelog.tsx`                 | Changelog: trajectory matrix + diffs |
 | `/help-and-about-tech-radar` | `src/pages/help-and-about-tech-radar.tsx` | About page                           |
 | `/[segment]`                | `src/pages/[segment]/index.tsx`          | Segment detail with mini-radar      |
 | `/[segment]/[id]`           | `src/pages/[segment]/[id].tsx`           | Item detail with revisions           |

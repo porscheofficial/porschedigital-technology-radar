@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@11ty/gray-matter':
         specifier: ^2.0.1
-        version: 2.0.1
+        version: 2.0.2
       '@fontsource/inter':
         specifier: ^5.2.8
         version: 5.2.8
@@ -204,8 +204,8 @@ importers:
 
 packages:
 
-  '@11ty/gray-matter@2.0.1':
-    resolution: {integrity: sha512-IJtfwNC6pX4lV1PXqf25Tnqlp5wFAg7MyuSzqQ9vWoRJsnRggc+yuOQUT3GiedEhGGu8d19n51LzLlRbMPPYZQ==}
+  '@11ty/gray-matter@2.0.2':
+    resolution: {integrity: sha512-+sbmr+BPzzi0z4lFvruKiGQ3D/d5zBssavhH9SzXmWkf7rStnB4gfeEMgz6k1Ac8bpN5NAFCH5GyR3xHk1BGPA==}
     engines: {node: '>=11'}
 
   '@adobe/css-tools@4.4.4':
@@ -5242,10 +5242,6 @@ packages:
     resolution: {integrity: sha512-yDPMNjp4WyfYBkHnjIRLfca1i6KMyGCtsVgoKe/z1+6vukgaENdgGBZt+ZmKPc4gavvEZ5OgHfHdrazhgNyG7w==}
     engines: {node: '>=12'}
 
-  strip-bom-string@1.0.0:
-    resolution: {integrity: sha512-uCC2VHvQRYu+lMh4My/sFNmF2klFymLX1wHJeXnbEJERpV/ZsVuonzerjfrGpIGF7LBVa1O7i9kjiWvJiFck8g==}
-    engines: {node: '>=0.10.0'}
-
   strip-bom@3.0.0:
     resolution: {integrity: sha512-vavAMRXOgBVNF6nyEEmL3DBK19iRpDcoIwW+swQ+CbGiu7lju6t+JklA1MHweoWtadgt4ISVUsXLyDq34ddcwA==}
     engines: {node: '>=4'}
@@ -5758,12 +5754,10 @@ packages:
 
 snapshots:
 
-  '@11ty/gray-matter@2.0.1':
+  '@11ty/gray-matter@2.0.2':
     dependencies:
       js-yaml: 4.1.1
-      kind-of: 6.0.3
       section-matter: 1.0.0
-      strip-bom-string: 1.0.0
 
   '@adobe/css-tools@4.4.4': {}
 
@@ -10977,8 +10971,6 @@ snapshots:
   strip-ansi@7.2.0:
     dependencies:
       ansi-regex: 6.2.2
-
-  strip-bom-string@1.0.0: {}
 
   strip-bom@3.0.0: {}
 

@@ -1,5 +1,6 @@
 {
   "baseUrl": "https://opensource.porsche.com",
+  "imprint": "https://www.porsche.digital/en/imprint",
   "toggles": {
     "showDemoDisclaimer": true
   }

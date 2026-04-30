@@ -167,13 +167,13 @@ All configuration lives in `data/config.json`. Any key you omit falls back to th
 | ------------------- | -------------------------------------------------------------------------------------------------- | ------- |
 | `basePath`          | URL path prefix. Set to `/` for root hosting, or `/techradar` for a sub-path.                      | `/`     |
 | `baseUrl`           | Full origin (scheme + host) where the radar is hosted, e.g. `https://opensource.porsche.com`. Used for `sitemap.xml`, canonical links, and Open Graph / Twitter meta tags. The runtime env var `NEXT_PUBLIC_BASE_URL` overrides this when set (useful for staging deploys). The `basePath` is appended automatically — do **not** include it here. | `""`    |
-| `editUrl`           | If set, shows an edit button on item pages. Supports `{id}` and `{release}` placeholders. Example: `https://github.dev/org/repo/blob/main/data/radar/{release}/{id}.md` | `""`    |
+| `editUrl`           | If set, shows an edit button on item pages. Supports `{id}` and `{release}` placeholders. Example: `https://github.dev/org/repo/blob/main/data/radar/{release}/{id}.md` | `"https://github.dev/porscheofficial/porschedigital-technology-radar/blob/main/data/radar/{release}/{id}.md"` |
 | `headerLogoFile`    | Path to a logo image in `public/` for the header. Leave empty to use the default Porsche crest.    | `""`    |
 | `footerLogoFile`    | Path to a logo image in `public/` for the footer. Leave empty to use the default Porsche wordmark. | `""`    |
 | `jsFile`            | Path in `public/` or URL to a custom JavaScript file to include on every page.                     | `""`    |
-| `backgroundImage`   | Path to an image in `public/` shown as a subtle background overlay. Leave empty to disable.        | `""`    |
+| `backgroundImage`   | Path to an image in `public/` shown as a subtle background overlay. Leave empty to disable.        | `"/background.jpg"` |
 | `backgroundOpacity` | Opacity of the background image overlay (0 = invisible, 1 = fully visible).                        | `0.06`  |
-| `imprint`           | URL to your legal information / imprint page.                                                      | `""`    |
+| `imprint`           | URL to your legal information / imprint page.                                                      | `""` |
 
 </details>
 
@@ -287,10 +287,10 @@ An array of social link objects shown in the footer.
 | `title`             | Radar title shown in the header and page titles           | `"Technology Radar"`                                                                                |
 | `tagline`           | Shared subtitle used in the default Open Graph image      | `"Track what to adopt, trial, assess, and hold."`                                                   |
 | `imprint`           | Label for the imprint link in the footer                  | `"Legal Information"`                                                                               |
-| `footer`            | Text shown in the footer                                  | `"Based on the open-source Technology Radar by AOE GmbH, extensively modified by Porsche Digital."` |
+| `footer`            | Text shown in the footer                                  | `"An open-source technology radar by Porsche Digital, originally based on the AOE Technology Radar."` |
 | `notUpdated`        | Warning shown on items not updated in the last 3 releases | `"This item was not updated in last three versions of the Radar."`                                  |
 | `hiddenFromRadar`   | Info shown on items hidden from the radar chart           | `"This technology is currently hidden from the radar chart."`                                       |
-| `searchPlaceholder` | Placeholder text in the search input                      | `"What are you looking for?"`                                                                       |
+| `searchPlaceholder` | Placeholder text in the search input                      | `"Search & actions"`                                                                                |
 | `searchPlaceholderLong` | Longer placeholder shown inside the spotlight popup   | `"Search technologies, or type > to run an action…"`                                                |
 | `metaDescription`   | HTML meta description for SEO                             | `""`                                                                                                |
 

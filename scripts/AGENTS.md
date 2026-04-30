@@ -11,7 +11,7 @@ Run at build/validate time only. Never imported by `src/`.
 | `remarkWikiLink.ts` | Remark plugin: resolves `[[id]]` and `[[id|label]]` to internal links using the blip lookup table. |
 | `positioner.ts` | Computes blip coordinates within rings/segments. |
 | `errorHandler.ts` | Consola-based error reporting helpers. |
-| `checkConfigReadmeSync.ts` | Asserts that every leaf key in `data/config.default.json` and every Zod field in `validateFrontmatter.ts` is documented in `README.md`. Run via `pnpm run check:arch:readme`. |
+| `checkConfigReadmeSync.ts` | Asserts that every leaf key in `data/config.default.json` and every Zod field in `validateFrontmatter.ts` is documented in `README.md`, AND that documented default values in README tables match the actual values in `config.default.json` (namespaced by the surrounding `<details><summary>` block). Run via `pnpm run check:arch:readme`. |
 
 ## Rules
 

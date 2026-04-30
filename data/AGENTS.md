@@ -21,7 +21,7 @@ data/
 - **Date strings in frontmatter:** use plain `YYYY-MM` or `YYYY-MM-DD`. The `toSafeDate()` helper in `format.ts` appends `T00:00:00` to avoid timezone shifts. Do not pre-suffix.
 - **Config edits go in `data/config.json`**, not `data/config.default.json`. Only deep-merge keys are: `colors`, `labels`, `toggles`. All other top-level keys (`segments`, `rings`, `flags`, `chart`, `social`, `imprint`, `basePath`, etc.) are shallow-replaced.
 - **Back-compat shim:** The legacy `quadrant` frontmatter field maps to `segment` with a warning. See `docs/decisions/0028-rename-quadrant-to-segment.md`.
-- **Configuration ↔ README sync is enforced.** Any change to `config.default.json` keys or to the frontmatter Zod schema must also update the corresponding tables in `README.md`. (Checked: `pnpm run check:arch:readme`.)
+- **Configuration ↔ README sync is enforced.** Any change to `config.default.json` keys or to the frontmatter Zod schema must also update the corresponding tables in `README.md`. **Documented default values must match `config.default.json` exactly** — the harness parses each table's `Default` column (namespaced by the surrounding `<details><summary>` block, so `imprint` at root is distinct from `labels.imprint`) and fails on drift. (Checked: `pnpm run check:arch:readme`.)
 
 ## Wiki-style links
 

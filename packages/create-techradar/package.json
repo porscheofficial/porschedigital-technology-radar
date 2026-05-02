@@ -51,6 +51,7 @@
     "typescript": "^5"
   },
   "dependencies": {
-    "citty": "^0.2.2"
+    "citty": "^0.2.2",
+    "consola": "^3.4.2"
   }
 }

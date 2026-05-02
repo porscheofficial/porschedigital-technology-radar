@@ -117,12 +117,22 @@ The scaffolder runs these steps in order, refusing to clobber on conflict:
 
 ### Dependency posture
 
-The scaffolder takes one runtime dependency: `citty` (already used by the
-framework CLI). Everything else uses Node's built-ins:
+The scaffolder takes two runtime dependencies, both already used by the
+framework CLI in `packages/techradar/bin/techradar.ts`:
+
+- `citty` — argument parsing, `--help` / `--version`.
+- `consola` — the logger. Picked over an ad-hoc stdout/stderr facade
+  for stylistic consistency with the framework CLI (`techradar dev`,
+  `techradar build`, `techradar init` all log via `consola`), so the
+  bootstrap output blends seamlessly into the immediately-following
+  `techradar init` output. `consola` is small (~15 KB) and is already
+  in the workspace lockfile, so the marginal install cost is zero.
+
+Everything else uses Node's built-ins:
 
 - `node:fs` / `node:path` for filesystem work.
 - `node:child_process`'s `spawnSync` for `<pm> install`, `<pm> exec`, and
-  `git`. Avoids `execa` to keep `dependencies` count at one.
+  `git`. Avoids `execa` to keep the dependency count low.
 - `node:https` for the registry GET. Avoids `node-fetch`/`undici` adds.
 - `node:test` for tests (already configured via `"test": "node --test"`
   in `packages/create-techradar/package.json`). Avoids the vitest stack

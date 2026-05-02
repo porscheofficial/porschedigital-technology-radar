@@ -1,0 +1,18 @@
+name: "porschedigital-technology-radar CodeQL config"
+
+# Reuse the default JS/TS query suites enabled by github/codeql-action/init.
+# `queries: security-and-quality` in codeql.yml stays the source of truth for
+# the suite selection; this file only narrows the *scan surface*.
+
+# Exclude generated bundles. The framework package ships its `techradar` CLI
+# as a single bundled file (`packages/techradar/dist/bin/techradar.js`) that
+# is tracked in git so the npm tarball can run it without a build step at
+# install time. CodeQL otherwise scans every minified third-party library
+# inlined into that bundle, producing dozens of noise alerts that drown out
+# real findings in the workspace's own source. Same logic applies to any
+# future `dist/` output under either package.
+paths-ignore:
+  - "**/dist/**"
+  - "**/.next/**"
+  - "**/out/**"
+  - "**/node_modules/**"

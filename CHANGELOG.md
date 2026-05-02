@@ -4,6 +4,78 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.3.0](https://github.com/porscheofficial/porschedigital-technology-radar/compare/v1.2.6...v1.3.0) (2026-05-02)
+
+
+### Features
+
+* export radar as PNG from spotlight on the start page ([83523d3](https://github.com/porscheofficial/porschedigital-technology-radar/commit/83523d31a92c376baa9cd824df46bd539850a70c))
+* **harness:** enforce README documented defaults match config.default.json ([fd1d0b0](https://github.com/porscheofficial/porschedigital-technology-radar/commit/fd1d0b02097701284e0751fdfa12bf19f5d24ca7))
+* **radar:** clickable wedges navigate to segment ring sections ([cd73009](https://github.com/porscheofficial/porschedigital-technology-radar/commit/cd7300910d4b5712776c8890bddc011209606d86))
+* replace SearchBar with SpotlightSearch command palette ([45dcfbe](https://github.com/porscheofficial/porschedigital-technology-radar/commit/45dcfbea3fb580755ffc1cae40ef5455e691dd2e))
+
+
+### Bug Fixes
+
+* **dev:** allow worktree subdomains for HMR ([2c1fd11](https://github.com/porscheofficial/porschedigital-technology-radar/commit/2c1fd11057513a3b37478976753538fe69204378))
+* **docs:** resolve duplicate ADR-0025 and add uniqueness/contiguity sensor ([0c3ff8e](https://github.com/porscheofficial/porschedigital-technology-radar/commit/0c3ff8ef3c844731011014416f3768c957563888))
+* **lib:** drop config.default.json quadrant→segment workaround now that data is migrated ([369906c](https://github.com/porscheofficial/porschedigital-technology-radar/commit/369906c125863de06020209ba711011f39c56935))
+* **lib:** keep Config type internal; tests reference default export ([0272637](https://github.com/porscheofficial/porschedigital-technology-radar/commit/0272637a6ab1525097b034a8f76903abe438b14d))
+* **quality:** make pre-existing knip + coverage gates green ([5fa5bbd](https://github.com/porscheofficial/porschedigital-technology-radar/commit/5fa5bbd76a3bc455e695dd40af575ad05db827f9))
+* **radar:** preserve highlight on wedge click and clear it on segment page mount ([645f507](https://github.com/porscheofficial/porschedigital-technology-radar/commit/645f50714290ee8591f6a654610cbdf28e8c0244))
+* remove orphaned SearchBar test after SpotlightSearch migration ([d92f813](https://github.com/porscheofficial/porschedigital-technology-radar/commit/d92f813bb3f904c608d3b53a3e1b8183cd07c52d))
+
+
+### Security
+
+* bump postcss to &gt;=8.5.10 (CVE-2026-41305) and harden ADR test ([d885af9](https://github.com/porscheofficial/porschedigital-technology-radar/commit/d885af9015a089094f4a68ddc2df6156a51dfca2))
+
+
+### Code Refactoring
+
+* **components:** rename quadrant→segment identifiers and CSS classes ([a864e1c](https://github.com/porscheofficial/porschedigital-technology-radar/commit/a864e1c7d724426d126c16b29e331453f9c841be))
+* **data:** migrate config and 74 radar items from quadrant to segment ([fafa2ae](https://github.com/porscheofficial/porschedigital-technology-radar/commit/fafa2ae73b3c4658131e1645790ca2c318655533))
+* **lib:** rename Quadrant→Segment and add config back-compat shim ([24dae60](https://github.com/porscheofficial/porschedigital-technology-radar/commit/24dae60b8ca5af18055e98fa38d8d2fa92e2f364))
+* **pages:** rename [quadrant] route param and identifiers to segment ([e0b594c](https://github.com/porscheofficial/porschedigital-technology-radar/commit/e0b594cdc4f858ee535102e53076fa3faf2c585c))
+* rename history page to changelog ([4fea1a6](https://github.com/porscheofficial/porschedigital-technology-radar/commit/4fea1a608ca01dc4e44d4639b30909ff3cdc19f6))
+* rename quadrant directories and files to segment (disk only) ([fc79425](https://github.com/porscheofficial/porschedigital-technology-radar/commit/fc79425e4c6f23b522c5e4094b589235509317fd))
+* **scripts:** rename quadrant→segment and add frontmatter back-compat shim ([1572c31](https://github.com/porscheofficial/porschedigital-technology-radar/commit/1572c315a7879602c3a63f340bb3ba99e17aa19b))
+
+
+### Documentation
+
+* **about:** rename quadrant→segment in user-facing about page prose ([f63eb2c](https://github.com/porscheofficial/porschedigital-technology-radar/commit/f63eb2c6a158a29e804b9fc581c7c3eaaac5423b))
+* clarify back-compat shim audience as consumer projects ([54ebbfb](https://github.com/porscheofficial/porschedigital-technology-radar/commit/54ebbfb6abf7507e7a55d847750fe82da026ba9e))
+* update README, AGENTS, and cspell for quadrant→segment rename ([9bb2e05](https://github.com/porscheofficial/porschedigital-technology-radar/commit/9bb2e0513f8561075be9e2e5e55ba07b52b05b8a))
+
+
+### Tests
+
+* rename quadrant→segment across remaining test suites ([91a2f37](https://github.com/porscheofficial/porschedigital-technology-radar/commit/91a2f37678ae17295c34b7155fe37a4ac82dd8c2))
+
+
+### Build System
+
+* **deps-dev:** bump @biomejs/biome in the biome group ([2e710e6](https://github.com/porscheofficial/porschedigital-technology-radar/commit/2e710e6b7c8138228963957c4168be42e20ec246))
+* **deps-dev:** bump @commitlint/config-conventional ([f9a22e8](https://github.com/porscheofficial/porschedigital-technology-radar/commit/f9a22e815ffa3db0b2a556e9f535e0cabaddce7c))
+* **deps-dev:** bump knip from 6.4.0 to 6.9.0 ([47c9797](https://github.com/porscheofficial/porschedigital-technology-radar/commit/47c9797fd55a95536bac64d10a340ca8077b5b77))
+* **deps-dev:** bump markdownlint-cli2 from 0.21.0 to 0.22.1 ([b475855](https://github.com/porscheofficial/porschedigital-technology-radar/commit/b4758558e028a190442188958d1911300de14541))
+* **deps-dev:** bump the testing group with 3 updates ([75cb8d5](https://github.com/porscheofficial/porschedigital-technology-radar/commit/75cb8d55b283bf993c670d36162858923c758a0a))
+* **deps:** bump @11ty/gray-matter from 2.0.1 to 2.0.2 ([93dc4a9](https://github.com/porscheofficial/porschedigital-technology-radar/commit/93dc4a9e4ff74bc149dda3504a05e32b6818d2f1))
+* **deps:** bump @types/node in the types group across 1 directory ([9d876b5](https://github.com/porscheofficial/porschedigital-technology-radar/commit/9d876b58590d8ac18e13bd92748f3336f0b101f5))
+* **deps:** bump next in the next group across 1 directory ([d659cdc](https://github.com/porscheofficial/porschedigital-technology-radar/commit/d659cdc42507f1b2f3a4ad140d74e2adaf9541ce))
+* **deps:** bump postcss-preset-env from 9.6.0 to 11.2.1 ([1fa49cd](https://github.com/porscheofficial/porschedigital-technology-radar/commit/1fa49cdedc8aa171fdfb99128ccfdc4b62107420))
+* **deps:** bump the porsche-design-system group with 2 updates ([9872e8f](https://github.com/porscheofficial/porschedigital-technology-radar/commit/9872e8faee1ad21c3bc480a2a4e1f44ffca06c9d))
+
+
+### CI/CD
+
+* bump actions/setup-node from 4.4.0 to 6.4.0 ([fe3ce4c](https://github.com/porscheofficial/porschedigital-technology-radar/commit/fe3ce4c841e12154fb5ec6440d9b8ff514742839))
+* bump actions/upload-artifact from 4.6.2 to 7.0.1 ([29e5d9a](https://github.com/porscheofficial/porschedigital-technology-radar/commit/29e5d9a0229afa589e73b883585817174c18de58))
+* bump github/codeql-action from 3.35.2 to 4.35.2 ([6b4e905](https://github.com/porscheofficial/porschedigital-technology-radar/commit/6b4e90511849a9e662e848d408e7db5348c72ba3))
+* bump ossf/scorecard-action from 2.4.0 to 2.4.3 ([f0f3b20](https://github.com/porscheofficial/porschedigital-technology-radar/commit/f0f3b20b5109ddd6459fc24a7c924fe43fc90500))
+* bump pnpm/action-setup from 4.1.0 to 6.0.3 ([25d838a](https://github.com/porscheofficial/porschedigital-technology-radar/commit/25d838a9fc6f956762368ce80c2d5791876f05ff))
+
 ## [1.2.6](https://github.com/porscheofficial/porschedigital-technology-radar/compare/v1.2.5...v1.2.6) (2026-04-23)
 
 

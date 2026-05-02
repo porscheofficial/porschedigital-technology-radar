@@ -49,10 +49,7 @@ Adopt **per-package licensing**:
   per-package license files for the actual published packages, so the split
   is discoverable from the root.
 
-The `check:sec:licenses` sensor (ADR-0013, amended by ADR-0027) needs no
-changes: its `--failOn` deny-list (`GPL;AGPL;LGPL;SSPL;BUSL;CC-BY-NC`)
-covers neither MIT nor Apache-2.0, and the `--excludePackages` self-listing
-already names both workspace packages.
+The `check:sec:licenses` sensor (ADR-0013, amended by ADR-0027 and again by ADR-0013 Amendment 2) needs no changes: its `--failOn` deny-list (`GPL;AGPL;LGPL;SSPL;BUSL;CC-BY-NC`) covers neither MIT nor Apache-2.0, so both workspace packages' declared licenses pass without any `--excludePackages` flag.
 
 ## Consequences
 
@@ -66,11 +63,7 @@ already names both workspace packages.
   files for the canonical answer about the published artifacts. Tools that
   only inspect `<repo-root>/LICENSE` will still see Apache-2.0, which is
   truthful for the framework package and the workspace tooling.
-- This ADR adds a third "version-shaped string" hazard to track
-  (per ADR-0013's drift-warning): if either package's license ever changes,
-  the corresponding per-package `LICENSE` file, `package.json#license`
-  field, and any documentation reference must move together. There is no
-  sensor for this; it is policy, enforced at review time.
-- ADR-0013's `--excludePackages` literal is unchanged by this ADR but
-  remains a known drift hazard: it pins package names + versions, not
-  licenses, so a license change does not require a sensor update.
+- Per-package license drift is policy, enforced at review time: if either
+  package's license ever changes, the corresponding per-package `LICENSE`
+  file, `package.json#license` field, and any documentation reference must
+  move together. There is no sensor for this.

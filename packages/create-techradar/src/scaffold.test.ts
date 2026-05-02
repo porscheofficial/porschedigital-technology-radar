@@ -10,6 +10,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, it } from "node:test";
 
+import { ScaffoldError } from "./errors.ts";
 import {
   buildPackageJson,
   buildReadme,
@@ -36,8 +37,39 @@ describe("scaffold helpers", () => {
       assert.equal(deriveProjectName("My Radar"), "my-radar");
     });
 
-    it("replaces invalid names with a sane fallback", () => {
+    it("collapses runs of internal whitespace", () => {
+      assert.equal(deriveProjectName("foo   bar\tbaz"), "foo-bar-baz");
+    });
+
+    it("trims surrounding whitespace before validating", () => {
+      assert.equal(deriveProjectName("  ok-name  "), "ok-name");
+    });
+
+    it("preserves a valid scoped npm name", () => {
+      assert.equal(deriveProjectName("@scope/pkg"), "@scope/pkg");
+    });
+
+    it("preserves underscores, tildes, and dots inside the body", () => {
+      assert.equal(deriveProjectName("a_b.c~d-e"), "a_b.c~d-e");
+    });
+
+    it("falls back when the name starts with a dot", () => {
+      assert.equal(deriveProjectName(".foo"), "techradar-project");
+    });
+
+    it("falls back when the name contains uppercase non-letter junk", () => {
       assert.equal(deriveProjectName("###"), "techradar-project");
+      assert.equal(deriveProjectName("foo!bar"), "techradar-project");
+    });
+
+    it("falls back on an empty input", () => {
+      assert.equal(deriveProjectName(""), "techradar-project");
+      assert.equal(deriveProjectName("   "), "techradar-project");
+    });
+
+    it("accepts very long names that match the npm grammar", () => {
+      const long = "a".repeat(214);
+      assert.equal(deriveProjectName(long), long);
     });
   });
 
@@ -46,13 +78,25 @@ describe("scaffold helpers", () => {
       assert.equal(isDirectoryUsable(join(workspace, "nope")), true);
     });
 
+    it("returns true for an empty directory", () => {
+      assert.equal(isDirectoryUsable(workspace), true);
+    });
+
     it("returns true for directories that contain only ignored entries", () => {
       mkdirSync(join(workspace, ".git"));
+      writeFileSync(join(workspace, ".DS_Store"), "");
+      writeFileSync(join(workspace, "Thumbs.db"), "");
       assert.equal(isDirectoryUsable(workspace), true);
     });
 
     it("returns false when other entries exist", () => {
       writeFileSync(join(workspace, "README.md"), "stuff");
+      assert.equal(isDirectoryUsable(workspace), false);
+    });
+
+    it("returns false when ignored and non-ignored entries coexist", () => {
+      mkdirSync(join(workspace, ".git"));
+      writeFileSync(join(workspace, "extra"), "");
       assert.equal(isDirectoryUsable(workspace), false);
     });
   });
@@ -65,6 +109,31 @@ describe("scaffold helpers", () => {
       assert.equal(target.absolutePath, join(workspace, "fresh"));
     });
 
+    it("accepts an existing empty directory without recreating it", () => {
+      const target = resolveTargetDir(".", workspace);
+      assert.equal(target.created, false);
+      assert.equal(target.absolutePath, workspace);
+    });
+
+    it("treats absolute paths as absolute, ignoring cwd", () => {
+      const abs = join(workspace, "abs-target");
+      const target = resolveTargetDir(abs, "/tmp/somewhere-else");
+      assert.equal(target.absolutePath, abs);
+      assert.equal(target.created, true);
+      assert.equal(target.projectName, "abs-target");
+    });
+
+    it("derives the project name from the basename", () => {
+      const target = resolveTargetDir("nested/inner", workspace);
+      assert.equal(target.projectName, "inner");
+      assert.equal(target.absolutePath, join(workspace, "nested/inner"));
+    });
+
+    it("falls back to the safe project name on a junky basename", () => {
+      const target = resolveTargetDir("###", workspace);
+      assert.equal(target.projectName, "techradar-project");
+    });
+
     it("rejects non-empty directories", () => {
       const dir = join(workspace, "busy");
       mkdirSync(dir);
@@ -72,10 +141,12 @@ describe("scaffold helpers", () => {
       assert.throws(() => resolveTargetDir("busy", workspace), /not empty/);
     });
 
-    it("rejects empty input", () => {
+    it("throws ScaffoldError (not generic Error) when input is empty", () => {
       assert.throws(
         () => resolveTargetDir("  ", workspace),
-        /No target directory/,
+        (err: unknown) =>
+          err instanceof ScaffoldError &&
+          /No target directory/.test(err.message),
       );
     });
   });
@@ -88,6 +159,7 @@ describe("scaffold helpers", () => {
         frameworkVersionRange: "^1.0.0",
       });
       assert.equal(json.name, "demo");
+      assert.equal(json.version, "0.0.0");
       assert.equal(json.private, true);
       assert.equal(json.type, "module");
       assert.deepEqual(json.dependencies, { "@x/y": "^1.0.0" });
@@ -96,6 +168,30 @@ describe("scaffold helpers", () => {
         build: "techradar build",
         validate: "techradar validate",
       });
+    });
+  });
+
+  describe("buildReadme", () => {
+    it("starts with the project name as an H1", () => {
+      assert.match(buildReadme("demo"), /^# demo\n/);
+    });
+
+    it("links to the create-techradar npm page", () => {
+      assert.match(
+        buildReadme("demo"),
+        /npmjs\.com\/package\/@porscheofficial\/create-techradar/,
+      );
+    });
+
+    it("documents the dev/build/validate scripts", () => {
+      const readme = buildReadme("demo");
+      assert.match(readme, /`dev`/);
+      assert.match(readme, /`build`/);
+      assert.match(readme, /`validate`/);
+    });
+
+    it("ends with a trailing newline", () => {
+      assert.ok(buildReadme("demo").endsWith("\n"));
     });
   });
 

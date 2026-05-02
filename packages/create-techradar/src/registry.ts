@@ -14,7 +14,15 @@ export function buildLatestUrl(
   packageName: string,
   registry = DEFAULT_REGISTRY,
 ): string {
-  const base = registry.replace(/\/+$/, "");
+  // Strip trailing slashes via a single linear scan rather than a regex like
+  // `/\/+$/`. CodeQL flags any unbounded `+` on caller-supplied input as
+  // polynomial-ReDoS even though the worst case here is linear; sidestep the
+  // alert and the engine entirely. Priority-3 necessary.
+  let end = registry.length;
+  while (end > 0 && registry.charCodeAt(end - 1) === 0x2f /* '/' */) {
+    end--;
+  }
+  const base = registry.slice(0, end);
   return `${base}/${packageName}/latest`;
 }
 

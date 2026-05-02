@@ -15,7 +15,7 @@ configurations are `images.unoptimized: true` (which strips most of the
 benefit) or pointing at an external loader (which adds infrastructure).
 
 Additionally, the radar renders **user-provided** image URLs from
-`data/radar/**/*.md` frontmatter and `data/config.json` (logos). These URLs
+`packages/techradar/data/radar/**/*.md` frontmatter and `packages/techradar/data/config.json` (logos). These URLs
 point at remote CDNs that the consumer controls; we cannot enumerate them
 at build time, and we will not require consumers to register every host
 with `images.remotePatterns`.
@@ -30,7 +30,7 @@ caller-supplied URL for remote ones.
 
 **Enforced by the harness:**
 
-- `.dependency-cruiser.cjs` → `no-next-image` rejects any import resolving
+- `packages/techradar/.dependency-cruiser.cjs` → `no-next-image` rejects any import resolving
   to `node_modules/next/image`.
 
 **Implications for contributors:**

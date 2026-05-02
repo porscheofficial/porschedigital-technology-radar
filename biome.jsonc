@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.4.11/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.4.13/schema.json",
 
   "vcs": {
     "enabled": true,
@@ -11,12 +11,15 @@
     "ignoreUnknown": true,
     "includes": [
       "**",
-      "!node_modules",
-      "!.next",
-      "!out",
-      "!dist",
-      "!data/*.json",
-      "!src/components/Icons"
+      "!**/node_modules",
+      "!**/.next",
+      "!**/out",
+      "!**/dist",
+      "!**/coverage",
+      "!packages/techradar/data/*.json",
+      "!packages/techradar/src/components/Icons",
+      "!packages/techradar/public/og",
+      "!packages/create-techradar/dist"
     ]
   },
 
@@ -72,9 +75,9 @@
     {
       "includes": [
         "commitlint.config.js",
-        "postcss.config.js",
-        "next.config.js",
-        "bin/**"
+        "packages/techradar/postcss.config.js",
+        "packages/techradar/next.config.js",
+        "packages/*/bin/**"
       ],
       "javascript": {
         "globals": ["module", "require", "process", "__dirname"]

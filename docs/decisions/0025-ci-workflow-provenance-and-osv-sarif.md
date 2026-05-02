@@ -108,3 +108,11 @@ build, and build-output validation.
   (`NEXT_PUBLIC_BASE_PATH`) and an artifact-upload contract for the
   `actions/deploy-pages` consumer. Merging the two workflows entangles
   unrelated concerns; the ~30 s of duplicated build time is acceptable.
+
+## Amendment — ADR-0027 (pnpm workspace migration)
+
+After the workspace split (ADR-0027), the CI commands described in this ADR — `lint`, `tsc --noEmit`, `test`, `check:arch`, `build`, `check:build` — still run from the repo root, but the root `package.json` scripts are now orchestration wrappers that delegate to `pnpm --filter @porscheofficial/porschedigital-technology-radar run <name>`. The script names at the root are preserved so the workflow YAML did not need to change names; the verification surface the workflow exercises is unchanged.
+
+Two workflow steps WERE updated as part of the migration to reach package-local commands directly (since the root `package.json` does not wrap them): `pnpm run build:data` became `pnpm --filter @porscheofficial/porschedigital-technology-radar run build:data`, and `path: out` became `path: packages/techradar/out` in the deploy workflow's artifact upload step. See `.github/workflows/ci.yml`, `.github/workflows/deploy.yml`, and `.github/workflows/security.yml` for the actual current shape.
+
+The ADR's core decisions — single `verify` job, OIDC trusted publishing for npm provenance, `osv-scanner-action` with `continue-on-error: true` + SARIF upload, deferral of `check:sec`/`check:quality`/`check:a11y` from required-to-pass status — are all unchanged.

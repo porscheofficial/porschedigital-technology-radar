@@ -5,7 +5,7 @@
 
 ## Context
 
-The CLI shipped in this package (`bin/techradar.ts`) materializes a
+The CLI shipped in this package (`packages/techradar/bin/techradar.ts`) materializes a
 shadow Next.js workspace at `.techradar/` in the consumer project,
 runs `npm install` inside it, and then drives `next build` to produce
 a static site. This is the load-bearing assumption behind the
@@ -18,11 +18,11 @@ with a hard ERESOLVE between `eslint@10.2.1` and
 peer conflict is ack'd in ADR-0018 and was paved over for the
 maintainer environment in ADR-0019 by setting
 `auto-install-peers=true` and `strict-peer-dependencies=false` in
-`.npmrc`. But `.npmrc` is **not** in `package.json#files` and is
+`.npmrc`. But `.npmrc` is **not** in `packages/techradar/package.json#files` and is
 therefore not shipped to consumers — vanilla npm in the consumer
 environment hits the conflict head-on.
 
-The deeper cause is a **misclassification**: `package.json`'s
+The deeper cause is a **misclassification**: `packages/techradar/package.json`'s
 `devDependencies` field was being used as "everything that isn't part
 of the JS public API of this package", which conflated two genuinely
 different concerns:
@@ -62,7 +62,7 @@ doesn't `import next` directly" misuses the field.
   scoped local relaxation, not an industry-wide kill switch.
 - **C — Maintain a regex denylist of QA devDeps the shadow strips
   before `npm install`.** Implementable in one self-contained
-  module (`bin/sanitizeShadowPackageJson.ts`). Works today but
+  module (`packages/techradar/bin/sanitizeShadowPackageJson.ts`). Works today but
   drifts: every new QA tool added to `devDependencies` must be
   remembered in the denylist, otherwise the consumer install
   re-breaks. Failure mode is loud (next consumer install dies),
@@ -86,8 +86,8 @@ Adopt option D. Concretely:
 
 - ~33 packages move from `devDependencies` → `dependencies`. The
   rule: anything imported (directly or transitively at the source
-  level) by `scripts/buildData.ts`, `scripts/buildOgImages.ts`, the
-  Next.js app under `src/`, `next.config.js`, or `postcss.config.js`,
+  level) by `packages/techradar/scripts/buildData.ts`, `packages/techradar/scripts/buildOgImages.ts`, the
+  Next.js app under `packages/techradar/src/`, `packages/techradar/next.config.js`, or `packages/techradar/postcss.config.js`,
   or invoked by the rewritten `build` script, must be in
   `dependencies`. `@types/*` packages used by the build's
   type-check (`@types/node`, `@types/react`, `@types/react-dom`,
@@ -95,7 +95,7 @@ Adopt option D. Concretely:
   prerequisites of `next build`.
 - ~30 packages stay in `devDependencies` (QA, lint, test, format,
   commit hooks, the bin bundler).
-- `package.json#scripts.build` is rewritten from
+- `packages/techradar/package.json#scripts.build` is rewritten from
   `pnpm run build:data && pnpm run build:og && next build` to
   `tsx scripts/buildData.ts && tsx scripts/buildOgImages.ts && next build`.
   Both maintainer (`pnpm run build`) and shadow (`npm run build`)
@@ -103,7 +103,7 @@ Adopt option D. Concretely:
   manager wrapper. ADR-0019's "use pnpm in maintainer scripts" still
   holds for chained `check:*` orchestrators; only the build chain is
   manager-agnostic now, which is exactly the property we want.
-- `bin/techradar.ts` `ensureBuildDir()`:
+- `packages/techradar/bin/techradar.ts` `ensureBuildDir()`:
   - The existing two-line strip of `prepare` / `postinstall`
     scripts is kept (they reference husky and the `tsup` bin
     bundler that no longer exist in the shadow workspace).
@@ -113,14 +113,14 @@ Adopt option D. Concretely:
     actually fixes the ERESOLVE — `--omit=dev` does not, because
     npm resolves the full graph before honouring it.
   - A new step patches the shadow `tsconfig.json`'s `exclude` to
-    include QA-only files (`scripts/check*.ts`,
-    `scripts/preCommit*.ts`, `scripts/__tests__/**`,
-    `src/**/__tests__/**`, `src/**/*.test.{ts,tsx}`, `src/test/**`,
-    `bin/__tests__/**`). Without this, `next build`'s built-in
+    include QA-only files (`packages/techradar/scripts/check*.ts`,
+    `packages/techradar/scripts/preCommit*.ts`, `packages/techradar/scripts/__tests__/**`,
+    `packages/techradar/src/**/__tests__/**`, `packages/techradar/src/**/*.test.{ts,tsx}`, `packages/techradar/src/test/**`,
+    `packages/techradar/bin/__tests__/**`). Without this, `next build`'s built-in
     type-check sweeps in those QA scripts via the
     `include: ["**/*.ts", ...]` rule and fails because their
     devDep imports are no longer in the shadow `node_modules`.
-    The exclude list lives in `bin/sanitizeShadowTsconfig.ts` as a
+    The exclude list lives in `packages/techradar/bin/sanitizeShadowTsconfig.ts` as a
     pure function with a focused vitest suite.
 
 ### Why not denylist (rejected option C)
@@ -147,16 +147,16 @@ what the package actually needs to function.
 
 ## What does not change
 
-- `bin/techradar.ts` continues to use `npm` (not `pnpm`) inside the
+- `packages/techradar/bin/techradar.ts` continues to use `npm` (not `pnpm`) inside the
   shadow, per ADR-0019.
 - The published tarball still ships the full `package.json`. The
   recategorization is the actual fix — no per-consumer mutation of
   the published file is needed.
-- `.npmrc` remains repo-local (not in `files`). It is no longer
+- `packages/techradar/.npmrc` remains repo-local (not in `files`). It is no longer
   load-bearing for the consumer install; its `auto-install-peers=true`
   / `strict-peer-dependencies=false` settings are maintainer-side
   conveniences for `pnpm install`.
-- The Definition of Done in root `AGENTS.md` is unaffected. The
+- The Definition of Done in `packages/techradar/AGENTS.md` is unaffected. The
   same gates run with the same tools.
 - Existing ADRs are not edited. ADR-0018 (a11y harness, eslint@10
   choice) and ADR-0019 (pnpm migration, peer-dep relaxation) are
@@ -189,9 +189,9 @@ what the package actually needs to function.
   already MIT / Apache-2.0 / MPL-2.0 / BSD; none hit the
   GPL/AGPL/LGPL/SSPL/BUSL/CC-BY-NC failOn list. Re-verified
   against the current dep set as part of this ADR's DoD.
-- **Knip is unaffected**: `scripts/**/*.ts` is already in knip's
-  `project` glob, so build-time deps used by `scripts/buildData.ts`
-  and `scripts/buildOgImages.ts` resolve as "used" regardless of
+- **Knip is unaffected**: `packages/techradar/scripts/**/*.ts` is already in knip's
+  `project` glob, so build-time deps used by `packages/techradar/scripts/buildData.ts`
+  and `packages/techradar/scripts/buildOgImages.ts` resolve as "used" regardless of
   which side of the dependencies/devDependencies line they sit on.
 - **Tsconfig sanitization is the only remaining shadow mutation**:
   the surface area of "things the shadow does differently from the
@@ -203,3 +203,9 @@ what the package actually needs to function.
   regression, revert this ADR's commit. The previous package.json
   layout is recoverable from git history; the shadow `npm install`
   reverts to its pre-`--omit=dev` behaviour.
+
+## Amendment — ADR-0027 (pnpm workspace migration)
+
+After the workspace split (ADR-0027), every `bin/`, `scripts/`, `src/`, and config-file path mentioned in this ADR now lives under `packages/techradar/`. The `package.json#scripts.build` and `package.json#files` rewrites described here apply to `packages/techradar/package.json` — the framework package — not the repo-root `package.json`, which is the private monorepo orchestration manifest and ships nothing to npm.
+
+The shadow workspace mechanism itself is unchanged: when a consumer installs `@porscheofficial/porschedigital-technology-radar`, the package extracted at `<consumer>/node_modules/@porscheofficial/porschedigital-technology-radar/` still contains the same `bin/`, `scripts/`, `src/`, configs, and the runtime `delete pkg.devDependencies` sanitizer in `bin/techradar.ts` still keeps the sanitized `package.json` written into the shadow workspace from leaking dev tooling into the consumer's tree. The ERESOLVE-fix decision (recategorize build-time deps as `dependencies`) is the load-bearing fact and remains the current invariant.

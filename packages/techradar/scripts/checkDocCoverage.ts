@@ -13,10 +13,17 @@
 //   `pnpm run <script-name>`
 //   `<bare-identifier>`                            (resolves against any of the above)
 import { readdirSync, readFileSync } from "node:fs";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { consola } from "consola";
 
+// Tooling configs (.dependency-cruiser.cjs, eslint.config.mjs, package.json,
+// architecture.test.ts) are package-rooted: this sensor MUST be invoked from
+// the techradar package root via `pnpm --filter ... run check:arch:doccoverage`.
 const root = process.cwd();
+// Walk root for AGENTS.md discovery — defaults to the package root, but an
+// optional argv[2] lets callers widen the scan to the workspace root so it
+// also picks up the root AGENTS.md (lobby file) and any other package AGENTS.md.
+const walkRoot = process.argv[2] ? resolve(root, process.argv[2]) : root;
 
 function walk(dir: string, acc: string[] = []): string[] {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
@@ -51,7 +58,7 @@ for (const m of eslintCfg.matchAll(/"((?:@[\w-]+\/)?[\w-]+)":\s*\[/g)) {
 
 const npmScripts = new Set(Object.keys(pkg.scripts ?? {}));
 
-const agentsFiles = walk(root).filter((f) => /AGENTS\.md$/.test(f));
+const agentsFiles = walk(walkRoot).filter((f) => /AGENTS\.md$/.test(f));
 
 const errors: string[] = [];
 const checkedRe = /\(Checked:\s*([^)]+?)\)/g;
@@ -79,7 +86,7 @@ function validateFileRef(srcFile: string, id: string): string | null {
 }
 
 for (const file of agentsFiles) {
-  const rel = file.replace(`${root}/`, "");
+  const rel = file.replace(`${walkRoot}/`, "");
   const content = readFileSync(file, "utf8");
   for (const m of content.matchAll(checkedRe)) {
     const body = m[1];

@@ -1,33 +1,26 @@
 {
+  "extends": "./packages/techradar/tsconfig.json",
   "compilerOptions": {
-    "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
     "noEmit": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "react-jsx",
-    "incremental": true,
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["packages/techradar/src/*"]
     },
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ]
+    "ignoreDeprecations": "6.0"
   },
   "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts"
+    "packages/techradar/next-env.d.ts",
+    "packages/techradar/**/*.ts",
+    "packages/techradar/**/*.tsx",
+    "packages/techradar/.next/types/**/*.ts",
+    "packages/techradar/.next/dev/types/**/*.ts",
+    "packages/create-techradar/**/*.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "packages/*/node_modules",
+    "packages/*/dist/**",
+    "packages/*/coverage/**",
+    "packages/techradar/src/components/Icons/**"
+  ]
 }

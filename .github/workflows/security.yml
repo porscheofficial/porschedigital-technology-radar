@@ -69,5 +69,5 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm run check:sec:sanitize
-      - run: pnpm exec vitest run scripts/__tests__/sanitize.test.ts
+      - run: pnpm --filter @porscheofficial/porschedigital-technology-radar run check:sec:sanitize
+      - run: pnpm --filter @porscheofficial/porschedigital-technology-radar exec vitest run scripts/__tests__/sanitize.test.ts

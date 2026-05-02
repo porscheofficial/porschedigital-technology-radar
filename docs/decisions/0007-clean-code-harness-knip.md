@@ -33,8 +33,8 @@ successor) slot in without another umbrella rename.
 Before gating, resolve the survey findings so the first gated run is green:
 
 - **Remove `@eslint/js` from `devDependencies`** — genuinely unused (zero
-  imports anywhere, including `eslint.config.mjs`).
-- **Add `@types/mdast` to `devDependencies`** — `scripts/remarkWikiLink.ts`
+  imports anywhere, including `packages/techradar/eslint.config.mjs`).
+- **Add `@types/mdast` to `devDependencies`** — `packages/techradar/scripts/remarkWikiLink.ts`
   imports types from `"mdast"`, which resolves to `@types/mdast` installed
   transitively via the remark ecosystem. Declaring it explicitly makes the
   type dependency visible and protects against transitive churn.
@@ -73,9 +73,9 @@ Future Phase 2 sensors (one ADR each) will extend `check:quality`:
 
 - A fourth harness arm (`check:quality`). Definition of Done grows to five
   gated checks: `lint && tsc && test && check:arch && check:sec && check:quality && build`.
-- The root `package.json` `knip` script is removed in favour of
+- The `packages/techradar/package.json` `knip` script is removed in favour of
   `check:quality:knip`. One script name per sensor; the umbrella wires them.
-- `knip.json` gains `ignoreBinaries` for `osv-scanner` and `gitleaks`. The
+- `packages/techradar/knip.json` gains `ignoreBinaries` for `osv-scanner` and `gitleaks`. The
   file's schema URL is bumped from `knip@5` to `knip@6` to match the
   installed version.
 - `@types/mdast` becomes an explicit devDep. If a future remark bump drops

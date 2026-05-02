@@ -5,7 +5,7 @@
 
 ## Context
 
-Item markdown bodies under `data/radar/**` may reference other blips via
+Item markdown bodies under `packages/techradar/data/radar/**` may reference other blips via
 wiki-style links: `[[other-blip-id]]` or `[[other-blip-id|custom label]]`.
 `scripts/remarkWikiLink.ts` resolves these against a pre-scanned blip
 lookup table during `npm run build:data`. Unknown ids fail the build.
@@ -25,21 +25,21 @@ not a runtime behaviour. It belongs in the source-only arm
 
 ## Decision
 
-Add `scripts/checkWikiLinks.ts` as `check:quality:wikilinks` …
+Add `packages/techradar/scripts/checkWikiLinks.ts` as `check:quality:wikilinks` …
 **correction**: as `check:arch:wikilinks` under the existing
 `check:arch` umbrella. Wiki-link integrity is a graph-shape invariant
 on the content layer, semantically the same axis as dep-cruiser's
 import-graph rules.
 
-The script reuses `preScanBlipLookup` from `scripts/buildData.ts`
+The script reuses `preScanBlipLookup` from `packages/techradar/scripts/buildData.ts`
 (pass-1 of the existing two-pass build), then walks every
-`data/radar/**/*.md` file once with the same regex
+`packages/techradar/data/radar/**/*.md` file once with the same regex
 (`/\[\[([^\]|]+?)(?:\|[^\]]+?)?\]\]/g`) used by `remarkWikiLink.ts`.
 For every match, resolve the id against the pre-scanned table; collect
 all unresolved ids and exit `1` with a single grouped error message.
 
 To make the sensor truly source-only and idempotent, **wrap
-`scripts/buildData.ts`'s top-level `main()` in
+`packages/techradar/scripts/buildData.ts`'s top-level `main()` in
 `if (require.main === module)`** so importing `preScanBlipLookup` no
 longer triggers the full build. This is a structural prerequisite —
 without it the sensor would have side-effects on every invocation.
@@ -65,7 +65,7 @@ without it the sensor would have side-effects on every invocation.
 - `scripts/buildData.ts` gets the `require.main` guard. `npm run
   build:data` still works (verified). Any future caller that imports
   `preScanBlipLookup` no longer pays for the full build.
-- `data/AGENTS.md` cites the new sensor with a `(Checked: …)`
+- `packages/techradar/data/AGENTS.md` cites the new sensor with a `(Checked: …)`
   reference, which `check:arch:doccoverage` validates.
 - Wiki-link integrity moves leftward in the change lifecycle: typos
   surface in ~200ms instead of ~20s.

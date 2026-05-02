@@ -76,7 +76,7 @@ sandboxes never reproduced the bug: there is no second `next` peer to hoist.
 ## Decision
 
 Replace ADR-0022's version pin with a **resolution-root fence** in
-`next.config.js` that prevents Next, Webpack, and the file tracer from
+`packages/techradar/next.config.js` that prevents Next, Webpack, and the file tracer from
 reaching above `.techradar/`:
 
 ```js
@@ -115,7 +115,7 @@ Three layers, deliberately overlapping:
 Defense-in-depth on purpose. Any single layer alone has historically failed
 to fence at least one of Next's resolution paths.
 
-The exact pin `"next": "16.2.3"` from ADR-0022 is reverted to `"^16.2.3"`.
+The exact pin `"next": "16.2.3"` from ADR-0022 is reverted to `"^16.2.3"` in `packages/techradar/package.json`.
 
 ### Why not a Turbopack `resolveAlias` block
 
@@ -132,7 +132,7 @@ paths directly, which is why the alias only lives in the webpack closure.
 - The dep recategorization (ADR-0021): unchanged.
 - `react`, `react-dom`, `next` stay on caret ranges in `dependencies`.
 - Maintainer Definition of Done: unchanged.
-- No code changes outside `next.config.js`. No test/harness changes.
+- No code changes outside `packages/techradar/next.config.js`. No test/harness changes.
 
 ## Alternatives considered
 

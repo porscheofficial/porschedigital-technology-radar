@@ -12,7 +12,7 @@ The repository's load-bearing prose lives in:
   "Harness Documentation Sync")
 - `docs/decisions/*.md` (ADRs — load-bearing rationale per
   `docs/decisions/README.md`)
-- Eight `AGENTS.md` files (point-of-entry rules for agents)
+- the workspace `AGENTS.md` files (root lobby + per-package + per-directory)
 
 These files are read more often than most source files: by humans
 during onboarding, by agents during every edit cycle, and by external
@@ -33,12 +33,12 @@ Add `check:quality:spell` using
 cspell --no-progress --no-summary --no-must-find-files '**/*.md'
 ```
 
-Configuration in `.cspell.json`:
+Configuration in `packages/techradar/.cspell.json`:
 
 - **Languages**: `en,en-US`. We accept both AmEng and BrEng spellings
   (the project has authors using both — `personalisation` /
   `reorganised` coexist with `customization` / `optimization`).
-- **Custom dictionary**: `cspell-words.txt` — a flat newline-delimited
+- **Custom dictionary**: `packages/techradar/cspell-words.txt` — a flat newline-delimited
   word list of project-specific terms (`porsche`, `techradar`,
   `biome`, `depcruise`, `sonarjs`, `knip`, `jscpd`, `trufflehog`,
   `osv`, `gitleaks`, `rehype`, `remark`, `frontmatter`, `blip`,
@@ -48,11 +48,11 @@ Configuration in `.cspell.json`:
   when it is a real domain term; fix the typo otherwise.
 - **`ignorePaths`** covers generated and external content:
   `node_modules/`, `out/`, `dist/`, `.next/`, `coverage/`, lock
-  files, all `*.json`, all `*.svg`, `src/components/Icons/`,
-  `data/data.json`, `data/radar/**` (radar item content is authored
+  files, all `*.json`, all `*.svg`, `packages/techradar/src/components/Icons/`,
+  `packages/techradar/data/data.json`, `packages/techradar/data/radar/**` (radar item content is authored
   by external contributors and may include vendor names — checking
   it would generate false positives without signal),
-  `data/about.md`, `data/about.json`, Husky scripts, `CHANGELOG.md`.
+  `packages/techradar/data/about.md`, `packages/techradar/data/about.json`, Husky scripts, `CHANGELOG.md`.
 
 ### Rejected alternatives
 
@@ -79,7 +79,7 @@ Configuration in `.cspell.json`:
 
 - `check:quality` grows from five to six sub-scripts (after ADR-0015
   added coverage). DoD command set unchanged in shape.
-- `cspell-words.txt` becomes a living artifact. Adding a word is a
+- `packages/techradar/cspell-words.txt` becomes a living artifact. Adding a word is a
   small, diffable PR; removing one (because a typo got dictionaried
   by mistake) is equally diffable.
 - Authors using either AmEng or BrEng can write naturally. The
@@ -87,4 +87,4 @@ Configuration in `.cspell.json`:
   project.
 - The first time a new ADR or HARNESS.md update introduces a new
   technical term, the gate fires. Resolution: add the term to
-  `cspell-words.txt` in the same PR that introduces it.
+  `packages/techradar/cspell-words.txt` in the same PR that introduces it.

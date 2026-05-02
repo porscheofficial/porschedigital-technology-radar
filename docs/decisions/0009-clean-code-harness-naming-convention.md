@@ -12,7 +12,7 @@ The repo already classifies which tool owns what:
 
 > ESLint runs in lint-only mode for architectural invariants Biome can't
 > express. Biome remains the formatter/linter for everything else.
-> — `eslint.config.mjs` header
+> — `packages/techradar/eslint.config.mjs` header
 
 Biome 2 ships `style/useNamingConvention`, which covers the same surface as
 `@typescript-eslint/naming-convention` (PascalCase for types/components,
@@ -43,7 +43,7 @@ Apply two narrow accommodations for externally-dictated names:
 1. **Test override** — disable the rule for `**/*.test.ts` and
    `**/*.test.tsx`. Tests mock external PascalCase exports and the
    property names must match the real components verbatim.
-2. **`src/pages/_app.tsx`** — rename the local `IP` generic to
+2. **`packages/techradar/src/pages/_app.tsx`** — rename the local `IP` generic to
    `InitialProps`; suppress the `Component` property with a
    single-line `// biome-ignore` directive (Next.js `AppProps` API).
 
@@ -55,7 +55,7 @@ Wire the sensor into the existing clean-code arm:
 
 `--only=` is required because Biome's per-file overrides bypass the global
 config when a single rule is requested; we restrict scope to `src` and
-`scripts`. `--diagnostic-level=error` filters the test-file infos that the
+`scripts` (invoked from packages/techradar/). `--diagnostic-level=error` filters the test-file infos that the
 override would otherwise silence.
 
 The umbrella becomes `npm run check:quality:knip && check:quality:jscpd &&
@@ -84,7 +84,7 @@ check:quality:naming`.
 - New naming violations in `src/` or `scripts/` (excluding tests) fail
   `check:quality:naming` and the `check:quality` umbrella.
 - Test files keep their freedom to mirror external PascalCase APIs.
-- `_app.tsx` is a known exception zone, scoped to one suppression
+- `packages/techradar/src/pages/_app.tsx` is a known exception zone, scoped to one suppression
   comment.
 - Bumping `strictCase` back to `true` later requires explicit fixes in
   `positioner.ts` (`getXYPosition`), `useRadarTooltip.test.ts` (`toJSON`),

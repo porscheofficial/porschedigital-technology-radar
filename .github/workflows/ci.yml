@@ -29,7 +29,9 @@ jobs:
       # `data/data.json` and `data/about.json` are gitignored generated
       # artifacts that `src/lib/data.ts` and the help-and-about page import
       # at module level. Must exist before tsc, vitest, and next build run.
-      - run: pnpm run build:data
+      # `build:data` is a package-local script (not aggregated at the
+      # workspace root) — invoked via `pnpm --filter` per ADR-0027.
+      - run: pnpm --filter @porscheofficial/porschedigital-technology-radar run build:data
       - run: pnpm run lint
       - run: pnpm exec tsc --noEmit
       - run: pnpm run test

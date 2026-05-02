@@ -2,7 +2,9 @@
   "$schema": "https://unpkg.com/knip@6/schema.json",
   "entry": ["scripts/*.ts"],
   "project": ["src/**/*.{ts,tsx}", "bin/**/*.{ts,js}", "scripts/**/*.ts"],
-  "ignoreBinaries": ["osv-scanner", "trufflehog"],
+  "ignore": ["src/components/Icons/index.ts"],
+  "ignoreExportsUsedInFile": true,
+  "ignoreBinaries": ["trufflehog", "biome"],
   "ignoreDependencies": [
     "html-validate",
     "@fontsource/inter",

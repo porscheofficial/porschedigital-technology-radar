@@ -1,3 +1,4 @@
 {
-  ".": "1.2.6"
+  "packages/techradar": "1.2.6",
+  "packages/create-techradar": "0.0.0"
 }

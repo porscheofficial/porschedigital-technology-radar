@@ -45,13 +45,13 @@ The other options were considered and rejected:
 ## Decision
 
 Adopt **pnpm 10.x** as the project's package manager for development
-and CI. Pin the exact version via `package.json`'s `packageManager`
+and CI. Pin the exact version via `packages/techradar/package.json`'s `packageManager`
 field so Corepack auto-installs it and refuses npm/yarn invocations
 in this repo.
 
 ### What changes
 
-- `package.json` gains `"packageManager": "pnpm@10.29.2"` and a
+- `packages/techradar/package.json` gains `"packageManager": "pnpm@10.29.2"` and a
   `pnpm.onlyBuiltDependencies` allowlist (pnpm refuses to run
   postinstall scripts unless explicitly approved — a small security
   win we get for free).
@@ -59,7 +59,7 @@ in this repo.
 - `package-lock.json` is replaced by `pnpm-lock.yaml` (generated via
   `pnpm import` to preserve the resolved versions of the existing
   npm lockfile; no silent dep upgrades on migration day).
-- `.npmrc` switches from `legacy-peer-deps=true` (the npm flag that
+- `packages/techradar/.npmrc` switches from `legacy-peer-deps=true` (the npm flag that
   mutes the jsx-a11y@6.10.2 / eslint@10 peer conflict per ADR-0018)
   to the pnpm equivalents `auto-install-peers=true` and
   `strict-peer-dependencies=false`. The ADR-0018 reference is preserved
@@ -83,7 +83,7 @@ in this repo.
 
 ### What does not change
 
-- `bin/techradar.ts` (the published CLI for downstream consumers)
+- `packages/techradar/bin/techradar.ts` (the published CLI for downstream consumers)
   continues to shell out to `npm install` / `npm run build:data` /
   `npm run build` inside its `.techradar/` shadow build. Downstream
   users of the CLI may have any package manager (or none); npm is
@@ -110,7 +110,7 @@ realpath through the symlink and the patterns would silently stop
 matching — a load-bearing harness regression.
 
 Fix: set `enhancedResolveOptions.symlinks: false` in
-`.dependency-cruiser.cjs`. This tells the resolver to keep the
+`packages/techradar/.dependency-cruiser.cjs`. This tells the resolver to keep the
 symlink path as the resolved path, preserving the existing
 `^node_modules/<pkg>/...` semantics across both npm and pnpm
 layouts. The patterns themselves are unchanged.
@@ -139,7 +139,7 @@ layouts. The patterns themselves are unchanged.
 - **The harness keeps the same gates**: lint, tsc, test, check:arch,
   check:sec, check:quality, check:a11y, build, check:build all run
   via `pnpm run` instead of `npm run`. The Definition of Done in
-  root `AGENTS.md` is updated in lockstep; `docs/HARNESS.md`
+  `packages/techradar/AGENTS.md` is updated in lockstep; `docs/HARNESS.md`
   command references update too (Harness Documentation Sync rule).
 - **`onlyBuiltDependencies` allowlist becomes a small ongoing
   obligation**: when a new dev dep with a postinstall script is
@@ -150,3 +150,14 @@ layouts. The patterns themselves are unchanged.
   cannot be fixed forward, revert this PR. The previous
   `package-lock.json` is recoverable from git history;
   `npm install` reproduces the prior state byte-for-byte.
+
+## Amendment — ADR-0027 (pnpm workspace migration)
+
+After the workspace split (ADR-0027), the pnpm setup is now distributed across two locations:
+
+- `pnpm-lock.yaml` lives at the repo root and is the single workspace lockfile that resolves dependencies for every package in the monorepo. The `--frozen-lockfile` invariant is enforced at this root file.
+- The `packageManager` field that pins the exact pnpm version (so Corepack auto-installs it) lives in `packages/techradar/package.json`. Corepack reads this field from the package whose directory the command is invoked in, but in practice it enforces repo-wide because every contributor enters the repo through the root.
+- The root `package.json` is the monorepo orchestration manifest (private, no published artifact) and delegates to per-package scripts via `pnpm --filter @porscheofficial/porschedigital-technology-radar run <name>`.
+- `.npmrc` moved from the repo root into `packages/techradar/.npmrc`. Workspace-wide pnpm settings that need to apply to every package live at the root via a separate root `.npmrc` if needed.
+
+The original decision — adopt pnpm for the speed and disk-usage win, pin the version via `packageManager`, keep Husky hooks and CI workflow commands working — is unchanged. The migration only redistributed where the configuration lives.

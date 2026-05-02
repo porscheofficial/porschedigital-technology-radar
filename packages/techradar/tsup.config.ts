@@ -3,7 +3,7 @@ import { defineConfig } from "tsup";
 export default defineConfig({
   entry: ["bin/techradar.ts"],
   format: ["cjs"],
-  target: "node18",
+  target: "node22",
   outDir: "dist/bin",
   clean: true,
   splitting: false,

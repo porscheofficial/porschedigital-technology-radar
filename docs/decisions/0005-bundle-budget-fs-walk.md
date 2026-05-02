@@ -19,9 +19,9 @@ under `out/_next/static/`. Their sizes are trivially measurable with `fs.stat`.
 
 ## Decision
 
-Implement `scripts/checkBundleBudget.ts` as a small fs walker over
-`out/_next/static/`. Compare totals and per-chunk sizes against
-`bundle-budget.json` (hand-edited, three keys: `maxTotalJsBytes`,
+Implement `packages/techradar/scripts/checkBundleBudget.ts` as a small fs walker over
+`packages/techradar/out/_next/static/`. Compare totals and per-chunk sizes against
+`packages/techradar/bundle-budget.json` (hand-edited, three keys: `maxTotalJsBytes`,
 `maxTotalCssBytes`, `maxChunkBytes`). Wire as `check:build:budget`, chained
 into `npm run check:build` after the routes and links sensors.
 

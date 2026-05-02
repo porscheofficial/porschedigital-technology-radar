@@ -29,25 +29,25 @@ A survey under `recommended` produced 13 errors across 11 files in four
 shapes:
 
 1. **Build-time regex on trusted input** (5×) — `slow-regex` warnings on
-   patterns in `scripts/*` and `src/lib/*` that parse our own markdown
+   patterns in `packages/techradar/scripts/*` and `packages/techradar/src/lib/*` that parse our own markdown
    at build time. The site is statically exported; these patterns never
    see user input at runtime. ReDoS is not in this threat model.
 2. **Visual jitter** (2×) — `pseudo-random` on `Math.random()` calls in
-   `scripts/positioner.ts` that scatter blip positions inside the radar
+   `packages/techradar/scripts/positioner.ts` that scatter blip positions inside the radar
    SVG. Not security-sensitive.
 3. **Domain string aliases** (1×) — `redundant-type-aliases` on
-   `type Release = string` in `src/lib/types.ts`. The alias is
+   `type Release = string` in `packages/techradar/src/lib/types.ts`. The alias is
    intentional self-documentation across the data layer.
 4. **Real code smells** (5×) — nested ternaries in JSX
-   (`ItemDetail.tsx`, `Teams.tsx`), nested functions in a tooltip
-   cleanup pattern (`useRadarTooltip.ts`), one cognitive-complexity
-   overflow in `parseDirectory` (`scripts/buildData.ts`), one
-   `concise-regex` (`scripts/checkConfigReadmeSync.ts`).
+   (`packages/techradar/src/components/ItemDetail/ItemDetail.tsx`, `packages/techradar/src/components/Teams/Teams.tsx`), nested functions in a tooltip
+   cleanup pattern (`packages/techradar/src/hooks/useRadarTooltip.ts`), one cognitive-complexity
+   overflow in `parseDirectory` (`packages/techradar/scripts/buildData.ts`), one
+   `concise-regex` (`packages/techradar/scripts/checkConfigReadmeSync.ts`).
 
 ## Decision
 
 Add `eslint-plugin-sonarjs` as a devDependency and run it through a
-**dedicated flat config** (`sonar.eslint.config.mjs`) so the sensor
+**dedicated flat config** (`packages/techradar/sonar.eslint.config.mjs`) so the sensor
 reports independently from `check:arch:eslint`. The architectural arm
 stays surgical (bans for `as any`, ts-suppression directives,
 `dangerouslySetInnerHTML`, `assetUrl()` shape); the clean-code arm owns
@@ -76,7 +76,7 @@ Real-smell triage:
 
 To prevent the disable directives from breaking `check:arch:eslint`
 (which doesn't enable sonarjs rules and would otherwise see them as
-"unused"), `eslint.config.mjs` loads the sonarjs plugin without
+"unused"), `packages/techradar/eslint.config.mjs` loads the sonarjs plugin without
 enabling rules and sets `linterOptions.reportUnusedDisableDirectives:
 "off"`.
 

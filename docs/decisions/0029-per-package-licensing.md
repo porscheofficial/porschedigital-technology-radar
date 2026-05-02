@@ -49,7 +49,7 @@ Adopt **per-package licensing**:
   per-package license files for the actual published packages, so the split
   is discoverable from the root.
 
-The `check:sec:licenses` sensor (ADR-0013, amended by ADR-0027 and again by ADR-0013 Amendment 2) needs no changes: its `--failOn` deny-list (`GPL;AGPL;LGPL;SSPL;BUSL;CC-BY-NC`) covers neither MIT nor Apache-2.0, so both workspace packages' declared licenses pass without any `--excludePackages` flag.
+The `check:sec:licenses` sensor (ADR-0013, amended by ADR-0027 and again by ADR-0013 Amendment 2) needs no license-policy changes: its `--failOn` deny-list (`GPL;AGPL;LGPL;SSPL;BUSL;CC-BY-NC`) covers neither MIT nor Apache-2.0, so both workspace packages' declared licenses pass. The aggregator now walks both `packages/techradar` and `packages/create-techradar` so the scaffolder's runtime dependency tree is covered as soon as it gains any.
 
 ## Consequences
 

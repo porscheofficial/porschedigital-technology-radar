@@ -93,9 +93,15 @@ The `--excludePackages` self-listing was removed from the actual `check:sec:lice
 
 The original concern in the Decision section ("the project's own Apache-2.0 listing would conflict with itself in some configurations") was defensive paranoia that did not reflect actual tool behaviour with a well-formed `package.json#license` field. The version-literal drift hazard captured in the Consequences section above is therefore eliminated — there is no longer a literal version string in the script that has to track `packages/techradar/package.json#version`.
 
-The deny-list, the `--production` scope, and the `--start packages/techradar` rooting are all unchanged. The amended script:
+The deny-list, the `--production` scope, and the per-package `--start` rooting are all unchanged in policy. The amended layout splits the check into one walk per published package so that **both** workspace packages are covered (originally only `packages/techradar` was walked):
 
 ```
-license-checker-rseidelsohn --start packages/techradar --production \
-  --failOn 'GPL;AGPL;LGPL;SSPL;BUSL;CC-BY-NC'
+# aggregator
+check:sec:licenses           = check:sec:licenses:techradar && check:sec:licenses:scaffolder
+check:sec:licenses:techradar = license-checker-rseidelsohn --start packages/techradar \
+                                 --production --failOn 'GPL;AGPL;LGPL;SSPL;BUSL;CC-BY-NC'
+check:sec:licenses:scaffolder = license-checker-rseidelsohn --start packages/create-techradar \
+                                 --production --failOn 'GPL;AGPL;LGPL;SSPL;BUSL;CC-BY-NC'
 ```
+
+The deny-list is workspace-wide policy ("we never ship copyleft, regardless of which package") and is therefore duplicated literally in both per-package scripts rather than pushed into each package's own `package.json` — the policy lives once at the workspace root, applied identically to every published package. Each new published package needs its own `check:sec:licenses:<name>` aggregator entry.

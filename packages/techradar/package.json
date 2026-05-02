@@ -81,6 +81,7 @@
     "check:a11y": "pnpm run check:a11y:source && pnpm run check:a11y:axe",
     "check:a11y:source": "eslint --config a11y.eslint.config.mjs src",
     "check:a11y:axe": "tsx scripts/checkA11y.ts",
+    "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",

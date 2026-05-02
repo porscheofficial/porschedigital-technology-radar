@@ -120,7 +120,7 @@ pnpm run test:coverage  # Vitest with coverage
 
 ```bash
 pnpm run lint           # 0 errors, 0 warnings
-npx tsc --noEmit       # 0 errors
+npx tsc --noEmit       # 0 errors (or run `pnpm run typecheck` from the repo root to fan out across all packages)
 pnpm run test           # All pass
 pnpm run build          # Static export succeeds
 ```
@@ -130,7 +130,7 @@ pnpm run build          # Static export succeeds
 **Every code change is incomplete until ALL of the following pass:**
 
 1. `pnpm run lint` — 0 errors, 0 warnings
-2. `npx tsc --noEmit` — 0 type errors
+2. `npx tsc --noEmit` — 0 type errors (or `pnpm run typecheck` from the repo root)
 3. `pnpm run test` — all pass, no skipped tests (includes architecture invariants)
 4. `pnpm run check:arch` — architecture invariants hold (see "Steering Harness" below)
 5. `pnpm run check:sec` — security invariants hold (see "Steering Harness" below). Runs from the repo root: `:sanitize` delegates into this package, `:deps`/`:secrets`/`:licenses` are root-only workspace scans.

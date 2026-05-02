@@ -33,7 +33,7 @@ jobs:
       # workspace root) — invoked via `pnpm --filter` per ADR-0027.
       - run: pnpm --filter @porscheofficial/porschedigital-technology-radar run build:data
       - run: pnpm run lint
-      - run: pnpm exec tsc --noEmit
+      - run: pnpm run typecheck
       - run: pnpm run test
       - run: pnpm run check:arch
       - run: pnpm run build

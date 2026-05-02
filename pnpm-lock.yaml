@@ -32,6 +32,9 @@ importers:
 
   packages/create-techradar:
     devDependencies:
+      '@types/node':
+        specifier: ^25.6.0
+        version: 25.6.0
       tsup:
         specifier: ^8.5.1
         version: 8.5.1(jiti@2.6.1)(postcss@8.5.12)(tsx@4.19.3)(typescript@5.8.3)(yaml@2.8.3)

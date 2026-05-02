@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useMemo } from "react";
 
+import { exportRadarImage } from "@/lib/exportRadarImage";
 import { assetUrl } from "@/lib/utils";
 
 export type SpotlightAction = {
@@ -15,9 +16,10 @@ export function useSpotlightActions(
   onAfterPerform: () => void,
 ): SpotlightAction[] {
   const router = useRouter();
+  const isStartPage = router.pathname === "/";
 
-  return useMemo<SpotlightAction[]>(
-    () => [
+  return useMemo<SpotlightAction[]>(() => {
+    const actions: SpotlightAction[] = [
       {
         id: "nav-home",
         label: "Go to Home",
@@ -62,7 +64,19 @@ export function useSpotlightActions(
           onAfterPerform();
         },
       },
-    ],
-    [router, onAfterPerform],
-  );
+    ];
+    if (isStartPage) {
+      actions.push({
+        id: "export-png",
+        label: "Export radar as PNG",
+        hint: "Download the current radar view as an image",
+        keywords: ["export", "png", "image", "download", "save", "screenshot"],
+        perform: () => {
+          exportRadarImage().catch(() => {});
+          onAfterPerform();
+        },
+      });
+    }
+    return actions;
+  }, [router, onAfterPerform, isStartPage]);
 }

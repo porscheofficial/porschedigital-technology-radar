@@ -27,7 +27,7 @@ Read the nearest package `AGENTS.md` before editing package code:
 
 ```bash
 pnpm run lint
-npx tsc --noEmit
+pnpm run typecheck
 pnpm run test
 pnpm run check:arch
 pnpm run check:sec
@@ -66,8 +66,12 @@ is intentional and tracks ownership:
   git-history and dependency-tree scans that would be wrong to run
   per-package).
 - **Package-delegated (via `pnpm -r --if-present run …`)**: `test`,
-  `build`, `check:arch`, `check:quality`, `check:a11y`, `check:build`,
-  and the package-local `check:sec:sanitize` arm.
+  `typecheck`, `build`, `check:arch`, `check:quality`, `check:a11y`,
+  `check:build`, and the package-local `check:sec:sanitize` arm.
+  `typecheck` runs each package's own `tsc --noEmit` against its own
+  `tsconfig.json` — TypeScript is per-package by design (each tsconfig
+  declares its own `target`/`lib`/`jsx`), so there is no workspace-root
+  `tsconfig.json`.
 - **Hybrid**: `check:sec` runs `pnpm -r --if-present run check:sec` first
   (delegates `:sanitize` into `packages/techradar/`), then runs the three
   root-only `check:sec:{deps,secrets,licenses}` scans.

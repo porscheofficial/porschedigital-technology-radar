@@ -10,6 +10,7 @@
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
     "test": "pnpm -r --if-present run test",
+    "typecheck": "pnpm -r --if-present run typecheck",
     "build": "pnpm -r --if-present run build",
     "check:arch": "pnpm -r --if-present run check:arch",
     "check:sec": "pnpm -r --if-present run check:sec && pnpm run check:sec:deps && pnpm run check:sec:secrets && pnpm run check:sec:licenses",

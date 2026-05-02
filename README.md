@@ -13,7 +13,7 @@ Run cross-cutting checks from the repo root:
 
 ```bash
 pnpm run lint
-npx tsc --noEmit
+pnpm run typecheck
 pnpm run test
 pnpm run check:arch
 pnpm run check:sec

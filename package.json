@@ -15,7 +15,7 @@
     "check:sec": "pnpm -r --if-present run check:sec && pnpm run check:sec:deps && pnpm run check:sec:secrets && pnpm run check:sec:licenses",
     "check:sec:deps": "osv-scanner --lockfile=pnpm-lock.yaml",
     "check:sec:secrets": "trufflehog git file://. --no-update --fail --results=verified,unknown",
-    "check:sec:licenses": "license-checker-rseidelsohn --start packages/techradar --production --excludePackages '@porscheofficial/porschedigital-technology-radar@1.2.6;@porscheofficial/create-techradar@0.0.0' --failOn 'GPL;AGPL;LGPL;SSPL;BUSL;CC-BY-NC'",
+    "check:sec:licenses": "license-checker-rseidelsohn --start packages/techradar --production --failOn 'GPL;AGPL;LGPL;SSPL;BUSL;CC-BY-NC'",
     "check:quality": "pnpm -r --if-present run check:quality",
     "check:a11y": "pnpm -r --if-present run check:a11y",
     "check:build": "pnpm -r --if-present run check:build",

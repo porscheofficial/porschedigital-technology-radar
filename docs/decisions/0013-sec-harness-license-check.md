@@ -84,3 +84,18 @@ Three deliberate choices:
 After the workspace split (ADR-0027), the framework package version that this sensor excludes from its own license walk lives in `packages/techradar/package.json#version`, not the repo-root `package.json`. The example command in this ADR shows a specific version literal (`@1.0.4`) for illustration; the actual `--excludePackages` flag in `packages/techradar/package.json#scripts.check:sec:licenses` must always match the current package version. The aggregator script at the repo root invokes the license check with `--start packages/techradar` so the walk is rooted at the framework package's `node_modules` graph, not the workspace root.
 
 The decision itself — production-only, deny-list of copyleft + source-availability + non-commercial families, single-package self-exclusion — is unchanged.
+
+## Amendment 2 — `--excludePackages` flag removed
+
+- Date: 2026-05-02
+
+The `--excludePackages` self-listing was removed from the actual `check:sec:licenses` script. Empirical verification on the post-ADR-0027 workspace showed the flag was unnecessary: with both workspace packages declaring valid SPDX `license` fields (`Apache-2.0` for `packages/techradar`, `MIT` for `packages/create-techradar` per ADR-0029), `license-checker-rseidelsohn` reads those declarations directly and the `--failOn 'GPL;AGPL;LGPL;SSPL;BUSL;CC-BY-NC'` deny-list does not match either license. Running the sensor without `--excludePackages` exits 0 cleanly.
+
+The original concern in the Decision section ("the project's own Apache-2.0 listing would conflict with itself in some configurations") was defensive paranoia that did not reflect actual tool behaviour with a well-formed `package.json#license` field. The version-literal drift hazard captured in the Consequences section above is therefore eliminated — there is no longer a literal version string in the script that has to track `packages/techradar/package.json#version`.
+
+The deny-list, the `--production` scope, and the `--start packages/techradar` rooting are all unchanged. The amended script:
+
+```
+license-checker-rseidelsohn --start packages/techradar --production \
+  --failOn 'GPL;AGPL;LGPL;SSPL;BUSL;CC-BY-NC'
+```

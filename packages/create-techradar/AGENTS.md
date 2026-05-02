@@ -4,7 +4,7 @@ This package ships `@porscheofficial/create-techradar`, the one-shot bootstrappe
 
 ## Scope
 
-- Keep this package tiny and dependency-light: a single runtime dependency (`citty`) and Node built-ins only.
+- Keep this package tiny and dependency-light: two runtime dependencies (`citty` for the CLI surface, `consola` for logging — both already used by the framework's `techradar` bin) and Node built-ins only.
 - This package does **not** own template content. The framework's `techradar init` subcommand owns the starter files; the scaffolder just orchestrates `<pm> install` → `<pm> exec techradar init` → `git init`.
 - See `docs/decisions/0030-create-techradar-scaffolder-design.md` (workspace root) for the design contract.
 
@@ -17,7 +17,6 @@ src/registry.ts           # npm registry lookup (https + JSON parse)
 src/packageManager.ts     # detect pnpm/yarn/bun/npm + emit install/exec commands
 src/scaffold.ts           # target dir checks + package.json + README.md writers
 src/runners.ts            # spawnSync wrappers for install / techradar init / git
-src/logger.ts             # tiny stdout/stderr facade
 src/errors.ts             # ScaffoldError (message + actionable fix)
 src/*.test.ts             # node:test unit suites
 ```

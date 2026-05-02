@@ -1,5 +1,30 @@
 const path = require("node:path");
+const fs = require("node:fs");
 const config = require("./data/config.json");
+
+// Monorepo-aware Turbopack root resolution (Next.js 16 + pnpm workspace).
+//
+// Next 16's hot-reloader computes `relative(turbopackRoot, projectPath)` and
+// falls back to "." when the result is empty. Setting `turbopack.root` to
+// `__dirname` makes that fallback fire, which the Rust layer then misreads as
+// a literal subdirectory (it walks into `src/app` and fails to resolve
+// `next/package.json`). See vercel/next.js#90307 and #92540.
+//
+// Fix: when this package is being built INSIDE the workspace (i.e. a
+// `pnpm-workspace.yaml` exists two levels up), point `turbopack.root` AND
+// `outputFileTracingRoot` at the workspace root so the relative path becomes
+// non-empty (`packages/techradar`) and Turbopack can find pnpm-hoisted
+// dependencies via the root `node_modules`.
+//
+// When this package runs as a shadow build inside a CONSUMER's `.techradar/`
+// directory (no `pnpm-workspace.yaml` upstream), keep both values pinned to
+// `__dirname` to preserve the ADR-0023 resolution-root fence.
+const workspaceRoot = path.resolve(__dirname, "../..");
+const isMonorepoContext = fs.existsSync(
+  path.join(workspaceRoot, "pnpm-workspace.yaml"),
+);
+const turbopackRoot = isMonorepoContext ? workspaceRoot : __dirname;
+const tracingRoot = isMonorepoContext ? workspaceRoot : __dirname;
 const envBasePath = process.env.NEXT_PUBLIC_BASE_PATH;
 const basePath =
   envBasePath != null
@@ -31,13 +56,13 @@ const nextConfig = {
   output: "export",
   trailingSlash: true,
   reactStrictMode: true,
-  outputFileTracingRoot: __dirname,
+  outputFileTracingRoot: tracingRoot,
   allowedDevOrigins: ["**.localhost"],
   sassOptions: {
     loadPaths: [path.join(__dirname, "node_modules")],
   },
   turbopack: {
-    root: __dirname,
+    root: turbopackRoot,
   },
   webpack: (cfg) => {
     cfg.resolve = cfg.resolve || {};

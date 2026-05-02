@@ -9,15 +9,21 @@
 // filename prefix, so renaming the file forces a heading update (and vice
 // versa).
 import { readdirSync, readFileSync } from "node:fs";
-import { isAbsolute, join } from "node:path";
+import { dirname, isAbsolute, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { consola } from "consola";
 
 const argDir = process.argv[2];
 const resolveArgDir = (dir: string): string =>
   isAbsolute(dir) ? dir : join(process.cwd(), dir);
+// Default fallback resolves relative to this script (packages/techradar/scripts/),
+// not process.cwd(), so the sensor works regardless of how it is invoked after
+// the workspace migration (ADR-0027). The package.json wiring still passes
+// "../../docs/decisions" explicitly; the fallback only matters for ad-hoc runs.
+const scriptDir = dirname(fileURLToPath(import.meta.url));
 const adrDir = argDir
   ? resolveArgDir(argDir)
-  : join(process.cwd(), "docs/decisions");
+  : resolve(scriptDir, "../../../docs/decisions");
 const filenameRe = /^(\d{4})-[\w-]+\.md$/;
 const headingRe = /^#\s*ADR-(\d{4})\b/m;
 

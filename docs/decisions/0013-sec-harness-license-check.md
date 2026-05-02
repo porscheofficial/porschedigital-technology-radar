@@ -72,9 +72,15 @@ Three deliberate choices:
   pure JS (no Go binary), so it works in every dev environment
   without `brew install`.
 - The `--excludePackages` self-listing is brittle to version bumps.
-  When `package.json`'s `version` changes, the exclusion string must
+  When `packages/techradar/package.json`'s `version` changes, the exclusion string must
   follow. (Captured in code review checklist; trivial to spot when
   the sensor flags the project itself.)
 - Adding a new dependency now has a license dimension. If a
   prospective dep is GPL/AGPL/LGPL/SSPL/BUSL, the sensor fails fast
   before it merges.
+
+## Amendment — ADR-0027 (pnpm workspace migration)
+
+After the workspace split (ADR-0027), the framework package version that this sensor excludes from its own license walk lives in `packages/techradar/package.json#version`, not the repo-root `package.json`. The example command in this ADR shows a specific version literal (`@1.0.4`) for illustration; the actual `--excludePackages` flag in `packages/techradar/package.json#scripts.check:sec:licenses` must always match the current package version. The aggregator script at the repo root invokes the license check with `--start packages/techradar` so the walk is rooted at the framework package's `node_modules` graph, not the workspace root.
+
+The decision itself — production-only, deny-list of copyleft + source-availability + non-commercial families, single-package self-exclusion — is unchanged.

@@ -38,13 +38,18 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - run: pnpm run build:data
+      # `build:data` and `build` are package-local scripts in the techradar
+      # package. The workspace root aggregates `build` via `pnpm -r` but
+      # `build:data` must be invoked with a filter. See ADR-0027.
+      - run: pnpm --filter @porscheofficial/porschedigital-technology-radar run build:data
 
       - run: pnpm run build
 
       - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
         with:
-          path: out
+          # Static export lives in `packages/techradar/out/` after the
+          # workspace migration (ADR-0027).
+          path: packages/techradar/out
 
   deploy:
     needs: build

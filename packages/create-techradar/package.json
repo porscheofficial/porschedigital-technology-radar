@@ -1,0 +1,51 @@
+{
+  "name": "@porscheofficial/create-techradar",
+  "version": "0.0.0",
+  "description": "Scaffold a new Porsche Digital Technology Radar in seconds.",
+  "license": "MIT",
+  "author": "Porsche Digital",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/porscheofficial/porschedigital-technology-radar.git",
+    "directory": "packages/create-techradar"
+  },
+  "bugs": {
+    "url": "https://github.com/porscheofficial/porschedigital-technology-radar/issues"
+  },
+  "homepage": "https://github.com/porscheofficial/porschedigital-technology-radar/tree/main/packages/create-techradar",
+  "keywords": [
+    "create-techradar",
+    "techradar",
+    "tech-radar",
+    "technology-radar",
+    "scaffolder",
+    "scaffold",
+    "cli",
+    "porsche",
+    "porsche-digital"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "type": "module",
+  "bin": {
+    "create-techradar": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "scripts": {
+    "build": "tsup",
+    "test": "node --test"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.1",
+    "typescript": "^5"
+  }
+}

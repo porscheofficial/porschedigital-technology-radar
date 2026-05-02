@@ -34,13 +34,13 @@ break in that environment.
 
 **Enforced by the harness:**
 
-- `.dependency-cruiser.cjs` → `no-next-server-apis` bans the server-only
+- `packages/techradar/.dependency-cruiser.cjs` → `no-next-server-apis` bans the server-only
   module imports.
-- `eslint.config.mjs` → `no-restricted-syntax` rejects bare absolute
+- `packages/techradar/eslint.config.mjs` → `no-restricted-syntax` rejects bare absolute
   `href`/`src` literals and template literals.
-- `src/__tests__/architecture/architecture.test.ts` → `no-pages-api`,
+- `packages/techradar/src/__tests__/architecture/architecture.test.ts` → `no-pages-api`,
   `no-middleware` block forbidden directories/files.
-- `scripts/checkBuildOutput.ts` (`check:build:routes`) asserts every
+- `packages/techradar/scripts/checkBuildOutput.ts` (`check:build:routes`) asserts every
   expected route file exists in `out/` after build.
 - `linkinator` (`check:build:links`) crawls the built site and fails on
   broken internal links.

@@ -13,8 +13,8 @@ hurt a static, content-driven site:
    bundle to every visitor; a known-CVE transitive dep is a real exposure.
 2. **Committed secrets.** Any token leaked to git history is public the moment
    `pdig` is pushed (the repo is open source).
-3. **XSS in user-supplied markdown.** `data/radar/**/*.md` is converted to HTML
-   at build time with the unified/rehype pipeline in `scripts/buildData.ts`.
+3. **XSS in user-supplied markdown.** `packages/techradar/data/radar/**/*.md` is converted to HTML
+   at build time with the unified/rehype pipeline in `packages/techradar/scripts/buildData.ts`.
    The pipeline currently calls `remarkRehype` without `allowDangerousHtml`, so
    raw HTML is dropped — but that protection is one keystroke away from being
    reverted, and there is no sensor that would catch the regression.
@@ -42,15 +42,15 @@ non-gating advisory workflow.
 | `check:sec:deps`     | `osv-scanner --lockfile=…`          | known CVEs in npm graph                       |
 | `check:sec:secrets`  | `gitleaks detect --no-git -s .`     | committed secrets / API tokens                |
 
-`scripts/checkSanitize.ts` parses `scripts/buildData.ts` and asserts that
+`packages/techradar/scripts/checkSanitize.ts` parses `packages/techradar/scripts/buildData.ts` and asserts that
 `rehypeSanitize` is imported, called immediately after `remarkRehype`, and
 that `allowDangerousHtml: true` appears nowhere in the file. A companion
-Vitest suite (`scripts/__tests__/sanitize.test.ts`) feeds XSS payloads —
+Vitest suite (`packages/techradar/scripts/__tests__/sanitize.test.ts`) feeds XSS payloads —
 `<script>`, `<iframe>`, inline event handlers, `javascript:` URIs in both
 markdown links and autolinks — through the real pipeline and asserts the
 executable surface is stripped.
 
-`rehype-sanitize` is wired into `createProcessor` in `scripts/buildData.ts`
+`rehype-sanitize` is wired into `createProcessor` in `packages/techradar/scripts/buildData.ts`
 as defense-in-depth: even if a future change flips `allowDangerousHtml`,
 sanitize will still strip dangerous markup. The two-layer setup
 (no-`allowDangerousHtml` + sanitize) is intentional and the sensor enforces
@@ -72,8 +72,7 @@ platform-specific binary downloads to every `npm ci`. Instead:
   `gitleaks/gitleaks-action@v2`).
 - **Local devs** install via `brew install osv-scanner gitleaks` (one-time).
   Without them installed, `npm run check:sec:deps` / `:secrets` exits with
-  `command not found` — that is the intended UX, documented in the root
-  `AGENTS.md`.
+  `command not found` — that is the intended UX, documented in `packages/techradar/AGENTS.md`.
 
 ## Consequences
 

@@ -1,3 +1,10 @@
+This LICENSE applies to the workspace tooling, documentation, and the
+`@porscheofficial/porschedigital-technology-radar` framework package
+(`packages/techradar/`), under Apache License 2.0 (full text below).
+The `@porscheofficial/create-techradar` scaffolder package
+(`packages/create-techradar/`) is licensed separately under MIT — see
+`packages/create-techradar/LICENSE`.
+
 The license applies to the generator code and not the articles in the "radar" folder. (Read also the README.md in this folder)
 
 

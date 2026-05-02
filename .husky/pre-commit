@@ -1,2 +1,2 @@
 pnpm exec lint-staged
-pnpm run precommit:secrets
+pnpm --filter @porscheofficial/porschedigital-technology-radar run precommit:secrets

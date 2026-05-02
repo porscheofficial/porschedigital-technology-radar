@@ -7,9 +7,9 @@
 
 Next.js ships two routers:
 
-- **Pages Router** (`src/pages/`) — file-based routing, `getStaticProps` /
+- **Pages Router** (`packages/techradar/src/pages/`) — file-based routing, `getStaticProps` /
   `getStaticPaths`, fully static export via `output: "export"`.
-- **App Router** (`src/app/`) — RSC-first, Server Components, server-only APIs
+- **App Router** (`packages/techradar/src/app/`) — RSC-first, Server Components, server-only APIs
   (`next/headers`, `next/cache`, `next/server`, `server-only`), partial
   pre-rendering, edge runtime hooks.
 
@@ -25,27 +25,27 @@ routers in the same app produces routing ambiguity and inflates the bundle.
 
 The Pages Router is the **only** router for runtime page rendering.
 
-`src/app/` exists as a **deliberate, single-file exception** holding only
-`src/app/sitemap.ts`. The App Router is required there because
+`packages/techradar/src/app/` exists as a **deliberate, single-file exception** holding only
+`packages/techradar/src/app/sitemap.ts`. The App Router is required there because
 `MetadataRoute.Sitemap` lives in the App Router namespace; it is invoked at
 build time and produces a static `sitemap.xml`. No other file is allowed in
-`src/app/`.
+`packages/techradar/src/app/`.
 
 ## Consequences
 
 **Enforced by the harness:**
 
-- `.dependency-cruiser.cjs` → `app-router-only-sitemap` rule rejects any
-  import path under `src/app/` other than `sitemap.ts` (and tests).
-- `src/__tests__/architecture/architecture.test.ts` → `app-router-only-sitemap`
-  fs-test rejects any non-test, non-AGENTS file in `src/app/` other than
+- `packages/techradar/.dependency-cruiser.cjs` → `app-router-only-sitemap` rule rejects any
+  import path under `packages/techradar/src/app/` other than `sitemap.ts` (and tests).
+- `packages/techradar/src/__tests__/architecture/architecture.test.ts` → `app-router-only-sitemap`
+  fs-test rejects any non-test, non-AGENTS file in `packages/techradar/src/app/` other than
   `sitemap.ts`.
-- `src/pages/AGENTS.md` documents the static-export contract (no
+- `packages/techradar/src/pages/AGENTS.md` documents the static-export contract (no
   `getServerSideProps`, `getStaticPaths` with `fallback: false`).
 
 **Implications for contributors:**
 
-- New pages go in `src/pages/`. Period.
+- New pages go in `packages/techradar/src/pages/`. Period.
 - Server-only Next APIs are banned (see ADR-0002 + `no-next-server-apis`).
 - If a future feature genuinely needs the App Router, supersede this ADR
   rather than silently widening the `src/app/` allowlist.

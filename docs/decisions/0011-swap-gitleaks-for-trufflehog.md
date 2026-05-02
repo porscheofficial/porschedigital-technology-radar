@@ -55,7 +55,7 @@ hits (definite live credentials) plus unknowns (detectors with no
 verification path). False positives from "unverified" matches against
 example/dummy keys are excluded.
 
-`knip.json` `ignoreBinaries` updated: `gitleaks` → `trufflehog`. ADR-0006
+`packages/techradar/knip.json` `ignoreBinaries` updated: `gitleaks` → `trufflehog`. ADR-0006
 flagged the same pattern when `osv-scanner` and `gitleaks` were added.
 
 ### Rejected alternatives
@@ -84,7 +84,7 @@ flagged the same pattern when `osv-scanner` and `gitleaks` were added.
   audit, GitHub native secret scanning (which is enabled on public repos
   by default) is the complementary signal.
 - The invariant table in `docs/HARNESS.md` (#15) and the security section
-  of the root `AGENTS.md` reference TruffleHog instead of gitleaks; the
+  of `packages/techradar/AGENTS.md` reference TruffleHog instead of gitleaks; the
   two-layer defense framing for #13 (sanitize) is unchanged.
 
 ## Update — 2026-04-21: Worktree caveat and pre-commit gate

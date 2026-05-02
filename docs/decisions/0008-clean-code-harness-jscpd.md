@@ -35,9 +35,9 @@ its duplication is irrelevant.
 Wire jscpd as `npm run check:quality:jscpd` under the existing
 `check:quality` umbrella (added in ADR-0007).
 
-Configuration in `.jscpd.json`:
+Configuration in `packages/techradar/.jscpd.json`:
 
-- `path: ["src", "scripts"]` — scope to source, never the repo root (the
+- `path: ["packages/techradar/src", "packages/techradar/scripts"]` — scope to source, never the repo root (the
   default scans `node_modules`, `out/`, etc., producing noise and 30+s
   runs).
 - `minTokens: 70` — below this threshold matches are too short to be
@@ -47,9 +47,9 @@ Configuration in `.jscpd.json`:
   of the mirror clones. The 3% ceiling allows the documented mirror to
   stand and trips on any new significant duplication.
 - `ignore`: `**/__tests__/**`, `**/*.test.*`, `**/*.module.scss`,
-  `src/components/Icons/**`, `**/*.snap`.
+  `packages/techradar/src/components/Icons/**`, `**/*.snap`.
 - `gitignore: true` — respect `.gitignore` so generated `out/` and
-  `data/data.json` never enter the scan.
+  `packages/techradar/data/data.json` never enter the scan.
 
 Rejected alternatives:
 

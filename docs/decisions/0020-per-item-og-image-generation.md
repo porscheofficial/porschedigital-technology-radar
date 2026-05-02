@@ -26,8 +26,8 @@ Generate Open Graph PNGs at build time using `satori` to render SVG markup and
 
 Two card modes are emitted:
 
-1. A shared default card for non-item pages at `public/og/default.png`.
-2. A per-item card at `public/og/<quadrant>/<id>.png` for each radar item.
+1. A shared default card for non-item pages at `packages/techradar/public/og/default.png`.
+2. A per-item card at `packages/techradar/public/og/<quadrant>/<id>.png` for each radar item.
 
 The per-item template includes:
 
@@ -38,13 +38,13 @@ The per-item template includes:
 - a ring pill badge,
 - a Porsche Digital Tech Radar footer label.
 
-The generator reads from `data/data.json`, so the build order becomes:
+The generator reads from `packages/techradar/data/data.json`, so the build order becomes:
 
 1. `build:data`
 2. `build:og`
 3. `next build`
 
-To keep builds fast, the generator maintains `public/og/.og-cache.json`, keyed
+To keep builds fast, the generator maintains `packages/techradar/public/og/.og-cache.json`, keyed
 by a SHA-256 hash of the fields that affect rendering plus a `templateVersion`
 constant. If the hash is unchanged and the PNG already exists, generation is
 skipped.
@@ -66,7 +66,7 @@ otherwise the site derives a fallback from stripped item body HTML.
   count), but unchanged images are skipped by the cache.
 - The repo gains build-only dependencies for image rendering and font loading:
   `satori`, `@resvg/resvg-js`, and `@fontsource/inter`.
-- Generated PNGs and cache artifacts live under `public/og/` and are gitignored,
+- Generated PNGs and cache artifacts live under `packages/techradar/public/og/` and are gitignored,
   so the repository does not bloat with hundreds of committed binary files.
 - The implementation stays compatible with static export: no runtime server,
   no App Router expansion, and no client-side fetching.

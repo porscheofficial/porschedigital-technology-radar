@@ -19,7 +19,7 @@ Error occurred prerendering page "/[quadrant]/[id]: /<…>/<…>"
 Releases 1.2.1, 1.2.2 (with the pin) and 1.2.3 (with the fence) all kept
 failing in `cs-technology-radar`. The fence was necessary but not sufficient,
 and the version pin protected against a regression that didn't exist. The
-real cause sits one layer deeper, inside our own `bin/techradar.ts`.
+real cause sits one layer deeper, inside our own `packages/techradar/bin/techradar.ts`.
 
 ### Real reproduction & isolation
 
@@ -39,7 +39,7 @@ directory:
             └── next -> ../next/dist/bin/next        ← *relative* symlink
 ```
 
-When `techradar build` runs, `ensureBuildDir()` in `bin/techradar.ts` did:
+When `techradar build` runs, `ensureBuildDir()` in `packages/techradar/bin/techradar.ts` did:
 
 ```js
 cpSync(SOURCE_DIR, BUILDER_DIR, { recursive: true });
@@ -87,7 +87,7 @@ This perfectly explains the observed symptoms:
 
 ## Decision
 
-In `bin/techradar.ts`, exclude any nested `node_modules/` when copying the
+In `packages/techradar/bin/techradar.ts`, exclude any nested `node_modules/` when copying the
 installed package into `.techradar/`:
 
 ```ts
@@ -112,7 +112,7 @@ are copying" and won't false-match on consumer file names.
 ### Defense-in-depth: ADR-0023 stays in place
 
 The `outputFileTracingRoot`, `turbopack.root`, and `webpack.resolve.alias`
-fences from ADR-0023 are kept in `next.config.js`. They are now redundant
+fences from ADR-0023 are kept in `packages/techradar/next.config.js`. They are now redundant
 under normal install paths — but they cost nothing at runtime and would
 catch a future regression where some other code path leaks an outside
 module into the build. Removing them would be a separate decision.

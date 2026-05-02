@@ -20,7 +20,7 @@ references in source:
 - GitHub Actions workflows (`ci.yml`, `deploy.yml`, `release-please.yml`,
   `scorecard.yml`, `security.yml`, `codeql.yml`) — trigger branch updated.
 - `release-please.yml` `target-branch` — updated to `main`.
-- `data/config.default.json` `editUrl` — `/blob/pdig/` → `/blob/main/`.
+- `packages/techradar/data/config.default.json` `editUrl` — `/blob/pdig/` → `/blob/main/`.
 - `README.md` badge URLs — `?branch=pdig` → `?branch=main`.
 - `SECURITY.md` — supported branch reference updated.
 - `AGENTS.md` — release process documentation updated.

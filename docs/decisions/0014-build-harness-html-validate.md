@@ -7,7 +7,7 @@
 
 The site is a 100% static export (ADR-0002). Every page in `out/` is
 HTML rendered ahead of time by Next.js, populated with content from
-`data/data.json` and `data/about.md` via React + Porsche Design
+`packages/techradar/data/data.json` and `packages/techradar/data/about.md` via React + Porsche Design
 System (PDS) components. Three classes of regression are invisible
 to the existing build sensors (`check:build:routes`,
 `check:build:links`, `check:build:budget`):
@@ -38,15 +38,15 @@ deterministic validator (no headless browser, no network).
 
 Two artifacts:
 
-- **`scripts/checkHtmlValidate.ts`** — sensor wrapper that asserts
+- **`packages/techradar/scripts/checkHtmlValidate.ts`** — sensor wrapper that asserts
   `out/` exists (mirrors the pattern in
-  `scripts/checkBundleBudget.ts`), then `spawnSync`'s the
-  `html-validate` CLI against `out/**/*.html`. Uses `spawnSync` from
+  `packages/techradar/scripts/checkBundleBudget.ts`), then `spawnSync`'s the
+  `html-validate` CLI against `packages/techradar/out/**/*.html`. Uses `spawnSync` from
   `node:child_process` rather than `execa` because execa 9 fails on
   Node 25 + tsx with `ERR_PACKAGE_PATH_NOT_EXPORTED` from
   `npm-run-path → unicorn-magic`. (Future sensor scripts should
   prefer `node:child_process` for the same reason.)
-- **`.htmlvalidate.json`** — extends `html-validate:recommended`
+- **`packages/techradar/.htmlvalidate.json`** — extends `html-validate:recommended`
   with a curated set of disabled rules. The disables fall in three
   buckets:
   - **Next.js / React-emitted HTML** that html-validate considers

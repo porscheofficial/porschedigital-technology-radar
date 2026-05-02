@@ -1,6 +1,8 @@
 # Harness Engineering — Worked Example
 
-> **Keep in sync.** This file is a teaching artifact built from the real harness in this repo. Any change to a sensor, a rule, an `AGENTS.md`, or a `pnpm run check:*` script MUST be reflected here in the same PR. Out-of-date diagrams teach the wrong lesson. (See root `AGENTS.md` → _Harness Documentation Sync_.)
+> **Keep in sync.** This file is a teaching artifact built from the real harness in this repo. Any change to a sensor, a rule, an `AGENTS.md`, or a `pnpm run check:*` script MUST be reflected here in the same PR. Out-of-date diagrams teach the wrong lesson. (See `packages/techradar/AGENTS.md` → _Harness Documentation Sync_.)
+
+> **Workspace context.** This repo is a pnpm workspace monorepo (ADR-0027). The framework, harness sensors, and AGENTS.md cascade live inside `packages/techradar/`; the scaffolder skeleton lives in `packages/create-techradar/`. The repo root holds cross-cutting tooling (Biome, husky, commitlint, security scanners) plus a thin lobby `AGENTS.md`. **All `AGENTS.md` and `scripts/check*.ts` paths cited in this document are package-relative to `packages/techradar/` unless explicitly prefixed** (e.g. `packages/techradar/AGENTS.md` is the package AGENTS.md; the lobby file at the repo root is referenced as `AGENTS.md (repo root)`). Workspace-anchored paths — notably `docs/decisions/` (ADRs) and `.github/workflows/` — sit at the repo root and are written without a package prefix here. The `pnpm run check:*` commands still work from the repo root — they delegate via `pnpm -r --if-present run <name>`, so invocation is unchanged from the pre-workspace layout. A handful of `check:sec:*` arms (`deps`, `secrets`, `licenses`) are intentionally root-only scripts that scan the whole workspace and never delegate into the package.
 
 This document explains what a coding-agent harness is, then walks through the one wired into this project — concretely, with file paths and rule names you can grep for.
 
@@ -37,14 +39,16 @@ Two complementary artifacts in this repo:
 flowchart LR
     subgraph FF["Feedforward — what the agent reads BEFORE editing"]
         direction TB
-        FF1["AGENTS.md (root)"]
-        FF2["src/pages/AGENTS.md"]
-        FF3["src/app/AGENTS.md"]
-        FF4["src/components/AGENTS.md"]
-        FF5["src/lib/AGENTS.md"]
-        FF6["src/__tests__/AGENTS.md"]
-        FF7["scripts/AGENTS.md"]
-        FF8["data/AGENTS.md"]
+        FF0["AGENTS.md (repo root — lobby)"]
+        FF1["packages/techradar/AGENTS.md"]
+        FFCT["packages/create-techradar/AGENTS.md"]
+        FF2["packages/techradar/src/pages/AGENTS.md"]
+        FF3["packages/techradar/src/app/AGENTS.md"]
+        FF4["packages/techradar/src/components/AGENTS.md"]
+        FF5["packages/techradar/src/lib/AGENTS.md"]
+        FF6["packages/techradar/src/__tests__/AGENTS.md"]
+        FF7["packages/techradar/scripts/AGENTS.md"]
+        FF8["packages/techradar/data/AGENTS.md"]
     end
 
     subgraph FB["Feedback — what fires AFTER editing"]
@@ -85,7 +89,7 @@ flowchart LR
     end
 
     Agent(("agent")) -.reads.-> FF
-    Agent ==edits==> Code["src/, scripts/, data/"]
+    Agent ==edits==> Code["packages/techradar/{src,scripts,data}/"]
     Code --> SRC
     Code --> SEC
     Code --> QUAL
@@ -129,20 +133,20 @@ The regulator's variety. Each row is one architectural property the harness pres
 | 11 | JS / CSS / per-chunk sizes stay under explicit caps    | `check:build:budget` (`bundle-budget.json`)                                     | `src/pages/AGENTS.md`      | 3     |
 | 12 | No top-level helper functions in component files       | ESLint `no-restricted-syntax` + `architecture.test.ts` → `no-component-helpers` | `src/components/AGENTS.md` | 4     |
 | 13 | rehype-sanitize stays wired into the markdown pipeline | `check:sec:sanitize` + `scripts/__tests__/sanitize.test.ts` (XSS regression)    | `scripts/AGENTS.md`        | 5     |
-| 14 | No known-CVE npm dependencies                          | `check:sec:deps` (osv-scanner) + `.github/workflows/security.yml`               | root `AGENTS.md`           | 5     |
-| 15 | No committed secrets / API tokens                      | `check:sec:secrets` (trufflehog) + `.github/workflows/security.yml`             | root `AGENTS.md`           | 5     |
-| 16 | No dead code, unused exports, or unlisted deps         | `check:quality:knip` (`knip.json`)                                              | root `AGENTS.md`           | 6     |
-| 17 | No new significant copy-paste duplication              | `check:quality:jscpd` (`.jscpd.json`)                                           | root `AGENTS.md`           | 6     |
-| 18 | Naming conventions (PascalCase types, camelCase vars)  | `check:quality:naming` (Biome `style/useNamingConvention`)                      | root `AGENTS.md`           | 6     |
-| 19 | No high-signal code smells (cognitive complexity, nested ternaries) | `check:quality:sonar` (eslint-plugin-sonarjs, `sonar.eslint.config.mjs`) | root `AGENTS.md`           | 6     |
+| 14 | No known-CVE npm dependencies                          | `check:sec:deps` (osv-scanner) + `.github/workflows/security.yml`               | `AGENTS.md` (package)      | 5     |
+| 15 | No committed secrets / API tokens                      | `check:sec:secrets` (trufflehog) + `.github/workflows/security.yml`             | `AGENTS.md` (package)      | 5     |
+| 16 | No dead code, unused exports, or unlisted deps         | `check:quality:knip` (`knip.json`)                                              | `AGENTS.md` (package)      | 6     |
+| 17 | No new significant copy-paste duplication              | `check:quality:jscpd` (`.jscpd.json`)                                           | `AGENTS.md` (package)      | 6     |
+| 18 | Naming conventions (PascalCase types, camelCase vars)  | `check:quality:naming` (Biome `style/useNamingConvention`)                      | `AGENTS.md` (package)      | 6     |
+| 19 | No high-signal code smells (cognitive complexity, nested ternaries) | `check:quality:sonar` (eslint-plugin-sonarjs, `sonar.eslint.config.mjs`) | `AGENTS.md` (package)      | 6     |
 | 20 | Wiki-link `[[id]]` references resolve to a known blip  | `check:arch:wikilinks` (`scripts/checkWikiLinks.ts`)                            | `data/AGENTS.md`           | 7     |
-| 21 | No copyleft / source-availability licenses in production deps | `check:sec:licenses` (`license-checker-rseidelsohn`)                     | root `AGENTS.md`           | 7     |
-| 22 | Built HTML in `out/` is structurally valid             | `check:build:html` (`scripts/checkHtmlValidate.ts`, `.htmlvalidate.json`)       | root `AGENTS.md`           | 7     |
-| 23 | Test coverage stays above explicit floors              | `check:quality:coverage` (vitest v8 thresholds in `vitest.config.ts`)           | root `AGENTS.md`           | 7     |
-| 24 | No misspellings in load-bearing prose                  | `check:quality:spell` (`cspell`, `.cspell.json`, `cspell-words.txt`)            | root `AGENTS.md`           | 7     |
-| 25 | JSX accessibility patterns at edit time                | `check:a11y:source` (`eslint-plugin-jsx-a11y` via `a11y.eslint.config.mjs`)     | root `AGENTS.md`           | 8     |
-| 26 | No serious/critical axe violations in built HTML       | `check:a11y:axe` (`scripts/checkA11y.ts`, axe-core via jsdom)                   | root `AGENTS.md`           | 8     |
-| 27 | ADR file numbers in `docs/decisions/` are unique and match their `# ADR-NNNN` heading | `check:arch:adr` (`scripts/checkAdrUnique.ts`) | `docs/decisions/README.md` | 9     |
+| 21 | No copyleft / source-availability licenses in production deps | `check:sec:licenses` (`license-checker-rseidelsohn`)                     | `AGENTS.md` (package)      | 7     |
+| 22 | Built HTML in `out/` is structurally valid             | `check:build:html` (`scripts/checkHtmlValidate.ts`, `.htmlvalidate.json`)       | `AGENTS.md` (package)      | 7     |
+| 23 | Test coverage stays above explicit floors              | `check:quality:coverage` (vitest v8 thresholds in `vitest.config.ts`)           | `AGENTS.md` (package)      | 7     |
+| 24 | No misspellings in load-bearing prose                  | `check:quality:spell` (`cspell`, `.cspell.json`, `cspell-words.txt`)            | `AGENTS.md` (package)      | 7     |
+| 25 | JSX accessibility patterns at edit time                | `check:a11y:source` (`eslint-plugin-jsx-a11y` via `a11y.eslint.config.mjs`)     | `AGENTS.md` (package)      | 8     |
+| 26 | No serious/critical axe violations in built HTML       | `check:a11y:axe` (`scripts/checkA11y.ts`, axe-core via jsdom)                   | `AGENTS.md` (package)      | 8     |
+| 27 | ADR file numbers in `docs/decisions/` are unique and match their `# ADR-NNNN` heading | `check:arch:adr` (`scripts/checkAdrUnique.ts`) | `../../docs/decisions/README.md` (workspace root) | 9     |
 
 **Notes on #12** — catches two failure modes at once: helper duplication across components (e.g. multiple components copy-pasting `stripHtml` instead of importing the canonical `@/lib/format` version) and component files accreting non-component logic. The fix is one of three: move pure helpers to `src/lib/`, convert JSX-returning helpers to PascalCase sub-components, or inline single-use render helpers as `const` arrows inside the component body.
 
@@ -279,8 +283,8 @@ pnpm run check:arch          # source-only sensors (~3s)
   ├─ check:arch:eslint      # JSX / TS suppressions
   ├─ check:arch:readme      # config ↔ README
   ├─ check:arch:doccoverage # AGENTS.md (Checked: …) refs resolve
-  └─ check:arch:wikilinks   # data/radar/**/*.md [[id]] refs resolve
-   check:arch:adr         # docs/decisions/ ADR numbers unique + heading matches
+  ├─ check:arch:wikilinks   # data/radar/**/*.md [[id]] refs resolve
+  └─ check:arch:adr         # docs/decisions/ ADR numbers unique + heading matches
 
 pnpm run check:sec           # security sensors
   ├─ check:sec:sanitize     # rehype-sanitize wired in buildData.ts

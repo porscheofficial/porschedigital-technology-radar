@@ -1,7 +1,12 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# Workspace root only. Package-specific ignores (e.g. .next/, out/, dist/,
+# src/components/Icons/, public/og/, data/data.json) live in
+# packages/techradar/.gitignore after the workspace migration (ADR-0027).
+
 # dependencies
 /node_modules
+**/node_modules
 /.pnp
 .pnp.js
 .yarn/install-state.gz
@@ -9,18 +14,8 @@
 # testing
 /coverage
 
-# next.js
-/.next/
-/out/
-/techradar/
-
-# generated
-/src/components/Icons/
-/dist/
-/public/og/
-
-/data/about.json
-/data/data.json
+# stray build outputs (defense-in-depth; packages own their own dist/)
+/dist
 
 # misc
 .DS_Store
@@ -41,7 +36,6 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
-next-env.d.ts
 
 # IntelliJ
 .idea/

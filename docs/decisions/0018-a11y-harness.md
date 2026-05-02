@@ -39,14 +39,14 @@ mirroring the shape of `check:sec` and `check:quality`.
 
 ```
 npm run check:a11y
-├── check:a11y:source   # eslint-plugin-jsx-a11y on src/**/*.{jsx,tsx}
-└── check:a11y:axe      # axe-core via jsdom on out/**/*.html
+├── check:a11y:source   # eslint-plugin-jsx-a11y on packages/techradar/src/**/*.{jsx,tsx}
+└── check:a11y:axe      # axe-core via jsdom on packages/techradar/out/**/*.html
 ```
 
 ### Source-side: `eslint-plugin-jsx-a11y`
 
-Loaded via a dedicated flat config `a11y.eslint.config.mjs`, mirroring
-the `sonar.eslint.config.mjs` pattern (ADR-0010). Keeping the a11y
+Loaded via a dedicated flat config `packages/techradar/a11y.eslint.config.mjs`, mirroring
+the `packages/techradar/sonar.eslint.config.mjs` pattern (ADR-0010). Keeping the a11y
 plugin out of the architectural `eslint.config.mjs` preserves separation
 of concerns: the architecture arm enforces **import shape and code
 bans**; the a11y arm enforces **JSX accessibility patterns**. They can
@@ -59,10 +59,10 @@ build needed), lints exactly the source we wrote.
 
 ### Build-output side: `axe-core` + `jsdom`
 
-A Node script `scripts/checkA11y.ts` walks `out/**/*.html`, loads each
+A Node script `packages/techradar/scripts/checkA11y.ts` walks `packages/techradar/out/**/*.html`, loads each
 file into a JSDOM window with `runScripts: "outside-only"`, evaluates
 `axe.source` inside that window, and runs `axe.run()` against the
-parsed document. Mirrors the `scripts/checkHtmlValidate.ts` shape
+parsed document. Mirrors the `packages/techradar/scripts/checkHtmlValidate.ts` shape
 (ADR-0014).
 
 **Failure policy: fail only on `impact: "serious" | "critical"`.**
@@ -126,7 +126,7 @@ the bar most public-sector and enterprise sites are held to.
 ## Consequences
 
 - The harness intro language updates from "four-arm" to **five-arm**
-  in root `AGENTS.md`. `docs/HARNESS.md` gains an A11Y subgraph in
+  in `packages/techradar/AGENTS.md`. `docs/HARNESS.md` gains an A11Y subgraph in
   the mermaid diagram and two invariant table rows (#25 source-side,
   #26 build-output).
 - DoD grows from seven to eight steps: `check:a11y` slots in before
@@ -136,7 +136,7 @@ the bar most public-sector and enterprise sites are held to.
 - The repository's first wave of axe findings was triaged in this
   ADR's commit:
   - **Fixed:** missing `aria-label` on radar blip `<Link>` elements
-    (`Radar/Chart.tsx`, `QuadrantRadar/QuadrantChart.tsx`).
+    (`packages/techradar/src/components/Radar/Chart.tsx`, `packages/techradar/src/components/QuadrantRadar/QuadrantChart.tsx`).
   - **Fixed:** missing `tabIndex={-1}` on the SearchBar listbox.
   - **Disabled with rationale:** the rules listed above.
 - Any new component that ships an inaccessible interactive pattern

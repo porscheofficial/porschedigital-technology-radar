@@ -25,7 +25,8 @@ jobs:
       contents: write
       pull-requests: write
     outputs:
-      release_created: ${{ steps.release.outputs.release_created }}
+      techradar_release_created: ${{ steps.release.outputs['packages/techradar--release_created'] }}
+      create_techradar_release_created: ${{ steps.release.outputs['packages/create-techradar--release_created'] }}
     steps:
       # Pinned to commit SHA per OpenSSF Scorecard PinnedDependenciesID.
       # See ADR-0017.
@@ -39,7 +40,8 @@ jobs:
     needs: release-please
     if: |
       always() && (
-        needs.release-please.outputs.release_created == 'true' ||
+        needs.release-please.outputs.techradar_release_created == 'true' ||
+        needs.release-please.outputs.create_techradar_release_created == 'true' ||
         (github.event_name == 'workflow_dispatch' && inputs.force_publish == 'true')
       )
     runs-on: ubuntu-latest
@@ -83,4 +85,8 @@ jobs:
       # `--provenance` emits an SLSA build-provenance attestation to npm via the
       # `id-token: write` permission already granted to this job. Lifts OpenSSF
       # Scorecard `Signed-Releases` from -1 to 10. See ADR-0025.
-      - run: npm publish --provenance
+      - if: ${{ github.event_name == 'workflow_dispatch' || needs.release-please.outputs.techradar_release_created == 'true' }}
+        run: pnpm --filter @porscheofficial/porschedigital-technology-radar publish --no-git-checks --provenance
+
+      - if: ${{ github.event_name == 'workflow_dispatch' || needs.release-please.outputs.create_techradar_release_created == 'true' }}
+        run: pnpm --filter @porscheofficial/create-techradar publish --no-git-checks --provenance

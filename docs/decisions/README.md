@@ -62,6 +62,7 @@ ADRs cite the *decisions behind those rules*.
 | 0026 | Rename default branch from `pdig` to `main`   | accepted |
 | 0027 | pnpm workspace monorepo                        | accepted |
 | 0028 | Rename quadrant to segment                     | accepted |
+| 0029 | Per-package licensing: techradar Apache-2.0, create-techradar MIT | accepted |
 
 ## When to write a new ADR
 

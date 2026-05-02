@@ -1,0 +1,22 @@
+# Package-relative gitignore for the techradar package.
+# After the workspace migration (ADR-0027), generated artifacts that used to
+# live at the repo root now live under packages/techradar/. Root .gitignore
+# patterns are root-anchored, so the package owns its own ignores here.
+
+# next.js
+/.next/
+/out/
+
+# generated
+/src/components/Icons/
+/dist/
+/public/og/
+/data/about.json
+/data/data.json
+
+# testing
+/coverage/
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts

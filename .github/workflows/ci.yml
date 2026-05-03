@@ -37,6 +37,8 @@ jobs:
       - run: pnpm run test
       - run: pnpm run check:arch
       - run: pnpm run check:quality
+      - run: pnpm -r --if-present run check:sec
+      - run: pnpm run check:sec:licenses
       - run: pnpm run check:a11y
       - run: pnpm run build
       - run: pnpm run check:build

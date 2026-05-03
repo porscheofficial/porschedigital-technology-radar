@@ -41,6 +41,66 @@ function flattenLeafEntries(
   return out;
 }
 
+type DocumentedDefault = { rawCell: string; parsed: unknown; line: number };
+
+const isTableRow = (s: string | undefined): boolean =>
+  !!s && s.trim().startsWith("|") && s.trim().endsWith("|");
+
+const isSeparatorRow = (s: string | undefined): boolean =>
+  /^\s*\|[\s\-|:]+\|\s*$/.test(s ?? "");
+
+/** Detect namespace from `<details><summary>` blocks. Returns `undefined` for non-namespace lines. */
+function detectNamespace(line: string): string | undefined {
+  const codeMatch = line.match(
+    /<summary>.*?<code>([^<]+)<\/code>.*?<\/summary>/,
+  );
+  if (codeMatch) return codeMatch[1] ?? "";
+  if (/<summary>.*?<strong>Root<\/strong>.*?<\/summary>/.test(line)) return "";
+  if (line.trim() === "</details>") return "";
+  return undefined;
+}
+
+/** Extract default entries from a single markdown table starting at headerIdx. */
+function extractTableDefaults(
+  lines: string[],
+  headerIdx: number,
+  namespace: string,
+  result: Map<string, DocumentedDefault>,
+): number {
+  const headerCells = splitRow(lines[headerIdx] ?? "");
+  const defaultIdx = headerCells.findIndex((c) => /default/i.test(c.trim()));
+  let j = headerIdx + 2;
+  while (j < lines.length && isTableRow(lines[j])) {
+    if (defaultIdx >= 0) {
+      collectRowDefault(lines[j] ?? "", j, defaultIdx, namespace, result);
+    }
+    j++;
+  }
+  return j;
+}
+
+/** Parse a single table row and add its default entry if present. */
+function collectRowDefault(
+  row: string,
+  rowIdx: number,
+  defaultIdx: number,
+  namespace: string,
+  result: Map<string, DocumentedDefault>,
+): void {
+  const cells = splitRow(row);
+  const keyMatch = (cells[0] ?? "").trim().match(/^`([^`]+)`$/);
+  if (!keyMatch || cells[defaultIdx] === undefined) return;
+  const rawCell = (cells[defaultIdx] ?? "").trim();
+  const fullKey = namespace ? `${namespace}.${keyMatch[1]}` : keyMatch[1];
+  if (!result.has(fullKey)) {
+    result.set(fullKey, {
+      rawCell,
+      parsed: parseDocumentedValue(rawCell),
+      line: rowIdx + 1,
+    });
+  }
+}
+
 /**
  * Parse all markdown tables in README and build a map of documented defaults
  * keyed by namespace-qualified path (e.g. "labels.searchPlaceholder").
@@ -57,66 +117,22 @@ function flattenLeafEntries(
  */
 function parseDocumentedDefaults(
   readme: string,
-): Map<string, { rawCell: string; parsed: unknown; line: number }> {
-  const result = new Map<
-    string,
-    { rawCell: string; parsed: unknown; line: number }
-  >();
+): Map<string, DocumentedDefault> {
+  const result = new Map<string, DocumentedDefault>();
   const lines = readme.split("\n");
-
-  const isTableRow = (s: string | undefined): boolean =>
-    !!s && s.trim().startsWith("|") && s.trim().endsWith("|");
-
   let currentNamespace = "";
 
   let i = 0;
   while (i < lines.length) {
     const line = lines[i] ?? "";
-    const summaryMatch = line.match(
-      /<summary>.*?<code>([^<]+)<\/code>.*?<\/summary>/,
-    );
-    if (summaryMatch) {
-      currentNamespace = summaryMatch[1] ?? "";
+    const ns = detectNamespace(line);
+    if (ns !== undefined) {
+      currentNamespace = ns;
       i++;
       continue;
     }
-    if (/<summary>.*?<strong>Root<\/strong>.*?<\/summary>/.test(line)) {
-      currentNamespace = "";
-      i++;
-      continue;
-    }
-    if (line.trim() === "</details>") {
-      currentNamespace = "";
-      i++;
-      continue;
-    }
-    if (isTableRow(line) && /^\s*\|[\s\-|:]+\|\s*$/.test(lines[i + 1] ?? "")) {
-      const headerCells = splitRow(line);
-      const defaultIdx = headerCells.findIndex((c) =>
-        /default/i.test(c.trim()),
-      );
-      let j = i + 2;
-      while (j < lines.length && isTableRow(lines[j])) {
-        if (defaultIdx >= 0) {
-          const cells = splitRow(lines[j] ?? "");
-          const keyMatch = (cells[0] ?? "").trim().match(/^`([^`]+)`$/);
-          if (keyMatch && cells[defaultIdx] !== undefined) {
-            const rawCell = (cells[defaultIdx] ?? "").trim();
-            const fullKey = currentNamespace
-              ? `${currentNamespace}.${keyMatch[1]}`
-              : keyMatch[1];
-            if (!result.has(fullKey)) {
-              result.set(fullKey, {
-                rawCell,
-                parsed: parseDocumentedValue(rawCell),
-                line: j + 1,
-              });
-            }
-          }
-        }
-        j++;
-      }
-      i = j;
+    if (isTableRow(line) && isSeparatorRow(lines[i + 1])) {
+      i = extractTableDefaults(lines, i, currentNamespace, result);
       continue;
     }
     i++;

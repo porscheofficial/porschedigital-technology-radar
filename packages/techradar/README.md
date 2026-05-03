@@ -7,7 +7,7 @@ A static site generator for building and publishing your own technology radar. D
 
 **[Live showcase](https://opensource.porsche.com/porschedigital-technology-radar/)** · **[Project overview & quickstart](https://github.com/porscheofficial/porschedigital-technology-radar#readme)**
 
-![Screenshot of the Technology Radar](https://raw.githubusercontent.com/porscheofficial/porschedigital-technology-radar/main/packages/techradar/docs/assets/screenshot-radar.png)
+![Screenshot of the Technology Radar](https://raw.githubusercontent.com/porscheofficial/porschedigital-technology-radar/main/docs/assets/screenshot-radar.png)
 
 ---
 
@@ -17,26 +17,26 @@ A static site generator for building and publishing your own technology radar. D
 
 Drill into a single segment with a zoomed mini-radar and a grouped technology list.
 
-![Segment detail page](https://raw.githubusercontent.com/porscheofficial/porschedigital-technology-radar/main/packages/techradar/docs/assets/screenshot-quadrant.png)
+![Segment detail page](https://raw.githubusercontent.com/porscheofficial/porschedigital-technology-radar/main/docs/assets/screenshot-quadrant.png)
 
 ### Technology Detail
 
 Each technology has its own page with ring status, description, tags, teams, and full revision history.
 
-![Technology detail page](https://raw.githubusercontent.com/porscheofficial/porschedigital-technology-radar/main/packages/techradar/docs/assets/screenshot-detail.png)
+![Technology detail page](https://raw.githubusercontent.com/porscheofficial/porschedigital-technology-radar/main/docs/assets/screenshot-detail.png)
 
 ### Changelog
 
 Track how technology assessments evolved across releases with the trajectory matrix.
 
-![History page](https://raw.githubusercontent.com/porscheofficial/porschedigital-technology-radar/main/packages/techradar/docs/assets/screenshot-history.png)
+![History page](https://raw.githubusercontent.com/porscheofficial/porschedigital-technology-radar/main/docs/assets/screenshot-history.png)
 
 ### Mobile
 
 Fully responsive — works on phones and tablets out of the box.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/porscheofficial/porschedigital-technology-radar/main/packages/techradar/docs/assets/screenshot-mobile.png" alt="Mobile view" width="390">
+  <img src="https://raw.githubusercontent.com/porscheofficial/porschedigital-technology-radar/main/docs/assets/screenshot-mobile.png" alt="Mobile view" width="390">
 </p>
 
 ## Quick Start

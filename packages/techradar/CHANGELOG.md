@@ -7,24 +7,58 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/), and this
 ## [1.3.0](https://github.com/porscheofficial/porschedigital-technology-radar/compare/porschedigital-technology-radar-v1.2.6...porschedigital-technology-radar-v1.3.0) (2026-05-03)
 
 
+### Features
+
+* export radar as PNG from spotlight on the start page ([83523d3](https://github.com/porscheofficial/porschedigital-technology-radar/commit/83523d3))
+* replace SearchBar with SpotlightSearch command palette ([45dcfbe](https://github.com/porscheofficial/porschedigital-technology-radar/commit/45dcfbe))
+* **harness:** enforce README documented defaults match config.default.json ([fd1d0b0](https://github.com/porscheofficial/porschedigital-technology-radar/commit/fd1d0b0))
+
+
 ### Bug Fixes
 
-* correct screenshot paths in READMEs ([b480b1c](https://github.com/porscheofficial/porschedigital-technology-radar/commit/b480b1c05da10381fdf0ec155d171b9c0072e44a))
-* delete root tsconfig.json, delegate typecheck per package ([300110e](https://github.com/porscheofficial/porschedigital-technology-radar/commit/300110e13d95eea0e720d7eacb0d44b9f9ff272f))
-* remove committed node_modules and dist artifacts from git index ([2d4a9eb](https://github.com/porscheofficial/porschedigital-technology-radar/commit/2d4a9eb293e81d1a4c208a30638a25fa9405d3cf))
-* **techradar:** remove consola from client bundle and ban Node.js builtins in src/ ([25bb241](https://github.com/porscheofficial/porschedigital-technology-radar/commit/25bb241c3b48f777b290328b81826e1992aef811))
-* **techradar:** remove node:fs from next.config.js and add build-output sensor ([90a183c](https://github.com/porscheofficial/porschedigital-technology-radar/commit/90a183c7bff4a6359a3eb3c51cb6847feb7d2282))
+* correct screenshot paths in READMEs ([b480b1c](https://github.com/porscheofficial/porschedigital-technology-radar/commit/b480b1c))
+* delete root tsconfig.json, delegate typecheck per package ([300110e](https://github.com/porscheofficial/porschedigital-technology-radar/commit/300110e))
+* remove committed node_modules and dist artifacts from git index ([2d4a9eb](https://github.com/porscheofficial/porschedigital-technology-radar/commit/2d4a9eb))
+* remove orphaned SearchBar test after SpotlightSearch migration ([d92f813](https://github.com/porscheofficial/porschedigital-technology-radar/commit/d92f813))
+* **dev:** allow worktree subdomains for HMR ([2c1fd11](https://github.com/porscheofficial/porschedigital-technology-radar/commit/2c1fd11))
+* **radar:** preserve highlight on wedge click and clear it on segment page ([645f507](https://github.com/porscheofficial/porschedigital-technology-radar/commit/645f507))
+* silence CodeQL ReDoS alert and exclude bundled dist/ from scan ([1bd4730](https://github.com/porscheofficial/porschedigital-technology-radar/commit/1bd4730))
+* **techradar:** remove consola from client bundle and ban Node.js builtins in src/ ([25bb241](https://github.com/porscheofficial/porschedigital-technology-radar/commit/25bb241))
+* **techradar:** remove node:fs from next.config.js and add build-output sensor ([90a183c](https://github.com/porscheofficial/porschedigital-technology-radar/commit/90a183c))
+
+
+### Security
+
+* bump postcss to >=8.5.10 (CVE-2026-41305) and harden ADR test ([d885af9](https://github.com/porscheofficial/porschedigital-technology-radar/commit/d885af9))
 
 
 ### Code Refactoring
 
-* convert repo to pnpm workspace monorepo (ADR-0027) ([0e1d60d](https://github.com/porscheofficial/porschedigital-technology-radar/commit/0e1d60da8b935f0ea08ccd5e9de065545b224067))
-* **techradar:** reduce cognitive complexity in checkConfigReadmeSync ([880d8c2](https://github.com/porscheofficial/porschedigital-technology-radar/commit/880d8c2a01fde42826d921d2bb9046b3aa5b589a))
+* convert repo to pnpm workspace monorepo (ADR-0027) ([0e1d60d](https://github.com/porscheofficial/porschedigital-technology-radar/commit/0e1d60d))
+* rename history page to changelog ([4fea1a6](https://github.com/porscheofficial/porschedigital-technology-radar/commit/4fea1a6))
+* **techradar:** reduce cognitive complexity in checkConfigReadmeSync ([880d8c2](https://github.com/porscheofficial/porschedigital-technology-radar/commit/880d8c2))
 
 
 ### Documentation
 
-* rewrite READMEs for npm and GitHub landing pages ([5385dcc](https://github.com/porscheofficial/porschedigital-technology-radar/commit/5385dcc21b3ad9fba1e8b31fa74aaf94e402560c))
+* rewrite READMEs for npm and GitHub landing pages ([5385dcc](https://github.com/porscheofficial/porschedigital-technology-radar/commit/5385dcc))
+
+
+### CI/CD
+
+* add check:quality, check:a11y to CI verify workflow ([a27a331](https://github.com/porscheofficial/porschedigital-technology-radar/commit/a27a331))
+* add pre-push hook running check:quality ([a27a331](https://github.com/porscheofficial/porschedigital-technology-radar/commit/a27a331))
+* bump actions/setup-node from 4.4.0 to 6.4.0 ([fe3ce4c](https://github.com/porscheofficial/porschedigital-technology-radar/commit/fe3ce4c))
+* bump github/codeql-action from 3.35.2 to 4.35.2 ([6b4e905](https://github.com/porscheofficial/porschedigital-technology-radar/commit/6b4e905))
+
+
+### Dependencies
+
+* bump next in the next group ([d659cdc](https://github.com/porscheofficial/porschedigital-technology-radar/commit/d659cdc))
+* bump postcss-preset-env from 9.6.0 to 11.2.1 ([1fa49cd](https://github.com/porscheofficial/porschedigital-technology-radar/commit/1fa49cd))
+* bump the porsche-design-system group with 2 updates ([9872e8f](https://github.com/porscheofficial/porschedigital-technology-radar/commit/9872e8f))
+* bump @biomejs/biome in the biome group ([2e710e6](https://github.com/porscheofficial/porschedigital-technology-radar/commit/2e710e6))
+* bump the testing group with 3 updates ([75cb8d5](https://github.com/porscheofficial/porschedigital-technology-radar/commit/75cb8d5))
 
 ## [1.2.6](https://github.com/porscheofficial/porschedigital-technology-radar/compare/v1.2.5...v1.2.6) (2026-04-23)
 

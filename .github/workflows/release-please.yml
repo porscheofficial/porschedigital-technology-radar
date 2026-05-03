@@ -85,8 +85,16 @@ jobs:
       # `--provenance` emits an SLSA build-provenance attestation to npm via the
       # `id-token: write` permission already granted to this job. Lifts OpenSSF
       # Scorecard `Signed-Releases` from -1 to 10. See ADR-0025.
+      # TODO: Remove NODE_AUTH_TOKEN after first publish. Once both packages
+      # exist on npm, configure Trusted Publishing (OIDC) on each package and
+      # delete the NPM_TOKEN secret. The `id-token: write` permission above
+      # already supports OIDC — only the env var needs removing.
       - if: ${{ github.event_name == 'workflow_dispatch' || needs.release-please.outputs.techradar_release_created == 'true' }}
         run: pnpm --filter @porscheofficial/porschedigital-technology-radar publish --no-git-checks --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - if: ${{ github.event_name == 'workflow_dispatch' || needs.release-please.outputs.create_techradar_release_created == 'true' }}
         run: pnpm --filter @porscheofficial/create-techradar publish --no-git-checks --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.3.0](https://github.com/porscheofficial/porschedigital-technology-radar/compare/porschedigital-technology-radar-v1.2.6...porschedigital-technology-radar-v1.3.0) (2026-05-03)
+
+
+### Bug Fixes
+
+* correct screenshot paths in READMEs ([b480b1c](https://github.com/porscheofficial/porschedigital-technology-radar/commit/b480b1c05da10381fdf0ec155d171b9c0072e44a))
+* delete root tsconfig.json, delegate typecheck per package ([300110e](https://github.com/porscheofficial/porschedigital-technology-radar/commit/300110e13d95eea0e720d7eacb0d44b9f9ff272f))
+* remove committed node_modules and dist artifacts from git index ([2d4a9eb](https://github.com/porscheofficial/porschedigital-technology-radar/commit/2d4a9eb293e81d1a4c208a30638a25fa9405d3cf))
+* **techradar:** remove consola from client bundle and ban Node.js builtins in src/ ([25bb241](https://github.com/porscheofficial/porschedigital-technology-radar/commit/25bb241c3b48f777b290328b81826e1992aef811))
+* **techradar:** remove node:fs from next.config.js and add build-output sensor ([90a183c](https://github.com/porscheofficial/porschedigital-technology-radar/commit/90a183c7bff4a6359a3eb3c51cb6847feb7d2282))
+
+
+### Code Refactoring
+
+* convert repo to pnpm workspace monorepo (ADR-0027) ([0e1d60d](https://github.com/porscheofficial/porschedigital-technology-radar/commit/0e1d60da8b935f0ea08ccd5e9de065545b224067))
+* **techradar:** reduce cognitive complexity in checkConfigReadmeSync ([880d8c2](https://github.com/porscheofficial/porschedigital-technology-radar/commit/880d8c2a01fde42826d921d2bb9046b3aa5b589a))
+
+
+### Documentation
+
+* rewrite READMEs for npm and GitHub landing pages ([5385dcc](https://github.com/porscheofficial/porschedigital-technology-radar/commit/5385dcc21b3ad9fba1e8b31fa74aaf94e402560c))
+
 ## [1.2.6](https://github.com/porscheofficial/porschedigital-technology-radar/compare/v1.2.5...v1.2.6) (2026-04-23)
 
 

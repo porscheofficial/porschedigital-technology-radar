@@ -1,6 +1,6 @@
 # `@porscheofficial/create-techradar`
 
-Scaffold a new [Porsche Digital Technology Radar](https://github.com/porscheofficial/porschedigital-technology-radar) in seconds.
+Scaffold a new technology radar with the [Technology Radar Generator](https://github.com/porscheofficial/porschedigital-technology-radar) in seconds.
 
 ## Usage
 

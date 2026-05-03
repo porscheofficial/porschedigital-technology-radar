@@ -1,4 +1,4 @@
-# Porsche Digital Technology Radar
+# Technology Radar Generator
 
 ## Project
 

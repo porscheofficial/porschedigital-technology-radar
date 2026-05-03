@@ -1,4 +1,4 @@
-# Porsche Digital Technology Radar Monorepo
+# Technology Radar Generator Monorepo
 
 ## Workspace layout
 

@@ -1,6 +1,6 @@
 # `packages/create-techradar/` — Scaffolder Package
 
-This package ships `@porscheofficial/create-techradar`, the one-shot bootstrapper for new Porsche Digital Technology Radar projects.
+This package ships `@porscheofficial/create-techradar`, the one-shot bootstrapper for new radar projects built with the Technology Radar Generator.
 
 ## Scope
 

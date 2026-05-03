@@ -12,6 +12,7 @@ Run at build/validate time only. Never imported by `src/`.
 | `positioner.ts` | Computes blip coordinates within rings/segments. |
 | `errorHandler.ts` | Consola-based error reporting helpers. |
 | `checkConfigReadmeSync.ts` | Asserts that every leaf key in `data/config.default.json` and every Zod field in `validateFrontmatter.ts` is documented in `README.md`, AND that documented default values in README tables match the actual values in `config.default.json` (namespaced by the surrounding `<details><summary>` block). Run via `pnpm run check:arch:readme`. |
+| `checkNoNodeBuiltins.ts` | Scans `out/_next/static/chunks/*.js` for Node.js built-in module error stubs leaked by Turbopack. Run via `pnpm run check:build:no-node-builtins`. |
 
 ## Rules
 

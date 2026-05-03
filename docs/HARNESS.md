@@ -67,6 +67,7 @@ flowchart LR
             B2["check:build:links<br/>(linkinator)"]
             B3["check:build:budget<br/>(scripts/checkBundleBudget.ts)"]
             B4["check:build:html<br/>(scripts/checkHtmlValidate.ts)"]
+            B5["check:build:no-node-builtins<br/>(scripts/checkNoNodeBuiltins.ts)"]
         end
         subgraph SEC["Security (pnpm run check:sec)"]
             X1["check:sec:sanitize<br/>(scripts/checkSanitize.ts + XSS test)"]
@@ -147,6 +148,7 @@ The regulator's variety. Each row is one architectural property the harness pres
 | 25 | JSX accessibility patterns at edit time                | `check:a11y:source` (`eslint-plugin-jsx-a11y` via `a11y.eslint.config.mjs`)     | `AGENTS.md` (package)      | 8     |
 | 26 | No serious/critical axe violations in built HTML       | `check:a11y:axe` (`scripts/checkA11y.ts`, axe-core via jsdom)                   | `AGENTS.md` (package)      | 8     |
 | 27 | ADR file numbers in `docs/decisions/` are unique and match their `# ADR-NNNN` heading | `check:arch:adr` (`scripts/checkAdrUnique.ts`) | `../../docs/decisions/README.md` (workspace root) | 9     |
+| 28 | No Node.js built-ins leaked into client JS chunks      | `check:build:no-node-builtins` (`scripts/checkNoNodeBuiltins.ts`)               | `AGENTS.md` (package)      | 9     |
 
 **Notes on #12** — catches two failure modes at once: helper duplication across components (e.g. multiple components copy-pasting `stripHtml` instead of importing the canonical `@/lib/format` version) and component files accreting non-component logic. The fix is one of three: move pure helpers to `src/lib/`, convert JSX-returning helpers to PascalCase sub-components, or inline single-use render helpers as `const` arrows inside the component body.
 
@@ -309,7 +311,8 @@ pnpm run check:build         # build-output sensors
   ├─ check:build:routes     # every expected file present
   ├─ check:build:links      # no broken internal links
   ├─ check:build:budget     # JS/CSS sizes within bundle-budget.json
-  └─ check:build:html       # html-validate on out/**/*.html
+  ├─ check:build:html       # html-validate on out/**/*.html
+  └─ check:build:no-node-builtins  # no node:* modules in client chunks
 
 pnpm test                    # includes architecture.test.ts (6 fs invariants)
 ```

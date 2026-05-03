@@ -1,5 +1,4 @@
 const path = require("node:path");
-const fs = require("node:fs");
 const config = require("./data/config.json");
 
 // Monorepo-aware Turbopack root resolution (Next.js 16 + pnpm workspace).
@@ -19,9 +18,20 @@ const config = require("./data/config.json");
 // When this package runs as a shadow build inside a CONSUMER's `.techradar/`
 // directory (no `pnpm-workspace.yaml` upstream), keep both values pinned to
 // `__dirname` to preserve the ADR-0023 resolution-root fence.
+//
+// IMPORTANT: `node:fs` must NEVER appear in this file — not even inside a
+// lazy require or try/catch. Turbopack serializes next.config.js into client
+// chunks and traces every `require()` call regardless of control flow.  A
+// top-level or IIFE-wrapped `require("node:fs")` leaks into the browser
+// bundle and crashes with "Cannot find module 'node:fs'".
+//
+// Monorepo detection: when running inside the pnpm workspace the package sits
+// at `<root>/packages/techradar`.  In a consumer shadow-build (CLI) there is
+// no such path structure, so the fallback is `__dirname` — preserving the
+// ADR-0023 resolution-root fence.
 const workspaceRoot = path.resolve(__dirname, "../..");
-const isMonorepoContext = fs.existsSync(
-  path.join(workspaceRoot, "pnpm-workspace.yaml"),
+const isMonorepoContext = __dirname.endsWith(
+  path.join("packages", "techradar"),
 );
 const turbopackRoot = isMonorepoContext ? workspaceRoot : __dirname;
 const tracingRoot = isMonorepoContext ? workspaceRoot : __dirname;

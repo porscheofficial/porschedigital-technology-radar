@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.2.7](https://github.com/porscheofficial/porschedigital-technology-radar/compare/porschedigital-technology-radar-v1.2.6...porschedigital-technology-radar-v1.2.7) (2026-05-03)
+
+
+### Bug Fixes
+
+* correct screenshot paths in READMEs ([b480b1c](https://github.com/porscheofficial/porschedigital-technology-radar/commit/b480b1c05da10381fdf0ec155d171b9c0072e44a))
+* delete root tsconfig.json, delegate typecheck per package ([300110e](https://github.com/porscheofficial/porschedigital-technology-radar/commit/300110e13d95eea0e720d7eacb0d44b9f9ff272f))
+
+
+### Code Refactoring
+
+* convert repo to pnpm workspace monorepo (ADR-0027) ([0e1d60d](https://github.com/porscheofficial/porschedigital-technology-radar/commit/0e1d60da8b935f0ea08ccd5e9de065545b224067))
+* **techradar:** reduce cognitive complexity in checkConfigReadmeSync ([880d8c2](https://github.com/porscheofficial/porschedigital-technology-radar/commit/880d8c2a01fde42826d921d2bb9046b3aa5b589a))
+
+
+### Documentation
+
+* rewrite READMEs for npm and GitHub landing pages ([5385dcc](https://github.com/porscheofficial/porschedigital-technology-radar/commit/5385dcc21b3ad9fba1e8b31fa74aaf94e402560c))
+
 ## [1.2.6](https://github.com/porscheofficial/porschedigital-technology-radar/compare/v1.2.5...v1.2.6) (2026-04-23)
 
 

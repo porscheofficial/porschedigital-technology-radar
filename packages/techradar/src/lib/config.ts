@@ -1,4 +1,3 @@
-import consola from "consola";
 import defaultConfig from "../../data/config.default.json";
 import _userConfig from "../../data/config.json";
 import type { Segment } from "./types";
@@ -23,7 +22,7 @@ if (userConfig.quadrants !== undefined && userConfig.segments === undefined) {
   userConfig.segments =
     userConfig.quadrants as unknown as DeepPartial<Segment>[];
   delete userConfig.quadrants;
-  consola.warn(
+  console.warn(
     '[deprecated] config key "quadrants" is renamed to "segments". Please update your config.json.',
   );
 } else if (

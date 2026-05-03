@@ -1,4 +1,3 @@
-import consola from "consola";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const { mockedUserConfig } = vi.hoisted(() => ({
@@ -24,7 +23,7 @@ describe("config back-compat shim", () => {
   beforeEach(() => {
     vi.resetModules();
     mockedUserConfig.default = {};
-    vi.spyOn(consola, "warn").mockImplementation(() => {});
+    vi.spyOn(console, "warn").mockImplementation(() => {});
   });
 
   afterEach(() => {
@@ -84,8 +83,8 @@ describe("config back-compat shim", () => {
       },
     ]);
     expect((config as Record<string, unknown>).quadrants).toBeUndefined();
-    expect(consola.warn).toHaveBeenCalledTimes(1);
-    expect(consola.warn).toHaveBeenCalledWith(
+    expect(console.warn).toHaveBeenCalledTimes(1);
+    expect(console.warn).toHaveBeenCalledWith(
       '[deprecated] config key "quadrants" is renamed to "segments". Please update your config.json.',
     );
   });
@@ -112,7 +111,7 @@ describe("config back-compat shim", () => {
         description: "Already migrated.",
       },
     ]);
-    expect(consola.warn).not.toHaveBeenCalled();
+    expect(console.warn).not.toHaveBeenCalled();
   });
 
   it("segments config key wins without warning when both legacy and migrated keys are present", async () => {
@@ -154,6 +153,6 @@ describe("config back-compat shim", () => {
         position: 1,
       },
     ]);
-    expect(consola.warn).not.toHaveBeenCalled();
+    expect(console.warn).not.toHaveBeenCalled();
   });
 });

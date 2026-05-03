@@ -62,6 +62,19 @@ module.exports = {
       },
     },
 
+    // ───── Node.js built-in ban ────────────────────────────────────
+    {
+      name: "no-node-builtins-in-src",
+      comment:
+        "src/ is client-side code bundled for the browser. Node.js built-in " +
+        "modules (node:fs, node:path, etc.) and packages that depend on them " +
+        "(e.g. consola) crash at runtime. Use browser-safe alternatives. " +
+        "(AGENTS.md → Static Export Constraints)",
+      severity: "error",
+      from: { path: "^src/", pathNot: "(__tests__|\\.test\\.)" },
+      to: { dependencyTypes: ["core"] },
+    },
+
     // ───── Router topology ─────────────────────────────────────────
     {
       name: "app-router-only-sitemap",

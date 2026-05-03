@@ -1,87 +1,45 @@
-# Porsche Digital Technology Radar
+# Technology Radar Generator
 
-[![GitHub Pages Deploy](https://img.shields.io/github/actions/workflow/status/porscheofficial/porschedigital-technology-radar/deploy.yml?branch=main&label=deploy&logo=github)](https://github.com/porscheofficial/porschedigital-technology-radar/actions/workflows/deploy.yml)
+A static site generator for building and publishing your own technology radar. Define technologies as Markdown files, configure segments, rings, and branding via JSON, and deploy a fully static site to any hosting provider.
+
 [![npm version](https://img.shields.io/npm/v/@porscheofficial/porschedigital-technology-radar?logo=npm)](https://www.npmjs.com/package/@porscheofficial/porschedigital-technology-radar)
-[![npm downloads](https://img.shields.io/npm/dw/@porscheofficial/porschedigital-technology-radar?logo=npm&label=downloads)](https://www.npmjs.com/package/@porscheofficial/porschedigital-technology-radar)
-[![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=nextdotjs&logoColor=white)](https://nextjs.org/)
-[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/porscheofficial/porschedigital-technology-radar/badge)](https://scorecard.dev/viewer/?uri=github.com/porscheofficial/porschedigital-technology-radar)
-[![CodeQL](https://img.shields.io/github/actions/workflow/status/porscheofficial/porschedigital-technology-radar/codeql.yml?branch=main&label=CodeQL&logo=github)](https://github.com/porscheofficial/porschedigital-technology-radar/actions/workflows/codeql.yml)
-[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-FE5196?logo=conventionalcommits&logoColor=white)](https://www.conventionalcommits.org)
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue)](./LICENSE)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue)](https://github.com/porscheofficial/porschedigital-technology-radar/blob/main/LICENSE)
 
-A static site generator for building and publishing your own Technology Radar.
+**[Live showcase](https://opensource.porsche.com/porschedigital-technology-radar/)** · **[Project overview & quickstart](https://github.com/porscheofficial/porschedigital-technology-radar#readme)**
 
-**[🔗 Live Showcase](https://opensource.porsche.com/porschedigital-technology-radar/)**
+![Screenshot of the Technology Radar](https://raw.githubusercontent.com/porscheofficial/porschedigital-technology-radar/main/packages/techradar/docs/assets/screenshot-radar.png)
 
-![Screenshot of the Technology Radar](./docs/assets/screenshot-radar.png)
+---
 
-## Table of Contents
-
-<p align="center">
-  <a href="#-about">About</a> ·
-  <a href="#-why-a-technology-radar">Why a Technology Radar?</a> ·
-  <a href="#-features">Features</a> ·
-  <a href="#-screenshots">Screenshots</a> ·
-  <a href="#-quick-start">Quick Start</a> ·
-  <a href="#-project-structure-consumer">Project Structure</a> ·
-  <a href="#️-configuration">Configuration</a> ·
-  <a href="#-radar-items">Radar Items</a> ·
-  <a href="#️-development-contributing-to-the-generator">Development</a> ·
-  <a href="#-custom-styling">Custom Styling</a> ·
-  <a href="#-license">License</a>
-</p>
-
-## 📖 About
-
-This project is maintained by **Porsche Digital** and is based on the open-source [AOE Technology Radar](https://github.com/AOEpeople/aoe_technology_radar). The codebase has been substantially rewritten and extended — it is not a drop-in replacement.
-
-> [!NOTE]
-> Your existing radar items (Markdown files) can be reused as-is, but the configuration needs to be updated to match the new schema.
-
-## 💡 Why a Technology Radar?
-
-A Technology Radar makes technology decisions visible across your organization. It gives CTOs, architects, and tech leads a shared vocabulary for evaluating, adopting, and retiring technologies — and keeps engineering teams aligned on what to invest in.
-
-## ✨ Features
-
-- **Visual technology landscape** — See your entire technology portfolio at a glance, organized by segment and maturity ring
-- **Track decisions over time** — Full revision history per technology and a trajectory view across releases, so you can see how assessments evolved
-- **Team visibility** — Understand which teams use which technologies, enabling informed staffing and knowledge-sharing decisions
-- **Searchable and filterable** — Find technologies instantly by name, tag, team, or status with real-time highlighting across the radar. Supports configurable multi-select or single-select filtering with shareable filter URLs
-- **Your branding, your rules** — Fully customizable colors, logos, segments, rings, and labels via a single `config.json`
-- **Zero infrastructure** — Static site that deploys to GitHub Pages, Netlify, or any hosting. No servers, no databases, no runtime dependencies
-- **Content as code** — Technologies are plain Markdown files in Git. Review changes in PRs, track history with commits, collaborate with your existing workflow
-
-## 📸 Screenshots
+## Screenshots
 
 ### Segment Detail
 
 Drill into a single segment with a zoomed mini-radar and a grouped technology list.
 
-![Segment detail page](./docs/assets/screenshot-quadrant.png)
+![Segment detail page](https://raw.githubusercontent.com/porscheofficial/porschedigital-technology-radar/main/packages/techradar/docs/assets/screenshot-quadrant.png)
 
 ### Technology Detail
 
 Each technology has its own page with ring status, description, tags, teams, and full revision history.
 
-![Technology detail page](./docs/assets/screenshot-detail.png)
+![Technology detail page](https://raw.githubusercontent.com/porscheofficial/porschedigital-technology-radar/main/packages/techradar/docs/assets/screenshot-detail.png)
 
 ### Changelog
 
 Track how technology assessments evolved across releases with the trajectory matrix.
 
-![History page](./docs/assets/screenshot-history.png)
+![History page](https://raw.githubusercontent.com/porscheofficial/porschedigital-technology-radar/main/packages/techradar/docs/assets/screenshot-history.png)
 
 ### Mobile
 
 Fully responsive — works on phones and tablets out of the box.
 
 <p align="center">
-  <img src="./docs/assets/screenshot-mobile.png" alt="Mobile view" width="390">
+  <img src="https://raw.githubusercontent.com/porscheofficial/porschedigital-technology-radar/main/packages/techradar/docs/assets/screenshot-mobile.png" alt="Mobile view" width="390">
 </p>
 
-## 🚀 Quick Start
+## Quick Start
 
 > [!IMPORTANT]
 > **Prerequisites:** Node.js 22+
@@ -111,8 +69,8 @@ npx techradar init
 
 Edit the scaffolded files to match your organization:
 
-- `config.json` — branding, segments, rings, colors (see [Configuration](#configuration))
-- `radar/` — your technology items as Markdown (see [Radar Items](#radar-items))
+- `config.json` — branding, segments, rings, colors (see [Configuration](#️-configuration))
+- `radar/` — your technology items as Markdown (see [Radar Items](#-radar-items))
 - `about.md` — content for the help & about page
 - `public/` — favicon, images, background image
 - `custom.scss` — optional style overrides
@@ -129,7 +87,7 @@ npx techradar serve   # Start dev server without file watching
 
 After `npx techradar build`, the static site is in `build/`. Deploy it to GitHub Pages, Vercel, Netlify, or any static hosting provider.
 
-## 📁 Project Structure (consumer)
+## Project Structure
 
 ```
 my-technology-radar/
@@ -408,7 +366,7 @@ An array of social link objects shown in the footer.
     "title": "ACME Tech Radar",
     "tagline": "Track what to adopt, trial, assess, and hold.",
     "imprint": "Legal Notice",
-    "footer": "Built with the Porsche Digital Technology Radar.",
+    "footer": "Built with the Technology Radar Generator.",
     "notUpdated": "This item has not been reviewed in the last three releases.",
     "hiddenFromRadar": "This technology is hidden from the radar chart.",
     "searchPlaceholder": "Search technologies…",
@@ -419,7 +377,7 @@ An array of social link objects shown in the footer.
 
 </details>
 
-## 📝 Radar Items
+## Radar Items
 
 Radar items are Markdown files organized by release date under `radar/`.
 
@@ -429,8 +387,8 @@ radar/
 │   ├── react.md
 │   └── kubernetes.md
 └── 2025-01-15/
-    ├── react.md
-    └── deno.md
+│   ├── react.md
+│   └── deno.md
 ```
 
 Each file has a YAML front-matter header followed by Markdown content:
@@ -482,7 +440,7 @@ Place images in `public/images/` and reference them in Markdown:
 ![Architecture diagram](/images/architecture.png)
 ```
 
-## Open Graph images
+### Open Graph images
 
 The build generates rich Open Graph / Twitter Card images for link previews.
 
@@ -525,73 +483,13 @@ Unresolved wiki-links (referencing a non-existent item) are rendered as plain te
 > [!WARNING]
 > In strict mode (`--strict`), unresolved wiki-links cause the build to fail.
 
-## 🛠️ Development (contributing to the generator)
-
-To work on the radar generator itself:
-
-```bash
-git clone https://github.com/porscheofficial/porschedigital-technology-radar.git
-cd porschedigital-technology-radar
-pnpm install          # Also runs postinstall → build:icons
-pnpm run build:data   # Parse Markdown files into data/data.json
-pnpm run dev          # Start Next.js dev server
-```
-
-The build pipeline:
-
-1. `build:icons` — generates React icon components from SVGs in `src/icons/`
-2. `build:data` — parses `radar/` Markdown files into `data/data.json` and `data/about.json`
-3. `build:og` — generates cached Open Graph PNGs in `public/og/`
-4. `next build` — builds the static site into `out/`
-
-The `pnpm run build` command runs all three steps in sequence.
-
-### Pre-commit hooks
-
-This repository runs two local pre-commit checks through Husky:
-
-- `lint-staged` → `biome check --write --no-errors-on-unmatched` for staged files
-- `pnpm run precommit:secrets` → staged-content secret scanning via TruffleHog
-
-The secret scan reads the **staged blob content**, not the working tree, so it
-still catches leaks correctly when you used partial staging such as
-`git add -p`.
-
-`trufflehog` is optional for local development. If the binary is missing, the
-hook prints a warning and exits successfully so contributors in fresh
-environments are not blocked.
-
-Install it locally with Homebrew:
-
-```bash
-brew install trufflehog
-```
-
-If you absolutely must bypass both pre-commit hooks in an emergency, Git still
-supports:
-
-```bash
-git commit --no-verify
-```
-
-That bypass is discouraged; the normal path is to fix the formatting issue or
-remove the secret from the staged content before committing.
-
 ### Strict mode
 
 Pass `--strict` to turn warnings into errors during the data build step.
 
-**Consumer projects** (using the CLI):
-
 ```bash
 npx techradar --strict build
 npx techradar --strict dev
-```
-
-**This repository** (development):
-
-```bash
-pnpm run build:data --strict
 ```
 
 In strict mode, the build fails on:
@@ -599,12 +497,10 @@ In strict mode, the build fails on:
 - Invalid frontmatter (missing or invalid `ring`, `segment`, etc.)
 - Unresolved wiki-links (e.g., `[[nonexistent-item]]`)
 
-This is recommended for CI pipelines to catch issues before deployment.
-
 > [!TIP]
 > Add `npx techradar --strict build` to your CI pipeline to catch frontmatter issues and broken wiki-links before deployment.
 
-## 🎨 Custom Styling
+## Custom Styling
 
 You can add custom SCSS rules in `custom.scss`.
 
@@ -622,7 +518,7 @@ h3 {
 
 Changes to `custom.scss` are picked up automatically in `dev` mode (with file watching).
 
-## 📄 License
+## License
 
 This project is open source under the [Apache License 2.0](./LICENSE).
 

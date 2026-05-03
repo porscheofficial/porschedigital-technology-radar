@@ -284,7 +284,8 @@ function bootstrap(): void {
   );
   ensureGitignore();
   consola.success(
-    "Project initialized. Edit config.json and add items to radar/.",
+    "Project initialized. Edit config.json and add items to radar/.\n" +
+      "  Configuration reference: https://github.com/porscheofficial/porschedigital-technology-radar/tree/main/packages/techradar#%EF%B8%8F-configuration",
   );
 }
 

@@ -91,8 +91,8 @@
   "dependencies": {
     "@11ty/gray-matter": "^2.0.1",
     "@fontsource/inter": "^5.2.8",
-    "@porsche-design-system/components-js": "3.34.0",
-    "@porsche-design-system/components-react": "^3.33.0",
+    "@porsche-design-system/components-js": "4.0.0",
+    "@porsche-design-system/components-react": "^4.0.0",
     "@radix-ui/react-dialog": "^1.1.15",
     "@resvg/resvg-js": "^2.6.2",
     "@types/hast": "^3.0.4",

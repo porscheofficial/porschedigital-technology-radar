@@ -1,10 +1,6 @@
 import type { Item, Revision } from "@/lib/types";
 import { Flag } from "@/lib/types";
 
-vi.mock("../../../next.config.js", () => ({
-  default: { basePath: "" },
-}));
-
 const _mockItems: Item[] = [
   {
     id: "typescript",
@@ -130,8 +126,6 @@ vi.mock("../config", () => {
     basePath: "/",
     baseUrl: "https://radar.example.com",
     editUrl: "https://github.com/edit/{release}/{id}.md",
-    headerLogoFile: "logo.png",
-    footerLogoFile: "",
     jsFile: "",
     toggles: {
       showSearch: true,
@@ -212,19 +206,13 @@ vi.mock("../config", () => {
   return { default: config };
 });
 
-vi.mock("../../next.config.js", () => ({
-  default: { basePath: "" },
-}));
-
 import {
   getAbsoluteUrl,
   getAppName,
   getChartConfig,
-  getColors,
   getEditUrl,
   getFilteredItems,
   getFlags,
-  getFooterLogoUrl,
   getImprintUrl,
   getItem,
   getItemChangeDirection,
@@ -232,7 +220,6 @@ import {
   getItemTrajectories,
   getJsUrl,
   getLabel,
-  getLogoUrl,
   getReleases,
   getRing,
   getRings,
@@ -270,27 +257,15 @@ describe("getAppName", () => {
   });
 });
 
-describe("getLogoUrl / getFooterLogoUrl / getJsUrl", () => {
-  it("returns logo URL when configured", () => {
-    expect(getLogoUrl()).toBe("/logo.png");
-  });
-
-  it("returns empty string when footer logo not configured", () => {
-    expect(getFooterLogoUrl()).toBe("");
-  });
-
+describe("getJsUrl", () => {
   it("returns empty string when JS file not configured", () => {
     expect(getJsUrl()).toBe("");
   });
 });
 
-describe("getChartConfig / getColors / getFlags", () => {
+describe("getChartConfig / getFlags", () => {
   it("returns chart config", () => {
     expect(getChartConfig()).toEqual({ size: 800, blipSize: 12 });
-  });
-
-  it("returns colors", () => {
-    expect(getColors()).toHaveProperty("foreground");
   });
 
   it("returns flags", () => {

@@ -45,9 +45,9 @@
     "access": "public"
   },
   "scripts": {
-    "dev": "portless run next dev",
+    "dev": "tsx scripts/dev.ts",
     "build:icons": "pnpm dlx @svgr/cli --typescript --no-dimensions --no-prettier --out-dir src/components/Icons -- src/icons",
-    "build:data": "tsx scripts/buildData.ts",
+    "build:data": "tsx scripts/buildThemes.ts && tsx scripts/buildData.ts",
     "build:og": "tsx scripts/buildOgImages.ts",
     "validate": "tsx scripts/validateFrontmatter.ts",
     "build:bin": "tsup",
@@ -91,8 +91,8 @@
   "dependencies": {
     "@11ty/gray-matter": "^2.0.1",
     "@fontsource/inter": "^5.2.8",
-    "@porsche-design-system/components-js": "3.34.0",
-    "@porsche-design-system/components-react": "^3.33.0",
+    "@porsche-design-system/components-js": "4.0.0",
+    "@porsche-design-system/components-react": "^4.0.0",
     "@radix-ui/react-dialog": "^1.1.15",
     "@resvg/resvg-js": "^2.6.2",
     "@types/hast": "^3.0.4",
@@ -107,6 +107,8 @@
     "consola": "^3.4.2",
     "execa": "^9.6.1",
     "hast": "^1.0.0",
+    "html-react-parser": "^6.0.1",
+    "jsonc-parser": "^3.3.1",
     "next": "^16.2.3",
     "postcss-nested": "^7.0.2",
     "postcss-preset-env": "^11.2.1",

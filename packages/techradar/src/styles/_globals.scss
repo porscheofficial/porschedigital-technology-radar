@@ -1,5 +1,12 @@
-@use "@porsche-design-system/components-react/styles" as *;
+@use "@porsche-design-system/components-react/scss" as *;
 @use "./pds-bridge";
+
+// PDS v4 mandatory CSS bundle is imported from src/pages/_app.tsx — Sass cannot
+// load plain .css via @use, and @import is deprecated in Dart Sass 3.
+
+:not(:defined, [data-ssr]) {
+  visibility: hidden;
+}
 
 // ============================================================================
 // Global Resets & Base Styles
@@ -26,9 +33,9 @@ body {
   position: relative;
 
   // ---------------------------------------------------------------------------
-  // Background image overlay — configurable via config.json.
-  // Set backgroundImage (path in /public/) and backgroundOpacity (0–1).
-  // Set backgroundImage to "" to disable.
+  // Background image overlay — supplied by the active theme via CSS custom
+  // properties injected in _document.tsx. Themes without a background fall back
+  // to `none` and `0`.
   // ---------------------------------------------------------------------------
   &::before {
     content: "";

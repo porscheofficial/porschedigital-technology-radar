@@ -1,5 +1,6 @@
 import defaultConfig from "../../data/config.default.json";
 import _userConfig from "../../data/config.json";
+import packageJson from "../../package.json";
 import type { Segment } from "./types";
 
 type DeepPartial<T> = T extends object
@@ -11,7 +12,13 @@ type DeepPartial<T> = T extends object
 type Config = Omit<typeof defaultConfig, "segments"> & {
   segments: Segment[];
 };
-type UserConfig = DeepPartial<Config> & { quadrants?: unknown[] };
+type UserConfig = DeepPartial<Config> & {
+  quadrants?: unknown[];
+  // Legacy keys — detected and rejected below
+  colors?: unknown;
+  backgroundImage?: unknown;
+  backgroundOpacity?: unknown;
+};
 
 const userConfig = _userConfig as UserConfig;
 
@@ -32,10 +39,50 @@ if (userConfig.quadrants !== undefined && userConfig.segments === undefined) {
   delete userConfig.quadrants;
 }
 
+// T14/T18: Legacy key detection — BREAKING change.
+// These keys were removed in favour of the data/themes/ folder system.
+const VERSION = packageJson.version;
+const LEGACY_ROOT_KEYS = [
+  "colors",
+  "backgroundImage",
+  "backgroundOpacity",
+] as const;
+for (const key of LEGACY_ROOT_KEYS) {
+  if (key in userConfig) {
+    throw new Error(
+      `config.json: '${key}' is no longer supported in v${VERSION}. Run 'npx techradar migrate-colors' to convert.`,
+    );
+  }
+}
+if (
+  userConfig.segments?.some(
+    (s) => s !== null && typeof s === "object" && "color" in s,
+  )
+) {
+  throw new Error(
+    `config.json: 'segments[].color' is no longer supported in v${VERSION}. Run 'npx techradar migrate-colors' to convert.`,
+  );
+}
+if (
+  userConfig.rings?.some(
+    (r) => r !== null && typeof r === "object" && "color" in r,
+  )
+) {
+  throw new Error(
+    `config.json: 'rings[].color' is no longer supported in v${VERSION}. Run 'npx techradar migrate-colors' to convert.`,
+  );
+}
+
 const config = { ...defaultConfig, ...userConfig } as Config;
 
-if (userConfig.colors)
-  config.colors = { ...defaultConfig.colors, ...userConfig.colors };
+if (
+  typeof config.defaultTheme !== "string" ||
+  config.defaultTheme.length === 0
+) {
+  throw new Error(
+    "config.json: 'defaultTheme' is required and must be a non-empty string identifying a theme under data/themes/. It may optionally include ':light' or ':dark'.",
+  );
+}
 
 if (userConfig.labels)
   config.labels = { ...defaultConfig.labels, ...userConfig.labels };

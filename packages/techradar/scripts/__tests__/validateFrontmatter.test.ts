@@ -15,13 +15,11 @@ function mockSegmentConfig() {
           id: "languages-and-frameworks",
           title: "Languages & Frameworks",
           description: "Config used by validateFrontmatter tests.",
-          color: "#4A9E7E",
         },
         {
           id: "methods-and-patterns",
           title: "Methods & Patterns",
           description: "Second valid test segment.",
-          color: "#5B8DB8",
         },
       ],
     },

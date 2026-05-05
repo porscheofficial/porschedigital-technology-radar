@@ -47,7 +47,6 @@ export interface Ring {
   id: string;
   title: string;
   description: string;
-  color: string;
   radius?: number;
   strokeWidth?: number;
 }
@@ -56,7 +55,6 @@ export interface Segment {
   id: string;
   title: string;
   description: string;
-  color: string;
   position: number;
 }
 

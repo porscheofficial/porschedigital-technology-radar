@@ -29,9 +29,17 @@ vi.mock("@/lib/data", () => ({
 vi.mock("@porsche-design-system/components-react/ssr", () => ({
   PHeading: ({ children, tag = "h2", ...props }: any) => {
     const Tag = tag;
-    return <Tag {...props}>{children}</Tag>;
+    return (
+      <Tag data-testid="p-heading" {...props}>
+        {children}
+      </Tag>
+    );
   },
-  PText: ({ children, ...props }: any) => <p {...props}>{children}</p>,
+  PText: ({ children, ...props }: any) => (
+    <p data-testid="p-text" {...props}>
+      {children}
+    </p>
+  ),
 }));
 
 vi.mock("@/components/Icons/Search", () => ({

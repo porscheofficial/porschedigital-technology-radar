@@ -5,12 +5,14 @@
 
 # next.js
 /.next/
+/.next-dev/
 /out/
 
 # generated
 /src/components/Icons/
 /dist/
 /public/og/
+/public/themes/
 /data/about.json
 /data/data.json
 
@@ -20,3 +22,4 @@
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+/data/themes.generated.json

@@ -127,7 +127,7 @@ The regulator's variety. Each row is one architectural property the harness pres
 | 4  | One importer of `data/data.json`                       | `data-accessor-only` (dep-cruiser)                                              | `src/lib/AGENTS.md`        | 0     |
 | 5  | Component shape (`Name.tsx` + `Name.module.scss`)      | `architecture.test.ts` → `component-folder-shape`                               | `src/components/AGENTS.md` | 0     |
 | 6  | No type suppressions, `assetUrl()` for absolute URLs   | ESLint `ban-ts-comment` + `no-restricted-syntax`                                | `src/components/AGENTS.md` | 0     |
-| 7  | Config / Zod schema documented in README + documented defaults match `config.default.json` | `scripts/checkConfigReadmeSync.ts`                                              | `data/AGENTS.md`           | 0     |
+| 7  | Config / Zod schema documented in README + documented defaults match `config.default.json`, including generated theme tables | `scripts/checkConfigReadmeSync.ts`                                              | `data/AGENTS.md`           | 0     |
 | 8  | Every expected route file lands in `out/`              | `check:build:routes`                                                            | `src/pages/AGENTS.md`      | 1     |
 | 9  | No broken internal links in the built site             | `check:build:links` (linkinator)                                                | `src/pages/AGENTS.md`      | 1     |
 | 10 | Every `(Checked: …)` reference resolves to a live rule | `check:arch:doccoverage`                                                        | every `AGENTS.md`          | 2     |

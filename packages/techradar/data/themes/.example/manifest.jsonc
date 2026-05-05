@@ -1,0 +1,322 @@
+// =============================================================================
+//  EXAMPLE THEME MANIFEST
+// =============================================================================
+//
+//  HOW TO USE THIS FILE
+//  --------------------
+//  1. Copy this entire folder (`data/themes/.example/`) to a sibling folder.
+//     The new folder name becomes the theme `id` (URL-safe slug, lowercase).
+//     The leading `.` makes this folder hidden from theme discovery — your copy
+//     must NOT start with a dot.
+//        e.g. `data/themes/aurora/`        -> id = "aurora"
+//             `data/themes/acme-corp/`     -> id = "acme-corp"
+//  2. Edit every value below for your brand. The file MUST be named
+//     `manifest.jsonc` — the build will not pick up `theme.json`,
+//     `theme.jsonc`, or any other name.
+//  3. Drop image assets (backgrounds, logos) into the same folder. Reference
+//     them by their basename only (e.g. `background-dark.jpg`). The build
+//     copies them into `public/themes/<id>/<file>` automatically.
+//  4. Run `pnpm run build:data` (or `pnpm run dev` — themes auto-rebuild on
+//     change). The new theme appears in the in-app theme switcher and is
+//     selectable via `defaultTheme` in `data/config.json`.
+//
+//  FILE FORMAT
+//  -----------
+//  JSONC = JSON with comments. You can use:
+//    • `// line comments`
+//    • `/* block comments */`
+//    • Trailing commas after the last element of an object/array.
+//
+//  COLOR VALUE FORMATS
+//  -------------------
+//  Every color accepts:
+//    • `"#RRGGBB"`      e.g. `"#1A2B3C"`
+//    • `"#RRGGBBAA"`    e.g. `"#1A2B3CCC"` (alpha channel as last 2 hex digits)
+//    • `"rgb(r, g, b)"` e.g. `"rgb(26, 43, 60)"`
+//    • `"rgba(r, g, b, a)"` e.g. `"rgba(26, 43, 60, 0.8)"`
+//
+//  PER-MODE VALUES (ModeValue)
+//  ---------------------------
+//  Anywhere you see a value below, you can supply EITHER:
+//    (a) A single value that applies to both light and dark modes, e.g.
+//          "footerLogoFile": "logo.svg"
+//    (b) A `{ "light": …, "dark": … }` object, e.g.
+//          "footerLogoFile": { "light": "logo-l.svg", "dark": "logo-d.svg" }
+//  When a mode object is provided, it MUST cover every mode listed in
+//  `supports`. Skipping a mode is a build error.
+//
+// =============================================================================
+{
+  // -----------------------------------------------------------------------
+  //  label  (required, string, non-empty)
+  // -----------------------------------------------------------------------
+  //  Human-readable theme name shown in the in-app theme switcher and used
+  //  in tooltips. Keep it short: 1–3 words is ideal.
+  "label": "Example Theme",
+
+  // -----------------------------------------------------------------------
+  //  supports  (required, array of "light" | "dark", 1–2 entries)
+  // -----------------------------------------------------------------------
+  //  Which color schemes this theme provides values for. Most themes
+  //  support both ("light", "dark"). Single-mode themes (only "light" or
+  //  only "dark") are valid — the in-app dark-mode toggle hides itself
+  //  when the active theme has only one supported mode.
+  "supports": ["light", "dark"],
+
+  // -----------------------------------------------------------------------
+  //  default  (required, "light" | "dark")
+  // -----------------------------------------------------------------------
+  //  The mode picked when the user has no `prefers-color-scheme` signal
+  //  and no stored override. MUST be one of the values listed in
+  //  `supports`.
+  "default": "dark",
+
+  // -----------------------------------------------------------------------
+  //  cssVariables  (required, object — all 12 keys are required)
+  // -----------------------------------------------------------------------
+  //  Chrome colors that drive every non-radar surface in the app. Each
+  //  key emits a CSS custom property of the same name (e.g. `foreground`
+  //  -> `--foreground`) on the document root for the active mode.
+  //
+  //  All 12 keys are required. None can be omitted, even if you reuse the
+  //  same color across several keys.
+  "cssVariables": {
+    // Primary text/icon color used on `background`. Should have AA
+    // contrast (4.5:1) against `background` for accessibility.
+    "foreground": {
+      "light": "#111111",
+      "dark": "#FFFFFF"
+    },
+
+    // Page background color. Sits behind the optional background image
+    // (see `background` below) — pick a color the image can blend with.
+    "background": {
+      "light": "#F6F6F6",
+      "dark": "#000000"
+    },
+
+    // Accent color for primary CTAs, focus rings, active states, and the
+    // selected blip outline on the radar. The most "branded" of the chrome
+    // colors — make this distinctive.
+    "highlight": {
+      "light": "#0047FF",
+      "dark": "#88B5FF"
+    },
+
+    // Body copy color used inside cards, descriptions, and item bodies.
+    // Slightly lower-contrast than `foreground` for long-form readability.
+    "content": {
+      "light": "#555555",
+      "dark": "#CCCCCC"
+    },
+
+    // Secondary/muted text color: metadata, timestamps, labels under blip
+    // names. Lower contrast than `content`.
+    "text": {
+      "light": "#666666",
+      "dark": "#999999"
+    },
+
+    // Hyperlink color in markdown bodies and within prose. Often equals
+    // `highlight`, but you can keep them distinct (e.g. classic blue links
+    // alongside a non-blue accent).
+    "link": {
+      "light": "#0047FF",
+      "dark": "#88B5FF"
+    },
+
+    // Hairline color for card borders, table dividers, and segment outlines.
+    "border": {
+      "light": "#D0D0D0",
+      "dark": "#333333"
+    },
+
+    // Background color for inactive filter chips and PDS tags. The chip's
+    // text uses `content`. Distinct from `border` so chips don't disappear
+    // against bordered cards.
+    "tag": {
+      "light": "#E5E5E5",
+      "dark": "#333333"
+    },
+
+    // Card / panel surface color — sits ON TOP of `background`. Typical
+    // light-mode value is `#FFFFFF`; dark-mode is one tier lighter than
+    // `background` so cards lift visually.
+    "surface": {
+      "light": "#FFFFFF",
+      "dark": "#111111"
+    },
+
+    // Footer-strip background. Often equals `surface`, but a different
+    // value lets you break up the page bottom (e.g. a darker band).
+    "footer": {
+      "light": "#FFFFFF",
+      "dark": "#212225"
+    },
+
+    // Modal/overlay scrim color — usually a translucent dark or light
+    // wash. Use `rgba(...)` here so the page underneath shows through.
+    "shading": {
+      "light": "rgba(20, 20, 20, 0.2)",
+      "dark": "rgba(20, 20, 20, 0.67)"
+    },
+
+    // Frosted-glass tint applied behind sticky chrome (header, search
+    // overlay) when the underlying page is scrolled behind it. Use a
+    // translucent rgba so backdrop-filter blur shows through.
+    "frosted": {
+      "light": "rgba(255, 255, 255, 0.5)",
+      "dark": "rgba(40, 40, 40, 0.35)"
+    }
+  },
+
+  // -----------------------------------------------------------------------
+  //  chips  (OPTIONAL but strongly recommended — 5 keys required if present)
+  // -----------------------------------------------------------------------
+  //  Per-kind chip colors for the filter pills, status badges, and team
+  //  tags throughout the app. Each entry is the chip's BACKGROUND color;
+  //  the foreground text color is derived automatically for AA contrast.
+  //
+  //  When omitted, chips fall back to `cssVariables.tag` for every kind
+  //  — workable for a quick first draft, but most production themes
+  //  define all five so the categories are visually distinguishable.
+  //
+  //  All 5 keys below are required IF the `chips` block is present.
+  "chips": {
+    // Generic status pill — neutral default for "in production", "trial",
+    // and similar status indicators. Often a muted grey.
+    "status": {
+      "light": "#6B6D70",
+      "dark": "#88898C"
+    },
+    // Pill for tags / topics (free-form taxonomy on items).
+    "tag": {
+      "light": "#0047FF",
+      "dark": "#88B5FF"
+    },
+    // Pill for team attribution. Usually a warm secondary brand color.
+    "team": {
+      "light": "#C45A00",
+      "dark": "#E16C0B"
+    },
+    // Diff indicator: team added between revisions. Conventionally green.
+    "team-added": {
+      "light": "#1B7C3D",
+      "dark": "#22A04E"
+    },
+    // Diff indicator: team removed between revisions. Conventionally red.
+    "team-removed": {
+      "light": "#B8302A",
+      "dark": "#D14037"
+    }
+  },
+
+  // -----------------------------------------------------------------------
+  //  background  (OPTIONAL — full block, including both inner keys)
+  // -----------------------------------------------------------------------
+  //  Decorative page-background image rendered at `center / cover` over
+  //  the `cssVariables.background` solid color. Omit the entire block to
+  //  use a flat colored background.
+  //
+  //  When present, BOTH `image` and `opacity` are required.
+  "background": {
+    // Image filename(s) RELATIVE to this theme folder. The build copies
+    // each referenced asset into `public/themes/<id>/<basename>` and
+    // rewrites the URL at runtime.
+    //
+    // Mode-aware: omit a mode to skip the image for that mode (the solid
+    // color shows through). Both light and dark image entries are
+    // independent — you can ship one without the other.
+    "image": {
+      "dark": "background-dark.jpg"
+    },
+    // Per-mode opacity, 0–1. Useful for toning down a vivid image so
+    // foreground text stays legible. 0 hides the image entirely.
+    "opacity": {
+      "light": 0,
+      "dark": 0.06
+    }
+  },
+
+  // -----------------------------------------------------------------------
+  //  headerLogoFile  (OPTIONAL, ModeValue<string>)
+  // -----------------------------------------------------------------------
+  //  Custom logo for the page header. Filename(s) RELATIVE to this theme
+  //  folder. Renders at 40px tall (width auto). The aspect should be
+  //  taller than wide (Porsche reference: 30×40). When omitted, the
+  //  built-in PDS Porsche crest is used instead.
+  "headerLogoFile": {
+    "light": "logo-header-light.svg",
+    "dark": "logo-header-dark.svg"
+  },
+
+  // -----------------------------------------------------------------------
+  //  footerLogoFile  (OPTIONAL, ModeValue<string>)
+  // -----------------------------------------------------------------------
+  //  Custom logo for the page footer. Filename(s) RELATIVE to this theme
+  //  folder. Renders at 24px tall (width auto). Works best as a wide
+  //  wordmark (Porsche reference: 225×15). Single-file form below applies
+  //  to both light and dark — switch to a `{ "light": …, "dark": … }`
+  //  object for per-mode logos. When omitted, the built-in PDS Porsche
+  //  wordmark is used instead.
+  "footerLogoFile": "logo-footer.svg",
+
+  // -----------------------------------------------------------------------
+  //  radar  (required, object with `segments` and `rings` arrays)
+  // -----------------------------------------------------------------------
+  //  Per-position colors for the radar visualization itself.
+  //
+  //  Both arrays MUST have EXACTLY as many entries as `data/config.json`
+  //  defines segments and rings (default: 4 each). The first array entry
+  //  colors segment/ring index 0 (north / innermost), and so on clockwise
+  //  / outward.
+  //
+  //  Pick high-contrast, distinguishable hues — these are the colors a
+  //  user sees first when looking at the radar.
+  "radar": {
+    "segments": [
+      // Segment 0 (north / first counter-clockwise wedge).
+      {
+        "light": "#4A9E7E",
+        "dark": "#7EC9AA"
+      },
+      // Segment 1.
+      {
+        "light": "#5B8DB8",
+        "dark": "#8AB6DB"
+      },
+      // Segment 2.
+      {
+        "light": "#C4A85E",
+        "dark": "#E0C77E"
+      },
+      // Segment 3.
+      {
+        "light": "#B85B5B",
+        "dark": "#DA8A8A"
+      }
+    ],
+    "rings": [
+      // Ring 0 (innermost — typically "Adopt").
+      {
+        "light": "#4A9E7E",
+        "dark": "#7EC9AA"
+      },
+      // Ring 1 (typically "Trial").
+      {
+        "light": "#5B8DB8",
+        "dark": "#8AB6DB"
+      },
+      // Ring 2 (typically "Assess").
+      {
+        "light": "#C4A85E",
+        "dark": "#E0C77E"
+      },
+      // Ring 3 (outermost — typically "Hold").
+      {
+        "light": "#B85B5B",
+        "dark": "#DA8A8A"
+      }
+    ]
+  }
+}

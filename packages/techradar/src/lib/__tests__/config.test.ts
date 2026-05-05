@@ -10,16 +10,20 @@ describe("config module", () => {
       expect(config).toHaveProperty("baseUrl");
       expect(config).toHaveProperty("editUrl");
       expect(config).toHaveProperty("toggles");
-      expect(config).toHaveProperty("colors");
       expect(config).toHaveProperty("segments");
       expect(config).toHaveProperty("rings");
       expect(config).toHaveProperty("flags");
       expect(config).toHaveProperty("chart");
       expect(config).toHaveProperty("labels");
+      expect(config).toHaveProperty("defaultTheme");
     });
 
     it("has exactly 4 segments by default", () => {
       expect(config.segments).toHaveLength(4);
+    });
+
+    it("defaults to the merged porsche theme id", () => {
+      expect(config.defaultTheme).toBe("porsche");
     });
 
     it("has exactly 4 rings by default", () => {
@@ -38,7 +42,6 @@ describe("config module", () => {
     it("matches default config when user config is empty", () => {
       expect(config.basePath).toBe(defaultConfig.basePath);
       expect(config.toggles).toEqual(defaultConfig.toggles);
-      expect(config.colors).toEqual(defaultConfig.colors);
       expect(config.labels).toEqual(defaultConfig.labels);
     });
 
@@ -58,20 +61,14 @@ describe("config module", () => {
       expect(config.labels).toHaveProperty("searchPlaceholder");
       expect(config.labels).toHaveProperty("metaDescription");
     });
-
-    it("preserves all color defaults", () => {
-      expect(config.colors.foreground).toBe("#FBFCFF");
-      expect(config.colors.background).toBe("#0E0E12");
-    });
   });
 
   describe("segment structure", () => {
-    it("every segment has id, title, description, color", () => {
+    it("every segment has id, title, description", () => {
       for (const q of config.segments) {
         expect(q.id).toEqual(expect.any(String));
         expect(q.title).toEqual(expect.any(String));
         expect(q.description).toEqual(expect.any(String));
-        expect(q.color).toMatch(/^#[0-9A-Fa-f]{6}$/);
       }
     });
 
@@ -129,13 +126,6 @@ describe("config deep merge (with partial user config)", () => {
       ...userOverrides,
     } as unknown as typeof import("@/lib/config").default;
 
-    if (userOverrides.colors && typeof userOverrides.colors === "object") {
-      merged.colors = {
-        ...defaultConfig.colors,
-        ...(userOverrides.colors as Record<string, string>),
-      };
-    }
-
     if (userOverrides.labels && typeof userOverrides.labels === "object") {
       merged.labels = {
         ...defaultConfig.labels,
@@ -152,15 +142,6 @@ describe("config deep merge (with partial user config)", () => {
 
     return merged;
   }
-
-  it("partial colors override preserves other colors", () => {
-    const result = mergeConfig({
-      colors: { foreground: "#FF0000" },
-    });
-    expect(result.colors.foreground).toBe("#FF0000");
-    expect(result.colors.background).toBe(defaultConfig.colors.background);
-    expect(result.colors.highlight).toBe(defaultConfig.colors.highlight);
-  });
 
   it("partial toggles override preserves other toggles", () => {
     const result = mergeConfig({

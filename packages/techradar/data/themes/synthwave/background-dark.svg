@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1A0B2E"/>
+      <stop offset="55%" stop-color="#2D0F4A"/>
+      <stop offset="62%" stop-color="#5A1A6B"/>
+      <stop offset="65%" stop-color="#1A0B2E"/>
+      <stop offset="100%" stop-color="#0F0620"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="0.5" cy="1" r="0.5">
+      <stop offset="0%" stop-color="#FFE066"/>
+      <stop offset="35%" stop-color="#FFA552"/>
+      <stop offset="70%" stop-color="#FF2A6D"/>
+      <stop offset="100%" stop-color="#7B2CBF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="sunMask" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fff"/>
+      <stop offset="55%" stop-color="#fff"/>
+      <stop offset="58%" stop-color="#000"/>
+      <stop offset="62%" stop-color="#fff"/>
+      <stop offset="66%" stop-color="#000"/>
+      <stop offset="71%" stop-color="#fff"/>
+      <stop offset="76%" stop-color="#000"/>
+      <stop offset="82%" stop-color="#fff"/>
+      <stop offset="88%" stop-color="#000"/>
+      <stop offset="100%" stop-color="#fff"/>
+    </linearGradient>
+    <mask id="sunStripes">
+      <rect width="1920" height="1080" fill="url(#sunMask)"/>
+    </mask>
+    <linearGradient id="gridFade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FF2A6D" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#05D9E8" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="sunGlow" cx="0.5" cy="0.65" r="0.55">
+      <stop offset="0%" stop-color="#FF2A6D" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#FF2A6D" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="neon" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- sky + ground -->
+  <rect width="1920" height="1080" fill="url(#sky)"/>
+
+  <!-- soft sun glow halo (no mask, so it bleeds outside the disc) -->
+  <circle cx="960" cy="700" r="520" fill="url(#sunGlow)"/>
+
+  <!-- sun (with retro horizontal stripes carved out) -->
+  <g mask="url(#sunStripes)" filter="url(#neon)">
+    <circle cx="960" cy="700" r="380" fill="url(#sun)"/>
+  </g>
+
+  <!-- horizon glow line -->
+  <rect x="0" y="697" width="1920" height="6" fill="#FF2A6D" opacity="0.85" filter="url(#neon)"/>
+
+  <!-- perspective grid on lower half -->
+  <g stroke="url(#gridFade)" stroke-width="2.5" fill="none" opacity="1" filter="url(#neon)">
+    <!-- horizontal lines, exponentially spaced as they recede -->
+    <line x1="0" y1="702" x2="1920" y2="702"/>
+    <line x1="0" y1="715" x2="1920" y2="715"/>
+    <line x1="0" y1="735" x2="1920" y2="735"/>
+    <line x1="0" y1="763" x2="1920" y2="763"/>
+    <line x1="0" y1="800" x2="1920" y2="800"/>
+    <line x1="0" y1="848" x2="1920" y2="848"/>
+    <line x1="0" y1="908" x2="1920" y2="908"/>
+    <line x1="0" y1="982" x2="1920" y2="982"/>
+    <line x1="0" y1="1070" x2="1920" y2="1070"/>
+    <!-- vanishing-point verticals from horizon (cx=960, y=700) to bottom -->
+    <line x1="960" y1="700" x2="-1920" y2="1080"/>
+    <line x1="960" y1="700" x2="-1280" y2="1080"/>
+    <line x1="960" y1="700" x2="-640" y2="1080"/>
+    <line x1="960" y1="700" x2="0" y2="1080"/>
+    <line x1="960" y1="700" x2="320" y2="1080"/>
+    <line x1="960" y1="700" x2="560" y2="1080"/>
+    <line x1="960" y1="700" x2="760" y2="1080"/>
+    <line x1="960" y1="700" x2="900" y2="1080"/>
+    <line x1="960" y1="700" x2="960" y2="1080"/>
+    <line x1="960" y1="700" x2="1020" y2="1080"/>
+    <line x1="960" y1="700" x2="1160" y2="1080"/>
+    <line x1="960" y1="700" x2="1360" y2="1080"/>
+    <line x1="960" y1="700" x2="1600" y2="1080"/>
+    <line x1="960" y1="700" x2="1920" y2="1080"/>
+    <line x1="960" y1="700" x2="2560" y2="1080"/>
+    <line x1="960" y1="700" x2="3200" y2="1080"/>
+    <line x1="960" y1="700" x2="3840" y2="1080"/>
+  </g>
+</svg>

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 40" fill="none">
+  <defs>
+    <linearGradient id="sun" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFE066"/>
+      <stop offset="50%" stop-color="#FFA552"/>
+      <stop offset="100%" stop-color="#FF2A6D"/>
+    </linearGradient>
+    <mask id="stripes">
+      <rect width="32" height="40" fill="#fff"/>
+      <rect x="0" y="22" width="32" height="1.5" fill="#000"/>
+      <rect x="0" y="25" width="32" height="1.5" fill="#000"/>
+      <rect x="0" y="28" width="32" height="2" fill="#000"/>
+    </mask>
+  </defs>
+  <line x1="1" y1="33" x2="31" y2="33" stroke="#FF2A6D" stroke-width="1.4"/>
+  <g mask="url(#stripes)">
+    <circle cx="16" cy="20" r="14" fill="url(#sun)"/>
+  </g>
+</svg>

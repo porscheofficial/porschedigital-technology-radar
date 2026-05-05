@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 152 24">
+  <defs>
+    <filter id="g" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="0.6"/>
+    </filter>
+  </defs>
+  <text x="2" y="19" font-family="Courier, monospace" font-weight="700" font-size="20" letter-spacing="1.5" fill="#39FF14" filter="url(#g)" opacity="0.55">MATRIX</text>
+  <text x="2" y="19" font-family="Courier, monospace" font-weight="700" font-size="20" letter-spacing="1.5" fill="#C8FFC8">MATRIX</text>
+  <text x="98" y="19" font-family="Courier, monospace" font-size="20" fill="#39FF14">_</text>
+</svg>

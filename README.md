@@ -48,8 +48,9 @@ npm run dev
 Then customize:
 
 1. Add technologies as Markdown files in `radar/`.
-2. Configure segments, rings, labels, colors, and branding in [`config.json`][config-ref].
-3. Build and publish the static `build/` directory.
+2. Configure segments, rings, and labels in [`config.json`][config-ref].
+3. Customize colors, logos, and theming in `themes/<your-theme>/manifest.jsonc` (each theme can also provide light and dark mode variants).
+4. Build and publish the static `build/` directory.
 
 Also works with `pnpm create`, `yarn create`, and `bun create`.
 
@@ -57,7 +58,8 @@ Also works with `pnpm create`, `yarn create`, and `bun create`.
 
 - 🚀 **Scaffold in one command** — starter content, dev server, and build scripts included
 - 🏷️ **Configurable taxonomy** — define your own segments, rings, labels, and colors
-- 🎨 **Custom branding** — logos, page titles, metadata, and theme colors
+- 🎨 **Custom theming** — logos, page titles, metadata, and theme colors
+- 🌗 **Theme × mode** — dual-mode themes with header toggle and Spotlight controls
 - 📡 **Radar visualization** — interactive overview with segment and ring layout
 - 📄 **Technology detail pages** — each entry gets its own page with full context
 - 🔍 **Search and filters** — find technologies by name, tag, team, or status

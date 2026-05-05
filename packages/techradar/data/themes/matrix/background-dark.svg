@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <radialGradient id="phosphor" cx="0.5" cy="0.5" r="0.7">
+      <stop offset="0%" stop-color="#00FF66" stop-opacity="0.35"/>
+      <stop offset="60%" stop-color="#003311" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="scanlines" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect width="4" height="4" fill="#02060A"/>
+      <rect width="4" height="2" fill="#0A1F10" fill-opacity="0.6"/>
+    </pattern>
+  </defs>
+  <rect width="1920" height="1080" fill="#02060A"/>
+  <rect width="1920" height="1080" fill="url(#phosphor)"/>
+  <rect width="1920" height="1080" fill="url(#scanlines)" opacity="0.35"/>
+  <g font-family="Courier, monospace" font-size="13" fill="#39FF14" fill-opacity="0.18">
+    <text x="60" y="120">01001101 01000001 01010100 01010010 01001001 01011000</text>
+    <text x="60" y="200">function decode(stream) { return stream.map(c =&gt; c ^ 0x42); }</text>
+    <text x="60" y="280">SYS:: kernel.boot OK ... 0xFF42 0xC8A1 0x9D00</text>
+    <text x="60" y="940">awaiting input&gt; _</text>
+  </g>
+</svg>

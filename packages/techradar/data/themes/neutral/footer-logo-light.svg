@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 152 24">
+  <g>
+    <rect x="2" y="3" width="8" height="8" rx="1.5" fill="#059669"/>
+    <rect x="11" y="3" width="8" height="8" rx="1.5" fill="#0284C7"/>
+    <rect x="2" y="13" width="8" height="8" rx="1.5" fill="#E11D48"/>
+    <rect x="11" y="13" width="8" height="8" rx="1.5" fill="#D97706"/>
+  </g>
+  <text x="27" y="18" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif" font-size="17" font-weight="600" letter-spacing="1.4" fill="#18181B">NEUTRAL</text>
+</svg>

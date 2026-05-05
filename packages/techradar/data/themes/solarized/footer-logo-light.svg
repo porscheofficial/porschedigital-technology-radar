@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 152 24" fill="none">
+  <defs>
+    <radialGradient id="sun" cx="0.4" cy="0.4" r="0.6">
+      <stop offset="0%" stop-color="#FFD24A"/>
+      <stop offset="100%" stop-color="#B58900"/>
+    </radialGradient>
+  </defs>
+  <g transform="translate(12, 12)">
+    <circle r="11" fill="none" stroke="#268BD2" stroke-width="0.6" opacity="0.6"/>
+    <circle r="8" fill="none" stroke="#2AA198" stroke-width="0.6" opacity="0.75"/>
+    <circle r="5.5" fill="none" stroke="#859900" stroke-width="0.6" opacity="0.75"/>
+    <circle r="3" fill="url(#sun)"/>
+    <circle cx="-11" cy="0" r="1.1" fill="#268BD2"/>
+    <circle cx="5.7" cy="5.7" r="0.9" fill="#2AA198"/>
+  </g>
+  <text x="28" y="19" font-family="Georgia, 'Times New Roman', serif" font-weight="600"
+        font-size="20" letter-spacing="1.6" fill="#586E75">SOLARIZED</text>
+</svg>

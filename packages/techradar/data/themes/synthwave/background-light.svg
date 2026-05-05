@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FBF7FF"/>
+      <stop offset="55%" stop-color="#FCE6F5"/>
+      <stop offset="62%" stop-color="#F8C8E5"/>
+      <stop offset="65%" stop-color="#FBF7FF"/>
+      <stop offset="100%" stop-color="#F4ECFB"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="0.5" cy="1" r="0.5">
+      <stop offset="0%" stop-color="#FFD9A8"/>
+      <stop offset="40%" stop-color="#FFA8C8"/>
+      <stop offset="75%" stop-color="#C724B1" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#7B2CBF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="sunMask" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fff"/>
+      <stop offset="55%" stop-color="#fff"/>
+      <stop offset="58%" stop-color="#000"/>
+      <stop offset="62%" stop-color="#fff"/>
+      <stop offset="66%" stop-color="#000"/>
+      <stop offset="71%" stop-color="#fff"/>
+      <stop offset="76%" stop-color="#000"/>
+      <stop offset="82%" stop-color="#fff"/>
+      <stop offset="88%" stop-color="#000"/>
+      <stop offset="100%" stop-color="#fff"/>
+    </linearGradient>
+    <mask id="sunStripes">
+      <rect width="1920" height="1080" fill="url(#sunMask)"/>
+    </mask>
+    <linearGradient id="gridFade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#C724B1" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#0891B2" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="sunGlow" cx="0.5" cy="0.65" r="0.55">
+      <stop offset="0%" stop-color="#C724B1" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#C724B1" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1920" height="1080" fill="url(#sky)"/>
+
+  <circle cx="960" cy="700" r="520" fill="url(#sunGlow)"/>
+
+  <g mask="url(#sunStripes)">
+    <circle cx="960" cy="700" r="380" fill="url(#sun)"/>
+  </g>
+
+  <rect x="0" y="697" width="1920" height="4" fill="#C724B1" opacity="0.7"/>
+
+  <g stroke="url(#gridFade)" stroke-width="2" fill="none" opacity="1">
+    <line x1="0" y1="702" x2="1920" y2="702"/>
+    <line x1="0" y1="715" x2="1920" y2="715"/>
+    <line x1="0" y1="735" x2="1920" y2="735"/>
+    <line x1="0" y1="763" x2="1920" y2="763"/>
+    <line x1="0" y1="800" x2="1920" y2="800"/>
+    <line x1="0" y1="848" x2="1920" y2="848"/>
+    <line x1="0" y1="908" x2="1920" y2="908"/>
+    <line x1="0" y1="982" x2="1920" y2="982"/>
+    <line x1="0" y1="1070" x2="1920" y2="1070"/>
+    <line x1="960" y1="700" x2="-1920" y2="1080"/>
+    <line x1="960" y1="700" x2="-1280" y2="1080"/>
+    <line x1="960" y1="700" x2="-640" y2="1080"/>
+    <line x1="960" y1="700" x2="0" y2="1080"/>
+    <line x1="960" y1="700" x2="320" y2="1080"/>
+    <line x1="960" y1="700" x2="560" y2="1080"/>
+    <line x1="960" y1="700" x2="760" y2="1080"/>
+    <line x1="960" y1="700" x2="900" y2="1080"/>
+    <line x1="960" y1="700" x2="960" y2="1080"/>
+    <line x1="960" y1="700" x2="1020" y2="1080"/>
+    <line x1="960" y1="700" x2="1160" y2="1080"/>
+    <line x1="960" y1="700" x2="1360" y2="1080"/>
+    <line x1="960" y1="700" x2="1600" y2="1080"/>
+    <line x1="960" y1="700" x2="1920" y2="1080"/>
+    <line x1="960" y1="700" x2="2560" y2="1080"/>
+    <line x1="960" y1="700" x2="3200" y2="1080"/>
+    <line x1="960" y1="700" x2="3840" y2="1080"/>
+  </g>
+</svg>

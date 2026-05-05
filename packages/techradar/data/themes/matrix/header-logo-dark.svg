@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 40">
+  <defs>
+    <filter id="g" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="0.5"/>
+    </filter>
+  </defs>
+  <text x="16" y="28" text-anchor="middle" font-family="Courier, monospace" font-weight="700" font-size="22" fill="#39FF14" filter="url(#g)" opacity="0.5">M</text>
+  <text x="16" y="28" text-anchor="middle" font-family="Courier, monospace" font-weight="700" font-size="22" fill="#C8FFC8">M</text>
+</svg>

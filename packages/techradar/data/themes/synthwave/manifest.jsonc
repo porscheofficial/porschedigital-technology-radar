@@ -1,0 +1,130 @@
+// Synthwave theme — retro 80s neon. Dark mode is the canonical vibe
+// (deep indigo backgrounds, hot pink + cyan accents); light mode is a
+// toned-down companion that keeps the magenta/teal personality without
+// blinding anyone in daylight.
+//
+// Defaults to dark because that's where synthwave lives.
+{
+  "label": "Synthwave",
+  "supports": ["light", "dark"],
+  "default": "dark",
+  "cssVariables": {
+    "foreground": {
+      "light": "#2D1B4E",
+      "dark": "#F0E6FF"
+    },
+    "background": {
+      "light": "#FBF7FF",
+      "dark": "#1A0B2E"
+    },
+    "highlight": {
+      "light": "#C724B1",
+      "dark": "#FF2A6D"
+    },
+    "content": {
+      "light": "#3D2A66",
+      "dark": "#D4C5F0"
+    },
+    "text": {
+      "light": "#5D4A88",
+      "dark": "#A89BC9"
+    },
+    "link": {
+      "light": "#0891B2",
+      "dark": "#05D9E8"
+    },
+    "border": {
+      "light": "#E5D9F2",
+      "dark": "#2D1B4E"
+    },
+    "tag": {
+      "light": "#EDE0F8",
+      "dark": "#2D1B4E"
+    },
+    "surface": {
+      "light": "#FFFFFF",
+      "dark": "#241340"
+    },
+    "footer": {
+      "light": "#F4ECFB",
+      "dark": "#0F0620"
+    },
+    "shading": {
+      "light": "rgba(45, 27, 78, 0.12)",
+      "dark": "rgba(0, 0, 0, 0.55)"
+    },
+    "frosted": {
+      "light": "rgba(251, 247, 255, 0.7)",
+      "dark": "rgba(36, 19, 64, 0.6)"
+    }
+  },
+  // Chip palette: muted purple status, cyan tags, hot pink teams, with
+  // mint-green / coral for added/removed so the diff colors stay legible
+  // against both backgrounds.
+  "chips": {
+    "status": {
+      "light": "#7C5BA8",
+      "dark": "#9B7FCC"
+    },
+    "tag": {
+      "light": "#0891B2",
+      "dark": "#05D9E8"
+    },
+    "team": {
+      "light": "#C724B1",
+      "dark": "#FF2A6D"
+    },
+    "team-added": {
+      "light": "#0EA371",
+      "dark": "#39FF9C"
+    },
+    "team-removed": {
+      "light": "#E0407F",
+      "dark": "#FF5E7A"
+    }
+  },
+  // Procedural SVG backgrounds: classic synthwave horizon — striped
+  // sun on the vanishing line and a perspective grid receding to it,
+  // plus a soft outer glow so the page reads as "synthwave" even at a
+  // glance. Different palettes per mode (neon on dark, soft magenta
+  // on light). Opacity is high enough to be recognizable while still
+  // letting radar content stay primary.
+  "background": {
+    "image": {
+      "light": "background-light.svg",
+      "dark": "background-dark.svg"
+    },
+    "opacity": {
+      "light": 0.28,
+      "dark": 0.45
+    }
+  },
+  // Header + footer logos: a striped retro sun on a horizon line with
+  // a SYNTHWAVE wordmark. Two variants per slot so the gradients pop
+  // against either background.
+  "headerLogoFile": {
+    "light": "header-logo-light.svg",
+    "dark": "header-logo-dark.svg"
+  },
+  "footerLogoFile": {
+    "light": "footer-logo-light.svg",
+    "dark": "footer-logo-dark.svg"
+  },
+  // Radar uses the four canonical synthwave neons: hot pink, cyan,
+  // electric purple, and sunset orange. Light variants are slightly
+  // desaturated so they hold up on a pale background.
+  "radar": {
+    "segments": [
+      { "light": "#C724B1", "dark": "#FF2A6D" },
+      { "light": "#0891B2", "dark": "#05D9E8" },
+      { "light": "#7B2CBF", "dark": "#B967FF" },
+      { "light": "#D2691E", "dark": "#FFA552" }
+    ],
+    "rings": [
+      { "light": "#C724B1", "dark": "#FF2A6D" },
+      { "light": "#0891B2", "dark": "#05D9E8" },
+      { "light": "#7B2CBF", "dark": "#B967FF" },
+      { "light": "#D2691E", "dark": "#FFA552" }
+    ]
+  }
+}

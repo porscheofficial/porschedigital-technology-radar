@@ -1,0 +1,47 @@
+// Matrix theme — dark only. CRT phosphor green on near-black, scanline
+// background, monospaced wordmark. The classic "you are inside the
+// machine" look. No light variant on purpose: the whole point is the
+// glow against pure dark.
+{
+  "label": "Matrix",
+  "supports": ["dark"],
+  "default": "dark",
+  "cssVariables": {
+    "foreground": "#C8FFC8",
+    "background": "#02060A",
+    "highlight": "#00FF66",
+    "content": "#9FE3A3",
+    "text": "#7BC78F",
+    "link": "#39FF14",
+    "border": "#0F2A14",
+    "tag": "#0F2A14",
+    "surface": "#08120B",
+    "footer": "#03080A",
+    "shading": "rgba(0, 0, 0, 0.7)",
+    "frosted": "rgba(8, 18, 11, 0.6)"
+  },
+  // Phosphor-green chips with brighter accent variants for added/removed
+  // so the diff still reads at a glance against the deep-black tag base.
+  "chips": {
+    "status": "#7BC78F",
+    "tag": "#39FF14",
+    "team": "#00FF66",
+    "team-added": "#A6FF4D",
+    "team-removed": "#FF5555"
+  },
+  // Scanline backdrop with a faint phosphor glow at the center, just
+  // enough atmosphere without competing with the radar.
+  "background": {
+    "image": "background-dark.svg",
+    "opacity": 0.55
+  },
+  "headerLogoFile": "header-logo-dark.svg",
+  "footerLogoFile": "footer-logo-dark.svg",
+  // Four phosphor variants for the radar palette: bright lime, deep
+  // green, mid neon, and a single warning amber so destructive items
+  // pop. Keeps the monochrome-ish vibe but stays readable.
+  "radar": {
+    "segments": ["#39FF14", "#00B86B", "#7BFF9C", "#FFB000"],
+    "rings": ["#39FF14", "#00B86B", "#7BFF9C", "#FFB000"]
+  }
+}

@@ -1,0 +1,103 @@
+// Neutral theme — slate/zinc grayscale + a single blue accent.
+// Brand-agnostic dual-mode default: looks neutral enough that any org can
+// adopt it as a starting point and only override the accent hue if needed.
+{
+  "label": "Neutral",
+  "supports": ["light", "dark"],
+  "default": "light",
+  "headerLogoFile": {
+    "light": "header-logo-light.svg",
+    "dark": "header-logo-dark.svg"
+  },
+  "footerLogoFile": {
+    "light": "footer-logo-light.svg",
+    "dark": "footer-logo-dark.svg"
+  },
+  "cssVariables": {
+    "foreground": {
+      "light": "#18181B",
+      "dark": "#F4F4F5"
+    },
+    "background": {
+      "light": "#FAFAFA",
+      "dark": "#18181B"
+    },
+    "highlight": {
+      "light": "#2563EB",
+      "dark": "#60A5FA"
+    },
+    "content": {
+      "light": "#3F3F46",
+      "dark": "#D4D4D8"
+    },
+    "text": {
+      "light": "#52525B",
+      "dark": "#A1A1AA"
+    },
+    "link": {
+      "light": "#2563EB",
+      "dark": "#60A5FA"
+    },
+    "border": {
+      "light": "#E4E4E7",
+      "dark": "#3F3F46"
+    },
+    "tag": {
+      "light": "#F4F4F5",
+      "dark": "#27272A"
+    },
+    "surface": {
+      "light": "#FFFFFF",
+      "dark": "#27272A"
+    },
+    "footer": {
+      "light": "#FFFFFF",
+      "dark": "#0A0A0B"
+    },
+    "shading": {
+      "light": "rgba(24, 24, 27, 0.08)",
+      "dark": "rgba(0, 0, 0, 0.5)"
+    },
+    "frosted": {
+      "light": "rgba(255, 255, 255, 0.7)",
+      "dark": "rgba(39, 39, 42, 0.6)"
+    }
+  },
+  // Segment hues: muted but distinguishable (emerald / sky / amber / rose).
+  "chips": {
+    "status": {
+      "light": "#71717A",
+      "dark": "#A1A1AA"
+    },
+    "tag": {
+      "light": "#2563EB",
+      "dark": "#60A5FA"
+    },
+    "team": {
+      "light": "#D97706",
+      "dark": "#FBBF24"
+    },
+    "team-added": {
+      "light": "#059669",
+      "dark": "#34D399"
+    },
+    "team-removed": {
+      "light": "#E11D48",
+      "dark": "#FB7185"
+    }
+  },
+  "radar": {
+    "segments": [
+      { "light": "#059669", "dark": "#34D399" },
+      { "light": "#0284C7", "dark": "#38BDF8" },
+      { "light": "#D97706", "dark": "#FBBF24" },
+      { "light": "#E11D48", "dark": "#FB7185" }
+    ],
+    "rings": [
+      { "light": "#059669", "dark": "#34D399" },
+      { "light": "#0284C7", "dark": "#38BDF8" },
+      { "light": "#D97706", "dark": "#FBBF24" },
+      { "light": "#E11D48", "dark": "#FB7185" }
+    ]
+  }
+}

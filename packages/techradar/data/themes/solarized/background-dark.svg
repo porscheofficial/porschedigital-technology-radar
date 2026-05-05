@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <radialGradient id="sky" cx="0.65" cy="0.45" r="0.75">
+      <stop offset="0%" stop-color="#073642"/>
+      <stop offset="60%" stop-color="#002B36"/>
+      <stop offset="100%" stop-color="#001A21"/>
+    </radialGradient>
+    <radialGradient id="sunGlow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#FFE066" stop-opacity="0.9"/>
+      <stop offset="35%" stop-color="#B58900" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#B58900" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="sunDisc" cx="0.4" cy="0.4" r="0.6">
+      <stop offset="0%" stop-color="#FFE066"/>
+      <stop offset="80%" stop-color="#B58900"/>
+      <stop offset="100%" stop-color="#8C6900"/>
+    </radialGradient>
+    <pattern id="dots" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+      <circle cx="20" cy="20" r="0.8" fill="#586E75" opacity="0.18"/>
+    </pattern>
+  </defs>
+
+  <rect width="1920" height="1080" fill="url(#sky)"/>
+  <rect width="1920" height="1080" fill="url(#dots)"/>
+
+  <g transform="translate(1248, 486)">
+    <circle r="640" fill="url(#sunGlow)"/>
+    <circle r="540" fill="none" stroke="#268BD2" stroke-width="0.6" opacity="0.22"/>
+    <circle r="430" fill="none" stroke="#2AA198" stroke-width="0.6" opacity="0.28"/>
+    <circle r="330" fill="none" stroke="#859900" stroke-width="0.6" opacity="0.32"/>
+    <circle r="240" fill="none" stroke="#B58900" stroke-width="0.8" opacity="0.4"/>
+    <circle r="160" fill="url(#sunDisc)"/>
+
+    <circle cx="-540" cy="0" r="6" fill="#268BD2" opacity="0.6"/>
+    <circle cx="304" cy="304" r="5" fill="#2AA198" opacity="0.7"/>
+    <circle cx="-233" cy="-233" r="4" fill="#859900" opacity="0.65"/>
+    <circle cx="208" cy="-120" r="5" fill="#CB4B16" opacity="0.55"/>
+  </g>
+</svg>

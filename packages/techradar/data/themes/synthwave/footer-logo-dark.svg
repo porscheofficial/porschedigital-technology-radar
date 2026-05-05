@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 152 24" fill="none">
+  <defs>
+    <linearGradient id="sun" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFE066"/>
+      <stop offset="50%" stop-color="#FFA552"/>
+      <stop offset="100%" stop-color="#FF2A6D"/>
+    </linearGradient>
+    <linearGradient id="text" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#FF2A6D"/>
+      <stop offset="100%" stop-color="#05D9E8"/>
+    </linearGradient>
+    <mask id="stripes">
+      <rect width="152" height="24" fill="#fff"/>
+      <rect x="0" y="13" width="24" height="1.2" fill="#000"/>
+      <rect x="0" y="15.5" width="24" height="1.2" fill="#000"/>
+      <rect x="0" y="18" width="24" height="1.5" fill="#000"/>
+    </mask>
+  </defs>
+  <line x1="1" y1="20.5" x2="23" y2="20.5" stroke="#FF2A6D" stroke-width="1.1"/>
+  <g mask="url(#stripes)">
+    <circle cx="12" cy="12" r="11" fill="url(#sun)"/>
+  </g>
+  <text x="28" y="19" font-family="'Courier New', monospace" font-weight="700"
+        font-size="20" letter-spacing="1.5" fill="url(#text)">SYNTHWAVE</text>
+</svg>

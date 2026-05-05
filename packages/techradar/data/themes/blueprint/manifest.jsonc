@@ -1,0 +1,49 @@
+// Blueprint theme — light only. Architect's blueprint paper:
+// cyan-blue background with faint white technical drawing lines, navy
+// ink for text, and drafting-pencil accents in the radar palette
+// (vermilion, ochre, slate, forest). Reads as "engineering" at first
+// glance. No dark variant — the whole identity is the paper.
+{
+  "label": "Blueprint",
+  "supports": ["light"],
+  "default": "light",
+  "cssVariables": {
+    "foreground": "#0B2545",
+    "background": "#D6E4F0",
+    "highlight": "#0B2545",
+    "content": "#1B3A6B",
+    "text": "#3B5A86",
+    "link": "#1565C0",
+    "border": "#A8C0DA",
+    "tag": "#C5DCEF",
+    "surface": "#EAF2FA",
+    "footer": "#C5DCEF",
+    "shading": "rgba(11, 37, 69, 0.18)",
+    "frosted": "rgba(234, 242, 250, 0.65)"
+  },
+  // Drafting palette: navy status, cyan tags, ochre teams, with forest
+  // green / vermilion for added-removed so changes still pop on paper.
+  "chips": {
+    "status": "#3B5A86",
+    "tag": "#1565C0",
+    "team": "#B85C00",
+    "team-added": "#2E7D32",
+    "team-removed": "#C62828"
+  },
+  // Procedural blueprint background: white technical-drawing line art
+  // (grid + drafting marks) over the cyan-blue paper. Low opacity so it
+  // sets atmosphere without competing with radar content.
+  "background": {
+    "image": "background-light.svg",
+    "opacity": 0.55
+  },
+  "headerLogoFile": "header-logo-light.svg",
+  "footerLogoFile": "footer-logo-light.svg",
+  // Drafting-pencil radar palette ordered Adopt → Hold:
+  // forest (adopt, positive), slate (trial), ochre (assess), vermilion
+  // (hold, negative). All chosen to read clearly against cyan-blue paper.
+  "radar": {
+    "segments": ["#2E7D32", "#3B5A86", "#B85C00", "#C62828"],
+    "rings": ["#2E7D32", "#3B5A86", "#B85C00", "#C62828"]
+  }
+}

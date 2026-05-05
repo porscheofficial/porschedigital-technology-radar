@@ -126,11 +126,8 @@ All configuration lives in `data/config.json`. Any key you omit falls back to th
 | `basePath`          | URL path prefix. Set to `/` for root hosting, or `/techradar` for a sub-path.                      | `/`     |
 | `baseUrl`           | Full origin (scheme + host) where the radar is hosted, e.g. `https://opensource.porsche.com`. Used for `sitemap.xml`, canonical links, and Open Graph / Twitter meta tags. The runtime env var `NEXT_PUBLIC_BASE_URL` overrides this when set (useful for staging deploys). The `basePath` is appended automatically — do **not** include it here. | `""`    |
 | `editUrl`           | If set, shows an edit button on item pages. Supports `{id}` and `{release}` placeholders. Example: `https://github.dev/org/repo/blob/main/data/radar/{release}/{id}.md` | `"https://github.dev/porscheofficial/porschedigital-technology-radar/blob/main/data/radar/{release}/{id}.md"` |
-| `headerLogoFile`    | Path to a logo image in `public/` for the header. Leave empty to use the default Porsche crest.    | `""`    |
-| `footerLogoFile`    | Path to a logo image in `public/` for the footer. Leave empty to use the default Porsche wordmark. | `""`    |
 | `jsFile`            | Path in `public/` or URL to a custom JavaScript file to include on every page.                     | `""`    |
-| `backgroundImage`   | Path to an image in `public/` shown as a subtle background overlay. Leave empty to disable.        | `"/background.jpg"` |
-| `backgroundOpacity` | Opacity of the background image overlay (0 = invisible, 1 = fully visible).                        | `0.06`  |
+| `defaultTheme`      | Identifier of the theme applied on first visit. Must match the `id` of a theme in `data/themes/<id>/manifest.jsonc`. You may optionally pin the initial mode with `theme:light` or `theme:dark`; otherwise dual-mode themes start in `system` mode and single-mode themes use their only supported mode. Visitors can switch theme and mode at runtime via Spotlight, and the selection is persisted in `localStorage`. | `"porsche"` |
 | `imprint`           | URL to your legal information / imprint page.                                                      | `""` |
 
 </details>
@@ -151,24 +148,6 @@ All configuration lives in `data/config.json`. Any key you omit falls back to th
 </details>
 
 <details>
-<summary><strong><code>colors</code></strong></summary>
-
-A map of CSS color values that theme the entire radar.
-
-| Key          | Description                          | Default   |
-| ------------ | ------------------------------------ | --------- |
-| `foreground` | Primary text and UI element color    | `#FBFCFF` |
-| `background` | Page background                      | `#0E0E12` |
-| `highlight`  | Highlighted text and active elements | `#FBFCFF` |
-| `content`    | Secondary content text               | `#AFB0B3` |
-| `text`       | Tertiary / muted text                | `#88898C` |
-| `link`       | Link color                           | `#FBFCFF` |
-| `border`     | Border and separator color           | `#404044` |
-| `tag`        | Tag background color                 | `#404044` |
-
-</details>
-
-<details>
 <summary><strong><code>segments</code></strong></summary>
 
 An array of segment objects (1 or more). The radar geometry adapts automatically — arc sweep is `360° / N`, and labels follow the arcs. **3 to 6 is the comfortable range**; beyond 6 the per-segment arc becomes too narrow for readable labels and the blips start to crowd.
@@ -184,7 +163,6 @@ Both shims will be removed in a future major release. See ADR-0028.
 | `id`          | Identifier used in radar Markdown files and URLs |
 | `title`       | Display title of the segment                    |
 | `description` | Shown on the homepage and segment detail page   |
-| `color`       | CSS color for the segment arc and its blips     |
 
 </details>
 
@@ -198,7 +176,6 @@ An array of ring objects (typically 4), ordered from innermost to outermost.
 | `id`          | Identifier used in radar Markdown files                        |
 | `title`       | Display title, shown as badge label                            |
 | `description` | Optional description text                                      |
-| `color`       | CSS color for the ring badge                                   |
 | `radius`      | Outer boundary of the ring as a fraction of the chart (0 to 1) |
 | `strokeWidth` | Thickness of the ring's arc border in the SVG                  |
 
@@ -245,7 +222,7 @@ An array of social link objects shown in the footer.
 | `title`             | Radar title shown in the header and page titles           | `"Technology Radar"`                                                                                |
 | `tagline`           | Shared subtitle used in the default Open Graph image      | `"Track what to adopt, trial, assess, and hold."`                                                   |
 | `imprint`           | Label for the imprint link in the footer                  | `"Legal Information"`                                                                               |
-| `footer`            | Text shown in the footer                                  | `"An open-source technology radar by Porsche Digital, originally based on the AOE Technology Radar."` |
+| `footer`            | Text shown in the footer                                  | `"A public demo of the open-source Technology Radar Generator by Porsche Digital. Spin up your own in one command."` |
 | `notUpdated`        | Warning shown on items not updated in the last 3 releases | `"This item was not updated in last three versions of the Radar."`                                  |
 | `hiddenFromRadar`   | Info shown on items hidden from the radar chart           | `"This technology is currently hidden from the radar chart."`                                       |
 | `searchPlaceholder` | Placeholder text in the search input                      | `"Search & actions"`                                                                                |
@@ -253,6 +230,45 @@ An array of social link objects shown in the footer.
 | `metaDescription`   | HTML meta description for SEO                             | `""`                                                                                                |
 
 </details>
+
+### Theming
+
+The Radar now uses a folder-per-theme architecture where each theme declares the
+supported modes inside `data/themes/<theme>/manifest.jsonc`.
+
+- `supports: ["light", "dark"]` enables the header sun/moon toggle and the
+  Spotlight `Mode:` actions.
+- `supports: ["dark"]` or `supports: ["light"]` creates a single-mode theme;
+  mode controls stay hidden and the supported mode is forced.
+- Mode selection is persisted in `localStorage` under `techradar-mode`.
+- Theme selection is persisted in `localStorage` under `techradar-theme`.
+
+There is no migration CLI for the old flat `colorScheme` schema. Rewrite legacy
+`manifest.jsonc` files by hand using `data/themes/.example/`.
+
+#### Theme assets
+
+A theme may carry its own header and footer logos via optional
+`headerLogoFile` and `footerLogoFile` fields in `manifest.jsonc`. These fields can
+either be a single path for every supported mode or a per-mode object like
+`{ "light": "logo-light.svg", "dark": "logo-dark.svg" }`. Background images
+follow the same pattern through `background.image`. Assets are resolved
+relative to the theme folder and copied into `public/themes/<theme>/` at build
+time.
+
+#### Built-in themes
+
+<!-- THEMES:START -->
+| ID | Label | Supported Modes | Default |
+|---|---|---|---|
+| `blueprint` | Blueprint | `light` | `light` |
+| `matrix` | Matrix | `dark` | `dark` |
+| `neutral` | Neutral | `light, dark` | `light` |
+| `porsche` | Porsche | `light, dark` | `dark` |
+| `porsche-heritage` | Porsche Heritage | `light, dark` | `light` |
+| `solarized` | Solarized | `light, dark` | `light` |
+| `synthwave` | Synthwave | `light, dark` | `dark` |
+<!-- THEMES:END -->
 
 ---
 
@@ -266,8 +282,6 @@ An array of social link objects shown in the footer.
   "basePath": "/techradar",
   "baseUrl": "https://techradar.acme.io",
   "editUrl": "https://github.dev/acme/techradar/blob/main/radar/{release}/{id}.md",
-  "headerLogoFile": "/images/acme-logo.svg",
-  "footerLogoFile": "/images/acme-wordmark.svg",
   "backgroundImage": "/images/bg-pattern.png",
   "backgroundOpacity": 0.04,
   "imprint": "https://acme.io/legal",

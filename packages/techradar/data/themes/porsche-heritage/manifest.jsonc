@@ -1,0 +1,77 @@
+{
+  // Porsche Heritage — a tribute palette inspired by classic motorsport liveries:
+  // Guards Red, Racing Yellow, Riviera Blue, Acid Green. Warm parchment in light
+  // mode evokes leather and vintage interiors; piano-lacquer black in dark mode
+  // gives that backlit-instrument feel.
+  "label": "Porsche Heritage",
+  "supports": ["light", "dark"],
+  "default": "light",
+
+  "background": {
+    "image": {
+      "light": "background-light.svg",
+      "dark": "background-dark.svg"
+    },
+    "opacity": {
+      "light": 0.1,
+      "dark": 0.25
+    }
+  },
+
+  "headerLogoFile": {
+    "light": "header-logo-light.svg",
+    "dark": "header-logo-dark.svg"
+  },
+
+  "cssVariables": {
+    "foreground": { "light": "#0F0F12", "dark": "#FBFBFD" },
+    "background": { "light": "#F2EEE8", "dark": "#0A0A0E" },
+    // Guards Red — the highlight that defined a generation of brake calipers.
+    "highlight": { "light": "#D5001C", "dark": "#E63946" },
+    "content": { "light": "#4A4A4D", "dark": "#B5B5B8" },
+    "text": { "light": "#6B6D70", "dark": "#88898C" },
+    "link": { "light": "#D5001C", "dark": "#E63946" },
+    // Warm parchment-tinted neutrals so borders feel hand-stitched, not metal.
+    "border": { "light": "#C9C5BD", "dark": "#3A3A3E" },
+    "tag": { "light": "#C9C5BD", "dark": "#3A3A3E" },
+    "surface": { "light": "#FFFFFF", "dark": "#1A1A1E" },
+    "footer": { "light": "#FFFFFF", "dark": "#15151A" },
+    "shading": {
+      "light": "rgba(15,15,18,0.65)",
+      "dark": "rgba(28,28,32,0.65)"
+    },
+    "frosted": {
+      "light": "rgba(201,197,189,0.35)",
+      "dark": "rgba(58,58,62,0.35)"
+    }
+  },
+
+  "chips": {
+    "status": { "light": "#6B6D70", "dark": "#88898C" },
+    // Riviera Blue for tags — the flagship special-order shade.
+    "tag": { "light": "#0078C8", "dark": "#3DA0E0" },
+    // Lava Orange for teams — modern PTS hero color.
+    "team": { "light": "#C45A00", "dark": "#E16C0B" },
+    // Acid Green — the signature GT caliper green.
+    "team-added": { "light": "#7BA31E", "dark": "#A8C828" },
+    // Muted terracotta keeps "removed" semantically distinct from Guards-Red highlight.
+    "team-removed": { "light": "#8B3A2E", "dark": "#B85948" }
+  },
+
+  "radar": {
+    // Heritage palette ordered Adopt → Hold: Acid Green (adopt, positive),
+    // Riviera Blue (trial), Racing Yellow (assess), Guards Red (hold, negative).
+    "segments": [
+      { "light": "#7BA31E", "dark": "#A8C828" },
+      { "light": "#0078C8", "dark": "#3DA0E0" },
+      { "light": "#C9A800", "dark": "#FFD60A" },
+      { "light": "#D5001C", "dark": "#E63946" }
+    ],
+    "rings": [
+      { "light": "#7BA31E", "dark": "#A8C828" },
+      { "light": "#0078C8", "dark": "#3DA0E0" },
+      { "light": "#C9A800", "dark": "#FFD60A" },
+      { "light": "#D5001C", "dark": "#E63946" }
+    ]
+  }
+}

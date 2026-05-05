@@ -1,0 +1,123 @@
+// Solarized theme — Ethan Schoonover's classic palette (MIT-licensed).
+// The original is designed as a coordinated light/dark pair, so it's a
+// great showcase for the dual-mode manifest format.
+// https://ethanschoonover.com/solarized/
+{
+  "label": "Solarized",
+  "supports": ["light", "dark"],
+  "default": "light",
+  "cssVariables": {
+    // Solarized base colors:
+    //   base03 #002B36  base02 #073642  base01 #586E75  base00 #657B83
+    //   base0  #839496  base1  #93A1A1  base2  #EEE8D5  base3  #FDF6E3
+    "foreground": {
+      "light": "#586E75",
+      "dark": "#93A1A1"
+    },
+    "background": {
+      "light": "#FDF6E3",
+      "dark": "#002B36"
+    },
+    "highlight": {
+      "light": "#268BD2",
+      "dark": "#268BD2"
+    },
+    "content": {
+      "light": "#586E75",
+      "dark": "#93A1A1"
+    },
+    "text": {
+      "light": "#657B83",
+      "dark": "#839496"
+    },
+    "link": {
+      "light": "#268BD2",
+      "dark": "#268BD2"
+    },
+    "border": {
+      "light": "#EEE8D5",
+      "dark": "#073642"
+    },
+    "tag": {
+      "light": "#EEE8D5",
+      "dark": "#073642"
+    },
+    "surface": {
+      "light": "#FDF6E3",
+      "dark": "#073642"
+    },
+    "footer": {
+      "light": "#EEE8D5",
+      "dark": "#073642"
+    },
+    "shading": {
+      "light": "rgba(88, 110, 117, 0.15)",
+      "dark": "rgba(0, 0, 0, 0.5)"
+    },
+    "frosted": {
+      "light": "rgba(253, 246, 227, 0.7)",
+      "dark": "rgba(7, 54, 66, 0.6)"
+    }
+  },
+  // Chip backgrounds use solarized's named accents — they were picked to
+  // read on either base background, so identical light/dark values work.
+  "chips": {
+    "status": {
+      "light": "#93A1A1",
+      "dark": "#586E75"
+    },
+    "tag": {
+      "light": "#268BD2",
+      "dark": "#268BD2"
+    },
+    "team": {
+      "light": "#CB4B16",
+      "dark": "#CB4B16"
+    },
+    "team-added": {
+      "light": "#859900",
+      "dark": "#859900"
+    },
+    "team-removed": {
+      "light": "#DC322F",
+      "dark": "#DC322F"
+    }
+  },
+  // Accent colors — solarized's named hues at full saturation. Identical
+  // values for both modes by design (they were picked to read well on
+  // either base03 or base3 backgrounds).
+  "radar": {
+    "segments": [
+      { "light": "#B58900", "dark": "#B58900" },
+      { "light": "#268BD2", "dark": "#268BD2" },
+      { "light": "#D33682", "dark": "#D33682" },
+      { "light": "#859900", "dark": "#859900" }
+    ],
+    "rings": [
+      { "light": "#CB4B16", "dark": "#CB4B16" },
+      { "light": "#6C71C4", "dark": "#6C71C4" },
+      { "light": "#2AA198", "dark": "#2AA198" },
+      { "light": "#DC322F", "dark": "#DC322F" }
+    ]
+  },
+  // Background art — central sun with concentric orbital rings on solarized's
+  // signature warm cream / deep teal. Procedural SVGs (no external assets).
+  "background": {
+    "image": {
+      "light": "background-light.svg",
+      "dark": "background-dark.svg"
+    },
+    "opacity": {
+      "light": 0.45,
+      "dark": 0.55
+    }
+  },
+  "headerLogoFile": {
+    "light": "header-logo-light.svg",
+    "dark": "header-logo-dark.svg"
+  },
+  "footerLogoFile": {
+    "light": "footer-logo-light.svg",
+    "dark": "footer-logo-dark.svg"
+  }
+}

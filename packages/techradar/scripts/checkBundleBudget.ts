@@ -18,6 +18,7 @@ type Budget = {
   maxChunkBytes: number;
 };
 
+// PDS v4 migration: budget bump tracked in .sisyphus/plans/pds-v4-and-theme-mode.md.
 const budget = JSON.parse(
   readFileSync(join(root, "bundle-budget.json"), "utf8"),
 ) as Budget;

@@ -6,6 +6,7 @@ const root = path.resolve(__dirname, "..");
 const configPath = path.join(root, "data/config.default.json");
 const readmePath = path.join(root, "README.md");
 const frontmatterPath = path.join(root, "scripts/validateFrontmatter.ts");
+const themesPath = path.join(root, "data/themes.generated.json");
 
 function flattenLeafKeys(obj: unknown, prefix = ""): string[] {
   // Only emit keys whose value is a primitive (string/number/boolean/null).
@@ -219,6 +220,44 @@ for (const [key, value] of configEntries) {
   }
 }
 
+let themeDriftMsg = "";
+try {
+  const themesRaw = fs.readFileSync(themesPath, "utf8");
+  const themesData = JSON.parse(themesRaw) as Array<{
+    id: string;
+    label: string;
+    supports: string[];
+    default: string;
+  }>;
+  themesData.sort((a, b) => a.id.localeCompare(b.id));
+
+  let expectedThemesTable =
+    "| ID | Label | Supported Modes | Default |\n|---|---|---|---|\n";
+  for (const t of themesData) {
+    expectedThemesTable += `| \`${t.id}\` | ${t.label} | \`${t.supports.join(", ")}\` | \`${t.default}\` |\n`;
+  }
+  expectedThemesTable = expectedThemesTable.trim();
+
+  const themeStart = "<!-- THEMES:START -->";
+  const themeEnd = "<!-- THEMES:END -->";
+
+  const startIdx = readme.indexOf(themeStart);
+  const endIdx = readme.indexOf(themeEnd);
+
+  if (startIdx === -1 || endIdx === -1 || startIdx >= endIdx) {
+    themeDriftMsg = `Missing or invalid sentinel comments ${themeStart} and ${themeEnd} in README.md`;
+  } else {
+    const actualThemesTable = readme
+      .substring(startIdx + themeStart.length, endIdx)
+      .trim();
+    if (actualThemesTable !== expectedThemesTable) {
+      themeDriftMsg = `Themes table in README does not match generated themes.\nExpected:\n${expectedThemesTable}\n\nFound:\n${actualThemesTable}`;
+    }
+  }
+} catch {
+  themeDriftMsg = `Could not read ${themesPath}. Did you run build:data?`;
+}
+
 let errors = 0;
 if (missingInReadme.length > 0) {
   consola.error("Config keys missing from README:");
@@ -240,6 +279,11 @@ if (driftedDefaults.length > 0) {
     );
   }
   errors += driftedDefaults.length;
+}
+if (themeDriftMsg) {
+  consola.error("Themes documentation drift:");
+  consola.error(`  - ${themeDriftMsg}`);
+  errors += 1;
 }
 
 if (errors > 0) {

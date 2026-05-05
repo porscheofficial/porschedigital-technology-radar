@@ -29,6 +29,7 @@ export default tseslint.config(
     ignores: [
       "node_modules/**",
       ".next/**",
+      ".next-dev/**",
       "out/**",
       "dist/**",
       "coverage/**",
@@ -204,6 +205,11 @@ export default tseslint.config(
 
   {
     files: ["src/components/SafeHtml/SafeHtml.tsx"],
+    rules: { "no-restricted-syntax": "off" },
+  },
+
+  {
+    files: ["src/pages/_document.tsx"],
     rules: { "no-restricted-syntax": "off" },
   },
 

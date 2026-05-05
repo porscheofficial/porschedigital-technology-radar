@@ -1,11 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
-import {
-  getFooterLogoUrl,
-  getImprintUrl,
-  getLabel,
-  getSocialLinks,
-} from "@/lib/data";
+import { getImprintUrl, getLabel, getSocialLinks } from "@/lib/data";
+import { useTheme } from "@/lib/ThemeContext";
 import { Footer } from "../Footer";
 
 interface MockLinkProps {
@@ -33,8 +29,11 @@ interface MockWordmarkProps {
 vi.mock("@/lib/data", () => ({
   getSocialLinks: vi.fn(),
   getImprintUrl: vi.fn(),
-  getFooterLogoUrl: vi.fn(),
   getLabel: vi.fn(),
+}));
+
+vi.mock("@/lib/ThemeContext", () => ({
+  useTheme: vi.fn(),
 }));
 
 vi.mock("@porsche-design-system/components-react/ssr", () => ({
@@ -83,19 +82,43 @@ vi.mock("@porsche-design-system/components-react/ssr", () => ({
 
 const mockGetSocialLinks = getSocialLinks as ReturnType<typeof vi.fn>;
 const mockGetImprintUrl = getImprintUrl as ReturnType<typeof vi.fn>;
-const mockGetFooterLogoUrl = getFooterLogoUrl as ReturnType<typeof vi.fn>;
 const mockGetLabel = getLabel as ReturnType<typeof vi.fn>;
+const mockUseTheme = useTheme as ReturnType<typeof vi.fn>;
+
+function makeTheme(footerLogo?: string) {
+  return {
+    activeTheme: {
+      id: "test",
+      label: "Test",
+      supports: ["dark"],
+      default: "dark" as const,
+    },
+    mode: "dark" as const,
+    theme: {
+      id: "test",
+      label: "Test",
+      supports: ["dark"],
+      default: "dark" as const,
+      cssVariables: {} as Record<string, string>,
+      radar: { segments: [], rings: [] },
+      assetsResolved: { footerLogo },
+    },
+    themes: [],
+    setActiveTheme: vi.fn(),
+    setMode: vi.fn(),
+  };
+}
 
 describe("Footer", () => {
   beforeEach(() => {
     mockGetSocialLinks.mockReset();
     mockGetImprintUrl.mockReset();
-    mockGetFooterLogoUrl.mockReset();
     mockGetLabel.mockReset();
+    mockUseTheme.mockReset();
 
     mockGetSocialLinks.mockReturnValue([]);
     mockGetImprintUrl.mockReturnValue("");
-    mockGetFooterLogoUrl.mockReturnValue("");
+    mockUseTheme.mockReturnValue(makeTheme(undefined));
     mockGetLabel.mockImplementation((key: string) => {
       if (key === "footer") return "Footer text";
       if (key === "imprint") return "Legal Information";
@@ -135,15 +158,17 @@ describe("Footer", () => {
     expect(screen.queryByTestId("p-link-pure")).not.toBeInTheDocument();
   });
 
-  it("renders the footer logo image when a URL is provided", () => {
-    mockGetFooterLogoUrl.mockReturnValue("/logo.svg");
+  it("renders the theme footer logo when assetsResolved.footerLogo is set", () => {
+    mockUseTheme.mockReturnValue(makeTheme("/themes/dark/logo-footer.svg"));
 
     const { container } = render(<Footer />);
 
-    expect(container.querySelector("img")).toHaveAttribute("src", "/logo.svg");
+    const img = container.querySelector("img");
+    expect(img).not.toBeNull();
+    expect(img?.getAttribute("src")).toContain("/themes/dark/logo-footer.svg");
   });
 
-  it("renders the PWordmark when no logo URL is provided", () => {
+  it("renders the PWordmark when the active theme has no footer logo", () => {
     render(<Footer />);
 
     expect(screen.getByTestId("p-wordmark")).toBeInTheDocument();

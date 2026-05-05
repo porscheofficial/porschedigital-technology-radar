@@ -1,10 +1,10 @@
-import { PIcon } from "@porsche-design-system/components-react/ssr";
+import { PIcon, PLinkPure } from "@porsche-design-system/components-react/ssr";
 import { useCallback, useEffect, useState } from "react";
+import { assetUrl } from "@/lib/utils";
 import styles from "./DemoDisclaimer.module.scss";
 
 const STORAGE_KEY = "radar-disclaimer-dismissed";
-const GITHUB_URL =
-  "https://github.com/porscheofficial/porschedigital-technology-radar";
+const ABOUT_PATH = "/help-and-about-tech-radar";
 
 export function DemoDisclaimer() {
   const [visible, setVisible] = useState(false);
@@ -33,18 +33,27 @@ export function DemoDisclaimer() {
   return (
     <div className={styles.disclaimer} role="status">
       <PIcon
-        name="exclamation"
+        name="information"
         size="small"
         className={styles.icon}
         aria-hidden="true"
       />
       <p className={styles.text}>
-        This is a showcase based on the{" "}
-        <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
-          open-source technology radar
-        </a>{" "}
-        for visualization purposes and does not represent actual Porsche or
-        Porsche Digital technology choices.
+        Welcome! Live showcase of the open-source Technology Radar Generator.
+        Try a different theme from the{" "}
+        <strong>Spotlight command palette</strong>. More on the{" "}
+        <PLinkPure
+          href={assetUrl(ABOUT_PATH)}
+          icon="none"
+          alignLabel="start"
+          stretch={false}
+          underline={true}
+          size="x-small"
+          className={styles.link}
+        >
+          About page
+        </PLinkPure>
+        .
       </p>
       <button
         type="button"

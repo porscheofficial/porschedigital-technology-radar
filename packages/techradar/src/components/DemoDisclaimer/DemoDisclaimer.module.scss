@@ -1,4 +1,4 @@
-@use "@porsche-design-system/components-react/styles" as *;
+@use "@porsche-design-system/components-react/scss" as *;
 
 .disclaimer {
   display: flex;
@@ -7,14 +7,14 @@
   margin: $pds-spacing-static-medium auto 0;
   max-width: 800px;
   padding: $pds-spacing-static-small $pds-spacing-static-medium;
-  background: #ff9b0026;
-  border: 1px solid #ff9b00;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: $pds-border-radius-medium;
 }
 
 .icon {
   flex-shrink: 0;
-  color: #ff9b00;
+  color: var(--link);
   margin-top: 2px;
 }
 
@@ -23,14 +23,14 @@
   flex: 1;
   margin: 0;
   color: var(--foreground);
+}
 
-  a {
-    color: var(--link);
-    text-decoration: underline;
+.link {
+  color: var(--link);
+  text-decoration: underline;
 
-    &:hover {
-      text-decoration: none;
-    }
+  &:hover {
+    text-decoration: none;
   }
 }
 

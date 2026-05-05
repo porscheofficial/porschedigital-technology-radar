@@ -1,11 +1,11 @@
-@use "@porsche-design-system/components-react/styles" as *;
+@use "@porsche-design-system/components-react/scss" as *;
 
 .footer {
   display: grid;
   gap: $pds-spacing-fluid-medium;
   justify-items: center;
   padding: $pds-spacing-fluid-large $pds-spacing-fluid-medium;
-  background: var(--surface);
+  background: var(--footer);
 }
 
 .social {

@@ -1,13 +1,26 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import type { ComponentProps } from "react";
+import type { ComponentProps, ReactNode } from "react";
 import { DemoDisclaimer } from "../DemoDisclaimer";
 
 vi.mock("@porsche-design-system/components-react/ssr", () => ({
   PIcon: (props: ComponentProps<"span"> & { name?: string }) => {
     const { name, ...rest } = props;
-    return <span data-icon={name} {...rest} />;
+    return <span data-testid={`p-icon-${name}`} data-icon={name} {...rest} />;
   },
+  PLinkPure: ({
+    href,
+    children,
+    className,
+  }: {
+    href?: string;
+    children?: ReactNode;
+    className?: string;
+  }) => (
+    <a href={href} className={className}>
+      {children}
+    </a>
+  ),
 }));
 
 describe("DemoDisclaimer", () => {
@@ -33,11 +46,11 @@ describe("DemoDisclaimer", () => {
     vi.restoreAllMocks();
   });
 
-  it("renders the disclaimer when not previously dismissed", async () => {
+  it("renders the welcoming message when not previously dismissed", async () => {
     render(<DemoDisclaimer />);
 
     await waitFor(() => {
-      expect(screen.getByText(/visualization purposes/)).toBeInTheDocument();
+      expect(screen.getByText(/Welcome!/)).toBeInTheDocument();
     });
   });
 
@@ -47,9 +60,7 @@ describe("DemoDisclaimer", () => {
     render(<DemoDisclaimer />);
 
     await waitFor(() => {
-      expect(
-        screen.queryByText(/visualization purposes/),
-      ).not.toBeInTheDocument();
+      expect(screen.queryByText(/Welcome!/)).not.toBeInTheDocument();
     });
   });
 
@@ -59,15 +70,13 @@ describe("DemoDisclaimer", () => {
     render(<DemoDisclaimer />);
 
     await waitFor(() => {
-      expect(screen.getByText(/visualization purposes/)).toBeInTheDocument();
+      expect(screen.getByText(/Welcome!/)).toBeInTheDocument();
     });
 
     const closeButton = screen.getByRole("button", { name: "Dismiss" });
     await user.click(closeButton);
 
-    expect(
-      screen.queryByText(/visualization purposes/),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/Welcome!/)).not.toBeInTheDocument();
     expect(setItemSpy).toHaveBeenCalledWith(storageKey, "1");
   });
 
@@ -79,7 +88,7 @@ describe("DemoDisclaimer", () => {
     render(<DemoDisclaimer />);
 
     await waitFor(() => {
-      expect(screen.getByText(/visualization purposes/)).toBeInTheDocument();
+      expect(screen.getByText(/Welcome!/)).toBeInTheDocument();
     });
   });
 
@@ -91,18 +100,12 @@ describe("DemoDisclaimer", () => {
     });
   });
 
-  it("includes a link to the GitHub project", async () => {
+  it("links to the About page for more information", async () => {
     render(<DemoDisclaimer />);
 
     await waitFor(() => {
-      const link = screen.getByRole("link", {
-        name: /open-source technology radar/,
-      });
-      expect(link).toHaveAttribute(
-        "href",
-        "https://github.com/porscheofficial/porschedigital-technology-radar",
-      );
-      expect(link).toHaveAttribute("target", "_blank");
+      const link = screen.getByRole("link", { name: /About page/ });
+      expect(link).toHaveAttribute("href", "/help-and-about-tech-radar");
     });
   });
 });

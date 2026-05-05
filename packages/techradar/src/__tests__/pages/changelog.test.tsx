@@ -44,30 +44,58 @@ vi.mock("next/link", () => ({
 vi.mock("@porsche-design-system/components-react/ssr", () => ({
   PHeading: ({ children, tag = "h2", ...props }: any) => {
     const Tag = tag;
-    return <Tag {...props}>{children}</Tag>;
+    return (
+      <Tag data-testid="p-heading" {...props}>
+        {children}
+      </Tag>
+    );
   },
-  PIcon: ({ name, ...props }: any) => <span {...props}>{name}</span>,
+  PIcon: ({ name, ...props }: any) => (
+    <span data-testid="p-icon" {...props}>
+      {name}
+    </span>
+  ),
   PTable: ({ children, caption, ...props }: any) => (
-    <table {...props}>
+    <table data-testid="p-table" {...props}>
       {caption ? <caption>{caption}</caption> : null}
       {children}
     </table>
   ),
   PTableBody: ({ children, ...props }: any) => (
-    <tbody {...props}>{children}</tbody>
+    <tbody data-testid="p-table-body" {...props}>
+      {children}
+    </tbody>
   ),
-  PTableCell: ({ children, ...props }: any) => <td {...props}>{children}</td>,
+  PTableCell: ({ children, ...props }: any) => (
+    <td data-testid="p-table-cell" {...props}>
+      {children}
+    </td>
+  ),
   PTableHead: ({ children, ...props }: any) => (
-    <thead {...props}>{children}</thead>
+    <thead data-testid="p-table-head" {...props}>
+      {children}
+    </thead>
   ),
   PTableHeadCell: ({ children, ...props }: any) => (
-    <th {...props}>{children}</th>
+    <th data-testid="p-table-head-cell" {...props}>
+      {children}
+    </th>
   ),
   PTableHeadRow: ({ children, ...props }: any) => (
-    <tr {...props}>{children}</tr>
+    <tr data-testid="p-table-head-row" {...props}>
+      {children}
+    </tr>
   ),
-  PTableRow: ({ children, ...props }: any) => <tr {...props}>{children}</tr>,
-  PText: ({ children, ...props }: any) => <p {...props}>{children}</p>,
+  PTableRow: ({ children, ...props }: any) => (
+    <tr data-testid="p-table-row" {...props}>
+      {children}
+    </tr>
+  ),
+  PText: ({ children, ...props }: any) => (
+    <p data-testid="p-text" {...props}>
+      {children}
+    </p>
+  ),
 }));
 
 vi.mock("@/components/Badge/Badge", () => ({
@@ -95,12 +123,40 @@ vi.mock("@/lib/config", () => ({
   default: { labels: { title: "Test Radar" } },
 }));
 
+vi.mock("@/lib/ThemeContext", () => ({
+  useTheme: () => ({
+    activeTheme: {
+      id: "test",
+      label: "Test",
+      supports: ["dark"],
+      default: "dark" as const,
+    },
+    mode: "dark" as const,
+    theme: {
+      id: "test",
+      label: "Test",
+      supports: ["dark"],
+      default: "dark" as const,
+      cssVariables: {},
+      radar: {
+        segments: ["#4A9E7E", "#5B8DB8", "#C4A85E", "#B85B5B"],
+        rings: ["#00aa88", "#0088aa", "#aa8800", "#888888"],
+      },
+      assetsResolved: {},
+    },
+    themes: [],
+    setActiveTheme: vi.fn(),
+    setMode: vi.fn(),
+  }),
+}));
+
 vi.mock("@/lib/data", () => ({
   getAppName: mockState.getAppName,
   getItemTrajectories: mockState.getItemTrajectories,
   getSegment: mockState.getSegment,
   getReleases: mockState.getReleases,
   getRing: mockState.getRing,
+  getRings: vi.fn(() => []),
   getVersionDiffs: mockState.getVersionDiffs,
 }));
 
@@ -120,7 +176,6 @@ describe("Changelog page", () => {
       id: "adopt",
       title: "Adopt",
       description: "Use now",
-      color: "#0f0",
       radius: 0.5,
       strokeWidth: 5,
     },
@@ -128,7 +183,6 @@ describe("Changelog page", () => {
       id: "trial",
       title: "Trial",
       description: "Try it",
-      color: "#00f",
       radius: 0.7,
       strokeWidth: 3,
     },
@@ -136,7 +190,6 @@ describe("Changelog page", () => {
       id: "assess",
       title: "Assess",
       description: "Assess it",
-      color: "#ff0",
       radius: 0.85,
       strokeWidth: 2,
     },
@@ -144,7 +197,6 @@ describe("Changelog page", () => {
       id: "hold",
       title: "Hold",
       description: "Avoid it",
-      color: "#f00",
       radius: 1,
       strokeWidth: 1,
     },
@@ -155,14 +207,12 @@ describe("Changelog page", () => {
       id: "languages-and-frameworks",
       title: "Languages & Frameworks",
       description: "Frontend and backend languages",
-      color: "#0f0",
       position: 1,
     },
     {
       id: "platforms-and-operations",
       title: "Platforms & Operations",
       description: "Platform work",
-      color: "#00f",
       position: 2,
     },
   ];

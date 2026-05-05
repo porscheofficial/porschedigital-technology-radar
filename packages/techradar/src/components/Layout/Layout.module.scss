@@ -1,4 +1,4 @@
-@use "@porsche-design-system/components-react/styles" as *;
+@use "@porsche-design-system/components-react/scss" as *;
 
 .layout {
   min-height: 100vh;
@@ -9,14 +9,151 @@
   top: 0;
   z-index: 50;
   inset-inline: 0;
+}
 
-  &::before {
-    content: "";
+// Progressive frosted-glass stack ported verbatim from
+// node_modules/@porsche-design-system/components-js shadow CSS of <p-canvas>.
+// Eight stacked absolutely-positioned divs each apply a smaller backdrop-filter
+// blur than the one above (64 → 32 → 16 → 8 → 4 → 2 → 1 → 0.5 px). Each layer
+// carries a mask-image gradient that opens a sliding window of opacity shifted
+// down by 12.5% per step. Result: blur is strongest at the top of the bar and
+// fades to nothing at the bottom, dissolving the header's lower edge into the
+// page rather than ending in a hard rule. Pointer-events disabled so the stack
+// never intercepts header interactions.
+.blur {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+
+  > div {
     position: absolute;
-    inset: 0 0 -60px 0;
-    z-index: -1;
-    pointer-events: none;
-    @include pds-gradient-to-bottom;
+    inset: 0;
+  }
+
+  > div:nth-of-type(1) {
+    z-index: 1;
+    -webkit-backdrop-filter: blur(64px);
+    backdrop-filter: blur(64px);
+    -webkit-mask-image: linear-gradient(
+      rgb(0 0 0) 0%,
+      rgb(0 0 0) 12.5%,
+      rgb(0 0 0) 25%,
+      rgb(0 0 0 / 0) 37.5%
+    );
+    mask-image: linear-gradient(
+      rgb(0 0 0) 0%,
+      rgb(0 0 0) 12.5%,
+      rgb(0 0 0) 25%,
+      rgb(0 0 0 / 0) 37.5%
+    );
+  }
+  > div:nth-of-type(2) {
+    z-index: 2;
+    -webkit-backdrop-filter: blur(32px);
+    backdrop-filter: blur(32px);
+    -webkit-mask-image: linear-gradient(
+      rgb(0 0 0 / 0) 12.5%,
+      rgb(0 0 0) 25%,
+      rgb(0 0 0) 37.5%,
+      rgb(0 0 0 / 0) 50%
+    );
+    mask-image: linear-gradient(
+      rgb(0 0 0 / 0) 12.5%,
+      rgb(0 0 0) 25%,
+      rgb(0 0 0) 37.5%,
+      rgb(0 0 0 / 0) 50%
+    );
+  }
+  > div:nth-of-type(3) {
+    z-index: 3;
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    -webkit-mask-image: linear-gradient(
+      rgb(0 0 0 / 0) 25%,
+      rgb(0 0 0) 37.5%,
+      rgb(0 0 0) 50%,
+      rgb(0 0 0 / 0) 62.5%
+    );
+    mask-image: linear-gradient(
+      rgb(0 0 0 / 0) 25%,
+      rgb(0 0 0) 37.5%,
+      rgb(0 0 0) 50%,
+      rgb(0 0 0 / 0) 62.5%
+    );
+  }
+  > div:nth-of-type(4) {
+    z-index: 4;
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    -webkit-mask-image: linear-gradient(
+      rgb(0 0 0 / 0) 37.5%,
+      rgb(0 0 0) 50%,
+      rgb(0 0 0) 62.5%,
+      rgb(0 0 0 / 0) 75%
+    );
+    mask-image: linear-gradient(
+      rgb(0 0 0 / 0) 37.5%,
+      rgb(0 0 0) 50%,
+      rgb(0 0 0) 62.5%,
+      rgb(0 0 0 / 0) 75%
+    );
+  }
+  > div:nth-of-type(5) {
+    z-index: 5;
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    -webkit-mask-image: linear-gradient(
+      rgb(0 0 0 / 0) 50%,
+      rgb(0 0 0) 62.5%,
+      rgb(0 0 0) 75%,
+      rgb(0 0 0 / 0) 87.5%
+    );
+    mask-image: linear-gradient(
+      rgb(0 0 0 / 0) 50%,
+      rgb(0 0 0) 62.5%,
+      rgb(0 0 0) 75%,
+      rgb(0 0 0 / 0) 87.5%
+    );
+  }
+  > div:nth-of-type(6) {
+    z-index: 6;
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+    -webkit-mask-image: linear-gradient(
+      rgb(0 0 0 / 0) 62.5%,
+      rgb(0 0 0) 75%,
+      rgb(0 0 0) 87.5%,
+      rgb(0 0 0 / 0) 100%
+    );
+    mask-image: linear-gradient(
+      rgb(0 0 0 / 0) 62.5%,
+      rgb(0 0 0) 75%,
+      rgb(0 0 0) 87.5%,
+      rgb(0 0 0 / 0) 100%
+    );
+  }
+  > div:nth-of-type(7) {
+    z-index: 7;
+    -webkit-backdrop-filter: blur(1px);
+    backdrop-filter: blur(1px);
+    -webkit-mask-image: linear-gradient(
+      rgb(0 0 0 / 0) 75%,
+      rgb(0 0 0) 87.5%,
+      rgb(0 0 0) 100%
+    );
+    mask-image: linear-gradient(
+      rgb(0 0 0 / 0) 75%,
+      rgb(0 0 0) 87.5%,
+      rgb(0 0 0) 100%
+    );
+  }
+  > div:nth-of-type(8) {
+    z-index: 8;
+    -webkit-backdrop-filter: blur(0.5px);
+    backdrop-filter: blur(0.5px);
+    -webkit-mask-image: linear-gradient(rgb(0 0 0 / 0) 87.5%, rgb(0 0 0) 100%);
+    mask-image: linear-gradient(rgb(0 0 0 / 0) 87.5%, rgb(0 0 0) 100%);
   }
 }
 
@@ -74,21 +211,25 @@
 }
 
 .versionLabel {
-  @include pds-text-xx-small;
+  display: inline-flex;
+  align-items: center;
+  gap: $pds-spacing-static-x-small;
+  padding: 2px $pds-spacing-static-small;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius);
   color: var(--foreground);
-  opacity: 0.4;
   text-decoration: none;
   white-space: nowrap;
-  padding: 2px $pds-spacing-static-small;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: $pds-border-radius-small;
   transition:
-    opacity 200ms ease,
-    border-color 200ms ease;
+    border-color 100ms ease,
+    color 100ms ease;
+  @include pds-text-x-small;
+  line-height: 1;
 
   &:hover {
-    opacity: 0.8;
-    border-color: rgba(255, 255, 255, 0.35);
+    border-color: var(--highlight);
+    color: var(--highlight);
   }
 }
 

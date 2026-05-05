@@ -1,43 +1,40 @@
-@use "@porsche-design-system/components-react/styles" as *;
+@use "@porsche-design-system/components-react/scss" as *;
 
 // ============================================================================
 // PDS CSS Variable Bridge
 // ============================================================================
-// PDS dark theme tokens as the FLOOR. config.json colors override these
-// at runtime via _document.tsx inline styles on <html>.
+// PDS dark theme tokens provide the baseline defaults. The active theme in
+// _document.tsx overwrites these CSS custom properties at runtime.
 //
-// Convention: PDS SCSS vars compile to static values at build time.
-// We bridge them to CSS custom properties so they can be overridden.
+// Convention: PDS SCSS vars compile to static values at build time. We bridge
+// them to CSS custom properties so theme.json values can replace them.
 // ============================================================================
 
 :root {
-  // -- Core color palette (overridable by config.json "colors" object) -------
-  --foreground: #{$pds-theme-dark-primary};
-  --background: #{$pds-theme-dark-background-base};
-  --content: #{$pds-theme-dark-contrast-high};
-  --text: #{$pds-theme-dark-contrast-medium};
-  --link: #{$pds-theme-dark-primary};
-  --highlight: #{$pds-theme-dark-primary};
-  --border: #{$pds-theme-dark-contrast-low};
-  --tag: #{$pds-theme-dark-contrast-low};
-  --team: #{$pds-theme-dark-contrast-low};
-
-  // -- Extended PDS surfaces (new, not in old system) ------------------------
-  --surface: #{$pds-theme-dark-background-surface};
-  --shading: #{$pds-theme-dark-background-shading};
-  --frosted: #{$pds-theme-dark-background-frosted};
+  // -- Core color palette -----------------------------------------------------
+  --foreground: light-dark(#010205, #fbfcff);
+  --background: light-dark(#eeeff2, #0e0e12);
+  --content: light-dark(#535457, #afb0b3);
+  --text: light-dark(#6b6d70, #88898c);
+  --link: light-dark(#2762ec, #178bff);
+  --highlight: light-dark(#2762ec, #fbfcff);
+  --border: light-dark(#d8d8db, #404044);
+  --surface: light-dark(#ffffff, #212225);
+  --footer: light-dark(#ffffff, #212225);
+  --shading: light-dark(rgba(1, 2, 5, 0.67), rgba(38, 38, 41, 0.67));
+  --frosted: light-dark(rgba(215, 215, 218, 0.35), rgba(64, 64, 68, 0.35));
 
   // -- Semantic notification colors ------------------------------------------
-  --notification-success: #{$pds-theme-dark-notification-success};
-  --notification-warning: #{$pds-theme-dark-notification-warning};
-  --notification-error: #{$pds-theme-dark-notification-error};
-  --notification-info: #{$pds-theme-dark-notification-info};
+  --notification-success: light-dark(hsl(115 77.5% 27.8%), hsl(157 84.9% 41.6%));
+  --notification-warning: light-dark(hsl(28 97.7% 34.1%), hsl(28 90.2% 56.1%));
+  --notification-error: light-dark(hsl(357 78% 41%), hsl(0 96.9% 62%));
+  --notification-info: light-dark(hsl(228 83.2% 51%), hsl(210 100% 54.5%));
 
   // -- State colors ----------------------------------------------------------
-  --state-hover: #{$pds-theme-dark-state-hover};
-  --state-active: #{$pds-theme-dark-state-active};
-  --state-focus: #{$pds-theme-dark-state-focus};
-  --state-disabled: #{$pds-theme-dark-state-disabled};
+  --state-hover: light-dark(hsla(236, 6.4%, 51%, 0.148), hsla(240, 2.2%, 44.1%, 0.228));
+  --state-active: light-dark(hsla(236, 6.4%, 51%, 0.148), hsla(240, 2.2%, 44.1%, 0.228));
+  --state-focus: light-dark(#1a44ea, #1a44ea);
+  --state-disabled: light-dark(hsla(233, 6.6%, 23.9%, 0.412), hsla(240, 1.5%, 61.8%, 0.302));
 
   // -- Spacing tokens as CSS vars (for JS/non-SCSS consumption) --------------
   --spacing-xs: #{$pds-spacing-fluid-x-small};
@@ -47,7 +44,7 @@
   --spacing-xl: #{$pds-spacing-fluid-x-large};
   --spacing-xxl: #{$pds-spacing-fluid-xx-large};
 
-  // -- Layout (carried over from old system) ---------------------------------
+  // -- Layout tokens ----------------------------------------------------------
   --max-width: 1200px;
   --border-radius: #{$pds-border-radius-medium};
   --font-mono:

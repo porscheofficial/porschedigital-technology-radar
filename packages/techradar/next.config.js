@@ -60,9 +60,40 @@ const reactPath = path.resolve(__dirname, "node_modules/react");
 const reactDomPath = path.resolve(__dirname, "node_modules/react-dom");
 const nextPath = path.resolve(__dirname, "node_modules/next");
 
+// Isolate dev-server output from production-build output so they never
+// collide on the same `.next/` directory.
+//
+// Why: `next dev` writes runtime files (e.g. `dev/server/webpack-runtime.js`)
+// into `distDir`. `next build` clears `distDir` at the start to write the
+// production bundle. When the harness runs `pnpm build` while `pnpm dev` is
+// alive, the dev process's open file handles point at files that no longer
+// exist and the next request 500s with `ENOENT: webpack-runtime.js`.
+//
+// Fix: route dev output to `.next-dev/` and keep `.next/` exclusively for
+// `next build`. Next sets `NODE_ENV=development` for `next dev` and
+// `NODE_ENV=production` for `next build`, so this branch is reliable.
+// `.next-dev/` is gitignored and added to the eslint/tsconfig paths
+// alongside `.next/` so it is never linted or type-checked.
+const distDir = process.env.NODE_ENV === "development" ? ".next-dev" : ".next";
+
+// Use a dev-only tsconfig so Next's startup auto-reconfigure (which
+// appends `<distDir>/types/**/*.ts` and `<distDir>/dev/types/**/*.ts` to
+// `include`) writes those `.next-dev/...` paths into `tsconfig.dev.json`
+// and leaves the canonical `tsconfig.json` (used by `tsc --noEmit` and
+// `next build`) untouched. Without this split, `next dev` rewrites
+// `tsconfig.json` on every startup, and the `.next-dev/dev/types/validator.ts`
+// it adds collides with `.next/types/validator.ts` during `next build`
+// with `Duplicate identifier 'PagesPageConfig'`.
+const tsconfigPath =
+  process.env.NODE_ENV === "development"
+    ? "tsconfig.dev.json"
+    : "tsconfig.json";
+
 /** @type {import("next").NextConfig} */
 const nextConfig = {
   basePath,
+  distDir,
+  typescript: { tsconfigPath },
   output: "export",
   trailingSlash: true,
   reactStrictMode: true,

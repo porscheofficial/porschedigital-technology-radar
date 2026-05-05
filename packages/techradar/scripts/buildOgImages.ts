@@ -8,12 +8,18 @@ import satori from "satori";
 
 import type { Item } from "@/lib/types";
 import config from "../src/lib/config";
+import {
+  resolveRadarHexPalette,
+  resolveTheme,
+  type ThemeManifest,
+} from "../src/lib/theme/schema";
 
 const OG_WIDTH = 1200;
 const OG_HEIGHT = 630;
 const OG_OUTPUT_DIR = path.resolve("public", "og");
 const OG_CACHE_PATH = path.join(OG_OUTPUT_DIR, ".og-cache.json");
 const DATA_PATH = path.resolve("data", "data.json");
+const THEMES_PATH = path.resolve("data", "themes.generated.json");
 const TEMPLATE_VERSION = 1;
 const SITE_BRAND = "Porsche Digital Tech Radar";
 const FONT_DIR = path.resolve("node_modules", "@fontsource", "inter", "files");
@@ -62,16 +68,56 @@ export interface ItemOgCacheInput {
   templateVersion?: number;
 }
 
+let _defaultTheme: ReturnType<typeof resolveTheme> | undefined;
+let _defaultRadarHex: ReturnType<typeof resolveRadarHexPalette> | undefined;
+function loadDefaults(): {
+  theme: ReturnType<typeof resolveTheme>;
+  radarHex: ReturnType<typeof resolveRadarHexPalette>;
+} {
+  if (!_defaultTheme || !_defaultRadarHex) {
+    if (!fs.existsSync(THEMES_PATH)) {
+      throw new Error(
+        "data/themes.generated.json not found. Run `pnpm run build:data` first.",
+      );
+    }
+    const themes = JSON.parse(
+      fs.readFileSync(THEMES_PATH, "utf-8"),
+    ) as ThemeManifest[];
+    const defaultThemeId =
+      typeof config.defaultTheme === "string" && config.defaultTheme.length > 0
+        ? config.defaultTheme
+        : themes[0]?.id;
+    if (!defaultThemeId) {
+      throw new Error("No themes found in data/themes.generated.json");
+    }
+    const [themeId, requestedMode] = defaultThemeId.split(":");
+    const theme = themes.find((t) => t.id === themeId) ?? themes[0];
+    if (!theme) {
+      throw new Error("No themes found in data/themes.generated.json");
+    }
+    const mode = requestedMode === "light" ? "light" : theme.default;
+    _defaultTheme = resolveTheme(theme, mode);
+    _defaultRadarHex = resolveRadarHexPalette(theme, mode);
+  }
+  return { theme: _defaultTheme, radarHex: _defaultRadarHex };
+}
+function getDefaultTheme(): ReturnType<typeof resolveTheme> {
+  return loadDefaults().theme;
+}
+function getDefaultRadarHex(): ReturnType<typeof resolveRadarHexPalette> {
+  return loadDefaults().radarHex;
+}
+
 function getBackgroundColor() {
-  return config.colors.background || "#0E0E12";
+  return getDefaultTheme().cssVariables.background;
 }
 
 function getContentColor() {
-  return config.colors.content || "#AFB0B3";
+  return getDefaultTheme().cssVariables.content;
 }
 
 function getTextColor() {
-  return config.colors.foreground || "#FBFCFF";
+  return getDefaultTheme().cssVariables.foreground;
 }
 
 function loadDataFile(): OgDataFile {
@@ -435,10 +481,27 @@ async function buildItemImage(context: ItemOgContext, cache: OgCache) {
 
 export async function buildOgImages() {
   const data = loadDataFile();
+  const defaultRadarHex = getDefaultRadarHex();
   const segmentById = new Map(
-    config.segments.map((segment) => [segment.id, segment]),
+    config.segments.map((segment, idx) => [
+      segment.id,
+      {
+        id: segment.id,
+        title: segment.title,
+        color: defaultRadarHex.segments[idx] ?? "#888888",
+      } satisfies OgSegment,
+    ]),
   );
-  const ringById = new Map(config.rings.map((ring) => [ring.id, ring]));
+  const ringById = new Map(
+    config.rings.map((ring, idx) => [
+      ring.id,
+      {
+        id: ring.id,
+        title: ring.title,
+        color: defaultRadarHex.rings[idx] ?? "#888888",
+      } satisfies OgRing,
+    ]),
+  );
   const cache = loadCache();
 
   let generated = 0;

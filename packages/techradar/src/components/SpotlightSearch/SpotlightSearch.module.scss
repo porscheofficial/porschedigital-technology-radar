@@ -1,4 +1,4 @@
-@use "@porsche-design-system/components-react/styles" as *;
+@use "@porsche-design-system/components-react/scss" as *;
 
 .trigger {
   display: inline-flex;
@@ -112,6 +112,30 @@
   @include pds-text-x-small;
 }
 
+.backChip {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 4px;
+  padding: 0 $pds-spacing-static-x-small;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: color-mix(in oklch, var(--highlight) 12%, transparent);
+  color: var(--highlight);
+  cursor: pointer;
+  font-weight: $pds-font-weight-bold;
+  @include pds-text-x-small;
+
+  &:hover {
+    background: color-mix(in oklch, var(--highlight) 22%, transparent);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--highlight);
+  }
+}
+
 .input {
   flex: 1;
   padding: $pds-spacing-static-x-small 0;
@@ -137,6 +161,7 @@
 .list {
   flex: 1 1 auto;
   min-height: 0;
+  overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
   padding: $pds-spacing-static-x-small 0;
@@ -357,6 +382,53 @@
   to {
     opacity: 1;
     transform: translateX(-50%);
+  }
+}
+
+.page {
+  animation: pageEnterForward 160ms ease-out;
+
+  &[data-direction="backward"] {
+    animation: pageEnterBackward 160ms ease-out;
+  }
+}
+
+@keyframes pageEnterForward {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pageEnterBackward {
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.actionArrow {
+  color: var(--text);
+  opacity: 0.7;
+}
+
+.activeIcon {
+  color: var(--highlight);
+  margin-right: 4px;
+  vertical-align: -2px;
+}
+
+.itemActiveOption {
+  .itemTitle {
+    color: var(--highlight);
   }
 }
 

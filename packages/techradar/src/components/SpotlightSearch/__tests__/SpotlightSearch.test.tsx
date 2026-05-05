@@ -124,10 +124,57 @@ vi.mock("@porsche-design-system/components-react/ssr", () => ({
   ),
 }));
 
+const setActiveThemeMock = vi.fn();
+const setModeMock = vi.fn();
+
+function makeTheme() {
+  return {
+    activeTheme: {
+      id: "porsche",
+      label: "Porsche",
+      supports: ["light", "dark"],
+      default: "dark" as const,
+    },
+    mode: "dark" as const,
+    theme: {
+      id: "porsche",
+      label: "Porsche",
+      supports: ["light", "dark"],
+      default: "dark" as const,
+      cssVariables: {} as Record<string, string>,
+      background: undefined,
+      radar: { segments: [], rings: [] },
+      assetsResolved: {},
+    },
+    themes: [
+      {
+        id: "porsche",
+        label: "Porsche",
+        supports: ["light", "dark"],
+        default: "dark" as const,
+      },
+      {
+        id: "acme",
+        label: "Acme",
+        supports: ["dark"],
+        default: "dark" as const,
+      },
+    ],
+    setActiveTheme: setActiveThemeMock,
+    setMode: setModeMock,
+  };
+}
+
+vi.mock("@/lib/ThemeContext", () => ({
+  useTheme: () => makeTheme(),
+}));
+
 beforeEach(() => {
   pushMock.mockReset();
   pushMock.mockImplementation(() => Promise.resolve(true));
   setHighlightMock.mockReset();
+  setActiveThemeMock.mockReset();
+  setModeMock.mockReset();
   eventHandlers.clear();
 });
 
@@ -386,5 +433,52 @@ describe("SpotlightSearch", () => {
 
     expect(screen.getByText("Copy link to current page")).toBeInTheDocument();
     expect(screen.queryByText("Go to Changelog")).not.toBeInTheDocument();
+  });
+
+  it("shows theme and mode action groups in command mode", async () => {
+    const user = userEvent.setup();
+    render(<SpotlightSearch />);
+    await user.click(screen.getByRole("button", { name: /search/i }));
+
+    const input = await screen.findByRole("combobox");
+    await user.type(input, ">");
+
+    expect(screen.getByText("Select Theme")).toBeInTheDocument();
+    expect(screen.getByText("Select Mode")).toBeInTheDocument();
+  });
+
+  it("opens theme submenu and switches the theme on selection", async () => {
+    const user = userEvent.setup();
+    setActiveThemeMock.mockReset();
+    render(<SpotlightSearch />);
+    await user.click(screen.getByRole("button", { name: /search/i }));
+
+    const input = await screen.findByRole("combobox");
+    await user.type(input, ">");
+
+    await user.click(screen.getByText("Select Theme"));
+
+    expect(screen.getByText("Theme: Acme")).toBeInTheDocument();
+    expect(screen.getByLabelText("Back to actions")).toBeInTheDocument();
+
+    await user.click(screen.getByText("Theme: Acme"));
+    expect(setActiveThemeMock).toHaveBeenCalledWith("acme");
+  });
+
+  it("opens mode submenu and switches the mode on selection", async () => {
+    const user = userEvent.setup();
+    setModeMock.mockReset();
+    render(<SpotlightSearch />);
+    await user.click(screen.getByRole("button", { name: /search/i }));
+
+    const input = await screen.findByRole("combobox");
+    await user.type(input, ">");
+
+    await user.click(screen.getByText("Select Mode"));
+
+    expect(screen.getByText("Mode: Light")).toBeInTheDocument();
+
+    await user.click(screen.getByText("Mode: Light"));
+    expect(setModeMock).toHaveBeenCalledWith("light");
   });
 });

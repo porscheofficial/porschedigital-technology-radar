@@ -3,6 +3,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { Command } from "cmdk";
 import { useRouter } from "next/router";
 import {
+  type KeyboardEvent as ReactKeyboardEvent,
   type ReactNode,
   useCallback,
   useEffect,
@@ -103,11 +104,30 @@ export function SpotlightSearch() {
     return () => clearTimeout(timer);
   }, [results, setHighlight]);
 
+  const [activePage, setActivePage] = useState<string | null>(null);
+  const [pageDirection, setPageDirection] = useState<"forward" | "backward">(
+    "forward",
+  );
+
   const close = useCallback(() => {
     setOpen(false);
     setQuery("");
+    setActivePage(null);
+    setPageDirection("forward");
     setHighlight([], false);
   }, [setHighlight]);
+
+  const enterPage = useCallback((id: string) => {
+    setPageDirection("forward");
+    setActivePage(id);
+    setQuery("");
+  }, []);
+
+  const exitPage = useCallback(() => {
+    setPageDirection("backward");
+    setActivePage(null);
+    setQuery("");
+  }, []);
 
   const handleOpenChange = useCallback(
     (next: boolean) => {
@@ -151,7 +171,21 @@ export function SpotlightSearch() {
   const visibleItems = trimmedQuery ? results : suggestions;
 
   const actions = useSpotlightActions(close);
+  const activeParent = useMemo<SpotlightAction | null>(() => {
+    if (!activePage) return null;
+    return actions.find((a) => a.id === activePage && a.children) ?? null;
+  }, [actions, activePage]);
+  const submenuActions = activeParent?.children ?? [];
   const filteredActions = useMemo<SpotlightAction[]>(() => {
+    if (activeParent) {
+      const q = query.trim().toLowerCase();
+      if (!q) return submenuActions;
+      return submenuActions.filter(
+        (a) =>
+          a.label.toLowerCase().includes(q) ||
+          a.keywords?.some((k) => k.includes(q)),
+      );
+    }
     if (!isCommandMode) return [];
     if (!commandQuery) return actions;
     return actions.filter(
@@ -159,10 +193,50 @@ export function SpotlightSearch() {
         a.label.toLowerCase().includes(commandQuery) ||
         a.keywords?.some((k) => k.includes(commandQuery)),
     );
-  }, [actions, isCommandMode, commandQuery]);
+  }, [
+    actions,
+    activeParent,
+    submenuActions,
+    isCommandMode,
+    commandQuery,
+    query,
+  ]);
+
+  const showActionsView = isCommandMode || activeParent !== null;
+  const handleActionSelect = useCallback(
+    (action: SpotlightAction) => {
+      if (action.children) {
+        enterPage(action.id);
+        return;
+      }
+      action.perform();
+    },
+    [enterPage],
+  );
+
+  const handleInputKeyDown = useCallback(
+    (event: ReactKeyboardEvent<HTMLInputElement>) => {
+      if (!activeParent) return;
+      if (event.key === "Escape") {
+        event.preventDefault();
+        event.stopPropagation();
+        exitPage();
+      } else if (event.key === "Backspace" && query === "") {
+        event.preventDefault();
+        exitPage();
+      }
+    },
+    [activeParent, exitPage, query],
+  );
+
+  const inputPlaceholder = (() => {
+    if (activeParent) return `Filter ${activeParent.label.toLowerCase()}…`;
+    if (isCommandMode) return COMMAND_PLACEHOLDER;
+    return longPlaceholder;
+  })();
 
   useEffect(() => {
-    if (!open || isCommandMode) return;
+    if (!open || showActionsView) return;
     const onDigit = (event: KeyboardEvent) => {
       if (!event.metaKey && !event.ctrlKey) return;
       const digit = Number.parseInt(event.key, 10);
@@ -174,7 +248,7 @@ export function SpotlightSearch() {
     };
     document.addEventListener("keydown", onDigit);
     return () => document.removeEventListener("keydown", onDigit);
-  }, [open, isCommandMode, visibleItems, navigateToItem]);
+  }, [open, showActionsView, visibleItems, navigateToItem]);
 
   const renderHighlightedText = (text: string): ReactNode => {
     const q = query.trim();
@@ -291,64 +365,110 @@ export function SpotlightSearch() {
             className={styles.searchIcon}
             aria-hidden="true"
           />
-          {isCommandMode && <span className={styles.modeChip}>Actions</span>}
+          {activeParent ? (
+            <button
+              type="button"
+              className={styles.backChip}
+              onClick={exitPage}
+              aria-label="Back to actions"
+            >
+              <PIcon name="arrow-head-left" size="x-small" aria-hidden="true" />
+              <span>{activeParent.label}</span>
+            </button>
+          ) : (
+            isCommandMode && <span className={styles.modeChip}>Actions</span>
+          )}
           <Command.Input
             value={query}
             onValueChange={setQuery}
-            placeholder={isCommandMode ? COMMAND_PLACEHOLDER : longPlaceholder}
+            onKeyDown={handleInputKeyDown}
+            placeholder={inputPlaceholder}
             className={styles.input}
           />
         </div>
 
         <Command.List className={styles.list}>
-          {isCommandMode ? (
-            <>
-              {filteredActions.length === 0 && (
-                <Command.Empty className={styles.empty}>
-                  No matching actions.
-                </Command.Empty>
-              )}
-              {filteredActions.length > 0 && (
-                <Command.Group heading="Actions" className={styles.group}>
-                  {filteredActions.map((action) => (
-                    <Command.Item
-                      key={action.id}
-                      value={action.id}
-                      onSelect={() => action.perform()}
-                      className={cn(styles.item)}
-                    >
-                      <span className={styles.itemRow}>
-                        <span className={styles.itemMain}>
-                          <span className={styles.itemTitle}>
-                            {action.label}
+          <div
+            key={activePage ?? "root"}
+            className={styles.page}
+            data-direction={pageDirection}
+          >
+            {showActionsView ? (
+              <>
+                {filteredActions.length === 0 && (
+                  <Command.Empty className={styles.empty}>
+                    {activeParent
+                      ? "No matching options."
+                      : "No matching actions."}
+                  </Command.Empty>
+                )}
+                {filteredActions.length > 0 && (
+                  <Command.Group
+                    heading={activeParent ? activeParent.label : "Actions"}
+                    className={styles.group}
+                  >
+                    {filteredActions.map((action) => (
+                      <Command.Item
+                        key={action.id}
+                        value={action.id}
+                        onSelect={() => handleActionSelect(action)}
+                        data-active={action.active ? "true" : undefined}
+                        className={cn(
+                          styles.item,
+                          action.active && styles.itemActiveOption,
+                        )}
+                      >
+                        <span className={styles.itemRow}>
+                          <span className={styles.itemMain}>
+                            <span className={styles.itemTitle}>
+                              {action.active && (
+                                <PIcon
+                                  name="check"
+                                  size="x-small"
+                                  className={styles.activeIcon}
+                                  aria-hidden="true"
+                                />
+                              )}
+                              {action.label}
+                            </span>
+                            {action.hint && (
+                              <span className={styles.itemMeta}>
+                                {action.hint}
+                              </span>
+                            )}
                           </span>
-                          {action.hint && (
-                            <span className={styles.itemMeta}>
-                              {action.hint}
+                          {action.children && (
+                            <span className={styles.itemAside}>
+                              <PIcon
+                                name="arrow-head-right"
+                                size="x-small"
+                                className={styles.actionArrow}
+                                aria-hidden="true"
+                              />
                             </span>
                           )}
                         </span>
-                      </span>
-                    </Command.Item>
-                  ))}
-                </Command.Group>
-              )}
-            </>
-          ) : (
-            <>
-              {trimmedQuery && results.length === 0 && (
-                <Command.Empty className={styles.empty}>
-                  No results found.
-                </Command.Empty>
-              )}
-              {showSuggestions && (
-                <Command.Group heading="Latest" className={styles.group}>
-                  {suggestions.map(renderItem)}
-                </Command.Group>
-              )}
-              {trimmedQuery && results.map(renderItem)}
-            </>
-          )}
+                      </Command.Item>
+                    ))}
+                  </Command.Group>
+                )}
+              </>
+            ) : (
+              <>
+                {trimmedQuery && results.length === 0 && (
+                  <Command.Empty className={styles.empty}>
+                    No results found.
+                  </Command.Empty>
+                )}
+                {showSuggestions && (
+                  <Command.Group heading="Latest" className={styles.group}>
+                    {suggestions.map(renderItem)}
+                  </Command.Group>
+                )}
+                {trimmedQuery && results.map(renderItem)}
+              </>
+            )}
+          </div>
         </Command.List>
 
         <div className={styles.footer}>
@@ -359,16 +479,25 @@ export function SpotlightSearch() {
           </span>
           <span>
             <kbd className={styles.kbdSmall}>↵</kbd>
-            {isCommandMode ? "Run" : "Open"}
+            {showActionsView ? "Run" : "Open"}
           </span>
-          <span>
-            <kbd className={styles.kbdSmall}>{COMMAND_PREFIX}</kbd>
-            Actions
-          </span>
-          <span>
-            <kbd className={styles.kbdSmall}>Esc</kbd>
-            Close
-          </span>
+          {activeParent ? (
+            <span>
+              <kbd className={styles.kbdSmall}>Esc</kbd>
+              Back
+            </span>
+          ) : (
+            <>
+              <span>
+                <kbd className={styles.kbdSmall}>{COMMAND_PREFIX}</kbd>
+                Actions
+              </span>
+              <span>
+                <kbd className={styles.kbdSmall}>Esc</kbd>
+                Close
+              </span>
+            </>
+          )}
         </div>
       </Command.Dialog>
     </>

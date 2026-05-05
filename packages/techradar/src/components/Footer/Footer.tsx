@@ -4,12 +4,9 @@ import {
   PText,
   PWordmark,
 } from "@porsche-design-system/components-react/ssr";
-import {
-  getFooterLogoUrl,
-  getImprintUrl,
-  getLabel,
-  getSocialLinks,
-} from "@/lib/data";
+import { getImprintUrl, getLabel, getSocialLinks } from "@/lib/data";
+import { useTheme } from "@/lib/ThemeContext";
+import { assetUrl } from "@/lib/utils";
 import styles from "./Footer.module.scss";
 
 const pdsIconMap: Record<string, IconName> = {
@@ -32,7 +29,9 @@ const customIconSvg: Record<string, string> = {
 export function Footer() {
   const socialLinks = getSocialLinks();
   const imprintUrl = getImprintUrl();
-  const footerLogoUrl = getFooterLogoUrl();
+  const { theme } = useTheme();
+  const themeFooterLogo = theme.assetsResolved.footerLogo;
+  const footerLogoUrl = themeFooterLogo ? assetUrl(themeFooterLogo) : "";
   const footerText = getLabel("footer");
   const imprintLabel = getLabel("imprint");
 

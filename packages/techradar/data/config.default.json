@@ -2,11 +2,8 @@
   "basePath": "/",
   "baseUrl": "",
   "editUrl": "https://github.dev/porscheofficial/porschedigital-technology-radar/blob/main/data/radar/{release}/{id}.md",
-  "headerLogoFile": "",
-  "footerLogoFile": "",
   "jsFile": "",
-  "backgroundImage": "/background.jpg",
-  "backgroundOpacity": 0.06,
+  "defaultTheme": "porsche",
   "toggles": {
     "showSearch": true,
     "showChart": true,
@@ -16,40 +13,26 @@
     "showDemoDisclaimer": false,
     "multiSelectFilters": true
   },
-  "colors": {
-    "foreground": "#FBFCFF",
-    "background": "#0E0E12",
-    "highlight": "#FBFCFF",
-    "content": "#AFB0B3",
-    "text": "#88898C",
-    "link": "#FBFCFF",
-    "border": "#404044",
-    "tag": "#404044"
-  },
   "segments": [
     {
       "id": "languages-and-frameworks",
       "title": "Languages & Frameworks",
-      "description": "A selection of programming languages, alongside essential frameworks for building a variety of custom software.",
-      "color": "#4A9E7E"
+      "description": "A selection of programming languages, alongside essential frameworks for building a variety of custom software."
     },
     {
       "id": "methods-and-patterns",
       "title": "Methods & Patterns",
-      "description": "Key software development methods and design patterns, covering everything from continuous integration and testing to architecture.",
-      "color": "#5B8DB8"
+      "description": "Key software development methods and design patterns, covering everything from continuous integration and testing to architecture."
     },
     {
       "id": "platforms-and-operations",
       "title": "Platforms & Operations",
-      "description": "Technologies and tools for software and infrastructure operations, including platforms and services for managing and scaling applications.",
-      "color": "#C4A85E"
+      "description": "Technologies and tools for software and infrastructure operations, including platforms and services for managing and scaling applications."
     },
     {
       "id": "tools",
       "title": "Tools",
-      "description": "A range of software tools, from simple productivity enhancers to comprehensive project solutions, catering to various project needs.",
-      "color": "#B85B5B"
+      "description": "A range of software tools, from simple productivity enhancers to comprehensive project solutions, catering to various project needs."
     }
   ],
   "rings": [
@@ -57,7 +40,6 @@
       "id": "adopt",
       "title": "Adopt",
       "description": "",
-      "color": "#4A9E7E",
       "radius": 0.5,
       "strokeWidth": 5
     },
@@ -65,7 +47,6 @@
       "id": "trial",
       "title": "Trial",
       "description": "",
-      "color": "#5B8DB8",
       "radius": 0.69,
       "strokeWidth": 3
     },
@@ -73,7 +54,6 @@
       "id": "assess",
       "title": "Assess",
       "description": "",
-      "color": "#C4A85E",
       "radius": 0.85,
       "strokeWidth": 2
     },
@@ -81,7 +61,6 @@
       "id": "hold",
       "title": "Hold",
       "description": "",
-      "color": "#B85B5B",
       "radius": 1,
       "strokeWidth": 0.75
     }
@@ -131,7 +110,7 @@
       "icon": "youtube"
     },
     {
-      "href": "https://de.pinterest.com/porsche/",
+      "href": "https://de.pinterest.com/de/porsche/",
       "icon": "pinterest"
     }
   ],
@@ -140,7 +119,7 @@
     "title": "Technology Radar",
     "tagline": "Track what to adopt, trial, assess, and hold.",
     "imprint": "Legal Information",
-    "footer": "An open-source technology radar by Porsche Digital, originally based on the AOE Technology Radar.",
+    "footer": "A public demo of the open-source Technology Radar Generator by Porsche Digital. Spin up your own in one command.",
     "notUpdated": "This item was not updated in last three versions of the Radar.",
     "hiddenFromRadar": "This technology is currently hidden from the radar chart.",
     "searchPlaceholder": "Search & actions",

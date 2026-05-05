@@ -178,9 +178,7 @@ const Changelog: CustomPage = () => {
                             <span
                               className={styles.dot}
                               style={{
-                                background: ring
-                                  ? getRingColor(ring)
-                                  : undefined,
+                                background: getRingColor(ring),
                               }}
                               title={ringData?.title}
                             >

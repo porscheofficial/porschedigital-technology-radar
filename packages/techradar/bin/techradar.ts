@@ -4,6 +4,7 @@ import {
   copyFileSync,
   cpSync,
   existsSync,
+  readdirSync,
   readFileSync,
   renameSync,
   rmSync,
@@ -282,18 +283,21 @@ function bootstrap(): void {
     join(SOURCE_DIR, ".markdownlint-cli2.jsonc"),
     ".markdownlint-cli2.jsonc",
   );
-  scaffold(
-    join(CWD, "data", "themes", ".example"),
-    join(SOURCE_DIR, "data", "themes", ".example"),
-    "data/themes/.example/",
-    true,
-  );
-  scaffold(
-    join(CWD, "data", "themes", "porsche"),
-    join(SOURCE_DIR, "data", "themes", "porsche"),
-    "data/themes/porsche/",
-    true,
-  );
+  const themesSourceDir = join(SOURCE_DIR, "data", "themes");
+  if (existsSync(themesSourceDir)) {
+    const themeDirs = readdirSync(themesSourceDir, { withFileTypes: true })
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => entry.name)
+      .sort();
+    for (const theme of themeDirs) {
+      scaffold(
+        join(CWD, "data", "themes", theme),
+        join(themesSourceDir, theme),
+        `data/themes/${theme}/`,
+        true,
+      );
+    }
+  }
   ensureGitignore();
   consola.success(
     "Project initialized. Edit config.json and add items to radar/.\n" +

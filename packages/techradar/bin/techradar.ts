@@ -14,7 +14,6 @@ import { watch } from "chokidar";
 import { defineCommand, runMain } from "citty";
 import consola from "consola";
 import { execa, execaSync } from "execa";
-import { migrateColors } from "./migrateColors";
 import { sanitizeShadowTsconfig } from "./sanitizeShadowTsconfig";
 
 // ---------------------------------------------------------------------------
@@ -343,39 +342,6 @@ const initCommand = defineCommand({
   },
 });
 
-const migrateColorsCommand = defineCommand({
-  meta: {
-    name: "migrate-colors",
-    description: "Migrate legacy color config into a manifest.jsonc file",
-  },
-  args: {
-    dryRun: {
-      type: "boolean",
-      alias: ["dry-run"],
-      description: "Print proposed changes without writing",
-      default: false,
-    },
-    config: {
-      type: "string",
-      description: "Path to consumer config.json",
-      default: "./config.json",
-    },
-    outputId: {
-      type: "string",
-      alias: ["output-id"],
-      description: "Theme id (folder name) for the generated theme",
-      default: "custom",
-    },
-  },
-  run({ args }) {
-    migrateColors({
-      dryRun: args.dryRun,
-      config: args.config,
-      outputId: args.outputId,
-    });
-  },
-});
-
 const serveCommand = defineCommand({
   meta: { name: "serve", description: "Start the development server" },
   run() {
@@ -547,7 +513,6 @@ const main = defineCommand({
   },
   subCommands: {
     init: initCommand,
-    "migrate-colors": migrateColorsCommand,
     validate: validateCommand,
     serve: serveCommand,
     build: buildCommand,
@@ -555,7 +520,7 @@ const main = defineCommand({
   },
   setup({ args, rawArgs }) {
     // Skip setup for init — it handles its own bootstrapping
-    if (rawArgs.includes("init") || rawArgs.includes("migrate-colors")) return;
+    if (rawArgs.includes("init")) return;
 
     if (!isInitialized()) {
       consola.fatal("Project not initialized. Run `npx techradar init` first.");

@@ -50,7 +50,7 @@ const LEGACY_ROOT_KEYS = [
 for (const key of LEGACY_ROOT_KEYS) {
   if (key in userConfig) {
     throw new Error(
-      `config.json: '${key}' is no longer supported in v${VERSION}. Run 'npx techradar migrate-colors' to convert.`,
+      `config.json: '${key}' is no longer supported in v${VERSION}. Define colors in a theme file under data/themes/ instead.`,
     );
   }
 }
@@ -60,7 +60,7 @@ if (
   )
 ) {
   throw new Error(
-    `config.json: 'segments[].color' is no longer supported in v${VERSION}. Run 'npx techradar migrate-colors' to convert.`,
+    `config.json: 'segments[].color' is no longer supported in v${VERSION}. Define colors in a theme file under data/themes/ instead.`,
   );
 }
 if (
@@ -69,7 +69,7 @@ if (
   )
 ) {
   throw new Error(
-    `config.json: 'rings[].color' is no longer supported in v${VERSION}. Run 'npx techradar migrate-colors' to convert.`,
+    `config.json: 'rings[].color' is no longer supported in v${VERSION}. Define colors in a theme file under data/themes/ instead.`,
   );
 }
 

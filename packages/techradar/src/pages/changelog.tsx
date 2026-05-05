@@ -21,10 +21,12 @@ import {
   getItemTrajectories,
   getReleases,
   getRing,
+  getRings,
   getSegment,
   getVersionDiffs,
 } from "@/lib/data";
 import { formatRelease, formatReleaseCompact } from "@/lib/format";
+import { useTheme } from "@/lib/ThemeContext";
 import type { CustomPage } from "@/pages/_app";
 import styles from "./changelog.module.scss";
 
@@ -37,6 +39,12 @@ const Changelog: CustomPage = () => {
   const router = useRouter();
   const [showAll, setShowAll] = useState(false);
   const [focusIndex, setFocusIndex] = useState(0);
+  const { theme } = useTheme();
+  const allRings = getRings();
+  const getRingColor = (ringId: string): string | undefined => {
+    const idx = allRings.findIndex((r) => r.id === ringId);
+    return idx >= 0 ? theme.radar.rings[idx] : undefined;
+  };
 
   const needsTruncation = allReleases.length > MAX_VISIBLE_VERSIONS;
   const visibleReleases =
@@ -169,7 +177,11 @@ const Changelog: CustomPage = () => {
                           {ring ? (
                             <span
                               className={styles.dot}
-                              style={{ background: ringData?.color }}
+                              style={{
+                                background: ring
+                                  ? getRingColor(ring)
+                                  : undefined,
+                              }}
                               title={ringData?.title}
                             >
                               {dotIsNew && (
@@ -198,7 +210,7 @@ const Changelog: CustomPage = () => {
                 <span key={ringId} className={styles.legendItem}>
                   <span
                     className={styles.legendDot}
-                    style={{ background: ring.color }}
+                    style={{ background: getRingColor(ringId) }}
                   />
                   {ring.title}
                 </span>

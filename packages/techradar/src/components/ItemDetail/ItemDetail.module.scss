@@ -1,4 +1,4 @@
-@use "@porsche-design-system/components-react/styles" as *;
+@use "@porsche-design-system/components-react/scss" as *;
 
 .tintZone {
   position: relative;
@@ -130,15 +130,6 @@
   margin: 0;
   overflow-wrap: break-word;
   word-break: break-word;
-}
-
-.description :global(a) {
-  color: var(--link);
-  text-decoration: underline;
-}
-
-.description :global(a):hover {
-  text-decoration: none;
 }
 
 .linksSection {
@@ -395,15 +386,6 @@
 
 .expandedBody :last-child {
   margin-bottom: 0;
-}
-
-.expandedBody a {
-  color: var(--link);
-  text-decoration: underline;
-
-  &:hover {
-    text-decoration: none;
-  }
 }
 
 .initialTeams {

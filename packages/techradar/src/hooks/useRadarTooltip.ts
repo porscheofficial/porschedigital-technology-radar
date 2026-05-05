@@ -16,6 +16,7 @@ interface PersistentTooltip {
   id: string;
   text: string;
   color: string;
+  colorFg: string;
   href: string;
   x: number;
   y: number;
@@ -25,6 +26,7 @@ interface TooltipState {
   show: boolean;
   text: string;
   color: string;
+  colorFg: string;
   x: number;
   y: number;
 }
@@ -33,6 +35,7 @@ const INITIAL_TOOLTIP: TooltipState = {
   show: false,
   text: "",
   color: "",
+  colorFg: "",
   x: 0,
   y: 0,
 };
@@ -98,6 +101,7 @@ export function useRadarTooltip(
 
         const text = link.getAttribute("data-tooltip") || "";
         const color = link.getAttribute("data-tooltip-color") || "";
+        const colorFg = link.getAttribute("data-tooltip-fg") || "";
         const href = link.getAttribute("href") || "";
         const linkRect = link.getBoundingClientRect();
 
@@ -105,6 +109,7 @@ export function useRadarTooltip(
           id,
           text,
           color,
+          colorFg,
           href,
           x: linkRect.left - radarRect.left + linkRect.width / 2,
           y: linkRect.top - radarRect.top,
@@ -154,7 +159,12 @@ export function useRadarTooltip(
       ({
         left: tooltip.x,
         top: tooltip.y,
-        ...(tooltip.color ? { "--tooltip": tooltip.color } : undefined),
+        ...(tooltip.color
+          ? {
+              "--tooltip": tooltip.color,
+              "--tooltip-fg": tooltip.colorFg,
+            }
+          : undefined),
       }) as CSSProperties,
     [tooltip],
   );
@@ -180,13 +190,14 @@ export function useRadarTooltip(
         if (!containerRef.current) return;
         const text = link.getAttribute("data-tooltip") || "";
         const color = link.getAttribute("data-tooltip-color") || "";
+        const colorFg = link.getAttribute("data-tooltip-fg") || "";
         const linkRect = link.getBoundingClientRect();
         const radarRect = containerRef.current.getBoundingClientRect();
 
         const x = linkRect.left - radarRect.left + linkRect.width / 2;
         const y = linkRect.top - radarRect.top;
 
-        setTooltip({ text, color, show: !!text, x, y });
+        setTooltip({ text, color, colorFg, show: !!text, x, y });
       });
     },
     [filterActive, highlightedIds.length, tooltip.show, containerRef],

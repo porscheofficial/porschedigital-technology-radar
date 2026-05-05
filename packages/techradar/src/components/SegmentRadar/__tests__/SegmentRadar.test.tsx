@@ -29,7 +29,6 @@ const segment: Segment = {
   id: "platforms",
   title: "Platforms",
   description: "Platform technologies",
-  color: "#ff6600",
   position: 1,
 };
 
@@ -39,7 +38,6 @@ const allSegments: Segment[] = [
     id: "tools",
     title: "Tools",
     description: "Tooling",
-    color: "#00aa88",
     position: 2,
   },
 ];
@@ -49,7 +47,6 @@ const rings: Ring[] = [
     id: "adopt",
     title: "Adopt",
     description: "Adopt ring",
-    color: "#00aa88",
     radius: 0.25,
     strokeWidth: 2,
   },

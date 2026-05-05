@@ -12,7 +12,6 @@ import { SeoHead } from "@/components/SeoHead/SeoHead";
 import { blipSvgMap } from "@/lib/blipIcons";
 import {
   getItems,
-  getRing,
   getRings,
   getSegment,
   getSegments,
@@ -21,6 +20,7 @@ import {
 } from "@/lib/data";
 import { stripHtml } from "@/lib/format";
 import { useRadarHighlight } from "@/lib/RadarHighlightContext";
+import { useTheme } from "@/lib/ThemeContext";
 import { Flag } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import type { CustomPage } from "@/pages/_app";
@@ -35,6 +35,7 @@ const SegmentPage: CustomPage<SegmentPageProps> = ({ segmentId }) => {
   const allSegments = getSegments();
   const rings = getRings();
   const { setHighlight } = useRadarHighlight();
+  const { theme } = useTheme();
 
   const items = segment
     ? getItems(segment.id).sort(sortByFeaturedAndTitle)
@@ -158,8 +159,8 @@ const SegmentPage: CustomPage<SegmentPageProps> = ({ segmentId }) => {
         <div className={styles.content}>
           {rings.map((ring) => {
             const ringItems = ringGroups[ring.id] ?? [];
-            const ringData = getRing(ring.id);
-            const ringColor = ringData?.color ?? "var(--foreground)";
+            const ringIdx = rings.findIndex((r) => r.id === ring.id);
+            const ringColor = theme.radar.rings[ringIdx];
             return (
               <section
                 key={ring.id}
@@ -215,13 +216,13 @@ const SegmentPage: CustomPage<SegmentPageProps> = ({ segmentId }) => {
                               {item.flag !== Flag.Default && (
                                 <PTag
                                   iconSource={blipSvgMap[item.flag]}
-                                  color="background-frosted"
+                                  variant="secondary"
                                 >
                                   {item.flag}
                                 </PTag>
                               )}
                               {!item.featured && (
-                                <PTag icon="disable" color="background-frosted">
+                                <PTag icon="disable" variant="secondary">
                                   Hidden
                                 </PTag>
                               )}

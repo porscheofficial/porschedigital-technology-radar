@@ -2,23 +2,29 @@ import { render, screen } from "@testing-library/react";
 import type { ComponentProps, ReactNode } from "react";
 import { Tag } from "../Tags";
 
-interface MockPTagProps {
+interface MockChipProps {
+  kind?: string;
   children?: ReactNode;
-  icon?: string;
-  variant?: string;
+  iconSlot?: ReactNode;
   compact?: boolean;
 }
 
-vi.mock("@porsche-design-system/components-react/ssr", () => ({
-  PTag: ({ children, icon, variant, compact }: MockPTagProps) => (
+vi.mock("@/components/Chip/Chip", () => ({
+  Chip: ({ kind, children, iconSlot, compact }: MockChipProps) => (
     <span
-      data-testid="p-tag"
-      data-icon={icon}
-      data-variant={variant}
+      data-testid="chip"
+      data-kind={kind}
       data-compact={compact ? "true" : "false"}
     >
+      <span data-testid="chip-icon-slot">{iconSlot}</span>
       {children}
     </span>
+  ),
+}));
+
+vi.mock("@porsche-design-system/components-react/ssr", () => ({
+  PIcon: ({ name }: { name?: string }) => (
+    <span data-testid="p-icon" data-name={name} />
   ),
 }));
 
@@ -31,16 +37,33 @@ vi.mock("next/link", () => ({
 }));
 
 describe("Tag", () => {
-  it("renders the tag text inside PTag", () => {
+  it("renders the tag text inside a Chip", () => {
     render(<Tag tag="frontend" />);
 
-    expect(screen.getByTestId("p-tag")).toHaveTextContent("frontend");
+    expect(screen.getByTestId("chip")).toHaveTextContent("frontend");
   });
 
   it("passes the compact prop", () => {
     render(<Tag tag="frontend" compact />);
 
-    expect(screen.getByTestId("p-tag")).toHaveAttribute("data-compact", "true");
+    expect(screen.getByTestId("chip")).toHaveAttribute("data-compact", "true");
+  });
+
+  // Regression: tags must use kind="tag" so theme.json `chips.tag` colors apply
+  // (theme-configurable replacement for the old PDS info-frosted variant).
+  it("uses the chip kind=tag so themed tag colors apply", () => {
+    render(<Tag tag="frontend" />);
+
+    expect(screen.getByTestId("chip")).toHaveAttribute("data-kind", "tag");
+  });
+
+  it("uses the bookmark icon", () => {
+    render(<Tag tag="frontend" />);
+
+    expect(screen.getByTestId("p-icon")).toHaveAttribute(
+      "data-name",
+      "bookmark",
+    );
   });
 
   it("renders as a plain span (not a link) when no href is provided", () => {
@@ -54,6 +77,6 @@ describe("Tag", () => {
 
     const link = screen.getByRole("link");
     expect(link).toHaveAttribute("href", "/?tags=frontend");
-    expect(link).toContainElement(screen.getByTestId("p-tag"));
+    expect(link).toContainElement(screen.getByTestId("chip"));
   });
 });

@@ -1,4 +1,4 @@
-@use "@porsche-design-system/components-react/styles" as *;
+@use "@porsche-design-system/components-react/scss" as *;
 
 .filters {
   display: grid;
@@ -6,7 +6,7 @@
   gap: $pds-spacing-static-medium;
   margin: $pds-spacing-fluid-small 0 $pds-spacing-fluid-medium;
   padding: 0 $pds-spacing-static-medium;
-  align-items: start;
+  align-items: center;
 }
 
 .row {
@@ -23,8 +23,6 @@
   letter-spacing: 0.06em;
   color: var(--foreground);
   opacity: 0.5;
-  // Align label vertically with first line of pills
-  padding-top: 6px;
 }
 
 .pills {
@@ -78,4 +76,25 @@
   &:hover {
     opacity: 1;
   }
+}
+
+// CSS mask lets the inline data-URL SVG inherit the chip's foreground color
+// (var(--rtk-chip-status-fg)) via background-color: currentColor. The url is
+// passed in as `--blip-icon-url` inline style per blip kind. Size matches
+// the .icon container in Chip.module.scss ($rtk-chip-icon-size = 14px) so
+// the rendered status icon visually matches the PIcon used by tag/team
+// chips and the chip layout box stays identical across all three kinds.
+.blipIcon {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background-color: currentColor;
+  mask-image: var(--blip-icon-url);
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-image: var(--blip-icon-url);
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
 }

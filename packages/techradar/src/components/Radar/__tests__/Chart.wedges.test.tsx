@@ -11,6 +11,33 @@ vi.mock("@/lib/data", () => ({
   getChartConfig: vi.fn(() => ({ size: 800, blipSize: 12 })),
 }));
 
+vi.mock("@/lib/ThemeContext", () => ({
+  useTheme: vi.fn(() => ({
+    activeTheme: {
+      id: "porsche",
+      label: "Porsche",
+      supports: ["dark"],
+      default: "dark" as const,
+    },
+    mode: "dark" as const,
+    theme: {
+      id: "porsche",
+      label: "Porsche",
+      supports: ["dark"],
+      default: "dark" as const,
+      cssVariables: {},
+      radar: {
+        segments: ["#4A9E7E", "#5B8DB8", "#C4A85E", "#B85B5B"],
+        rings: ["#00aa88", "#0088aa", "#aa8800", "#888888"],
+      },
+      assetsResolved: {},
+    },
+    themes: [],
+    setActiveTheme: vi.fn(),
+    setMode: vi.fn(),
+  })),
+}));
+
 vi.mock("@/lib/RadarHighlightContext", () => ({
   useRadarHighlight: vi.fn(() => ({
     highlightedIds: [],
@@ -24,28 +51,24 @@ const segments: Segment[] = [
     id: "platforms",
     title: "Platforms",
     description: "",
-    color: "#aa0000",
     position: 1,
   },
   {
     id: "tools",
     title: "Tools",
     description: "",
-    color: "#00aa00",
     position: 2,
   },
   {
     id: "languages",
     title: "Languages",
     description: "",
-    color: "#0000aa",
     position: 3,
   },
   {
     id: "techniques",
     title: "Techniques",
     description: "",
-    color: "#aaaa00",
     position: 4,
   },
 ];
@@ -55,7 +78,6 @@ const rings: Ring[] = [
     id: "adopt",
     title: "Adopt",
     description: "",
-    color: "#00aa88",
     radius: 0.4,
     strokeWidth: 2,
   },
@@ -63,7 +85,6 @@ const rings: Ring[] = [
     id: "trial",
     title: "Trial",
     description: "",
-    color: "#0088aa",
     radius: 0.7,
     strokeWidth: 2,
   },
@@ -71,7 +92,6 @@ const rings: Ring[] = [
     id: "assess",
     title: "Assess",
     description: "",
-    color: "#aa8800",
     radius: 0.9,
     strokeWidth: 2,
   },
@@ -79,7 +99,6 @@ const rings: Ring[] = [
     id: "hold",
     title: "Hold",
     description: "",
-    color: "#888888",
     radius: 1.0,
     strokeWidth: 2,
   },

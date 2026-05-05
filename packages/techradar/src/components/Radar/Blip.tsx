@@ -90,10 +90,15 @@ function BlipChanged({
     const startAngle = centerAngle - halfSweep;
     const endAngle = centerAngle + halfSweep;
     const radius = blipSize * 0.875;
-    const startX = x + radius * Math.cos(startAngle);
-    const startY = y + radius * Math.sin(startAngle);
-    const endX = x + radius * Math.cos(endAngle);
-    const endY = y + radius * Math.sin(endAngle);
+    // Math.cos/sin/atan2 are spec-allowed to differ in sub-ULP precision
+    // between V8 isolates (server Node vs client Chrome), which causes React
+    // hydration mismatches on the rendered `d=` string. Sub-pixel detail is
+    // not visible at SVG render scale, so rounding to 3 decimals removes the
+    // mismatch without changing what the user sees.
+    const startX = (x + radius * Math.cos(startAngle)).toFixed(3);
+    const startY = (y + radius * Math.sin(startAngle)).toFixed(3);
+    const endX = (x + radius * Math.cos(endAngle)).toFixed(3);
+    const endY = (y + radius * Math.sin(endAngle)).toFixed(3);
 
     arcPath = `M ${startX} ${startY} A ${radius} ${radius} 0 0 1 ${endX} ${endY}`;
   }

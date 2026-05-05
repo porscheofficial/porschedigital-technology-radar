@@ -17,10 +17,11 @@ import {
   getEditUrl,
   getLabel,
   getReleases,
-  getRing,
+  getRings,
   getToggle,
 } from "@/lib/data";
 import { formatLinkLabel, stripHtml, truncate } from "@/lib/format";
+import { useTheme } from "@/lib/ThemeContext";
 import type { Item, Revision } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import styles from "./ItemDetail.module.scss";
@@ -48,8 +49,11 @@ export function ItemDetail({ item, segmentTitle }: ItemProps) {
   const getTeamHref = (team: string) =>
     teamFilterEnabled ? `/?teams=${encodeURIComponent(team)}` : undefined;
 
-  const ringInfo = getRing(item.ring);
-  const ringColor = ringInfo?.color || "#fff";
+  const { theme } = useTheme();
+  const rings = getRings();
+  const ringIdx = rings.findIndex((r) => r.id === item.ring);
+  const ringInfo = rings.find((r) => r.id === item.ring);
+  const ringColor = theme.radar.rings[ringIdx];
 
   // Tenure
   const sortedRevisions = [...(item.revisions || [])].sort(
@@ -70,7 +74,7 @@ export function ItemDetail({ item, segmentTitle }: ItemProps) {
     (a, b) => new Date(b.release).getTime() - new Date(a.release).getTime(),
   )[0];
   const lastTransition = latestRevision?.previousRing
-    ? `${getRing(latestRevision.previousRing)?.title || latestRevision.previousRing} → ${ringInfo?.title || item.ring}`
+    ? `${rings.find((r) => r.id === latestRevision.previousRing)?.title || latestRevision.previousRing} → ${ringInfo?.title || item.ring}`
     : null;
 
   return (

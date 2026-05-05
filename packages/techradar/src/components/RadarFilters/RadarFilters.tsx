@@ -1,4 +1,6 @@
 import { PIcon, PTag } from "@porsche-design-system/components-react/ssr";
+import type { CSSProperties } from "react";
+import { Chip } from "@/components/Chip/Chip";
 import { blipSvgMap } from "@/lib/blipIcons";
 import { getFlags, getTags, getTeams, getToggle } from "@/lib/data";
 import { useRadarHighlight } from "@/lib/RadarHighlightContext";
@@ -44,21 +46,32 @@ export function RadarFilters() {
                 className={cn(styles.pill, isActive && styles.active)}
               >
                 {isActive ? (
-                  <PTag
+                  <Chip
                     key={`${key}-active`}
-                    icon="close"
-                    color="background-frosted"
+                    kind="status"
+                    iconSlot={
+                      <PIcon name="close" size="x-small" aria-hidden="true" />
+                    }
                   >
                     {title.toLowerCase()}
-                  </PTag>
+                  </Chip>
                 ) : (
-                  <PTag
+                  <Chip
                     key={`${key}-idle`}
-                    iconSource={blipSvgMap[key]}
-                    color="background-frosted"
+                    kind="status"
+                    iconSlot={
+                      <span
+                        className={styles.blipIcon}
+                        style={
+                          {
+                            "--blip-icon-url": `url("${blipSvgMap[key]}")`,
+                          } as CSSProperties
+                        }
+                      />
+                    }
                   >
                     {title.toLowerCase()}
-                  </PTag>
+                  </Chip>
                 )}
               </button>
             );
@@ -82,9 +95,18 @@ export function RadarFilters() {
                   onClick={() => toggleTag(tag)}
                   className={cn(styles.pill, isActive && styles.active)}
                 >
-                  <PTag icon={isActive ? "close" : "bookmark"} variant="info">
+                  <Chip
+                    kind="tag"
+                    iconSlot={
+                      <PIcon
+                        name={isActive ? "close" : "bookmark"}
+                        size="x-small"
+                        aria-hidden="true"
+                      />
+                    }
+                  >
                     {tag}
-                  </PTag>
+                  </Chip>
                 </button>
               );
             })}
@@ -108,12 +130,18 @@ export function RadarFilters() {
                   onClick={() => toggleTeam(team)}
                   className={cn(styles.pill, isActive && styles.active)}
                 >
-                  <PTag
-                    icon={isActive ? "close" : "user-group"}
-                    variant="warning"
+                  <Chip
+                    kind="team"
+                    iconSlot={
+                      <PIcon
+                        name={isActive ? "close" : "user-group"}
+                        size="x-small"
+                        aria-hidden="true"
+                      />
+                    }
                   >
                     {team}
-                  </PTag>
+                  </Chip>
                 </button>
               );
             })}
@@ -135,7 +163,7 @@ export function RadarFilters() {
             tabIndex={filterActive ? 0 : -1}
             aria-hidden={!filterActive}
           >
-            <PTag icon="close" color="background-frosted">
+            <PTag icon="close" variant="secondary">
               clear all filters
             </PTag>
           </button>

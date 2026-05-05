@@ -4,6 +4,8 @@ import { Blip } from "@/components/Radar/Blip";
 import { getItemChangeDirection, getToggle } from "@/lib/data";
 import { useRadarHighlight } from "@/lib/RadarHighlightContext";
 import { describeFilledArc } from "@/lib/radarGeometry";
+import { useTheme } from "@/lib/ThemeContext";
+import { segmentForegroundVar } from "@/lib/theme/schema";
 import { Flag, type Item, type Ring, type Segment } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import styles from "./SegmentChart.module.scss";
@@ -34,6 +36,8 @@ const SegmentChartInner: FC<SegmentChartProps> = ({
   className,
 }) => {
   const { highlightedIds, filterActive } = useRadarHighlight();
+  const { theme } = useTheme();
+  const segmentColor = theme.radar.segments[segment.position - 1];
   const highlightSet = useMemo(() => new Set(highlightedIds), [highlightedIds]);
   const hasHighlights = filterActive || highlightSet.size > 0;
 
@@ -150,8 +154,8 @@ const SegmentChartInner: FC<SegmentChartProps> = ({
             cy={center}
             r={center}
           >
-            <stop offset="0%" stopColor={segment.color} stopOpacity={0.5} />
-            <stop offset="100%" stopColor={segment.color} stopOpacity={0} />
+            <stop offset="0%" stopColor={segmentColor} stopOpacity={0.5} />
+            <stop offset="100%" stopColor={segmentColor} stopOpacity={0} />
           </radialGradient>
         </defs>
         <rect
@@ -182,7 +186,7 @@ const SegmentChartInner: FC<SegmentChartProps> = ({
             startAngle,
             endAngle,
           )}
-          fill={segment.color}
+          fill={segmentColor}
           opacity={0.08}
           className={styles.ringHighlight}
         />
@@ -235,7 +239,8 @@ const SegmentChartInner: FC<SegmentChartProps> = ({
         href={`/${item.segment}/${item.id}`}
         aria-label={item.title}
         data-tooltip={item.title}
-        data-tooltip-color={segment.color}
+        data-tooltip-color={segmentColor}
+        data-tooltip-fg={segmentForegroundVar(segment.position - 1)}
         data-item-id={item.id}
         className={cn(
           hasHighlights && styles.blip,
@@ -246,7 +251,7 @@ const SegmentChartInner: FC<SegmentChartProps> = ({
       >
         <Blip
           flag={item.flag}
-          color={segment.color}
+          color={segmentColor}
           direction={direction ?? undefined}
           centerX={direction ? centerX : undefined}
           centerY={direction ? centerY : undefined}
@@ -268,7 +273,7 @@ const SegmentChartInner: FC<SegmentChartProps> = ({
           y1={center}
           x2={s.x}
           y2={s.y}
-          stroke={segment.color}
+          stroke={segmentColor}
           strokeWidth={1}
         />
         <line
@@ -276,7 +281,7 @@ const SegmentChartInner: FC<SegmentChartProps> = ({
           y1={center}
           x2={e.x}
           y2={e.y}
-          stroke={segment.color}
+          stroke={segmentColor}
           strokeWidth={1}
         />
       </g>
@@ -298,7 +303,7 @@ const SegmentChartInner: FC<SegmentChartProps> = ({
           key={ring.id}
           d={describeArc(ring.radius || 0.5)}
           fill="none"
-          stroke={segment.color}
+          stroke={segmentColor}
           strokeWidth={ring.strokeWidth || 2}
         />
       ))}

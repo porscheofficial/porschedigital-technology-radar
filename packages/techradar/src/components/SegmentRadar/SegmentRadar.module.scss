@@ -1,4 +1,4 @@
-@use "@porsche-design-system/components-react/styles" as *;
+@use "@porsche-design-system/components-react/scss" as *;
 
 .segmentRadar {
   position: relative;
@@ -14,7 +14,7 @@
 
 .tooltip {
   background-color: var(--tooltip, var(--background));
-  color: var(--foreground);
+  color: var(--tooltip-fg, var(--foreground));
   @include pds-text-xx-small;
   padding: $pds-spacing-static-x-small $pds-spacing-static-small;
   height: fit-content;
@@ -58,7 +58,7 @@
     pointer-events: auto;
     cursor: pointer;
     text-decoration: none;
-    color: inherit;
+    color: var(--tooltip-fg, var(--foreground));
 
     &:hover {
       z-index: 10;

@@ -61,6 +61,7 @@ export const Radar: FC<RadarProps> = ({
               left: pt.x,
               top: pt.y,
               "--tooltip": pt.color,
+              "--tooltip-fg": pt.colorFg,
             } as CSSProperties
           }
         >

@@ -1,4 +1,4 @@
-@use "@porsche-design-system/components-react/styles" as *;
+@use "@porsche-design-system/components-react/scss" as *;
 
 .items a {
   outline: none;
@@ -9,7 +9,10 @@
 }
 
 .wedges path {
-  fill-opacity: 0;
+  // Baseline tint gives each segment wedge a faint colored "stage" that
+  // remains visible in both light and dark themes, even where the radial
+  // glow gradient has faded toward the radar edge. Hover bumps to 0.18.
+  fill-opacity: 0.08;
   transition: fill-opacity 200ms ease;
   // Hit-test against the actual filled path geometry, not the bounding
   // box of the parent <a>. Without this, the inner-ring (Adopt) wedge's
@@ -26,7 +29,7 @@
 
 .wedge:hover path,
 .wedge:focus-visible path {
-  fill-opacity: 0.08;
+  fill-opacity: 0.18;
 }
 
 .wedge:focus-visible path {

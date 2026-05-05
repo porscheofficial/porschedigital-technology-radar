@@ -6,7 +6,6 @@
     "packages/techradar": {
       "package-name": "@porscheofficial/porschedigital-technology-radar",
       "release-type": "node",
-      "release-as": "1.3.0",
       "include-component-in-tag": true,
       "changelog-path": "CHANGELOG.md",
       "bump-minor-pre-major": true,

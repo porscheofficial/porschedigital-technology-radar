@@ -1,0 +1,82 @@
+// Custom chip primitive. PDS v4 PTag exposes no Parts and its Shadow DOM is
+// sealed, so we cannot recolor it from theme.json. Background and foreground
+// colors are read from `--rtk-chip-{kind}-{bg,fg}` CSS variables emitted in
+// `_document.tsx` from `theme.json` `chips` block (per-mode via `light-dark()`
+// for bg, precomputed via `readableTextOn` for fg).
+//
+// Layout is locked with explicit `min-height` + an explicit `width`/`height`
+// on `.icon`. Without these, status chips (plain `<span>` blip mask) and
+// tag/team chips (PDS `<p-icon>` web component with shadow-DOM internal box
+// metrics) compute different content heights and the chips render at
+// different heights even though they share this class.
+//
+// Font is bound to PDS via `pds-text-x-small` so chip text matches PTag's
+// metrics exactly (family, size, line-height, letter-spacing). `inherit`
+// resolved to browser-default sans because <body> never sets a global
+// font-family.
+@use "@porsche-design-system/components-react/scss" as *;
+
+$rtk-chip-icon-size: 14px;
+$rtk-chip-min-height: 26px;
+$rtk-chip-compact-min-height: 22px;
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 12px;
+  min-height: $rtk-chip-min-height;
+  border-radius: 4px;
+  @include pds-text-x-small;
+  white-space: nowrap;
+  vertical-align: middle;
+  box-sizing: border-box;
+
+  // Subtle 85% alpha on bg via color-mix mirrors the legacy PTag frosted feel
+  // without the backdrop blur (which we cannot reproduce on a static span
+  // without performance cost). Text fg stays at full opacity so the
+  // readableTextOn-precomputed contrast against the solid bg still holds.
+  &[data-chip-kind="status"] {
+    background-color: color-mix(in srgb, var(--rtk-chip-status-bg) 85%, transparent);
+    color: var(--rtk-chip-status-fg);
+  }
+
+  &[data-chip-kind="tag"] {
+    background-color: color-mix(in srgb, var(--rtk-chip-tag-bg) 85%, transparent);
+    color: var(--rtk-chip-tag-fg);
+  }
+
+  &[data-chip-kind="team"] {
+    background-color: color-mix(in srgb, var(--rtk-chip-team-bg) 85%, transparent);
+    color: var(--rtk-chip-team-fg);
+  }
+
+  &[data-chip-kind="team-added"] {
+    background-color: color-mix(in srgb, var(--rtk-chip-team-added-bg) 85%, transparent);
+    color: var(--rtk-chip-team-added-fg);
+  }
+
+  &[data-chip-kind="team-removed"] {
+    background-color: color-mix(in srgb, var(--rtk-chip-team-removed-bg) 85%, transparent);
+    color: var(--rtk-chip-team-removed-fg);
+  }
+}
+
+.compact {
+  padding: 0 8px;
+  min-height: $rtk-chip-compact-min-height;
+  font-size: 0.75rem;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: $rtk-chip-icon-size;
+  height: $rtk-chip-icon-size;
+  flex: 0 0 auto;
+}
+
+.label {
+  display: inline-block;
+}

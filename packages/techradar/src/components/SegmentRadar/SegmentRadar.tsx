@@ -64,6 +64,7 @@ export const SegmentRadar: FC<SegmentRadarProps> = ({
               left: pt.x,
               top: pt.y,
               "--tooltip": pt.color,
+              "--tooltip-fg": pt.colorFg,
             } as CSSProperties
           }
         >

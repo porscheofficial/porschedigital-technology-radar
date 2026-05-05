@@ -1,6 +1,6 @@
-import { assetUrl, cn } from "@/lib/utils";
+import { assetUrl, cn, readableTextOn } from "@/lib/utils";
 
-vi.mock("../../../next.config.js", () => ({
+vi.mock("@/lib/config", () => ({
   default: { basePath: "" },
 }));
 
@@ -51,7 +51,7 @@ describe("assetUrl", () => {
 describe("assetUrl with basePath", () => {
   it("prepends basePath to absolute paths and trims trailing slash", async () => {
     vi.resetModules();
-    vi.doMock("../../../next.config.js", () => ({
+    vi.doMock("@/lib/config", () => ({
       default: { basePath: "/porschedigital-technology-radar" },
     }));
     const { assetUrl: scopedAssetUrl } = await import("@/lib/utils");
@@ -64,7 +64,52 @@ describe("assetUrl with basePath", () => {
     expect(scopedAssetUrl("https://example.com/img.png")).toBe(
       "https://example.com/img.png",
     );
-    vi.doUnmock("../../../next.config.js");
+    vi.doUnmock("@/lib/config");
     vi.resetModules();
+  });
+});
+
+describe("readableTextOn", () => {
+  it("returns white ink on dark light-theme segment colors so tooltip text remains legible", () => {
+    expect(readableTextOn("#2D7A5C")).toBe("#FFFFFF");
+    expect(readableTextOn("#3A6FA0")).toBe("#FFFFFF");
+    expect(readableTextOn("#9C7E33")).toBe("#FFFFFF");
+    expect(readableTextOn("#9C3A3A")).toBe("#FFFFFF");
+  });
+
+  it("returns white ink on saturated dark-theme segments including the lightest amber so theme colors stay paired with white per design intent", () => {
+    expect(readableTextOn("#4A9E7E")).toBe("#FFFFFF");
+    expect(readableTextOn("#5B8DB8")).toBe("#FFFFFF");
+    expect(readableTextOn("#B85B5B")).toBe("#FFFFFF");
+    expect(readableTextOn("#C4A85E")).toBe("#FFFFFF");
+  });
+
+  it("returns white ink on saturated team accents (regression: orange #FF8A3C must not flip to black)", () => {
+    expect(readableTextOn("#C45A00")).toBe("#FFFFFF");
+    expect(readableTextOn("#FF8A3C")).toBe("#FFFFFF");
+  });
+
+  it("returns white ink on bright-but-vivid mid-tones (regression: amber #FBBF24 and emerald #34D399 must not flip to black)", () => {
+    expect(readableTextOn("#FBBF24")).toBe("#FFFFFF");
+    expect(readableTextOn("#34D399")).toBe("#FFFFFF");
+  });
+
+  it("returns dark ink on actual pastels and pale neutrals past the 0.6 luminance cutoff", () => {
+    expect(readableTextOn("#FFFF00")).toBe("#010205");
+    expect(readableTextOn("#F0E68C")).toBe("#010205");
+    expect(readableTextOn("#CCCCCC")).toBe("#010205");
+  });
+
+  it("normalises 3-digit hex and ignores #RRGGBBAA alpha", () => {
+    expect(readableTextOn("#000")).toBe("#FFFFFF");
+    expect(readableTextOn("#fff")).toBe("#010205");
+    expect(readableTextOn("#010205FF")).toBe("#FFFFFF");
+  });
+
+  it("falls back to dark ink on malformed input so missing tooltip color never produces invisible text", () => {
+    expect(readableTextOn("not-a-color")).toBe("#010205");
+    expect(readableTextOn("")).toBe("#010205");
+    expect(readableTextOn("#GGGGGG")).toBe("#010205");
+    expect(readableTextOn("#12345")).toBe("#010205");
   });
 });

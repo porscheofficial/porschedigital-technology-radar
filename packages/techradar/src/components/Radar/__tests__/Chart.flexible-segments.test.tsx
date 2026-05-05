@@ -9,6 +9,40 @@ vi.mock("@/lib/data", () => ({
   getChartConfig: vi.fn(() => ({ size: 800, blipSize: 12 })),
 }));
 
+vi.mock("@/lib/ThemeContext", () => ({
+  useTheme: vi.fn(() => ({
+    activeTheme: {
+      id: "porsche",
+      label: "Porsche",
+      supports: ["dark"],
+      default: "dark" as const,
+    },
+    mode: "dark" as const,
+    theme: {
+      id: "porsche",
+      label: "Porsche",
+      supports: ["dark"],
+      default: "dark" as const,
+      cssVariables: {},
+      radar: {
+        segments: [
+          "#4A9E7E",
+          "#5B8DB8",
+          "#C4A85E",
+          "#B85B5B",
+          "#9B7DB8",
+          "#B8A05B",
+        ],
+        rings: ["#00aa88", "#0088aa", "#aa8800", "#888888"],
+      },
+      assetsResolved: {},
+    },
+    themes: [],
+    setActiveTheme: vi.fn(),
+    setMode: vi.fn(),
+  })),
+}));
+
 vi.mock("@/lib/RadarHighlightContext", () => ({
   useRadarHighlight: vi.fn(() => ({
     highlightedIds: [],
@@ -16,21 +50,11 @@ vi.mock("@/lib/RadarHighlightContext", () => ({
   })),
 }));
 
-const COLORS = [
-  "#aa0000",
-  "#00aa00",
-  "#0000aa",
-  "#aaaa00",
-  "#aa00aa",
-  "#00aaaa",
-];
-
 function makeSegments(n: number): Segment[] {
   return Array.from({ length: n }, (_, i) => ({
     id: `q${i + 1}`,
     title: `Segment ${i + 1}`,
     description: `Segment ${i + 1} description`,
-    color: COLORS[i] ?? "#888888",
     position: i + 1,
   }));
 }
@@ -40,7 +64,6 @@ const rings: Ring[] = [
     id: "adopt",
     title: "Adopt",
     description: "Adopt ring",
-    color: "#00aa88",
     radius: 0.5,
     strokeWidth: 2,
   },
@@ -48,7 +71,6 @@ const rings: Ring[] = [
     id: "trial",
     title: "Trial",
     description: "Trial ring",
-    color: "#0088aa",
     radius: 1.0,
     strokeWidth: 2,
   },

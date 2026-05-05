@@ -1,6 +1,8 @@
-import { PTag } from "@porsche-design-system/components-react/ssr";
+import { PIcon } from "@porsche-design-system/components-react/ssr";
 import Link from "next/link";
 
+import { Chip } from "@/components/Chip/Chip";
+import type { ChipKind } from "@/lib/theme/schema";
 import { cn } from "@/lib/utils";
 import styles from "./Teams.module.scss";
 
@@ -11,17 +13,26 @@ type TeamProps = {
   href?: string;
 };
 
-const variantMap = {
-  default: "warning",
-  added: "success",
-  removed: "error",
-} as const;
-
 export function Team({ team, variant = "default", compact, href }: TeamProps) {
+  // All three variants render the same Chip primitive — only the kind (and
+  // therefore the theme-driven color) differs. The added/removed signal lives
+  // entirely in `theme.json` `chips.team-added` / `chips.team-removed` so the
+  // changelog diff stays themable just like the default team chip.
+  const kindByVariant: Record<NonNullable<TeamProps["variant"]>, ChipKind> = {
+    default: "team",
+    added: "team-added",
+    removed: "team-removed",
+  };
+  const kind = kindByVariant[variant];
+
   const badge = (
-    <PTag icon="user-group" variant={variantMap[variant]} compact={compact}>
+    <Chip
+      kind={kind}
+      compact={compact}
+      iconSlot={<PIcon name="user-group" size="x-small" aria-hidden="true" />}
+    >
       {team}
-    </PTag>
+    </Chip>
   );
 
   if (href) {

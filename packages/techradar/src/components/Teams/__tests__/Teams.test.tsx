@@ -2,23 +2,28 @@ import { render, screen } from "@testing-library/react";
 import type { ComponentProps, ReactNode } from "react";
 import { Team, Teams } from "../Teams";
 
-interface MockPTagProps {
+interface MockChipProps {
+  kind?: string;
   children?: ReactNode;
-  icon?: string;
-  variant?: string;
+  iconSlot?: ReactNode;
   compact?: boolean;
 }
 
-vi.mock("@porsche-design-system/components-react/ssr", () => ({
-  PTag: ({ children, icon, variant, compact }: MockPTagProps) => (
+vi.mock("@/components/Chip/Chip", () => ({
+  Chip: ({ kind, children, compact }: MockChipProps) => (
     <span
-      data-testid="p-tag"
-      data-icon={icon}
-      data-variant={variant}
+      data-testid="chip"
+      data-kind={kind}
       data-compact={compact ? "true" : "false"}
     >
       {children}
     </span>
+  ),
+}));
+
+vi.mock("@porsche-design-system/components-react/ssr", () => ({
+  PIcon: ({ name }: { name?: string }) => (
+    <span data-testid="p-icon" data-name={name} />
   ),
 }));
 
@@ -31,35 +36,28 @@ vi.mock("next/link", () => ({
 }));
 
 describe("Team", () => {
-  it("renders the team name with the default warning variant", () => {
+  it("renders the default variant as a Chip with kind=team", () => {
     render(<Team team="Platform" />);
 
-    expect(screen.getByTestId("p-tag")).toHaveTextContent("Platform");
-    expect(screen.getByTestId("p-tag")).toHaveAttribute(
-      "data-variant",
-      "warning",
-    );
+    const chip = screen.getByTestId("chip");
+    expect(chip).toHaveTextContent("Platform");
+    expect(chip).toHaveAttribute("data-kind", "team");
   });
 
-  it("renders the added variant as success", () => {
+  it("renders the added variant as a Chip with kind=team-added", () => {
     render(<Team team="Platform" variant="added" />);
 
-    expect(screen.getByTestId("p-tag")).toHaveAttribute(
-      "data-variant",
-      "success",
-    );
+    const chip = screen.getByTestId("chip");
+    expect(chip).toHaveAttribute("data-kind", "team-added");
+    expect(chip).toHaveTextContent("Platform");
   });
 
-  it("renders the removed variant as error with the removed class", () => {
+  it("renders the removed variant as a Chip with kind=team-removed and applies the removed class", () => {
     render(<Team team="Platform" variant="removed" />);
 
-    expect(screen.getByTestId("p-tag")).toHaveAttribute(
-      "data-variant",
-      "error",
-    );
-    expect(screen.getByTestId("p-tag").parentElement).toHaveClass(
-      "teamRemoved",
-    );
+    const chip = screen.getByTestId("chip");
+    expect(chip).toHaveAttribute("data-kind", "team-removed");
+    expect(chip.parentElement).toHaveClass("teamRemoved");
   });
 
   it("renders as a plain span (not a link) when no href is provided", () => {
@@ -73,7 +71,7 @@ describe("Team", () => {
 
     const link = screen.getByRole("link");
     expect(link).toHaveAttribute("href", "/?teams=Platform");
-    expect(link).toContainElement(screen.getByTestId("p-tag"));
+    expect(link).toContainElement(screen.getByTestId("chip"));
   });
 });
 
@@ -83,12 +81,15 @@ describe("Teams", () => {
       <Teams teams={["Platform", "Architecture"]} removedTeams={["Backend"]} />,
     );
 
-    expect(
-      screen.getAllByTestId("p-tag").map((element) => element.textContent),
-    ).toEqual(["Architecture", "Backend", "Platform"]);
+    const labels = screen
+      .queryAllByTestId("chip")
+      .map((el) => el.textContent ?? "")
+      .sort((a, b) => a.localeCompare(b));
+
+    expect(labels).toEqual(["Architecture", "Backend", "Platform"]);
   });
 
-  it("assigns correct variants to added, removed, and default teams", () => {
+  it("assigns kind=team to default, kind=team-removed to removed, kind=team-added to added", () => {
     render(
       <Teams
         teams={["Platform", "Architecture"]}
@@ -97,11 +98,14 @@ describe("Teams", () => {
       />,
     );
 
-    const tags = screen.getAllByTestId("p-tag");
+    const architectureChip = screen.getByText("Architecture");
+    expect(architectureChip).toHaveAttribute("data-kind", "team");
 
-    expect(tags[0]).toHaveAttribute("data-variant", "warning");
-    expect(tags[1]).toHaveAttribute("data-variant", "error");
-    expect(tags[2]).toHaveAttribute("data-variant", "success");
+    const backendChip = screen.getByText("Backend");
+    expect(backendChip).toHaveAttribute("data-kind", "team-removed");
+
+    const platformChip = screen.getByText("Platform");
+    expect(platformChip).toHaveAttribute("data-kind", "team-added");
   });
 
   it("renders empty for empty arrays", () => {

@@ -1,6 +1,7 @@
-import { PTag } from "@porsche-design-system/components-react/ssr";
+import { PIcon } from "@porsche-design-system/components-react/ssr";
 import Link from "next/link";
 
+import { Chip } from "@/components/Chip/Chip";
 import { cn } from "@/lib/utils";
 import styles from "./Tags.module.scss";
 
@@ -12,9 +13,13 @@ type TagProps = {
 
 export function Tag({ tag, compact, href }: TagProps) {
   const badge = (
-    <PTag icon="bookmark" variant="info" compact={compact}>
+    <Chip
+      kind="tag"
+      compact={compact}
+      iconSlot={<PIcon name="bookmark" size="x-small" aria-hidden="true" />}
+    >
       {tag}
-    </PTag>
+    </Chip>
   );
 
   if (href) {

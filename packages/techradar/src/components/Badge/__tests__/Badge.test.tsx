@@ -1,17 +1,48 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { getRing } from "@/lib/data";
+import { getRing, getRings } from "@/lib/data";
 import { Badge, RingBadge } from "../Badge";
 
 vi.mock("@/lib/data", () => ({
   getRing: vi.fn(),
+  getRings: vi.fn(),
+}));
+
+vi.mock("@/lib/ThemeContext", () => ({
+  useTheme: vi.fn(() => ({
+    activeTheme: {
+      id: "porsche",
+      label: "Porsche",
+      supports: ["dark"],
+      default: "dark" as const,
+    },
+    mode: "dark" as const,
+    theme: {
+      id: "porsche",
+      label: "Porsche",
+      supports: ["dark"],
+      default: "dark" as const,
+      cssVariables: {},
+      background: undefined,
+      radar: {
+        segments: ["#4A9E7E", "#5B8DB8", "#C4A85E", "#B85B5B"],
+        rings: ["#00aa88", "#0088aa", "#aa8800", "#888888"],
+      },
+      assetsResolved: {},
+    },
+    themes: [],
+    setActiveTheme: vi.fn(),
+    setMode: vi.fn(),
+  })),
 }));
 
 const mockGetRing = getRing as ReturnType<typeof vi.fn>;
+const mockGetRings = getRings as ReturnType<typeof vi.fn>;
 
 describe("Badge", () => {
   beforeEach(() => {
     mockGetRing.mockReset();
+    mockGetRings.mockReset();
   });
 
   it("renders children", () => {
@@ -80,6 +111,10 @@ describe("Badge", () => {
 describe("RingBadge", () => {
   beforeEach(() => {
     mockGetRing.mockReset();
+    mockGetRings.mockReturnValue([
+      { id: "adopt", title: "Adopt", radius: 0.25, strokeWidth: 0.1 },
+      { id: "trial", title: "Trial", radius: 0.5, strokeWidth: 0.1 },
+    ]);
   });
 
   it("renders the ring title", () => {

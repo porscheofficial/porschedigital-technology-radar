@@ -4,8 +4,9 @@ import {
   type ReactNode,
   useMemo,
 } from "react";
-import { getRing } from "@/lib/data";
+import { getRing, getRings } from "@/lib/data";
 import { formatRelease } from "@/lib/format";
+import { useTheme } from "@/lib/ThemeContext";
 import { cn } from "@/lib/utils";
 import styles from "./Badge.module.scss";
 
@@ -61,6 +62,9 @@ export function RingBadge({
   ...props
 }: RingBadgeProps) {
   const ring = getRing(ringName);
+  const { theme } = useTheme();
+  const ringIdx = getRings().findIndex((r) => r.id === ringName);
+  const ringColor = ringIdx >= 0 ? theme.radar.rings[ringIdx] : undefined;
   if (!ring) return null;
 
   const label = release
@@ -68,7 +72,7 @@ export function RingBadge({
     : ring.title;
 
   return (
-    <Badge color={ring.color} {...props}>
+    <Badge color={ringColor} {...props}>
       {label}
     </Badge>
   );

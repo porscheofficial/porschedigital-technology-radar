@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import type { ComponentProps } from "react";
 
 import { ItemDetail } from "@/components/ItemDetail/ItemDetail";
+import { useTheme } from "@/lib/ThemeContext";
 import { Flag, type Item, type Revision, type Ring } from "@/lib/types";
 
 const mockState = vi.hoisted(() => ({
@@ -10,6 +11,7 @@ const mockState = vi.hoisted(() => ({
   getLabel: vi.fn(),
   getReleases: vi.fn(),
   getRing: vi.fn(),
+  getRings: vi.fn(),
   getToggle: vi.fn(),
 }));
 
@@ -18,23 +20,38 @@ vi.mock("@/lib/data", () => ({
   getLabel: mockState.getLabel,
   getReleases: mockState.getReleases,
   getRing: mockState.getRing,
+  getRings: mockState.getRings,
   getToggle: mockState.getToggle,
+}));
+
+vi.mock("@/lib/ThemeContext", () => ({
+  useTheme: vi.fn(),
 }));
 
 vi.mock("@porsche-design-system/components-react/ssr", () => ({
   PButtonPure: ({ children, ...props }: ComponentProps<"button">) => (
-    <button {...props}>{children}</button>
+    <button data-testid="p-button-pure" {...props}>
+      {children}
+    </button>
   ),
   PHeading: ({ children, ...props }: ComponentProps<"h1">) => (
-    <h1 {...props}>{children}</h1>
+    <h1 data-testid="p-heading" {...props}>
+      {children}
+    </h1>
   ),
-  PIcon: (props: ComponentProps<"span">) => <span {...props} />,
+  PIcon: (props: ComponentProps<"span">) => (
+    <span data-testid="p-icon" {...props} />
+  ),
   PInlineNotification: (
     props: ComponentProps<"div"> & { description?: string },
   ) => {
     const { description, ...rest } = props;
     return (
-      <div data-description={description} {...rest}>
+      <div
+        data-testid="p-inline-notification"
+        data-description={description}
+        {...rest}
+      >
         {description}
       </div>
     );
@@ -46,6 +63,48 @@ vi.mock("@porsche-design-system/components-react/ssr", () => ({
     <span {...props}>{children}</span>
   ),
 }));
+
+const mockUseTheme = useTheme as ReturnType<typeof vi.fn>;
+
+function makeTheme() {
+  return {
+    activeTheme: {
+      id: "porsche",
+      label: "Porsche",
+      supports: ["dark"],
+      default: "dark" as const,
+    },
+    mode: "dark" as const,
+    theme: {
+      id: "porsche",
+      label: "Porsche",
+      supports: ["dark"],
+      default: "dark" as const,
+      cssVariables: {
+        foreground: "#FBFCFF",
+        background: "#0E0E12",
+        highlight: "#FBFCFF",
+        content: "#AFB0B3",
+        text: "#88898C",
+        link: "#FBFCFF",
+        border: "#404044",
+        tag: "#404044",
+        surface: "#212225",
+        footer: "#212225",
+        shading: "rgba(38, 38, 41, 0.67)",
+        frosted: "rgba(64, 64, 68, 0.35)",
+      },
+      radar: {
+        segments: ["#aa0000", "#00aa00", "#0000aa", "#aaaa00"],
+        rings: ["#00aa88", "#0088aa", "#aa8800", "#888888"],
+      },
+      assetsResolved: {},
+    },
+    themes: [],
+    setActiveTheme: vi.fn(),
+    setMode: vi.fn(),
+  };
+}
 
 vi.mock("@/components/Icons", () => ({
   DescriptionEdit: ({ className }: { className?: string }) => (
@@ -64,7 +123,6 @@ const rings: Record<string, Ring> = {
     id: "adopt",
     title: "Adopt",
     description: "Use broadly",
-    color: "#00aa00",
     radius: 0.25,
     strokeWidth: 0.1,
   },
@@ -72,7 +130,6 @@ const rings: Record<string, Ring> = {
     id: "trial",
     title: "Trial",
     description: "Use carefully",
-    color: "#ffaa00",
     radius: 0.5,
     strokeWidth: 0.1,
   },
@@ -80,7 +137,6 @@ const rings: Record<string, Ring> = {
     id: "assess",
     title: "Assess",
     description: "Explore",
-    color: "#0088ff",
     radius: 0.75,
     strokeWidth: 0.1,
   },
@@ -123,6 +179,8 @@ function renderItemDetail(overrides: Partial<Item> = {}) {
 describe("ItemDetail", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockUseTheme.mockReset();
+    mockUseTheme.mockReturnValue(makeTheme());
     mockState.getEditUrl.mockReturnValue("https://example.com/edit/react");
     mockState.getLabel.mockImplementation((label: string) => {
       if (label === "notUpdated") return "Not maintained text";
@@ -137,6 +195,7 @@ describe("ItemDetail", () => {
     mockState.getRing.mockImplementation(
       (ring: string) => rings[ring as keyof typeof rings],
     );
+    mockState.getRings.mockReturnValue(Object.values(rings));
     mockState.getToggle.mockImplementation((key: string) => {
       if (key === "showTagFilter") return true;
       if (key === "showTeamFilter") return true;

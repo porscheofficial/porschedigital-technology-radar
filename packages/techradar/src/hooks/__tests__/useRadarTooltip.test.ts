@@ -55,6 +55,7 @@ function createTooltipLink(container: HTMLDivElement) {
   const link = document.createElement("a");
   link.setAttribute("data-tooltip", "TypeScript");
   link.setAttribute("data-tooltip-color", "#ff0000");
+  link.setAttribute("data-tooltip-fg", "#FFFFFF");
   link.setAttribute("data-item-id", "ts");
   link.setAttribute("href", "/items/ts");
 
@@ -101,6 +102,7 @@ describe("useRadarTooltip", () => {
       show: false,
       text: "",
       color: "",
+      colorFg: "",
       x: 0,
       y: 0,
     });

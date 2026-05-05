@@ -4,6 +4,8 @@ import { Blip } from "@/components/Radar/Blip";
 import { getItemChangeDirection, getToggle } from "@/lib/data";
 import { useRadarHighlight } from "@/lib/RadarHighlightContext";
 import { describeFilledArc } from "@/lib/radarGeometry";
+import { useTheme } from "@/lib/ThemeContext";
+import { segmentForegroundVar } from "@/lib/theme/schema";
 import { Flag, type Item, type Ring, type Segment } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import styles from "./Chart.module.scss";
@@ -90,6 +92,8 @@ const ChartInner: FC<ChartProps> = ({
 }) => {
   const { highlightedIds, filterActive, setHighlightPreview } =
     useRadarHighlight();
+  const { theme } = useTheme();
+  const segmentColor = (seg: Segment) => theme.radar.segments[seg.position - 1];
   const highlightSet = useMemo(() => new Set(highlightedIds), [highlightedIds]);
   const hasHighlights = filterActive || highlightSet.size > 0;
   const center = size / 2;
@@ -218,7 +222,8 @@ const ChartInner: FC<ChartProps> = ({
         href={`/${item.segment}/${item.id}`}
         aria-label={item.title}
         data-tooltip={item.title}
-        data-tooltip-color={segment.color}
+        data-tooltip-color={segmentColor(segment)}
+        data-tooltip-fg={segmentForegroundVar(segment.position - 1)}
         data-item-id={item.id}
         className={cn(
           hasHighlights && styles.blip,
@@ -229,7 +234,7 @@ const ChartInner: FC<ChartProps> = ({
       >
         <Blip
           flag={item.flag}
-          color={segment.color}
+          color={segmentColor(segment)}
           direction={direction ?? undefined}
           centerX={direction ? centerX : undefined}
           centerY={direction ? centerY : undefined}
@@ -318,7 +323,7 @@ const ChartInner: FC<ChartProps> = ({
                 href={`#${pathId}`}
                 startOffset="50%"
                 textAnchor="middle"
-                fill={segment.color}
+                fill={segmentColor(segment)}
                 fontSize="20"
                 fontWeight="700"
                 letterSpacing="0.12em"
@@ -354,7 +359,7 @@ const ChartInner: FC<ChartProps> = ({
           <Wedge
             key={`wedge-${segment.id}-${ring.id}`}
             segmentId={segment.id}
-            segmentColor={segment.color}
+            segmentColor={segmentColor(segment)}
             ringId={ring.id}
             d={d}
             ids={ids}
@@ -377,14 +382,14 @@ const ChartInner: FC<ChartProps> = ({
     >
       {segments.map((segment) => (
         <g key={segment.id} data-segment={segment.id}>
-          {renderGlow(segment.position, segment.color)}
+          {renderGlow(segment.position, segmentColor(segment))}
           {rings.map((ring) => (
             <path
               key={`${ring.id}-${segment.id}`}
               data-key={`${ring.id}-${segment.id}`}
               d={describeArc(ring.radius || 0.5, segment.position)}
               fill="none"
-              stroke={segment.color}
+              stroke={segmentColor(segment)}
               strokeWidth={ring.strokeWidth || 2}
             />
           ))}

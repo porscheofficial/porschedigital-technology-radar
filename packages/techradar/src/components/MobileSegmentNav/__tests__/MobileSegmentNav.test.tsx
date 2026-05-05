@@ -1,7 +1,12 @@
 import { render, screen } from "@testing-library/react";
 import type { ComponentProps } from "react";
+import { useTheme } from "@/lib/ThemeContext";
 import type { Segment } from "@/lib/types";
 import { MobileSegmentNav } from "../MobileSegmentNav";
+
+vi.mock("@/lib/ThemeContext", () => ({
+  useTheme: vi.fn(),
+}));
 
 vi.mock("@/lib/utils", () => ({
   assetUrl: (path: string) => `/base${path}`,
@@ -20,14 +25,64 @@ vi.mock("@porsche-design-system/components-react/ssr", () => ({
     label?: string;
     description?: string;
   }) => (
-    <a href={href} data-label={label} data-description={description} {...rest}>
+    <a
+      href={href}
+      data-testid="p-link-tile"
+      data-label={label}
+      data-description={description}
+      {...rest}
+    >
       {children}
     </a>
   ),
   PText: ({ children, ...rest }: ComponentProps<"span">) => (
-    <span {...rest}>{children}</span>
+    <span data-testid="p-text" {...rest}>
+      {children}
+    </span>
   ),
 }));
+
+const mockUseTheme = useTheme as ReturnType<typeof vi.fn>;
+
+function makeTheme() {
+  return {
+    activeTheme: {
+      id: "porsche",
+      label: "Porsche",
+      supports: ["dark"],
+      default: "dark" as const,
+    },
+    mode: "dark" as const,
+    theme: {
+      id: "porsche",
+      label: "Porsche",
+      supports: ["dark"],
+      default: "dark" as const,
+      cssVariables: {
+        foreground: "#FBFCFF",
+        background: "#0E0E12",
+        highlight: "#FBFCFF",
+        content: "#AFB0B3",
+        text: "#88898C",
+        link: "#FBFCFF",
+        border: "#404044",
+        tag: "#404044",
+        surface: "#212225",
+        footer: "#212225",
+        shading: "rgba(38, 38, 41, 0.67)",
+        frosted: "rgba(64, 64, 68, 0.35)",
+      },
+      radar: {
+        segments: ["#4A9E7E", "#5B8DB8", "#C4A85E", "#B85B5B"],
+        rings: ["#00aa88", "#0088aa", "#aa8800", "#888888"],
+      },
+      assetsResolved: {},
+    },
+    themes: [],
+    setActiveTheme: vi.fn(),
+    setMode: vi.fn(),
+  };
+}
 
 describe("MobileSegmentNav", () => {
   const segments: Segment[] = [
@@ -35,31 +90,32 @@ describe("MobileSegmentNav", () => {
       id: "languages-and-frameworks",
       title: "Languages & Frameworks",
       description: "Programming stack",
-      color: "#4A9E7E",
       position: 1,
     },
     {
       id: "methods-and-patterns",
       title: "Methods & Patterns",
       description: "How we work",
-      color: "#5B8DB8",
       position: 2,
     },
     {
       id: "platforms-and-operations",
       title: "Platforms & Operations",
       description: "Ops stack",
-      color: "#C4A85E",
       position: 3,
     },
     {
       id: "tools",
       title: "Tools",
       description: "Developer tools",
-      color: "#B85B5B",
       position: 4,
     },
   ];
+
+  beforeEach(() => {
+    mockUseTheme.mockReset();
+    mockUseTheme.mockReturnValue(makeTheme());
+  });
 
   it("renders a nav element with accessible label", () => {
     render(<MobileSegmentNav segments={segments} />);

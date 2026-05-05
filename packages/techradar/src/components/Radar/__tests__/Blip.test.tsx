@@ -153,6 +153,30 @@ describe("Blip", () => {
     expect(group?.children[1]?.tagName).toBe("rect");
   });
 
+  it("rounds change-arc coordinates to 3 decimals (hydration safety)", () => {
+    const { container } = render(
+      <svg role="img" aria-label="test">
+        <Blip
+          flag={Flag.Changed}
+          color="#00aa88"
+          direction="promoted"
+          centerX={100}
+          centerY={100}
+          x={100}
+          y={200}
+        />
+      </svg>,
+    );
+
+    const d = container.querySelector("g path")?.getAttribute("d") ?? "";
+    const numbers = d.match(/-?\d+\.\d+/g) ?? [];
+    expect(numbers.length).toBeGreaterThan(0);
+    for (const n of numbers) {
+      const decimals = n.split(".")[1] ?? "";
+      expect(decimals.length).toBeLessThanOrEqual(3);
+    }
+  });
+
   it("renders a default blip as a circle", () => {
     const { container } = render(
       <svg role="img" aria-label="test">

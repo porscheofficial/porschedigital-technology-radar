@@ -29,36 +29,13 @@ export function getAppName() {
   return getLabel("title");
 }
 
-export function getLogoUrl() {
-  if (!config.headerLogoFile) return "";
-  return assetUrl(config.headerLogoFile);
-}
-
-export function getFooterLogoUrl() {
-  if (!config.footerLogoFile) return "";
-  return assetUrl(config.footerLogoFile);
-}
-
 export function getJsUrl(): string {
   if (!config.jsFile) return "";
   return assetUrl(config.jsFile);
 }
 
-export function getBackgroundImage(): string {
-  if (!config.backgroundImage) return "";
-  return assetUrl(config.backgroundImage);
-}
-
-export function getBackgroundOpacity(): number {
-  return config.backgroundOpacity ?? 0;
-}
-
 export function getChartConfig() {
   return config.chart;
-}
-
-export function getColors() {
-  return config.colors;
 }
 
 export function getFlags() {

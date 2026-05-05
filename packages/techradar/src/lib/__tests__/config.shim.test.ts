@@ -37,14 +37,12 @@ describe("config back-compat shim", () => {
         {
           id: "legacy-platforms",
           title: "Legacy Platforms",
-          color: "#000000",
           description:
             "Imported from a consumer project still using quadrants.",
         },
         {
           id: "legacy-tools",
           title: "Legacy Tools",
-          color: "#111111",
           description: "Second legacy segment.",
         },
       ],
@@ -56,13 +54,11 @@ describe("config back-compat shim", () => {
       {
         id: "legacy-platforms",
         title: "Legacy Platforms",
-        color: "#000000",
         description: "Imported from a consumer project still using quadrants.",
       },
       {
         id: "legacy-tools",
         title: "Legacy Tools",
-        color: "#111111",
         description: "Second legacy segment.",
       },
     ]);
@@ -70,14 +66,12 @@ describe("config back-compat shim", () => {
       {
         id: "legacy-platforms",
         title: "Legacy Platforms",
-        color: "#000000",
         description: "Imported from a consumer project still using quadrants.",
         position: 1,
       },
       {
         id: "legacy-tools",
         title: "Legacy Tools",
-        color: "#111111",
         description: "Second legacy segment.",
         position: 2,
       },
@@ -95,7 +89,6 @@ describe("config back-compat shim", () => {
         {
           id: "modern-platforms",
           title: "Modern Platforms",
-          color: "#111111",
           description: "Already migrated.",
         },
       ],
@@ -107,7 +100,6 @@ describe("config back-compat shim", () => {
       {
         id: "modern-platforms",
         title: "Modern Platforms",
-        color: "#111111",
         description: "Already migrated.",
       },
     ]);
@@ -120,7 +112,6 @@ describe("config back-compat shim", () => {
         {
           id: "old-platforms",
           title: "Old Platforms",
-          color: "#000000",
           description: "Legacy value that must not clobber segments.",
         },
       ],
@@ -128,7 +119,6 @@ describe("config back-compat shim", () => {
         {
           id: "new-platforms",
           title: "New Platforms",
-          color: "#111111",
           description: "Migrated value that must win.",
         },
       ],
@@ -140,7 +130,6 @@ describe("config back-compat shim", () => {
       {
         id: "new-platforms",
         title: "New Platforms",
-        color: "#111111",
         description: "Migrated value that must win.",
       },
     ]);
@@ -148,7 +137,6 @@ describe("config back-compat shim", () => {
       {
         id: "new-platforms",
         title: "New Platforms",
-        color: "#111111",
         description: "Migrated value that must win.",
         position: 1,
       },

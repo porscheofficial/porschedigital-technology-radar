@@ -1,0 +1,124 @@
+{
+  "label": "Porsche",
+  "supports": ["light", "dark"],
+  "default": "dark",
+  "cssVariables": {
+    "foreground": {
+      "light": "#010205",
+      "dark": "#FBFCFF"
+    },
+    "background": {
+      "light": "#EEEFF2",
+      "dark": "#0E0E12"
+    },
+    "highlight": {
+      "light": "#2762EC",
+      "dark": "#FBFCFF"
+    },
+    "content": {
+      "light": "#535457",
+      "dark": "#AFB0B3"
+    },
+    "text": {
+      "light": "#6B6D70",
+      "dark": "#88898C"
+    },
+    "link": {
+      "light": "#2762EC",
+      "dark": "#178BFF"
+    },
+    "border": {
+      "light": "#D8D8DB",
+      "dark": "#404044"
+    },
+    "tag": {
+      "light": "#D8D8DB",
+      "dark": "#404044"
+    },
+    "surface": {
+      "light": "#FFFFFF",
+      "dark": "#212225"
+    },
+    "footer": {
+      "light": "#FFFFFF",
+      "dark": "#212225"
+    },
+    "shading": {
+      "light": "rgba(1, 2, 5, 0.67)",
+      "dark": "rgba(38, 38, 41, 0.67)"
+    },
+    "frosted": {
+      "light": "rgba(215, 215, 218, 0.35)",
+      "dark": "rgba(64, 64, 68, 0.35)"
+    }
+  },
+  "background": {
+    "image": {
+      "dark": "background-dark.jpg"
+    },
+    "opacity": {
+      "light": 0,
+      "dark": 0.06
+    }
+  },
+  "chips": {
+    "status": {
+      "light": "#6B6D70",
+      "dark": "#6E6F72"
+    },
+    "tag": {
+      "light": "#2762EC",
+      "dark": "#1372D6"
+    },
+    "team": {
+      "light": "#C45A00",
+      "dark": "#DB6F1F"
+    },
+    "team-added": {
+      "light": "#1B7C3D",
+      "dark": "#22A04E"
+    },
+    "team-removed": {
+      "light": "#B8302A",
+      "dark": "#D14037"
+    }
+  },
+  "radar": {
+    "segments": [
+      {
+        "light": "#2D7A5C",
+        "dark": "#4A9E7E"
+      },
+      {
+        "light": "#3A6FA0",
+        "dark": "#5B8DB8"
+      },
+      {
+        "light": "#9C7E33",
+        "dark": "#C4A85E"
+      },
+      {
+        "light": "#9C3A3A",
+        "dark": "#B85B5B"
+      }
+    ],
+    "rings": [
+      {
+        "light": "#2D7A5C",
+        "dark": "#4A9E7E"
+      },
+      {
+        "light": "#3A6FA0",
+        "dark": "#5B8DB8"
+      },
+      {
+        "light": "#9C7E33",
+        "dark": "#C4A85E"
+      },
+      {
+        "light": "#9C3A3A",
+        "dark": "#B85B5B"
+      }
+    ]
+  }
+}

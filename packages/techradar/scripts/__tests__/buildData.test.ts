@@ -274,18 +274,17 @@ describe("buildData", () => {
       expect(html).toContain("<del>legacy</del>");
     });
 
-    it("transforms external links to p-link-pure web components", async () => {
+    it("keeps external links as anchors with target and rel", async () => {
       const html = await buildData.convertToHtml(
         "[Docs](https://docs.example.com)",
       );
 
-      expect(html).toContain("<p-link-pure");
+      expect(html).toContain("<a href=");
       expect(html).toContain('href="https://docs.example.com"');
-      expect(html).toContain('icon="external"');
-      expect(html).toContain('align-label="start"');
-      expect(html).toContain('underline="true"');
-      expect(html).toContain('theme="dark"');
-      expect(html).toContain("Docs</p-link-pure>");
+      expect(html).toContain('target="_blank"');
+      expect(html).toContain('rel="noopener noreferrer"');
+      expect(html).not.toContain("<p-link-pure");
+      expect(html).toContain("Docs</a>");
     });
 
     it("does not transform internal links to p-link-pure", async () => {

@@ -46,7 +46,6 @@ describe("Item detail page", () => {
     id: "languages-and-frameworks",
     title: "Languages & Frameworks",
     description: "Programming languages and frameworks",
-    color: "#0f0",
     position: 1,
   };
 
@@ -138,7 +137,7 @@ describe("Item detail page", () => {
   });
 
   it("creates static paths for all item detail pages", async () => {
-    await expect(getStaticPaths({} as any)).resolves.toEqual({
+    await expect(getStaticPaths({})).resolves.toEqual({
       paths: [{ params: { segment: segment.id, id: item.id } }],
       fallback: false,
     });

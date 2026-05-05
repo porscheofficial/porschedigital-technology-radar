@@ -74,8 +74,8 @@ export function rehypeStripHtmlExtension() {
   };
 }
 
-/** Rehype plugin: transform external links to PDS <p-link-pure> web components */
-export function rehypePdsExternalLinks() {
+/** Rehype plugin: ensure rel attrs on external links opening in a new tab */
+export function rehypeExternalLinkRel() {
   return (tree: import("hast").Root) => {
     visit(tree, "element", (node: import("hast").Element) => {
       if (
@@ -83,11 +83,7 @@ export function rehypePdsExternalLinks() {
         node.properties.target === "_blank" &&
         typeof node.properties.href === "string"
       ) {
-        node.tagName = "p-link-pure";
-        node.properties["align-label"] = "start";
-        node.properties.icon = "external";
-        node.properties.underline = "true";
-        node.properties.theme = "dark";
+        node.properties.rel = "noopener noreferrer";
       }
     });
   };
@@ -136,7 +132,7 @@ export function createProcessor(blipLookup?: BlipLookup, strict?: boolean) {
         target: "_blank",
         rel: ["noopener", "noreferrer"],
       })
-      .use(rehypePdsExternalLinks)
+      .use(rehypeExternalLinkRel)
       .use(rehypeHighlight, { prefix: "hljs language-" })
       .use(rehypeStringify)
   );

@@ -292,7 +292,7 @@ describe("extractSnippet", () => {
   });
 
   it("ellipsizes both sides when match is in the middle of long text", () => {
-    const text = "a".repeat(100) + " needle " + "b".repeat(100);
+    const text = `${"a".repeat(100)} needle ${"b".repeat(100)}`;
     const snippet = extractSnippet(text, "needle", 20);
     expect(snippet).not.toBeNull();
     expect(snippet?.startsWith("…")).toBe(true);

@@ -43,10 +43,22 @@ vi.mock("next/link", () => ({
 vi.mock("@porsche-design-system/components-react/ssr", () => ({
   PHeading: ({ children, tag = "h2", ...props }: any) => {
     const Tag = tag;
-    return <Tag {...props}>{children}</Tag>;
+    return (
+      <Tag data-testid="p-heading" {...props}>
+        {children}
+      </Tag>
+    );
   },
-  PTag: ({ children, ...props }: any) => <span {...props}>{children}</span>,
-  PText: ({ children, ...props }: any) => <p {...props}>{children}</p>,
+  PTag: ({ children, ...props }: any) => (
+    <span data-testid="p-tag" {...props}>
+      {children}
+    </span>
+  ),
+  PText: ({ children, ...props }: any) => (
+    <p data-testid="p-text" {...props}>
+      {children}
+    </p>
+  ),
 }));
 
 vi.mock("@/components/SegmentRadar/SegmentRadar", () => ({
@@ -72,6 +84,33 @@ vi.mock("@/lib/config", () => ({
   default: { labels: { title: "Test Radar" } },
 }));
 
+vi.mock("@/lib/ThemeContext", () => ({
+  useTheme: () => ({
+    activeTheme: {
+      id: "test",
+      label: "Test",
+      supports: ["dark"],
+      default: "dark" as const,
+    },
+    mode: "dark" as const,
+    theme: {
+      id: "test",
+      label: "Test",
+      supports: ["dark"],
+      default: "dark" as const,
+      cssVariables: {},
+      radar: {
+        segments: ["#4A9E7E", "#5B8DB8", "#C4A85E", "#B85B5B"],
+        rings: ["#00aa88", "#0088aa", "#aa8800", "#888888"],
+      },
+      assetsResolved: {},
+    },
+    themes: [],
+    setActiveTheme: vi.fn(),
+    setMode: vi.fn(),
+  }),
+}));
+
 vi.mock("@/lib/data", () => ({
   getAppName: mockState.getAppName,
   getItems: mockState.getItems,
@@ -88,7 +127,6 @@ describe("Segment detail page", () => {
     id: "languages-and-frameworks",
     title: "Languages & Frameworks",
     description: "Programming languages and frameworks",
-    color: "#0f0",
     position: 1,
   };
 
@@ -98,7 +136,6 @@ describe("Segment detail page", () => {
       id: "platforms-and-operations",
       title: "Platforms & Operations",
       description: "Platform work",
-      color: "#00f",
       position: 2,
     },
   ];
@@ -108,7 +145,6 @@ describe("Segment detail page", () => {
       id: "adopt",
       title: "Adopt",
       description: "Use now",
-      color: "#0f0",
       radius: 0.5,
       strokeWidth: 5,
     },
@@ -116,7 +152,6 @@ describe("Segment detail page", () => {
       id: "trial",
       title: "Trial",
       description: "Pilot it",
-      color: "#00f",
       radius: 0.7,
       strokeWidth: 3,
     },
@@ -124,7 +159,6 @@ describe("Segment detail page", () => {
       id: "assess",
       title: "Assess",
       description: "Evaluate it",
-      color: "#ff0",
       radius: 0.85,
       strokeWidth: 2,
     },

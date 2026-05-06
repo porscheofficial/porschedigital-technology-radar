@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.0.1](https://github.com/porscheofficial/porschedigital-technology-radar/compare/porschedigital-technology-radar-v2.0.0...porschedigital-technology-radar-v2.0.1) (2026-05-06)
+
+
+### Bug Fixes
+
+* **techradar:** gate next.config.js dev-only branches on monorepo context ([7fb338b](https://github.com/porscheofficial/porschedigital-technology-radar/commit/7fb338b54bc127dffa6e3466be780dceec8a1121))
+
 ## [2.0.0](https://github.com/porscheofficial/porschedigital-technology-radar/compare/porschedigital-technology-radar-v1.3.0...porschedigital-technology-radar-v2.0.0) (2026-05-06)
 
 

@@ -515,4 +515,56 @@ describe("SpotlightSearch", () => {
     await user.click(screen.getByText("Mode: Light"));
     expect(setModeMock).toHaveBeenCalledWith("light");
   });
+
+  it("renders an Actions scope chip that toggles command mode", async () => {
+    const user = userEvent.setup();
+    render(<SpotlightSearch />);
+    await user.click(screen.getByRole("button", { name: /search/i }));
+
+    const chip = await screen.findByRole("button", { name: "Actions" });
+    expect(chip).toHaveAttribute("aria-pressed", "false");
+
+    await user.click(chip);
+    expect(chip).toHaveAttribute("aria-pressed", "true");
+    expect(
+      (await screen.findByRole("combobox")) as HTMLInputElement,
+    ).toHaveValue(">");
+
+    await user.click(chip);
+    expect(chip).toHaveAttribute("aria-pressed", "false");
+    expect(
+      (await screen.findByRole("combobox")) as HTMLInputElement,
+    ).toHaveValue("");
+  });
+
+  it("hides the scope chip while inside an action submenu", async () => {
+    const user = userEvent.setup();
+    render(<SpotlightSearch />);
+    await user.click(screen.getByRole("button", { name: /search/i }));
+
+    const input = await screen.findByRole("combobox");
+    await user.type(input, ">");
+    await user.click(screen.getByText("Select Theme"));
+
+    // Inside submenu: the .backChip handles back navigation, the scope chip
+    // is hidden so we don't have two ways to leave the actions view.
+    expect(
+      screen.queryByRole("button", { name: "Actions" }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("renders a Close search button that closes the dialog", async () => {
+    const user = userEvent.setup();
+    render(<SpotlightSearch />);
+    await user.click(screen.getByRole("button", { name: /search/i }));
+
+    expect(await screen.findByRole("combobox")).toBeInTheDocument();
+
+    const closeButton = screen.getByRole("button", { name: "Close search" });
+    await user.click(closeButton);
+
+    await waitFor(() => {
+      expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
+    });
+  });
 });

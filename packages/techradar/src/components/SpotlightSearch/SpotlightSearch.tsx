@@ -414,8 +414,31 @@ export function SpotlightSearch() {
             placeholder={inputPlaceholder}
             className={styles.input}
           />
+          {!activeParent && (
+            <button
+              type="button"
+              className={styles.scopeChip}
+              onClick={() => {
+                if (isCommandMode) {
+                  setQuery("");
+                } else {
+                  setQuery(COMMAND_PREFIX);
+                }
+              }}
+              aria-pressed={isCommandMode}
+            >
+              Actions
+            </button>
+          )}
+          <button
+            type="button"
+            className={cn(styles.iconButton, styles.mobileClose)}
+            onClick={close}
+            aria-label="Close search"
+          >
+            <PIcon name="close" size="small" aria-hidden="true" />
+          </button>
         </div>
-
         <Command.List className={styles.list}>
           <div
             key={activePage ?? "root"}
@@ -499,7 +522,6 @@ export function SpotlightSearch() {
             )}
           </div>
         </Command.List>
-
         <div className={styles.footer}>
           <span>
             <kbd className={styles.kbdSmall}>↑</kbd>

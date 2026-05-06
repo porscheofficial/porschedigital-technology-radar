@@ -1,6 +1,7 @@
 import { fireEvent, render } from "@testing-library/react";
 
 import { Chart } from "@/components/Radar/Chart";
+import { useRadarHighlight } from "@/lib/RadarHighlightContext";
 import { Flag, type Item, type Ring, type Segment } from "@/lib/types";
 
 const setHighlightPreview = vi.fn();
@@ -41,6 +42,7 @@ vi.mock("@/lib/ThemeContext", () => ({
 vi.mock("@/lib/RadarHighlightContext", () => ({
   useRadarHighlight: vi.fn(() => ({
     highlightedIds: [],
+    filterMatchIds: new Set<string>(),
     filterActive: false,
     setHighlightPreview,
   })),
@@ -235,5 +237,137 @@ describe("Chart wedges", () => {
     const path = wedge?.querySelector("path");
     expect(path).not.toBeNull();
     expect(path?.getAttribute("d")?.length ?? 0).toBeGreaterThan(0);
+  });
+
+  it("freezes highlight to wedge ∩ filter on commit, even when hover preview has not propagated to context", () => {
+    // Regression: a click without a settled hover (touch tap, fast click,
+    // keyboard "Enter") fires before React commits the SET_DIRECT_PREVIEW
+    // dispatched on mouseEnter. At that instant `highlightedIds` still
+    // returns the full filter set, so a snapshot built from `highlightedIds`
+    // would freeze every filter-matched blip — flashing the un-narrowed set
+    // during the soft-navigation handoff. The fix derives the snapshot from
+    // the wedge's own ids ∩ filterMatchIds, independent of context state.
+    const mockUseRadarHighlight = vi.mocked(useRadarHighlight);
+    // Filter is active. The wedge "tools/adopt" contains "react" and "vue".
+    // The filter matches react, vue, and rust. Pre-click the hover preview
+    // has NOT propagated, so highlightedIds = full filter set.
+    mockUseRadarHighlight.mockReturnValue({
+      highlightedIds: ["react", "vue", "rust"],
+      filterMatchIds: new Set(["react", "vue", "rust"]),
+      filterActive: true,
+      hasFilter: true,
+      suppressTooltips: false,
+      activeFlags: new Set(),
+      activeTags: new Set(),
+      activeTeams: new Set(),
+      setHighlight: vi.fn(),
+      setHighlightPreview,
+      toggleFlag: vi.fn(),
+      toggleTag: vi.fn(),
+      toggleTeam: vi.fn(),
+      clearFilters: vi.fn(),
+    });
+
+    const { container, rerender } = render(
+      <Chart size={800} segments={segments} rings={rings} items={items} />,
+    );
+    const wedge = container.querySelector('a[href$="/tools#ring-adopt"]');
+    expect(wedge).not.toBeNull();
+    if (!wedge) return;
+
+    fireEvent.pointerDown(wedge);
+
+    // Even if every prior filter-matched id remains highlighted in context,
+    // the frozen snapshot must restrict to wedge.ids = {react, vue}.
+    // "rust" is in the filter but not in the clicked wedge — it must NOT
+    // be highlighted post-commit.
+    mockUseRadarHighlight.mockReturnValue({
+      highlightedIds: ["react", "vue", "rust"],
+      filterMatchIds: new Set(["react", "vue", "rust"]),
+      filterActive: true,
+      hasFilter: true,
+      suppressTooltips: false,
+      activeFlags: new Set(),
+      activeTags: new Set(),
+      activeTeams: new Set(),
+      setHighlight: vi.fn(),
+      setHighlightPreview,
+      toggleFlag: vi.fn(),
+      toggleTag: vi.fn(),
+      toggleTeam: vi.fn(),
+      clearFilters: vi.fn(),
+    });
+    rerender(
+      <Chart size={800} segments={segments} rings={rings} items={items} />,
+    );
+
+    const reactBlipAfter = container.querySelector('a[data-item-id="react"]');
+    const vueBlipAfter = container.querySelector('a[data-item-id="vue"]');
+    const rustBlipAfter = container.querySelector('a[data-item-id="rust"]');
+    expect(reactBlipAfter?.getAttribute("class") ?? "").toMatch(/highlighted/);
+    expect(vueBlipAfter?.getAttribute("class") ?? "").toMatch(/highlighted/);
+    expect(rustBlipAfter?.getAttribute("class") ?? "").toMatch(/dimmed/);
+  });
+
+  it("freezes to empty (no labels, no dim) on commit when no filter is active", () => {
+    // Regression: without a filter, the pre-hover baseline shows no labels
+    // and no dimming. A wedge commit must preserve that baseline through
+    // navigation; freezing to wedgeIds would flash labels for every blip in
+    // the wedge and dim the rest until the segment page mounts.
+    const mockUseRadarHighlight = vi.mocked(useRadarHighlight);
+    mockUseRadarHighlight.mockReturnValue({
+      highlightedIds: [],
+      filterMatchIds: new Set<string>(),
+      filterActive: false,
+      hasFilter: false,
+      suppressTooltips: false,
+      activeFlags: new Set(),
+      activeTags: new Set(),
+      activeTeams: new Set(),
+      setHighlight: vi.fn(),
+      setHighlightPreview,
+      toggleFlag: vi.fn(),
+      toggleTag: vi.fn(),
+      toggleTeam: vi.fn(),
+      clearFilters: vi.fn(),
+    });
+    const onWedgeCommit = vi.fn();
+
+    const { container, rerender } = render(
+      <Chart
+        size={800}
+        segments={segments}
+        rings={rings}
+        items={items}
+        onWedgeCommit={onWedgeCommit}
+      />,
+    );
+    const wedge = container.querySelector('a[href$="/tools#ring-adopt"]');
+    expect(wedge).not.toBeNull();
+    if (!wedge) return;
+
+    fireEvent.pointerDown(wedge);
+
+    expect(onWedgeCommit).toHaveBeenCalledTimes(1);
+    expect(onWedgeCommit).toHaveBeenCalledWith([]);
+
+    rerender(
+      <Chart
+        size={800}
+        segments={segments}
+        rings={rings}
+        items={items}
+        onWedgeCommit={onWedgeCommit}
+      />,
+    );
+
+    const reactBlipAfter = container.querySelector('a[data-item-id="react"]');
+    const rustBlipAfter = container.querySelector('a[data-item-id="rust"]');
+    expect(reactBlipAfter?.getAttribute("class") ?? "").not.toMatch(
+      /highlighted|dimmed/,
+    );
+    expect(rustBlipAfter?.getAttribute("class") ?? "").not.toMatch(
+      /highlighted|dimmed/,
+    );
   });
 });

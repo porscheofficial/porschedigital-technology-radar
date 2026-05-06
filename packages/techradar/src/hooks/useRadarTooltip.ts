@@ -42,9 +42,21 @@ const INITIAL_TOOLTIP: TooltipState = {
 
 export function useRadarTooltip(
   containerRef: RefObject<HTMLDivElement | null>,
+  frozenHighlightedIds?: ReadonlyArray<string> | null,
 ) {
-  const { highlightedIds, filterActive, suppressTooltips } =
-    useRadarHighlight();
+  const {
+    highlightedIds: contextHighlightedIds,
+    filterActive,
+    suppressTooltips,
+  } = useRadarHighlight();
+  // When a wedge commit has frozen the rendered highlight (Radar passes the
+  // intersected wedge ∩ filter ids), the tooltip layer must read from that
+  // frozen snapshot instead of the live context value. Otherwise the segment
+  // page's mount-effect (`setHighlight([], false)`) momentarily expands
+  // highlightedIds to the full filter set, and the persistent text labels
+  // briefly redraw for every filter-matched blip during the soft-navigation
+  // handoff — visible as a label flash before the new page renders.
+  const highlightedIds = frozenHighlightedIds ?? contextHighlightedIds;
 
   const [tooltip, setTooltip] = useState<TooltipState>(INITIAL_TOOLTIP);
   const [tooltipMap, setTooltipMap] = useState<Map<string, PersistentTooltip>>(

@@ -12,7 +12,7 @@ export function RadarFilters() {
     activeFlags,
     activeTags,
     activeTeams,
-    filterActive,
+    hasFilter,
     toggleFlag,
     toggleTag,
     toggleTeam,
@@ -151,17 +151,14 @@ export function RadarFilters() {
 
       {isMultiSelect && (
         <div
-          className={cn(
-            styles.clearRow,
-            !filterActive && styles.clearRowHidden,
-          )}
+          className={cn(styles.clearRow, !hasFilter && styles.clearRowHidden)}
         >
           <button
             type="button"
             onClick={clearFilters}
             className={styles.clearButton}
-            tabIndex={filterActive ? 0 : -1}
-            aria-hidden={!filterActive}
+            tabIndex={hasFilter ? 0 : -1}
+            aria-hidden={!hasFilter}
           >
             <PTag icon="close" variant="secondary">
               clear all filters

@@ -157,6 +157,58 @@ describe("useRadarTooltip", () => {
     expect(result.current.handleMouseLeave).toBe(firstMouseLeave);
   });
 
+  it("uses frozenHighlightedIds instead of context highlightedIds when provided", async () => {
+    // Regression: clicking a wedge with an active filter must NOT cause the
+    // persistent tooltip labels for the full filter set to flash before the
+    // segment page renders. Radar passes the wedge ∩ filter intersection via
+    // the frozenHighlightedIds parameter; the hook must read from that frozen
+    // snapshot instead of the live context value, which transiently expands to
+    // the full filter set during the soft-navigation handoff.
+    const { container, containerRef } = createContainerRef();
+
+    // Three filter-matched blips exist in the DOM, but only one belongs to the
+    // clicked wedge. After commit, only that one should be in the tooltip map.
+    const wedgeBlip = createTooltipLink(container);
+    wedgeBlip.setAttribute("data-item-id", "in-wedge");
+    const otherBlip1 = document.createElement("a");
+    otherBlip1.setAttribute("data-item-id", "out-of-wedge-1");
+    otherBlip1.setAttribute("data-tooltip", "Other 1");
+    Object.defineProperty(otherBlip1, "getBoundingClientRect", {
+      value: () => createRect(50, 60, 20, 12),
+    });
+    container.appendChild(otherBlip1);
+    const otherBlip2 = document.createElement("a");
+    otherBlip2.setAttribute("data-item-id", "out-of-wedge-2");
+    otherBlip2.setAttribute("data-tooltip", "Other 2");
+    Object.defineProperty(otherBlip2, "getBoundingClientRect", {
+      value: () => createRect(70, 60, 20, 12),
+    });
+    container.appendChild(otherBlip2);
+
+    // Live context says all three filter-matched blips are highlighted.
+    mockHighlight.highlightedIds = [
+      "in-wedge",
+      "out-of-wedge-1",
+      "out-of-wedge-2",
+    ];
+
+    // But the wedge commit froze the snapshot to just the wedge intersection.
+    const { result } = renderHook(() =>
+      useRadarTooltip(containerRef, ["in-wedge"]),
+    );
+
+    await act(async () => {
+      await vi.runAllTimersAsync();
+    });
+
+    // Only the in-wedge blip should appear in the tooltipMap; the other two
+    // filter-matched blips that are NOT in the clicked wedge must not be
+    // rendered as label anchors.
+    expect(result.current.tooltipMap.has("in-wedge")).toBe(true);
+    expect(result.current.tooltipMap.has("out-of-wedge-1")).toBe(false);
+    expect(result.current.tooltipMap.has("out-of-wedge-2")).toBe(false);
+  });
+
   it("computes tooltipStyle from the tooltip state", () => {
     const { container, containerRef } = createContainerRef();
     const link = createTooltipLink(container);

@@ -371,6 +371,52 @@ describe("RadarHighlightContext", () => {
     expect(typeof result.current.setHighlightPreview).toBe("function");
   });
 
+  it("setHighlightPreview does NOT suppress tooltips when a filter is active", () => {
+    // Regression: wedge hover with an active filter must keep persistent
+    // blip text labels visible so the filter-highlighted blips inside the
+    // hovered wedge retain their text.
+    const { result } = renderHook(() => useRadarHighlight(), { wrapper });
+
+    act(() => {
+      result.current.toggleFlag("new");
+    });
+    expect(result.current.hasFilter).toBe(true);
+    expect(result.current.suppressTooltips).toBe(false);
+
+    act(() => {
+      result.current.setHighlightPreview(["ts", "react"]);
+    });
+
+    expect(result.current.suppressTooltips).toBe(false);
+    expect(result.current.filterActive).toBe(true);
+    expect(result.current.hasFilter).toBe(true);
+  });
+
+  it("hasFilter is false during wedge hover-only highlight", () => {
+    // Regression: the "clear all filters" button is gated on hasFilter,
+    // not filterActive, so a transient wedge hover must NOT make it appear.
+    const { result } = renderHook(() => useRadarHighlight(), { wrapper });
+
+    act(() => {
+      result.current.setHighlightPreview(["ts"]);
+    });
+
+    expect(result.current.filterActive).toBe(true);
+    expect(result.current.hasFilter).toBe(false);
+  });
+
+  it("hasFilter is true when a filter pill is active", () => {
+    const { result } = renderHook(() => useRadarHighlight(), { wrapper });
+
+    expect(result.current.hasFilter).toBe(false);
+
+    act(() => {
+      result.current.toggleTag("frontend");
+    });
+
+    expect(result.current.hasFilter).toBe(true);
+  });
+
   it("removes query params when all filters are cleared", async () => {
     const { result } = renderHook(() => useRadarHighlight(), { wrapper });
 

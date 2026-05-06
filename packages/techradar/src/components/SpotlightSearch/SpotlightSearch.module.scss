@@ -35,11 +35,23 @@
   text-overflow: ellipsis;
 }
 
+.kbdGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+}
+
 .kbd {
   display: inline-flex;
   align-items: center;
-  gap: 2px;
-  padding: 0 $pds-spacing-static-x-small;
+  justify-content: center;
+  min-width: 18px;
+  padding: 0 5px;
   border: 1px solid var(--border);
   border-radius: 4px;
   background: color-mix(in oklch, var(--foreground) 8%, transparent);
@@ -331,14 +343,13 @@
 .itemHotkey {
   display: inline-flex;
   align-items: center;
-  padding: 0 $pds-spacing-static-x-small;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  background: color-mix(in oklch, var(--foreground) 8%, transparent);
-  color: var(--text);
+  gap: 4px;
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  padding: 0;
   font-family: inherit;
   white-space: nowrap;
-  @include pds-text-x-small;
 }
 
 .footer {
@@ -440,7 +451,7 @@
   }
 
   .triggerLabel,
-  .kbd {
+  .kbdGroup {
     display: none;
   }
 

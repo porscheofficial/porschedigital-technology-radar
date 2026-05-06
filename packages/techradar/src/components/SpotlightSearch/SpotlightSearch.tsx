@@ -47,6 +47,21 @@ export function SpotlightSearch() {
   const placeholder = getLabel("searchPlaceholder") || "Search";
   const longPlaceholder = getLabel("searchPlaceholderLong") || placeholder;
 
+  // Default to macOS for SSR — swapped post-mount on non-Mac platforms.
+  // The keyboard shortcut hook binds both metaKey and ctrlKey, so the
+  // shortcut already works cross-platform; only the displayed glyph differs.
+  const [isMac, setIsMac] = useState(true);
+  useEffect(() => {
+    if (typeof navigator === "undefined") return;
+    const ua =
+      // navigator.platform is deprecated but still the most reliable signal
+      // when present; fall back to userAgent for browsers that have removed it.
+      (navigator.platform || navigator.userAgent || "").toString();
+    setIsMac(/Mac|iPhone|iPod|iPad/i.test(ua));
+  }, []);
+  const modKey = isMac ? "⌘" : "Ctrl";
+  const modAriaLabel = isMac ? "Cmd" : "Ctrl";
+
   const isCommandMode = query.startsWith(COMMAND_PREFIX);
   const commandQuery = isCommandMode
     ? query.slice(COMMAND_PREFIX.length).trim().toLowerCase()
@@ -313,8 +328,13 @@ export function SpotlightSearch() {
               </span>
             )}
             {hotkey !== null && (
-              <kbd className={styles.itemHotkey} aria-label={`Cmd+${hotkey}`}>
-                ⌘{hotkey}
+              <kbd
+                className={styles.itemHotkey}
+                aria-label={`${modAriaLabel}+${hotkey}`}
+                suppressHydrationWarning
+              >
+                <kbd className={styles.kbd}>{modKey}</kbd>
+                <kbd className={styles.kbd}>{hotkey}</kbd>
               </kbd>
             )}
           </span>
@@ -342,7 +362,14 @@ export function SpotlightSearch() {
       >
         <PIcon name="search" size="small" aria-hidden="true" />
         <span className={styles.triggerLabel}>{placeholder}</span>
-        <kbd className={styles.kbd}>⌘K</kbd>
+        <kbd
+          className={styles.kbdGroup}
+          aria-label={`${modAriaLabel}+K`}
+          suppressHydrationWarning
+        >
+          <kbd className={styles.kbd}>{modKey}</kbd>
+          <kbd className={styles.kbd}>K</kbd>
+        </kbd>
       </button>
 
       <Command.Dialog

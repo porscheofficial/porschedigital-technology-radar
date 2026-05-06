@@ -36,7 +36,7 @@ function toggleValue(
 interface HighlightState {
   directIds: string[];
   directActive: boolean;
-  suppressTooltips: boolean;
+  isPreview: boolean;
   activeFlags: ReadonlySet<string>;
   activeTags: ReadonlySet<string>;
   activeTeams: ReadonlySet<string>;
@@ -45,7 +45,7 @@ interface HighlightState {
 const initialState: HighlightState = {
   directIds: [],
   directActive: false,
-  suppressTooltips: false,
+  isPreview: false,
   activeFlags: emptySet,
   activeTags: emptySet,
   activeTeams: emptySet,
@@ -72,14 +72,14 @@ function reducer(state: HighlightState, action: Action): HighlightState {
         ...state,
         directIds: action.ids,
         directActive: action.active,
-        suppressTooltips: false,
+        isPreview: false,
       };
     case "SET_DIRECT_PREVIEW":
       return {
         ...state,
         directIds: action.ids,
         directActive: action.ids.length > 0,
-        suppressTooltips: action.ids.length > 0,
+        isPreview: action.ids.length > 0,
       };
     case "TOGGLE_FLAG":
       return {
@@ -130,7 +130,9 @@ function matchesFilters(
 
 interface RadarHighlightContextValue {
   highlightedIds: string[];
+  filterMatchIds: ReadonlySet<string>;
   filterActive: boolean;
+  hasFilter: boolean;
   suppressTooltips: boolean;
   activeFlags: ReadonlySet<string>;
   activeTags: ReadonlySet<string>;
@@ -145,7 +147,9 @@ interface RadarHighlightContextValue {
 
 const RadarHighlightContext = createContext<RadarHighlightContextValue>({
   highlightedIds: [],
+  filterMatchIds: emptySet,
   filterActive: false,
+  hasFilter: false,
   suppressTooltips: false,
   activeFlags: emptySet,
   activeTags: emptySet,
@@ -268,17 +272,36 @@ export const RadarHighlightProvider: FC<{ children: ReactNode }> = ({
     state.activeTeams,
   ]);
 
+  const filterMatchIdSet = useMemo(
+    () => new Set(filterMatchIds),
+    [filterMatchIds],
+  );
+
   const highlightedIds = useMemo(() => {
     if (state.directActive && hasFilter) {
-      const filterSet = new Set(filterMatchIds);
-      return state.directIds.filter((id) => filterSet.has(id));
+      return state.directIds.filter((id) => filterMatchIdSet.has(id));
     }
     if (state.directActive) return state.directIds;
     if (hasFilter) return filterMatchIds;
     return [];
-  }, [state.directActive, state.directIds, hasFilter, filterMatchIds]);
+  }, [
+    state.directActive,
+    state.directIds,
+    hasFilter,
+    filterMatchIds,
+    filterMatchIdSet,
+  ]);
 
   const filterActive = state.directActive || hasFilter;
+  // Persistent blip text labels (driven by `highlightedIds` in
+  // `useRadarTooltip`) must be suppressed for transient wedge hover-only
+  // highlights but preserved for committed direct highlights (search,
+  // segment list hover) and for any active filter. When BOTH a filter and
+  // a wedge hover are active, `highlightedIds` already returns the
+  // intersection — labels stay visible so the labeled blips inside the
+  // hovered wedge retain their text. `isPreview` is true only on
+  // SET_DIRECT_PREVIEW (wedge hover); SET_DIRECT (search) keeps it false.
+  const suppressTooltips = state.isPreview && !hasFilter;
 
   const setHighlight = useCallback(
     (ids: string[], active: boolean) =>
@@ -309,8 +332,10 @@ export const RadarHighlightProvider: FC<{ children: ReactNode }> = ({
   const value = useMemo<RadarHighlightContextValue>(
     () => ({
       highlightedIds,
+      filterMatchIds: filterMatchIdSet,
       filterActive,
-      suppressTooltips: state.suppressTooltips,
+      hasFilter,
+      suppressTooltips,
       activeFlags: state.activeFlags,
       activeTags: state.activeTags,
       activeTeams: state.activeTeams,
@@ -323,8 +348,10 @@ export const RadarHighlightProvider: FC<{ children: ReactNode }> = ({
     }),
     [
       highlightedIds,
+      filterMatchIdSet,
       filterActive,
-      state.suppressTooltips,
+      hasFilter,
+      suppressTooltips,
       state.activeFlags,
       state.activeTags,
       state.activeTeams,

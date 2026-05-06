@@ -67,6 +67,7 @@ describe("RadarFilters", () => {
       activeTags: new Set(["frontend"]),
       activeTeams: new Set(["platform"]),
       filterActive: true,
+      hasFilter: true,
       toggleFlag: vi.fn(),
       toggleTag: vi.fn(),
       toggleTeam: vi.fn(),
@@ -114,5 +115,30 @@ describe("RadarFilters", () => {
     const clearAll = screen.getByText("clear all filters");
     expect(clearAll).toHaveAttribute("data-testid", "p-tag");
     expect(clearAll).toHaveAttribute("data-variant", "secondary");
+  });
+
+  it("hides the clear-all control during wedge hover when no filter pill is active", () => {
+    // Regression: wedge hover sets filterActive=true (because directActive is
+    // true) but does NOT set hasFilter. The clear-all button must be gated on
+    // hasFilter so it never appears purely from a transient hover.
+    mockUseRadarHighlight.mockReturnValue({
+      activeFlags: new Set<string>(),
+      activeTags: new Set<string>(),
+      activeTeams: new Set<string>(),
+      filterActive: true,
+      hasFilter: false,
+      toggleFlag: vi.fn(),
+      toggleTag: vi.fn(),
+      toggleTeam: vi.fn(),
+      clearFilters: vi.fn(),
+    });
+
+    render(<RadarFilters />);
+
+    const clearAll = screen.getByText("clear all filters");
+    const button = clearAll.closest("button");
+    expect(button).not.toBeNull();
+    expect(button).toHaveAttribute("aria-hidden", "true");
+    expect(button).toHaveAttribute("tabindex", "-1");
   });
 });

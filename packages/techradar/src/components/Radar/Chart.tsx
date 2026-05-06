@@ -1,5 +1,13 @@
 import Link from "next/link";
-import { type FC, Fragment, memo, useMemo, useRef } from "react";
+import {
+  type FC,
+  Fragment,
+  memo,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Blip } from "@/components/Radar/Blip";
 import { getItemChangeDirection, getToggle } from "@/lib/data";
 import { useRadarHighlight } from "@/lib/RadarHighlightContext";
@@ -19,6 +27,7 @@ export interface ChartProps {
   rings: Ring[];
   items: Item[];
   className?: string;
+  onWedgeCommit?: (ids: string[]) => void;
 }
 
 interface WedgeProps {
@@ -29,6 +38,7 @@ interface WedgeProps {
   ids: string[];
   ariaLabel: string;
   onPreview: (ids: string[]) => void;
+  onCommit: (ids: string[]) => void;
 }
 
 const Wedge: FC<WedgeProps> = ({
@@ -39,6 +49,7 @@ const Wedge: FC<WedgeProps> = ({
   ids,
   ariaLabel,
   onPreview,
+  onCommit,
 }) => {
   // Once a click has been committed and navigation is in flight, ignore any
   // mouseLeave/blur events that would otherwise clear the highlight and cause
@@ -52,14 +63,17 @@ const Wedge: FC<WedgeProps> = ({
     if (committedRef.current) return;
     onPreview([]);
   };
-  // Reuse preview semantics on commit (suppressTooltips=true) so persistent
-  // labels don't appear for every blip in the wedge after navigation. Touch
-  // taps that skip hover still get state set here; the committedRef gate
-  // prevents any subsequent blur from clearing it.
+  // On commit (click/tap), forward the wedge ids so the parent can freeze the
+  // chart's rendered highlight state to wedge.ids ∩ active filter — independent
+  // of any in-flight React render that may not have applied the hover preview
+  // yet. Without this, a click without a settled hover (touch tap, fast mouse,
+  // keyboard "Enter") would snapshot the unintersected filter set and flash
+  // every filter-matched blip during the soft-navigation handoff.
   const commit = () => {
     if (committedRef.current) return;
     committedRef.current = true;
     onPreview(ids);
+    onCommit(ids);
   };
   return (
     <Link
@@ -89,13 +103,42 @@ const ChartInner: FC<ChartProps> = ({
   rings = [],
   items = [],
   className,
+  onWedgeCommit,
 }) => {
-  const { highlightedIds, filterActive, setHighlightPreview } =
+  const { highlightedIds, filterMatchIds, filterActive, setHighlightPreview } =
     useRadarHighlight();
   const { theme } = useTheme();
   const segmentColor = (seg: Segment) => theme.radar.segments[seg.position - 1];
-  const highlightSet = useMemo(() => new Set(highlightedIds), [highlightedIds]);
-  const hasHighlights = filterActive || highlightSet.size > 0;
+  const liveHighlightSet = useMemo(
+    () => new Set(highlightedIds),
+    [highlightedIds],
+  );
+  const [frozenSnapshot, setFrozenSnapshot] = useState<{
+    highlightSet: ReadonlySet<string>;
+    hasHighlights: boolean;
+  } | null>(null);
+  const liveHasHighlights = filterActive || liveHighlightSet.size > 0;
+  const highlightSet = frozenSnapshot?.highlightSet ?? liveHighlightSet;
+  const hasHighlights = frozenSnapshot?.hasHighlights ?? liveHasHighlights;
+  const handleWedgeCommit = useCallback(
+    (wedgeIds: string[]) => {
+      const hasFilter = filterMatchIds.size > 0;
+      const intersected = hasFilter
+        ? wedgeIds.filter((id) => filterMatchIds.has(id))
+        : [];
+      const snapshot = new Set(intersected);
+      setFrozenSnapshot((prev) =>
+        prev !== null
+          ? prev
+          : {
+              highlightSet: snapshot,
+              hasHighlights: hasFilter,
+            },
+      );
+      onWedgeCommit?.(intersected);
+    },
+    [filterMatchIds, onWedgeCommit],
+  );
   const center = size / 2;
   const padding = size * CHART_PADDING_RATIO;
   const viewBoxSize = size + padding * 2;
@@ -365,6 +408,7 @@ const ChartInner: FC<ChartProps> = ({
             ids={ids}
             ariaLabel={ariaLabel}
             onPreview={setHighlightPreview}
+            onCommit={handleWedgeCommit}
           />
         );
       });

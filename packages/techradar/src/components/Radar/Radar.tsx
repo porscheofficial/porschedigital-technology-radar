@@ -1,4 +1,10 @@
-import { type CSSProperties, type FC, useRef } from "react";
+import {
+  type CSSProperties,
+  type FC,
+  useCallback,
+  useRef,
+  useState,
+} from "react";
 import { Chart } from "@/components/Radar/Chart";
 import { useRadarTooltip } from "@/hooks/useRadarTooltip";
 import type { Item, Ring, Segment } from "@/lib/types";
@@ -19,6 +25,12 @@ export const Radar: FC<RadarProps> = ({
   items = [],
 }) => {
   const radarRef = useRef<HTMLDivElement>(null);
+  const [frozenIds, setFrozenIds] = useState<ReadonlyArray<string> | null>(
+    null,
+  );
+  const handleWedgeCommit = useCallback((ids: string[]) => {
+    setFrozenIds((prev) => prev ?? ids);
+  }, []);
   const {
     tooltip,
     tooltipStyle,
@@ -26,7 +38,7 @@ export const Radar: FC<RadarProps> = ({
     shownIds,
     handleMouseMove,
     handleMouseLeave,
-  } = useRadarTooltip(radarRef);
+  } = useRadarTooltip(radarRef, frozenIds);
 
   return (
     <div
@@ -43,6 +55,7 @@ export const Radar: FC<RadarProps> = ({
         segments={segments}
         rings={rings}
         items={items}
+        onWedgeCommit={handleWedgeCommit}
       />
       <span
         className={cn(styles.tooltip, tooltip.show && styles.isShown)}

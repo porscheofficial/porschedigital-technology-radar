@@ -4,7 +4,7 @@
   "project": ["src/**/*.{ts,tsx}", "bin/**/*.{ts,js}", "scripts/**/*.ts"],
   "ignore": ["src/components/Icons/index.ts"],
   "ignoreExportsUsedInFile": true,
-  "ignoreBinaries": ["trufflehog", "biome"],
+  "ignoreBinaries": ["trufflehog", "biome", "ffmpeg", "img2webp"],
   "ignoreDependencies": [
     "html-validate",
     "@fontsource/inter",

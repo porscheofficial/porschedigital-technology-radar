@@ -21,7 +21,7 @@
   <br>
 
   <a href="https://opensource.porsche.com/porschedigital-technology-radar/">
-    <img src="./docs/assets/screenshot-radar.png" alt="Screenshot of a generated technology radar" width="680">
+    <img src="./docs/media/demo.webp" alt="Animated walkthrough: theme switching and key pages of a generated technology radar" width="680">
   </a>
 
   <br><br>

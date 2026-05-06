@@ -2,7 +2,11 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import type { ThemeManifest } from "@/lib/theme/schema";
-import { buildThemeStyleBlock } from "@/pages/_document";
+import {
+  buildThemeStyleBlock,
+  getDefaultMode,
+  getSchemeClassForMode,
+} from "@/pages/_document";
 
 const dualModeTheme: ThemeManifest = {
   id: "porsche",
@@ -153,6 +157,42 @@ describe("buildThemeStyleBlock", () => {
     expect(css).toMatch(
       /--rtk-chip-team-removed-fg: light-dark\(#[0-9A-F]{6}, #[0-9A-F]{6}\)/,
     );
+  });
+});
+
+describe("getDefaultMode + getSchemeClassForMode (regression: manifest.default ignored)", () => {
+  const singleModeDark: ThemeManifest = {
+    ...dualModeTheme,
+    id: "acme",
+    supports: ["dark"],
+    default: "dark",
+  };
+
+  it("returns the manifest default for a dual-mode theme when no mode is pinned", () => {
+    expect(getDefaultMode(dualModeTheme, "porsche")).toBe("dark");
+    expect(
+      getSchemeClassForMode(getDefaultMode(dualModeTheme, "porsche")),
+    ).toBe("scheme-dark");
+  });
+
+  it("opts in to system mode when ':system' is pinned on a dual-mode theme", () => {
+    expect(getDefaultMode(dualModeTheme, "porsche:system")).toBe("system");
+    expect(
+      getSchemeClassForMode(getDefaultMode(dualModeTheme, "porsche:system")),
+    ).toBe("scheme-light-dark");
+  });
+
+  it("respects an explicit ':light' or ':dark' pin", () => {
+    expect(getDefaultMode(dualModeTheme, "porsche:light")).toBe("light");
+    expect(getDefaultMode(dualModeTheme, "porsche:dark")).toBe("dark");
+  });
+
+  it("falls back to manifest.default if pinned mode is unsupported", () => {
+    expect(getDefaultMode(singleModeDark, "acme:light")).toBe("dark");
+  });
+
+  it("collapses ':system' on single-mode themes to the only supported mode", () => {
+    expect(getDefaultMode(singleModeDark, "acme:system")).toBe("dark");
   });
 });
 

@@ -21,8 +21,9 @@ import rawThemes from "../../data/themes.generated.json";
 const themes = rawThemes as unknown as ThemeManifest[];
 const defaultTheme = getDefaultTheme(themes, config.defaultTheme);
 const defaultThemeId = defaultTheme.id;
-const defaultSchemeClass = getDefaultSchemeClass(defaultTheme);
-const THEME_INIT_SCRIPT = `(function(){try{var d=document.documentElement;var b=localStorage.getItem('techradar-theme')||'${defaultThemeId}';var m=localStorage.getItem('techradar-mode')||'system';d.setAttribute('data-theme',b);d.classList.remove('scheme-light','scheme-dark','scheme-light-dark');if(m==='light'){d.classList.add('scheme-light');}else if(m==='dark'){d.classList.add('scheme-dark');}else{d.classList.add('scheme-light-dark');}}catch(e){}})();`;
+const defaultMode = getDefaultMode(defaultTheme, config.defaultTheme);
+const defaultSchemeClass = getSchemeClassForMode(defaultMode);
+const THEME_INIT_SCRIPT = `(function(){try{var d=document.documentElement;var b=localStorage.getItem('techradar-theme')||'${defaultThemeId}';var m=localStorage.getItem('techradar-mode')||'${defaultMode}';d.setAttribute('data-theme',b);d.classList.remove('scheme-light','scheme-dark','scheme-light-dark');if(m==='light'){d.classList.add('scheme-light');}else if(m==='dark'){d.classList.add('scheme-dark');}else{d.classList.add('scheme-light-dark');}}catch(e){}})();`;
 
 export function buildThemeStyleBlock(allThemes: ThemeManifest[]): string {
   return allThemes.map((theme) => buildThemeBlock(theme)).join("\n");
@@ -199,12 +200,29 @@ function getDefaultTheme(
   return themes.find((theme) => theme.id === themeId) ?? themes[0];
 }
 
-function getDefaultSchemeClass(
+export function getDefaultMode(
   theme: ThemeManifest,
-): "scheme-light" | "scheme-dark" | "scheme-light-dark" {
-  if (theme.supports.length === 2) {
-    return "scheme-light-dark";
+  defaultThemeId: string,
+): "light" | "dark" | "system" {
+  const [, rawMode] = defaultThemeId.split(":");
+  if (rawMode === "light" || rawMode === "dark" || rawMode === "system") {
+    if (rawMode === "system" && theme.supports.length === 1) {
+      return theme.supports[0];
+    }
+    if (
+      (rawMode === "light" || rawMode === "dark") &&
+      !theme.supports.includes(rawMode)
+    ) {
+      return theme.default;
+    }
+    return rawMode;
   }
+  return theme.default;
+}
 
-  return theme.default === "light" ? "scheme-light" : "scheme-dark";
+export function getSchemeClassForMode(
+  mode: "light" | "dark" | "system",
+): "scheme-light" | "scheme-dark" | "scheme-light-dark" {
+  if (mode === "system") return "scheme-light-dark";
+  return mode === "light" ? "scheme-light" : "scheme-dark";
 }

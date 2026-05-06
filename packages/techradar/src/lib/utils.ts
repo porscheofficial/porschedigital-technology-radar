@@ -73,10 +73,15 @@ function parseHex(hex: string): [number, number, number] | null {
 export function assetUrl(path: string) {
   if (/^https?:/.test(path)) return path;
   if (!path.startsWith("/")) path = `/${path}`;
-  // Read basePath from the merged user/default config rather than next.config.js:
-  // importing next.config.js into src/ pulls its `require("node:path")` into the
-  // client bundle (webpack throws UnhandledSchemeError; Turbopack tree-shook it
-  // by accident). next.config.js itself derives basePath from the same config.
-  const base = config.basePath?.replace(/\/+$/, "") || "";
+  // Resolve basePath with the same precedence as next.config.js:
+  // NEXT_PUBLIC_BASE_PATH (deploy-time env, e.g. GitHub Pages) wins over the
+  // merged user/default config. Next inlines NEXT_PUBLIC_* into the client
+  // bundle at build time, so this works in SSG output too.
+  // We deliberately do NOT import next.config.js: it pulls `require("node:path")`
+  // into the client bundle (webpack throws UnhandledSchemeError; Turbopack
+  // tree-shook it by accident).
+  const envBase = process.env.NEXT_PUBLIC_BASE_PATH;
+  const rawBase = envBase != null ? envBase : config.basePath;
+  const base = rawBase?.replace(/\/+$/, "") || "";
   return `${base}${path}`;
 }

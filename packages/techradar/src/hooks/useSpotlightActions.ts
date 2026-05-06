@@ -4,7 +4,6 @@ import { useMemo } from "react";
 import { exportRadarImage } from "@/lib/exportRadarImage";
 import { useTheme } from "@/lib/ThemeContext";
 import type { ThemeManifest, ThemePreferenceMode } from "@/lib/theme/schema";
-import { assetUrl } from "@/lib/utils";
 
 export type SpotlightAction = {
   id: string;
@@ -33,7 +32,7 @@ export function useSpotlightActions(
         hint: "Open the radar overview",
         keywords: ["home", "radar", "start", "overview"],
         perform: () => {
-          router.push(assetUrl("/")).catch(() => {});
+          router.push("/").catch(() => {});
           onAfterPerform();
         },
       },
@@ -43,7 +42,7 @@ export function useSpotlightActions(
         hint: "Open the changelog page",
         keywords: ["history", "changelog", "changes", "diff"],
         perform: () => {
-          router.push(assetUrl("/changelog")).catch(() => {});
+          router.push("/changelog").catch(() => {});
           onAfterPerform();
         },
       },
@@ -53,7 +52,7 @@ export function useSpotlightActions(
         hint: "Open the help and about page",
         keywords: ["about", "help", "info"],
         perform: () => {
-          router.push(assetUrl("/help-and-about-tech-radar")).catch(() => {});
+          router.push("/help-and-about-tech-radar").catch(() => {});
           onAfterPerform();
         },
       },

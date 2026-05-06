@@ -15,7 +15,7 @@ import {
   type ThemeManifest,
   type ThemeModeValue,
 } from "@/lib/theme/schema";
-import { readableTextOn } from "@/lib/utils";
+import { assetUrl, readableTextOn } from "@/lib/utils";
 import rawThemes from "../../data/themes.generated.json";
 
 const themes = rawThemes as unknown as ThemeManifest[];
@@ -101,11 +101,11 @@ function backgroundVarsForMode(
   const image = theme.assetsResolved.image;
   let imageValue = "none";
   if (typeof image === "string") {
-    imageValue = `url("${image}")`;
+    imageValue = `url("${assetUrl(image)}")`;
   } else {
     const modeImage = resolveModeValue(image, mode);
     if (modeImage) {
-      imageValue = `url("${modeImage}")`;
+      imageValue = `url("${assetUrl(modeImage)}")`;
     }
   }
 

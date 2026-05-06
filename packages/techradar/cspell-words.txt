@@ -667,3 +667,5 @@ codemod
 codemods
 synthwave
 rgba
+libwebp
+muxing

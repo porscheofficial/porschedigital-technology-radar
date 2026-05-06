@@ -64,6 +64,7 @@ ADRs cite the *decisions behind those rules*.
 | 0028 | Rename quadrant to segment                     | accepted |
 | 0029 | Per-package licensing: techradar Apache-2.0, create-techradar MIT | accepted |
 | 0030 | `create-techradar` is a one-shot bootstrapper, not a template owner | accepted |
+| 0031 | Gate `next.config.js` dev-only branches on monorepo execution context | accepted |
 
 ## When to write a new ADR
 

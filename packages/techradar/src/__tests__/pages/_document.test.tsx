@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import type { ThemeManifest } from "@/lib/theme/schema";
 import { buildThemeStyleBlock } from "@/pages/_document";
@@ -150,6 +152,36 @@ describe("buildThemeStyleBlock", () => {
     );
     expect(css).toMatch(
       /--rtk-chip-team-removed-fg: light-dark\(#[0-9A-F]{6}, #[0-9A-F]{6}\)/,
+    );
+  });
+});
+
+describe("favicon override (ADR-grade ordering invariant)", () => {
+  const documentSource = readFileSync(
+    join(process.cwd(), "src/pages/_document.tsx"),
+    "utf8",
+  );
+
+  it('declares rel="icon" overrides AFTER getMetaTagsAndIconLinks', () => {
+    const partialIdx = documentSource.indexOf("getMetaTagsAndIconLinks(");
+    const svgIconIdx = documentSource.indexOf(
+      'href={assetUrl("/favicon.svg")}',
+    );
+    const icoIconIdx = documentSource.indexOf(
+      'href={assetUrl("/favicon.ico")}',
+    );
+
+    expect(partialIdx).toBeGreaterThan(-1);
+    expect(svgIconIdx).toBeGreaterThan(partialIdx);
+    expect(icoIconIdx).toBeGreaterThan(partialIdx);
+  });
+
+  it("ships both SVG (modern) and ICO (legacy) favicon overrides", () => {
+    expect(documentSource).toMatch(
+      /rel="icon"[\s\S]*?type="image\/svg\+xml"[\s\S]*?href=\{assetUrl\("\/favicon\.svg"\)\}/,
+    );
+    expect(documentSource).toMatch(
+      /rel="icon"[\s\S]*?sizes="any"[\s\S]*?href=\{assetUrl\("\/favicon\.ico"\)\}/,
     );
   });
 });

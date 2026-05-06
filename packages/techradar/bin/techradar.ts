@@ -291,9 +291,9 @@ function bootstrap(): void {
       .sort();
     for (const theme of themeDirs) {
       scaffold(
-        join(CWD, "data", "themes", theme),
+        join(CWD, "themes", theme),
         join(themesSourceDir, theme),
-        `data/themes/${theme}/`,
+        `themes/${theme}/`,
         true,
       );
     }
@@ -321,6 +321,23 @@ function syncFilesToBuildDir(): void {
     join(CWD, "config.json"),
     join(BUILDER_DIR, "data", "config.json"),
   );
+  syncThemesToBuildDir();
+}
+
+// Consumer themes live at `<consumer>/themes/<id>/` (top-level, like `radar/`)
+// and must be copied into `.techradar/data/themes/<id>/` because the shadow
+// build expects the package layout. Without this sync the consumer's edits
+// have zero effect — the shadow keeps the built-in themes from `cpSync(SOURCE)`
+// in `ensureBuildDir()`. We replace the entire `data/themes` directory rather
+// than overlay so deleting a consumer theme actually removes it from the build.
+function syncThemesToBuildDir(): void {
+  const consumerThemes = join(CWD, "themes");
+  if (!existsSync(consumerThemes)) return;
+  const themesBuild = join(BUILDER_DIR, "data", "themes");
+  if (existsSync(themesBuild)) {
+    rmSync(themesBuild, { recursive: true });
+  }
+  cpSync(consumerThemes, themesBuild, { recursive: true });
 }
 
 function buildData(flags: string[] = []): void {
@@ -429,6 +446,7 @@ const devCommand = defineCommand({
     const child = startDevServer("async");
 
     const radarDir = join(CWD, "radar");
+    const themesDir = join(CWD, "themes");
     const aboutFile = join(CWD, "about.md");
     const customFile = join(CWD, "custom.scss");
     const configFile = join(CWD, "config.json");
@@ -471,6 +489,10 @@ const devCommand = defineCommand({
               rmSync(radarBuild, { recursive: true });
             }
             cpSync(radarDir, radarBuild, { recursive: true });
+          } else if (changedPath.startsWith(themesDir)) {
+            const relative = changedPath.replace(themesDir, "");
+            consola.info(`themes${relative} changed, syncing themes…`);
+            syncThemesToBuildDir();
           } else {
             consola.info("File changed");
           }
@@ -482,12 +504,15 @@ const devCommand = defineCommand({
       }, DEBOUNCE_MS);
     }
 
-    const watcher = watch([radarDir, aboutFile, customFile, configFile], {
-      persistent: true,
-      ignoreInitial: true,
-      depth: 5,
-      ignored: (path: string) => path.startsWith("."),
-    });
+    const watcher = watch(
+      [radarDir, themesDir, aboutFile, customFile, configFile],
+      {
+        persistent: true,
+        ignoreInitial: true,
+        depth: 5,
+        ignored: (path: string) => path.startsWith("."),
+      },
+    );
 
     watcher
       .on("add", debouncedRebuild)

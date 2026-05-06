@@ -171,11 +171,13 @@ describe("Home page", () => {
     expect(screen.getByTestId("mobile-segment-nav")).toBeInTheDocument();
   });
 
-  it("passes segments to MobileSegmentNav", () => {
+  it("passes segments, items, and rings to MobileSegmentNav", () => {
     render(<Home />);
 
     expect(mockData.mobileNavProps).toHaveBeenCalledWith({
       segments,
+      items: expect.any(Array),
+      rings,
     });
   });
 

@@ -63,29 +63,50 @@ const nextPath = path.resolve(__dirname, "node_modules/next");
 // Isolate dev-server output from production-build output so they never
 // collide on the same `.next/` directory.
 //
-// Why: `next dev` writes runtime files (e.g. `dev/server/webpack-runtime.js`)
-// into `distDir`. `next build` clears `distDir` at the start to write the
-// production bundle. When the harness runs `pnpm build` while `pnpm dev` is
-// alive, the dev process's open file handles point at files that no longer
-// exist and the next request 500s with `ENOENT: webpack-runtime.js`.
+// MONOREPO-DEV ONLY. This split exists for the generator's own dev workflow
+// (running `pnpm dev` from `packages/techradar/` inside this monorepo). The
+// harness can run `pnpm build` while `pnpm dev` is alive — the dev process
+// keeps open file handles inside `distDir`, and `next build` clears that dir
+// at startup, so the next dev request 500s with
+// `ENOENT: webpack-runtime.js`. Routing dev output to `.next-dev/` and
+// keeping `.next/` for `next build` decouples the two harnesses.
 //
-// Fix: route dev output to `.next-dev/` and keep `.next/` exclusively for
-// `next build`. Next sets `NODE_ENV=development` for `next dev` and
-// `NODE_ENV=production` for `next build`, so this branch is reliable.
-// `.next-dev/` is gitignored and added to the eslint/tsconfig paths
-// alongside `.next/` so it is never linted or type-checked.
-const distDir = process.env.NODE_ENV === "development" ? ".next-dev" : ".next";
+// CONSUMER SHADOW BUILDS DO NOT NEED THIS. `<consumer>/.techradar/` is
+// regenerated from a content hash and gitignored; it never runs `pnpm dev`
+// and `pnpm build` concurrently against the same dir. Forcing `.next-dev/`
+// there has no harm but no benefit either, so we gate on `isMonorepoContext`
+// to keep the consumer path identical to a vanilla Next.js project.
+//
+// Next sets `NODE_ENV=development` for `next dev` and `NODE_ENV=production`
+// for `next build`, so the env check is reliable. `.next-dev/` is gitignored
+// and added to the eslint/tsconfig paths alongside `.next/` so it is never
+// linted or type-checked.
+const distDir =
+  isMonorepoContext && process.env.NODE_ENV === "development"
+    ? ".next-dev"
+    : ".next";
 
 // Use a dev-only tsconfig so Next's startup auto-reconfigure (which
 // appends `<distDir>/types/**/*.ts` and `<distDir>/dev/types/**/*.ts` to
 // `include`) writes those `.next-dev/...` paths into `tsconfig.dev.json`
 // and leaves the canonical `tsconfig.json` (used by `tsc --noEmit` and
-// `next build`) untouched. Without this split, `next dev` rewrites
-// `tsconfig.json` on every startup, and the `.next-dev/dev/types/validator.ts`
-// it adds collides with `.next/types/validator.ts` during `next build`
-// with `Duplicate identifier 'PagesPageConfig'`.
+// `next build`) untouched.
+//
+// MONOREPO-DEV ONLY. Without this split, `next dev` rewrites `tsconfig.json`
+// on every startup, and the `.next-dev/dev/types/validator.ts` it adds
+// collides with `.next/types/validator.ts` during `next build` with
+// `Duplicate identifier 'PagesPageConfig'`. That collision only happens in
+// the generator's own monorepo workflow where both harnesses share a tree.
+//
+// CONSUMER SHADOW BUILDS MUST NOT TAKE THIS BRANCH. `bin/techradar.ts`
+// `ensureBuildDir()` only seeds `tsconfig.json` into `<consumer>/.techradar/`
+// — never `tsconfig.dev.json`. If `next dev` were pointed at the missing
+// dev-tsconfig, it would fall back to its "no tsconfig found" path and
+// silently write a bare `tsconfig.json` WITHOUT the `paths: { "@/*": [...] }`
+// alias mapping, breaking every `@/*` import in the user's `src/` tree.
+// Gate on `isMonorepoContext` so consumers always get the canonical path.
 const tsconfigPath =
-  process.env.NODE_ENV === "development"
+  isMonorepoContext && process.env.NODE_ENV === "development"
     ? "tsconfig.dev.json"
     : "tsconfig.json";
 

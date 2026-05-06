@@ -230,7 +230,7 @@ function startStaticServer(rootDir: string, port: number): Promise<Server> {
       void (async () => {
         try {
           const url = new URL(req.url ?? "/", "http://localhost");
-          let p = path.normalize(
+          const p = path.normalize(
             path.join(rootDir, decodeURIComponent(url.pathname)),
           );
           if (!p.startsWith(rootDir)) {
@@ -238,31 +238,33 @@ function startStaticServer(rootDir: string, port: number): Promise<Server> {
             res.end("Forbidden");
             return;
           }
-          let s: Awaited<ReturnType<typeof stat>>;
-          try {
-            s = await stat(p);
-          } catch {
-            // trailingSlash: true → also accept `/foo` resolving to `/foo/index.html`
-            const withHtml = `${p}.html`;
-            if (await pathExists(withHtml)) {
-              const data = await readFile(withHtml);
-              res.writeHead(200, { "Content-Type": MIME[".html"] });
+          // Resolve the file in a single read pass, no stat-then-read race
+          // (CodeQL js/file-system-race). For each candidate we just try to
+          // open it and let the EISDIR / ENOENT errors drive the fallback.
+          // trailingSlash: true → `/foo` may resolve to `/foo/index.html` or
+          // `/foo.html`. Order matters: directory index first, then `.html`.
+          const candidates = [p, path.join(p, "index.html"), `${p}.html`];
+          let served = false;
+          for (const candidate of candidates) {
+            try {
+              const data = await readFile(candidate);
+              const ext = path.extname(candidate).toLowerCase();
+              res.writeHead(200, {
+                "Content-Type": MIME[ext] ?? "application/octet-stream",
+              });
               res.end(data);
-              return;
+              served = true;
+              break;
+            } catch (err) {
+              const code = (err as NodeJS.ErrnoException).code;
+              if (code === "EISDIR" || code === "ENOENT") continue;
+              throw err;
             }
+          }
+          if (!served) {
             res.writeHead(404);
             res.end("Not found");
-            return;
           }
-          if (s.isDirectory()) {
-            p = path.join(p, "index.html");
-          }
-          const data = await readFile(p);
-          const ext = path.extname(p).toLowerCase();
-          res.writeHead(200, {
-            "Content-Type": MIME[ext] ?? "application/octet-stream",
-          });
-          res.end(data);
         } catch (err) {
           consola.error("static server error", err);
           res.writeHead(500);

@@ -352,6 +352,74 @@
   white-space: nowrap;
 }
 
+.mobileClose {
+  display: none;
+}
+
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+
+  &:hover {
+    background: color-mix(in oklch, var(--foreground) 8%, transparent);
+    border-color: var(--highlight);
+    color: var(--foreground);
+  }
+
+  &:active {
+    background: color-mix(in oklch, var(--foreground) 12%, transparent);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--highlight);
+  }
+}
+
+.scopeChip {
+  display: none;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 4px $pds-spacing-static-small;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text);
+  cursor: pointer;
+  font-family: inherit;
+  @include pds-text-x-small;
+  font-weight: $pds-font-weight-bold;
+
+  &:hover {
+    color: var(--foreground);
+    border-color: var(--highlight);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--highlight);
+  }
+
+  &[aria-pressed="true"] {
+    background: color-mix(in oklch, var(--highlight) 18%, transparent);
+    border-color: var(--highlight);
+    color: var(--highlight);
+  }
+}
+
 .footer {
   display: flex;
   flex-wrap: wrap;
@@ -459,5 +527,45 @@
     top: 5vh;
     max-height: 90vh;
     width: calc(100vw - #{$pds-spacing-static-medium});
+  }
+
+  // Hide keyboard hints — irrelevant on touch devices.
+  .itemHotkey,
+  .footer {
+    display: none;
+  }
+
+  // Replace the inline ACTIONS badge with the interactive scope chip.
+  .modeChip {
+    display: none;
+  }
+
+  // Show the tappable Close button and inline Actions chip in the input bar.
+  .mobileClose {
+    display: inline-flex;
+  }
+
+  .scopeChip {
+    display: inline-flex;
+  }
+
+  // Stack title above meta so the title (most important) gets the full
+  // row width instead of being truncated by the meta text. The aside
+  // (action arrow, tags) stays on the right of the row.
+  .itemMain {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  .itemTitle {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+
+  .itemAside {
+    flex-wrap: wrap;
+    justify-content: flex-end;
   }
 }

@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.0.2](https://github.com/porscheofficial/porschedigital-technology-radar/compare/porschedigital-technology-radar-v2.0.1...porschedigital-technology-radar-v2.0.2) (2026-05-06)
+
+
+### Bug Fixes
+
+* **techradar:** honor manifest.default mode for dual-mode themes ([bf07bc4](https://github.com/porscheofficial/porschedigital-technology-radar/commit/bf07bc44df2f3e453985bf44e3c543f136979ae7))
+* **techradar:** scaffold consumer themes to top-level themes/ folder ([69a58e1](https://github.com/porscheofficial/porschedigital-technology-radar/commit/69a58e101076b86d8e4ba9048cb34677059f46d9))
+* **techradar:** show platform-correct shortcut in Spotlight bar ([4f46dc0](https://github.com/porscheofficial/porschedigital-technology-radar/commit/4f46dc0e2e0ddd3efebf777a60827b5a99f4f678))
+* **techradar:** use role=img wrapper for kbd group ([1b9f730](https://github.com/porscheofficial/porschedigital-technology-radar/commit/1b9f730c730a5fec792588975ec656b87bfdb6ba))
+
 ## [2.0.1](https://github.com/porscheofficial/porschedigital-technology-radar/compare/porschedigital-technology-radar-v2.0.0...porschedigital-technology-radar-v2.0.1) (2026-05-06)
 
 

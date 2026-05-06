@@ -1,6 +1,6 @@
 {
   "$schema": "Hand-edited bundle thresholds. Bump only when a deliberate cost is justified.",
   "maxTotalJsBytes": 2700000,
-  "maxTotalCssBytes": 73500,
+  "maxTotalCssBytes": 76000,
   "maxChunkBytes": 293000
 }

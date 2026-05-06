@@ -176,6 +176,10 @@ beforeEach(() => {
   setActiveThemeMock.mockReset();
   setModeMock.mockReset();
   eventHandlers.clear();
+  Object.defineProperty(window.navigator, "platform", {
+    value: "MacIntel",
+    configurable: true,
+  });
 });
 
 describe("SpotlightSearch", () => {
@@ -184,6 +188,36 @@ describe("SpotlightSearch", () => {
     const trigger = screen.getByRole("button", { name: "Search the radar" });
     expect(trigger).toBeInTheDocument();
     expect(trigger.textContent).toContain("⌘K");
+  });
+
+  it("renders Ctrl+K (not ⌘K) on non-Mac platforms", async () => {
+    Object.defineProperty(window.navigator, "platform", {
+      value: "Win32",
+      configurable: true,
+    });
+    render(<SpotlightSearch />);
+    const trigger = screen.getByRole("button", { name: "Search the radar" });
+    await waitFor(() => {
+      expect(screen.getByLabelText("Ctrl+K")).toBeInTheDocument();
+    });
+    expect(trigger.textContent).toContain("Ctrl");
+    expect(trigger.textContent).toContain("K");
+    expect(trigger.textContent).not.toContain("⌘");
+  });
+
+  it("renders Ctrl+N hotkey badges on non-Mac platforms", async () => {
+    Object.defineProperty(window.navigator, "platform", {
+      value: "Win32",
+      configurable: true,
+    });
+    const user = userEvent.setup();
+    render(<SpotlightSearch />);
+    await user.click(screen.getByRole("button", { name: "Search the radar" }));
+    await screen.findByPlaceholderText("Search the radar");
+    await waitFor(() => {
+      expect(screen.getByLabelText("Ctrl+1")).toBeInTheDocument();
+    });
+    expect(screen.getByLabelText("Ctrl+2")).toBeInTheDocument();
   });
 
   it("opens the dialog when the trigger is clicked", async () => {

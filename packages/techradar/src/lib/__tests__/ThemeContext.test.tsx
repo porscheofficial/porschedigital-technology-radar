@@ -108,11 +108,35 @@ beforeEach(() => {
 });
 
 describe("ThemeContext", () => {
-  it("exposes theme and mode state", () => {
+  it("uses the manifest default mode for dual-mode themes when no mode is pinned", () => {
     const { result } = renderHook(() => useTheme(), { wrapper });
     expect(result.current.theme.id).toBe("porsche");
-    expect(result.current.mode).toBe("system");
+    expect(result.current.mode).toBe("dark");
     expect(result.current.themes).toHaveLength(2);
+  });
+
+  it("opts in to system mode when defaultTheme pins ':system'", () => {
+    function systemWrapper({ children }: { children: ReactNode }) {
+      return (
+        <ThemeProvider themes={themes} initialThemeId="porsche:system">
+          {children}
+        </ThemeProvider>
+      );
+    }
+    const { result } = renderHook(() => useTheme(), { wrapper: systemWrapper });
+    expect(result.current.mode).toBe("system");
+  });
+
+  it("respects an explicit ':light' mode pin in initialThemeId", () => {
+    function lightWrapper({ children }: { children: ReactNode }) {
+      return (
+        <ThemeProvider themes={themes} initialThemeId="porsche:light">
+          {children}
+        </ThemeProvider>
+      );
+    }
+    const { result } = renderHook(() => useTheme(), { wrapper: lightWrapper });
+    expect(result.current.mode).toBe("light");
   });
 
   it("setActiveTheme persists the theme and updates document state", () => {

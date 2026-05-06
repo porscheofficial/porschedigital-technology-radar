@@ -239,8 +239,15 @@ function isPreferenceMode(
   return value === "light" || value === "dark" || value === "system";
 }
 
+// When the consumer doesn't pin a mode in `config.defaultTheme` (e.g. just
+// `"porsche"` instead of `"porsche:system"`), we honor the theme manifest's
+// `default` field. Previously dual-mode themes silently overrode this to
+// `"system"`, which made `manifest.default` a dead field and forced first-time
+// visitors of e.g. Porsche (default `"dark"`) to land on whatever their OS
+// preference said. Consumers who *want* OS-driven mode can opt in with
+// `defaultTheme: "porsche:system"`.
 function getDefaultPreferenceMode(theme: ThemeManifest): ThemePreferenceMode {
-  return theme.supports.length === 2 ? "system" : theme.default;
+  return theme.default;
 }
 
 function getSchemeClassName(

@@ -133,6 +133,16 @@ export default function Document() {
           appTitle: getLabel("title"),
           format: "jsx",
         })}
+        {/*
+          PDS' getMetaTagsAndIconLinks above injects <link rel="icon"> pointing
+          at Porsche assets, which suppresses the browser's /favicon.ico
+          fallback. Re-declaring rel="icon" AFTER the partial wins the icon
+          pick (last-declared wins), so consumer public/favicon.{svg,ico}
+          (overlaid at build time by bin/techradar.ts → syncFilesToBuildDir)
+          actually shows up in the tab. Order matters — do not move above PDS.
+        */}
+        <link rel="icon" type="image/svg+xml" href={assetUrl("/favicon.svg")} />
+        <link rel="icon" sizes="any" href={assetUrl("/favicon.ico")} />
         <style id="theme-vars">{themeStyleBlock}</style>
         {/* biome-ignore lint/security/noDangerouslySetInnerHtml: intentional blocking theme-init script — string literal, no user data */}
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Technology Radar favicon.
+
+  Tuned for 16×16 (browser tab):
+    - Vivid sky-blue bg ⇒ pops against white/grey browser chrome.
+    - Single thick white outer ring + a bold filled cyan sweep wedge
+      (90°) ⇒ unmistakably "radar" iconography (ring + sweep is the
+      universal radar visual idiom).
+    - Single large red blip on the sweep edge (radius 10 ⇒ ~2.5 px at
+      16) is the focal point; red on cyan/sky is maximum hue contrast.
+    - No inner ring, no center dot, no divider — every removed element
+      was sub-pixel haze at 16 and competed with the blip.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Technology Radar">
+  <title>Technology Radar</title>
+
+  <rect width="64" height="64" rx="14" fill="#0EA5E9"/>
+
+  <!-- Sweep wedge: 90° from 12 o'clock to 3 o'clock, behind the rings -->
+  <path d="M32 32 L32 6 A26 26 0 0 1 58 32 Z" fill="#FFFFFF" fill-opacity="0.35"/>
+
+  <!-- Outer ring: bold and high-contrast -->
+  <circle cx="32" cy="32" r="22" fill="none" stroke="#FFFFFF" stroke-width="5"/>
+
+  <!-- Inner ring: thinner, gives depth without becoming sub-pixel haze -->
+  <circle cx="32" cy="32" r="11" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-opacity="0.85"/>
+
+  <!-- Blip: large, red on cyan = max hue contrast, white halo for separation -->
+  <circle cx="46" cy="20" r="10" fill="#EF4444" stroke="#FFFFFF" stroke-width="3"/>
+</svg>

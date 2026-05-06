@@ -120,7 +120,7 @@ describe("scanThemes", () => {
         defaultTheme: "legacy",
       }),
     ).toThrow(
-      "Theme 'legacy' uses the legacy v1 schema (colorScheme field). PDS v4 + theme×mode requires the new shape — see data/themes/.example/README.md for the new schema. No automated migration is provided; rewrite manifest.jsonc by hand.",
+      "Theme 'legacy' uses the legacy v1 schema (colorScheme field). PDS v4 + theme×mode requires the new shape — see data/themes/.example/manifest.jsonc for an annotated reference and MIGRATION.md (Section 'v1 → v2', step 3) for the field-by-field mapping. No automated migration is provided; rewrite manifest.jsonc by hand.",
     );
   });
 

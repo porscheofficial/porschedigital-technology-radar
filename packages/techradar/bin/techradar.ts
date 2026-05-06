@@ -15,6 +15,9 @@ import { watch } from "chokidar";
 import { defineCommand, runMain } from "citty";
 import consola from "consola";
 import { execa, execaSync } from "execa";
+import { applyMechanicalRenames } from "./migrateApply";
+import { detectAll, type Finding } from "./migrateDetect";
+import { extractThemeFromConfig, type ThemeMode } from "./migrateThemes";
 import { sanitizeShadowTsconfig } from "./sanitizeShadowTsconfig";
 
 // ---------------------------------------------------------------------------
@@ -527,6 +530,294 @@ const devCommand = defineCommand({
 // Main command
 // ---------------------------------------------------------------------------
 
+function formatFinding(f: Finding): string {
+  const icon = f.severity === "error" ? "✖" : "⚠";
+  return `  ${icon} ${f.key}\n      ${f.message}\n      → ${f.fix}`;
+}
+
+function printFindings(findings: Finding[]): void {
+  const errors = findings.filter((f) => f.severity === "error");
+  const warns = findings.filter((f) => f.severity === "warn");
+  if (errors.length > 0) {
+    consola.error(`${errors.length} blocking issue(s) (v2 build will fail):`);
+    for (const f of errors) consola.log(formatFinding(f));
+  }
+  if (warns.length > 0) {
+    consola.warn(
+      `${warns.length} deprecation(s) (v2 still accepts these via shims):`,
+    );
+    for (const f of warns) consola.log(formatFinding(f));
+  }
+}
+
+function runMigrateApply(report: ReturnType<typeof detectAll>): void {
+  consola.start("Applying mechanical rewrites…");
+  const result = applyMechanicalRenames({ cwd: CWD });
+
+  if (result.changes.length === 0) {
+    consola.info(
+      "No mechanical rewrites available. Remaining findings need manual edits — see MIGRATION.md.",
+    );
+    printFindings(report.findings);
+    if (report.hasErrors) process.exit(1);
+    return;
+  }
+
+  for (const c of result.changes) {
+    consola.log(`  • ${c.file} — ${c.description}`);
+  }
+  if (result.backupDir) {
+    consola.info(
+      `Backup written to ${result.backupDir}/. Add that path to .gitignore or commit it. Restore by copying files back into place.`,
+    );
+  }
+  for (const e of result.errors) {
+    consola.error(`Failed to write ${e.file}: ${e.message}`);
+  }
+
+  consola.start("Re-scanning for remaining v1 markers…");
+  const after = detectAll(CWD);
+  if (!after.hasV1Markers) {
+    consola.success("All v1 markers resolved. Run `npx techradar build`.");
+    if (result.errors.length > 0) process.exit(1);
+    return;
+  }
+
+  consola.warn(
+    `${after.findings.length} finding(s) remain (theme & manual steps).`,
+  );
+  printFindings(after.findings);
+  consola.info(
+    `See MIGRATION.md (Section "v1 → v2", step 3) for the theme extraction recipe.`,
+  );
+  if (after.hasErrors || result.errors.length > 0) process.exit(1);
+}
+
+interface ExtractThemeArgs {
+  "theme-id"?: string;
+  "theme-label"?: string;
+  "theme-supports"?: string;
+  "theme-default"?: string;
+}
+
+function parseSupports(input: string): ThemeMode[] {
+  const tokens = input
+    .split(",")
+    .map((t) => t.trim().toLowerCase())
+    .filter(Boolean);
+  const valid: ThemeMode[] = [];
+  for (const t of tokens) {
+    if (t === "light" || t === "dark") {
+      if (!valid.includes(t)) valid.push(t);
+    }
+  }
+  return valid;
+}
+
+async function resolveExtractThemeInputs(args: ExtractThemeArgs): Promise<{
+  themeId: string;
+  label: string;
+  supports: ThemeMode[];
+  defaultMode: ThemeMode;
+} | null> {
+  const themeId =
+    args["theme-id"] ??
+    (await consola.prompt("Theme id (URL-safe slug, e.g. 'acme'):", {
+      type: "text",
+      placeholder: "acme",
+    }));
+  if (typeof themeId !== "string" || themeId.trim() === "") {
+    consola.fatal("theme-id is required.");
+    return null;
+  }
+
+  const label =
+    args["theme-label"] ??
+    (await consola.prompt("Human-readable theme label:", {
+      type: "text",
+      default: themeId,
+    }));
+  if (typeof label !== "string" || label.trim() === "") {
+    consola.fatal("theme-label is required.");
+    return null;
+  }
+
+  let supports: ThemeMode[];
+  if (args["theme-supports"]) {
+    supports = parseSupports(args["theme-supports"]);
+  } else {
+    const picked = await consola.prompt(
+      "Which color modes does this theme support?",
+      {
+        type: "select",
+        options: [
+          { label: "light + dark", value: "light,dark" },
+          { label: "light only", value: "light" },
+          { label: "dark only", value: "dark" },
+        ],
+      },
+    );
+    supports = parseSupports(String(picked));
+  }
+  if (supports.length === 0) {
+    consola.fatal(
+      "theme-supports must include at least one of 'light' or 'dark'.",
+    );
+    return null;
+  }
+
+  let defaultMode: ThemeMode;
+  if (args["theme-default"]) {
+    const v = args["theme-default"].trim().toLowerCase();
+    if (v !== "light" && v !== "dark") {
+      consola.fatal("theme-default must be 'light' or 'dark'.");
+      return null;
+    }
+    defaultMode = v;
+  } else if (supports.length === 1) {
+    defaultMode = supports[0];
+  } else {
+    const picked = await consola.prompt(
+      "Default mode (when no user preference):",
+      {
+        type: "select",
+        options: supports.map((m) => ({ label: m, value: m })),
+      },
+    );
+    defaultMode = String(picked) === "dark" ? "dark" : "light";
+  }
+  if (!supports.includes(defaultMode)) {
+    consola.fatal(
+      `theme-default '${defaultMode}' must be one of the supported modes [${supports.join(", ")}].`,
+    );
+    return null;
+  }
+
+  return {
+    themeId: themeId.trim(),
+    label: label.trim(),
+    supports,
+    defaultMode,
+  };
+}
+
+async function runMigrateExtractTheme(args: ExtractThemeArgs): Promise<void> {
+  const inputs = await resolveExtractThemeInputs(args);
+  if (!inputs) {
+    process.exit(1);
+    return;
+  }
+
+  consola.start(
+    `Extracting v1 theming into themes/${inputs.themeId}/manifest.jsonc…`,
+  );
+  const result = extractThemeFromConfig({ cwd: CWD, ...inputs });
+
+  for (const c of result.changes) {
+    consola.log(`  • ${c.file} — ${c.description}`);
+  }
+  if (result.backupDir) {
+    consola.info(
+      `Backup written to ${result.backupDir}/. Add that path to .gitignore or commit it. Restore by copying files back into place.`,
+    );
+  }
+  for (const e of result.errors) {
+    consola.error(`Failed: ${e.file}: ${e.message}`);
+  }
+  if (result.unmappedColors.length > 0) {
+    consola.warn(
+      `Skipped v1 'colors' keys with no v2 equivalent: ${result.unmappedColors.join(", ")}. Add them under cssVariables in the new manifest if you want to keep them.`,
+    );
+  }
+  if (inputs.supports.length === 2) {
+    consola.info(
+      "Dual-mode theme: every color value was duplicated into {light, dark}. Tune the dark-mode values in the new manifest to match your brand.",
+    );
+  }
+
+  consola.start("Re-scanning for remaining v1 markers…");
+  const after = detectAll(CWD);
+  if (!after.hasV1Markers) {
+    consola.success(
+      `Theme extracted. Run \`npx techradar build\` to verify, then commit themes/${inputs.themeId}/.`,
+    );
+    if (result.errors.length > 0) process.exit(1);
+    return;
+  }
+  consola.warn(`${after.findings.length} finding(s) remain.`);
+  printFindings(after.findings);
+  if (after.hasErrors || result.errors.length > 0) process.exit(1);
+}
+
+const migrateCommand = defineCommand({
+  meta: {
+    name: "migrate",
+    description: "Detect (and optionally apply) v1 → v2 configuration upgrades",
+  },
+  args: {
+    apply: {
+      type: "boolean",
+      description:
+        "Apply the safe mechanical rewrites (quadrants→segments, frontmatter rename). A backup is written under .techradar-migrate-backup/<timestamp>/.",
+      default: false,
+    },
+    "extract-theme": {
+      type: "boolean",
+      description:
+        "Lift v1 inline theming (colors, backgroundImage, segments[].color, rings[].color) into a new themes/<id>/manifest.jsonc and stamp defaultTheme into config.json. Prompts interactively for theme id / label / modes if not supplied via flags. A backup is written under .techradar-migrate-backup/<timestamp>/.",
+      default: false,
+    },
+    "theme-id": {
+      type: "string",
+      description: "Theme id (URL-safe slug) for --extract-theme.",
+    },
+    "theme-label": {
+      type: "string",
+      description: "Human-readable theme label for --extract-theme.",
+    },
+    "theme-supports": {
+      type: "string",
+      description:
+        "Modes the theme supports for --extract-theme: 'light', 'dark', or 'light,dark'.",
+    },
+    "theme-default": {
+      type: "string",
+      description:
+        "Default mode for --extract-theme (must be one of theme-supports).",
+    },
+  },
+  async run({ args }) {
+    const report = detectAll(CWD);
+
+    if (!report.hasV1Markers) {
+      consola.success(
+        "No v1 markers detected. Project looks like a clean v2 setup.",
+      );
+      return;
+    }
+
+    if (args["extract-theme"]) {
+      await runMigrateExtractTheme(args);
+      return;
+    }
+
+    if (!args.apply) {
+      printFindings(report.findings);
+      consola.info(
+        `See MIGRATION.md for the full v1 → v2 recipe. Re-run with \`--apply\` to perform the safe mechanical rewrites${
+          report.hasErrors
+            ? ", then `--extract-theme` to lift v1 colors into a theme manifest"
+            : ""
+        }.${report.hasErrors ? " Exiting non-zero for CI." : ""}`,
+      );
+      if (report.hasErrors) process.exit(1);
+      return;
+    }
+
+    runMigrateApply(report);
+  },
+});
+
 const main = defineCommand({
   meta: {
     name: "techradar",
@@ -546,14 +837,26 @@ const main = defineCommand({
     serve: serveCommand,
     build: buildCommand,
     dev: devCommand,
+    migrate: migrateCommand,
   },
   setup({ args, rawArgs }) {
-    // Skip setup for init — it handles its own bootstrapping
-    if (rawArgs.includes("init")) return;
+    // init bootstraps itself; migrate is read-only and must skip ensureBuildDir (npm install).
+    if (rawArgs.includes("init") || rawArgs.includes("migrate")) return;
 
     if (!isInitialized()) {
       consola.fatal("Project not initialized. Run `npx techradar init` first.");
       process.exit(1);
+    }
+
+    const report = detectAll(CWD);
+    if (report.hasErrors) {
+      const errCount = report.findings.filter(
+        (f) => f.severity === "error",
+      ).length;
+      consola.warn(
+        `Detected v1 configuration (${errCount} blocking issue(s)). ` +
+          `Run \`npx techradar migrate\` for a guided upgrade. See MIGRATION.md.`,
+      );
     }
 
     ensureBuildDir();

@@ -5,7 +5,7 @@ A static site generator for building and publishing your own technology radar. D
 [![npm version](https://img.shields.io/npm/v/@porscheofficial/porschedigital-technology-radar?logo=npm)](https://www.npmjs.com/package/@porscheofficial/porschedigital-technology-radar)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue)](https://github.com/porscheofficial/porschedigital-technology-radar/blob/main/LICENSE)
 
-**[Live showcase](https://opensource.porsche.com/porschedigital-technology-radar/)** · **[Project overview & quickstart](https://github.com/porscheofficial/porschedigital-technology-radar#readme)**
+**[Live showcase](https://opensource.porsche.com/porschedigital-technology-radar/)** · **[Project overview & quickstart](https://github.com/porscheofficial/porschedigital-technology-radar#readme)** · **[Upgrading from v1](./MIGRATION.md)**
 
 ![Screenshot of the Technology Radar](https://raw.githubusercontent.com/porscheofficial/porschedigital-technology-radar/main/docs/assets/screenshot-radar.png)
 
@@ -69,7 +69,8 @@ npx techradar init
 
 Edit the scaffolded files to match your organization:
 
-- `config.json` — branding, segments, rings, colors (see [Configuration](#️-configuration))
+- `config.json` — branding, segments, rings, theme selection (see [Configuration](#️-configuration))
+- `themes/<id>/manifest.jsonc` — colors, palettes, optional logos & background (see [Themes](#themes))
 - `radar/` — your technology items as Markdown (see [Radar Items](#-radar-items))
 - `about.md` — content for the help & about page
 - `public/` — favicon, images, background image
@@ -245,8 +246,19 @@ package are scaffolded there on `npx techradar init`.
 - Mode selection is persisted in `localStorage` under `techradar-mode`.
 - Theme selection is persisted in `localStorage` under `techradar-theme`.
 
-There is no migration CLI for the old flat `colorScheme` schema. Rewrite legacy
-`manifest.jsonc` files by hand using `themes/.example/`.
+Upgrading a v1 consumer project? Run `npx techradar migrate` for a read-only
+diagnostic that lists every legacy key it finds (`config.json`, frontmatter,
+theme manifests) and points each one at the matching fix. Re-run with
+`npx techradar migrate --apply` to perform the safe mechanical rewrites
+(`quadrants` → `segments` in `config.json`, `quadrant:` → `segment:` in
+frontmatter); modified files are first mirrored into
+`.techradar-migrate-backup/<timestamp>/`. Run
+`npx techradar migrate --extract-theme` to interactively generate a theme
+manifest from your legacy `colors` / `backgroundImage` / `segments[].color` /
+`rings[].color` keys (strips them from `config.json` and inserts
+`defaultTheme` for you). See [`MIGRATION.md`](./MIGRATION.md)
+for the full v1 → v2 recipe (the `colorScheme` rewrite itself is manual; use
+`themes/.example/manifest.jsonc` as the template).
 
 #### Theme assets
 
@@ -284,8 +296,7 @@ time.
   "basePath": "/techradar",
   "baseUrl": "https://techradar.acme.io",
   "editUrl": "https://github.dev/acme/techradar/blob/main/radar/{release}/{id}.md",
-  "backgroundImage": "/images/bg-pattern.png",
-  "backgroundOpacity": 0.04,
+  "defaultTheme": "acme",
   "imprint": "https://acme.io/legal",
   "toggles": {
     "showSearch": true,
@@ -295,40 +306,26 @@ time.
     "showBlipChange": true,
     "multiSelectFilters": true
   },
-  "colors": {
-    "foreground": "#F0F0F5",
-    "background": "#1A1A2E",
-    "highlight": "#E94560",
-    "content": "#A0A0B0",
-    "text": "#707080",
-    "link": "#E94560",
-    "border": "#2A2A40",
-    "tag": "#2A2A40"
-  },
   "segments": [
     {
       "id": "languages-and-frameworks",
       "title": "Languages & Frameworks",
-      "description": "Programming languages and application frameworks used across our stack.",
-      "color": "#0F9D58"
+      "description": "Programming languages and application frameworks used across our stack."
     },
     {
       "id": "infrastructure",
       "title": "Infrastructure",
-      "description": "Cloud platforms, orchestration, and infrastructure-as-code tools.",
-      "color": "#4285F4"
+      "description": "Cloud platforms, orchestration, and infrastructure-as-code tools."
     },
     {
       "id": "data-and-ai",
       "title": "Data & AI",
-      "description": "Data pipelines, storage, analytics, and machine learning frameworks.",
-      "color": "#F4B400"
+      "description": "Data pipelines, storage, analytics, and machine learning frameworks."
     },
     {
       "id": "developer-experience",
       "title": "Developer Experience",
-      "description": "Tools and practices that improve developer productivity and satisfaction.",
-      "color": "#DB4437"
+      "description": "Tools and practices that improve developer productivity and satisfaction."
     }
   ],
   "rings": [
@@ -336,7 +333,6 @@ time.
       "id": "adopt",
       "title": "Adopt",
       "description": "Proven in production. Use by default for new projects.",
-      "color": "#0F9D58",
       "radius": 0.5,
       "strokeWidth": 5
     },
@@ -344,7 +340,6 @@ time.
       "id": "trial",
       "title": "Trial",
       "description": "Worth pursuing. Use in non-critical projects to build experience.",
-      "color": "#4285F4",
       "radius": 0.69,
       "strokeWidth": 3
     },
@@ -352,7 +347,6 @@ time.
       "id": "assess",
       "title": "Assess",
       "description": "Interesting. Explore in spikes or proof-of-concepts.",
-      "color": "#F4B400",
       "radius": 0.85,
       "strokeWidth": 2
     },
@@ -360,7 +354,6 @@ time.
       "id": "hold",
       "title": "Hold",
       "description": "Do not start new work with this. Migrate away when practical.",
-      "color": "#DB4437",
       "radius": 1,
       "strokeWidth": 0.75
     }

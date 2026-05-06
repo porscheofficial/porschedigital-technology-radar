@@ -31,7 +31,7 @@ const Home: CustomPage = () => {
 
       {getToggle("showChart") && (
         <>
-          <MobileSegmentNav segments={segments} />
+          <MobileSegmentNav segments={segments} items={items} rings={rings} />
           <div className={styles.desktopRadar}>
             <Radar
               size={chartConfig.size}

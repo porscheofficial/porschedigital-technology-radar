@@ -328,14 +328,15 @@ export function SpotlightSearch() {
               </span>
             )}
             {hotkey !== null && (
-              <kbd
+              <span
                 className={styles.itemHotkey}
+                role="img"
                 aria-label={`${modAriaLabel}+${hotkey}`}
                 suppressHydrationWarning
               >
                 <kbd className={styles.kbd}>{modKey}</kbd>
                 <kbd className={styles.kbd}>{hotkey}</kbd>
-              </kbd>
+              </span>
             )}
           </span>
         </span>
@@ -362,14 +363,15 @@ export function SpotlightSearch() {
       >
         <PIcon name="search" size="small" aria-hidden="true" />
         <span className={styles.triggerLabel}>{placeholder}</span>
-        <kbd
+        <span
           className={styles.kbdGroup}
+          role="img"
           aria-label={`${modAriaLabel}+K`}
           suppressHydrationWarning
         >
           <kbd className={styles.kbd}>{modKey}</kbd>
           <kbd className={styles.kbd}>K</kbd>
-        </kbd>
+        </span>
       </button>
 
       <Command.Dialog

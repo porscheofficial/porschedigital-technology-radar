@@ -4,6 +4,47 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.0.0](https://github.com/porscheofficial/porschedigital-technology-radar/compare/porschedigital-technology-radar-v1.3.0...porschedigital-technology-radar-v2.0.0) (2026-05-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* **techradar:** drop migrate-colors CLI command
+* **techradar:** introduce theme system with JSONC manifests and per-mode background
+
+### Features
+
+* **techradar:** boxed history button and restored header frost effect ([f2203e3](https://github.com/porscheofficial/porschedigital-technology-radar/commit/f2203e3d1f4fdf390f541a4622476d9b1a400c6b))
+* **techradar:** drop migrate-colors CLI command ([dd37ddf](https://github.com/porscheofficial/porschedigital-technology-radar/commit/dd37ddf5c473f351e4fb7e45d9d6c6618e12e2c0))
+* **techradar:** introduce theme system with JSONC manifests and per-mode background ([9543bed](https://github.com/porscheofficial/porschedigital-technology-radar/commit/9543bedb1d211bce608f07b5fb9520ec14fa880f))
+* **techradar:** make porsche-heritage backgrounds prominent ([ef1e16e](https://github.com/porscheofficial/porschedigital-technology-radar/commit/ef1e16e583146afe8c0f7f9e7819a2d42746aa2c))
+* **techradar:** scaffold all built-in themes during init ([6776d25](https://github.com/porscheofficial/porschedigital-technology-radar/commit/6776d2582f0a406b65a3c0ffc60f66d3775d21b4))
+* **techradar:** segmented theme pill switcher and spotlight submenu navigation ([783a33c](https://github.com/porscheofficial/porschedigital-technology-radar/commit/783a33c41bacd64c5e60e52ad06c1936035d5503))
+* **techradar:** seven built-in themes with assets and canonical ring ordering ([25c7c6f](https://github.com/porscheofficial/porschedigital-technology-radar/commit/25c7c6fe92a7896f048a836d31e57f61c4273070))
+* **techradar:** theme-configurable chip system with unified blip and tag styling ([49ef55e](https://github.com/porscheofficial/porschedigital-technology-radar/commit/49ef55ed2db125250172b018f745d7894c3d0ec6))
+* **techradar:** unify markdown link styling via PDS PLinkPure ([c05a9b3](https://github.com/porscheofficial/porschedigital-technology-radar/commit/c05a9b36024dc3ed200315dddd4491f894ec4d6c))
+* **techradar:** welcoming about copy and pitch-driven disclaimer and footer ([c017b1d](https://github.com/porscheofficial/porschedigital-technology-radar/commit/c017b1d67812bacc49822ee86f4ffed27371f3ca))
+
+
+### Bug Fixes
+
+* **techradar:** drop redundant ring check in changelog matrix dot ([1e330c8](https://github.com/porscheofficial/porschedigital-technology-radar/commit/1e330c86972e60bbba53f9ff2d00853c5c2bfdbe))
+* **techradar:** override PDS favicon so consumer favicon is used ([4956c36](https://github.com/porscheofficial/porschedigital-technology-radar/commit/4956c36d498e96896ac4c73b9eece9d0f539a0b8))
+* **techradar:** prevent blip label flash on wedge hover and click ([7072b65](https://github.com/porscheofficial/porschedigital-technology-radar/commit/7072b651cb05226024e660e5818d3dba3e133e64))
+* **techradar:** respect NEXT_PUBLIC_BASE_PATH for asset URLs ([19f1db4](https://github.com/porscheofficial/porschedigital-technology-radar/commit/19f1db4fcb15ff42c1cb7b5a7c122fdc1f44c246))
+
+
+### Build System
+
+* **deps-dev:** bump axe-core from 4.11.3 to 4.11.4 ([16c9d76](https://github.com/porscheofficial/porschedigital-technology-radar/commit/16c9d766e31d029cf2be175b7f76274fc5d8d5c7))
+* **deps-dev:** bump html-validate from 10.13.1 to 10.15.0 ([e8d8b17](https://github.com/porscheofficial/porschedigital-technology-radar/commit/e8d8b17605cb60a9eb8246ae20d13851bd7f6ac9))
+* **deps-dev:** bump jsdom from 29.1.0 to 29.1.1 in the testing group ([6ea36be](https://github.com/porscheofficial/porschedigital-technology-radar/commit/6ea36beb7453747a13a401041e51b4bbfb763b94))
+* **deps-dev:** bump portless from 0.10.1 to 0.12.0 ([6a0b193](https://github.com/porscheofficial/porschedigital-technology-radar/commit/6a0b19393996ae28b12e1cce5340b995ea59b8cb))
+* **deps:** bump postcss-nested from 6.2.0 to 7.0.2 ([35ec4f3](https://github.com/porscheofficial/porschedigital-technology-radar/commit/35ec4f323d268d4a9ebdd692fd5c76895c1ad958))
+* **deps:** bump typescript from 5.8.3 to 6.0.3 ([3e591a2](https://github.com/porscheofficial/porschedigital-technology-radar/commit/3e591a242686d9a25d3689dd9e449a67d38df603))
+* **deps:** bump zod from 4.3.6 to 4.4.2 ([cf3dfc6](https://github.com/porscheofficial/porschedigital-technology-radar/commit/cf3dfc6d50696b778485bdf57def847da3edfbe2))
+* **techradar:** raise bundle budget for PDS v4 and html-react-parser ([634fef3](https://github.com/porscheofficial/porschedigital-technology-radar/commit/634fef3e82fde23a9d0c7b77c112628565ecaeff))
+
 ## [1.3.0](https://github.com/porscheofficial/porschedigital-technology-radar/compare/porschedigital-technology-radar-v1.2.6...porschedigital-technology-radar-v1.3.0) (2026-05-03)
 
 

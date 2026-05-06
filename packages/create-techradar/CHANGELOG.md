@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/porscheofficial/porschedigital-technology-radar/compare/create-techradar-v1.0.0...create-techradar-v1.0.1) (2026-05-06)
+
+
+### Build System
+
+* **deps:** bump typescript from 5.8.3 to 6.0.3 ([3e591a2](https://github.com/porscheofficial/porschedigital-technology-radar/commit/3e591a242686d9a25d3689dd9e449a67d38df603))
+
 ## 1.0.0 (2026-05-03)
 
 

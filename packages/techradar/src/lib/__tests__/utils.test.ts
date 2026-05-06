@@ -69,6 +69,57 @@ describe("assetUrl with basePath", () => {
   });
 });
 
+// Regression (deploy fix): assetUrl() must read NEXT_PUBLIC_BASE_PATH first,
+// because the GitHub Pages deploy sets that env var rather than editing
+// data/config.json. Without env precedence, theme background images and other
+// raw asset URLs 404 on the deployed sub-path.
+describe("assetUrl with NEXT_PUBLIC_BASE_PATH env var", () => {
+  const originalEnv = process.env.NEXT_PUBLIC_BASE_PATH;
+  afterEach(() => {
+    if (originalEnv === undefined) {
+      delete process.env.NEXT_PUBLIC_BASE_PATH;
+    } else {
+      process.env.NEXT_PUBLIC_BASE_PATH = originalEnv;
+    }
+    vi.resetModules();
+  });
+
+  it("uses NEXT_PUBLIC_BASE_PATH when set, overriding config.basePath", async () => {
+    process.env.NEXT_PUBLIC_BASE_PATH = "/porschedigital-technology-radar";
+    vi.resetModules();
+    vi.doMock("@/lib/config", () => ({
+      default: { basePath: "/something-else" },
+    }));
+    const { assetUrl: scopedAssetUrl } = await import("@/lib/utils");
+    expect(scopedAssetUrl("/themes/porsche/background-dark.jpg")).toBe(
+      "/porschedigital-technology-radar/themes/porsche/background-dark.jpg",
+    );
+    vi.doUnmock("@/lib/config");
+  });
+
+  it("treats NEXT_PUBLIC_BASE_PATH='/' as empty so root deploys are unprefixed", async () => {
+    process.env.NEXT_PUBLIC_BASE_PATH = "/";
+    vi.resetModules();
+    vi.doMock("@/lib/config", () => ({
+      default: { basePath: "/should-be-ignored" },
+    }));
+    const { assetUrl: scopedAssetUrl } = await import("@/lib/utils");
+    expect(scopedAssetUrl("/foo")).toBe("/foo");
+    vi.doUnmock("@/lib/config");
+  });
+
+  it("falls back to config.basePath when NEXT_PUBLIC_BASE_PATH is unset", async () => {
+    delete process.env.NEXT_PUBLIC_BASE_PATH;
+    vi.resetModules();
+    vi.doMock("@/lib/config", () => ({
+      default: { basePath: "/from-config" },
+    }));
+    const { assetUrl: scopedAssetUrl } = await import("@/lib/utils");
+    expect(scopedAssetUrl("/foo")).toBe("/from-config/foo");
+    vi.doUnmock("@/lib/config");
+  });
+});
+
 describe("readableTextOn", () => {
   it("returns white ink on dark light-theme segment colors so tooltip text remains legible", () => {
     expect(readableTextOn("#2D7A5C")).toBe("#FFFFFF");

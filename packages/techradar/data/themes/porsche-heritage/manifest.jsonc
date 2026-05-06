@@ -13,8 +13,8 @@
       "dark": "background-dark.svg"
     },
     "opacity": {
-      "light": 0.1,
-      "dark": 0.25
+      "light": 0.4,
+      "dark": 0.55
     }
   },
 

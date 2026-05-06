@@ -1,15 +1,28 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
   <defs>
-    <radialGradient id="g" cx="0.3" cy="0.7" r="0.85">
-      <stop offset="0%" stop-color="#D5001C" stop-opacity="0.28"/>
-      <stop offset="55%" stop-color="#0A0A0E" stop-opacity="0"/>
+    <radialGradient id="glow" cx="0.22" cy="0.78" r="0.95">
+      <stop offset="0%" stop-color="#E63946" stop-opacity="0.55"/>
+      <stop offset="40%" stop-color="#7A1A26" stop-opacity="0.3"/>
+      <stop offset="80%" stop-color="#0A0A0E" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="halo" cx="0.85" cy="0.15" r="0.6">
+      <stop offset="0%" stop-color="#FFD60A" stop-opacity="0.25"/>
+      <stop offset="60%" stop-color="#0A0A0E" stop-opacity="0"/>
     </radialGradient>
   </defs>
   <rect width="1920" height="1080" fill="#0A0A0E"/>
-  <rect width="1920" height="1080" fill="url(#g)"/>
-  <g opacity="0.09">
-    <rect x="1700" y="0" width="3" height="1080" fill="#E63946"/>
-    <rect x="1720" y="0" width="3" height="1080" fill="#FFD60A"/>
-    <rect x="1740" y="0" width="3" height="1080" fill="#3DA0E0"/>
+  <rect width="1920" height="1080" fill="url(#glow)"/>
+  <rect width="1920" height="1080" fill="url(#halo)"/>
+  <g>
+    <rect x="120" y="0" width="32" height="1080" fill="#E63946" fill-opacity="0.7"/>
+    <rect x="172" y="0" width="14" height="1080" fill="#3DA0E0" fill-opacity="0.7"/>
+    <rect x="206" y="0" width="14" height="1080" fill="#FFD60A" fill-opacity="0.7"/>
+    <rect x="240" y="0" width="14" height="1080" fill="#A8C828" fill-opacity="0.7"/>
+  </g>
+  <g>
+    <rect x="1660" y="0" width="14" height="1080" fill="#A8C828" fill-opacity="0.55"/>
+    <rect x="1694" y="0" width="14" height="1080" fill="#FFD60A" fill-opacity="0.55"/>
+    <rect x="1728" y="0" width="14" height="1080" fill="#3DA0E0" fill-opacity="0.55"/>
+    <rect x="1762" y="0" width="32" height="1080" fill="#E63946" fill-opacity="0.55"/>
   </g>
 </svg>

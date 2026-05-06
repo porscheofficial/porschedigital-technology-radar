@@ -127,7 +127,7 @@ All configuration lives in `data/config.json`. Any key you omit falls back to th
 | `baseUrl`           | Full origin (scheme + host) where the radar is hosted, e.g. `https://opensource.porsche.com`. Used for `sitemap.xml`, canonical links, and Open Graph / Twitter meta tags. The runtime env var `NEXT_PUBLIC_BASE_URL` overrides this when set (useful for staging deploys). The `basePath` is appended automatically — do **not** include it here. | `""`    |
 | `editUrl`           | If set, shows an edit button on item pages. Supports `{id}` and `{release}` placeholders. Example: `https://github.dev/org/repo/blob/main/data/radar/{release}/{id}.md` | `"https://github.dev/porscheofficial/porschedigital-technology-radar/blob/main/data/radar/{release}/{id}.md"` |
 | `jsFile`            | Path in `public/` or URL to a custom JavaScript file to include on every page.                     | `""`    |
-| `defaultTheme`      | Identifier of the theme applied on first visit. Must match the `id` of a theme in `data/themes/<id>/manifest.jsonc`. You may optionally pin the initial mode with `theme:light` or `theme:dark`; otherwise dual-mode themes start in `system` mode and single-mode themes use their only supported mode. Visitors can switch theme and mode at runtime via Spotlight, and the selection is persisted in `localStorage`. | `"porsche"` |
+| `defaultTheme`      | Identifier of the theme applied on first visit. Must match the `id` of a theme in `themes/<id>/manifest.jsonc`. The initial mode comes from that manifest's `default` field; you may override it by pinning `theme:light`, `theme:dark`, or `theme:system` (e.g. `"porsche:system"` to follow the OS preference). Visitors can switch theme and mode at runtime via Spotlight, and the selection is persisted in `localStorage`. | `"porsche"` |
 | `imprint`           | URL to your legal information / imprint page.                                                      | `""` |
 
 </details>
@@ -234,7 +234,9 @@ An array of social link objects shown in the footer.
 ### Theming
 
 The Radar now uses a folder-per-theme architecture where each theme declares the
-supported modes inside `data/themes/<theme>/manifest.jsonc`.
+supported modes inside `themes/<theme>/manifest.jsonc`. Consumer themes live at
+the top of the project (sibling of `radar/`); built-in themes shipped with the
+package are scaffolded there on `npx techradar init`.
 
 - `supports: ["light", "dark"]` enables the header sun/moon toggle and the
   Spotlight `Mode:` actions.
@@ -244,7 +246,7 @@ supported modes inside `data/themes/<theme>/manifest.jsonc`.
 - Theme selection is persisted in `localStorage` under `techradar-theme`.
 
 There is no migration CLI for the old flat `colorScheme` schema. Rewrite legacy
-`manifest.jsonc` files by hand using `data/themes/.example/`.
+`manifest.jsonc` files by hand using `themes/.example/`.
 
 #### Theme assets
 

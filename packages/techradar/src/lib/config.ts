@@ -40,17 +40,21 @@ if (userConfig.quadrants !== undefined && userConfig.segments === undefined) {
 }
 
 // T14/T18: Legacy key detection — BREAKING change.
-// These keys were removed in favour of the data/themes/ folder system.
+// These keys were removed in favour of the themes/ folder system.
 const VERSION = packageJson.version;
 const LEGACY_ROOT_KEYS = [
   "colors",
   "backgroundImage",
   "backgroundOpacity",
 ] as const;
+const MIGRATION_HINT =
+  "Define colors in a theme file under themes/<id>/manifest.jsonc instead. " +
+  "See MIGRATION.md (Section 'v1 → v2') for the field-by-field mapping.";
+
 for (const key of LEGACY_ROOT_KEYS) {
   if (key in userConfig) {
     throw new Error(
-      `config.json: '${key}' is no longer supported in v${VERSION}. Define colors in a theme file under data/themes/ instead.`,
+      `config.json: '${key}' is no longer supported in v${VERSION}. ${MIGRATION_HINT}`,
     );
   }
 }
@@ -60,7 +64,7 @@ if (
   )
 ) {
   throw new Error(
-    `config.json: 'segments[].color' is no longer supported in v${VERSION}. Define colors in a theme file under data/themes/ instead.`,
+    `config.json: 'segments[].color' is no longer supported in v${VERSION}. ${MIGRATION_HINT}`,
   );
 }
 if (
@@ -69,7 +73,7 @@ if (
   )
 ) {
   throw new Error(
-    `config.json: 'rings[].color' is no longer supported in v${VERSION}. Define colors in a theme file under data/themes/ instead.`,
+    `config.json: 'rings[].color' is no longer supported in v${VERSION}. ${MIGRATION_HINT}`,
   );
 }
 
@@ -80,7 +84,9 @@ if (
   config.defaultTheme.length === 0
 ) {
   throw new Error(
-    "config.json: 'defaultTheme' is required and must be a non-empty string identifying a theme under data/themes/. It may optionally include ':light' or ':dark'.",
+    "config.json: 'defaultTheme' is required and must be a non-empty string identifying a theme under themes/<id>/. " +
+      "It may optionally include ':light' or ':dark' to pin the initial mode (e.g. 'acme:dark'). " +
+      "See MIGRATION.md (Section 'v1 → v2', step 1) for picking a theme id.",
   );
 }
 

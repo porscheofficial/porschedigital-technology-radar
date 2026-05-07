@@ -4,6 +4,46 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.1.0](https://github.com/porscheofficial/porschedigital-technology-radar/compare/porschedigital-technology-radar-v2.0.2...porschedigital-technology-radar-v2.1.0) (2026-05-07)
+
+
+### Features
+
+* **harness:** add bundle-budget regression sensor ([a416570](https://github.com/porscheofficial/porschedigital-technology-radar/commit/a4165709f26148cbb75f515e5f56d98d6c4b72c7))
+* **harness:** add version-literal drift sensor ([e0d65b0](https://github.com/porscheofficial/porschedigital-technology-radar/commit/e0d65b0bf20aafe316ece0cfe21b0e085837ece5))
+* **techradar:** add demo animation recorder for README ([e625969](https://github.com/porscheofficial/porschedigital-technology-radar/commit/e625969d9f179159ed66ad214e749737e2734b22))
+* **techradar:** add v1 to v2 migration tooling ([ef40b93](https://github.com/porscheofficial/porschedigital-technology-radar/commit/ef40b93951e13bad826b314c4fd9f630c9a42b98))
+
+
+### Bug Fixes
+
+* **create-techradar:** add pnpm.onlyBuiltDependencies to scaffolded app ([b74c37b](https://github.com/porscheofficial/porschedigital-technology-radar/commit/b74c37baef6824179f4093a4441dfadadd354feb))
+* **deps:** remove deprecated hast@1 runtime dep, types served by @types/hast ([1eb0195](https://github.com/porscheofficial/porschedigital-technology-radar/commit/1eb019547acabd076384eea7b5a7338faa1d2915))
+* **harness:** move bundle-budget sensor to check:build phase ([b74c37b](https://github.com/porscheofficial/porschedigital-technology-radar/commit/b74c37baef6824179f4093a4441dfadadd354feb))
+* **harness:** recurse subdirs in bundle-budget chunk scan ([78ce2ee](https://github.com/porscheofficial/porschedigital-technology-radar/commit/78ce2ee84f1b2d89596539bbb0684217b5c42192))
+* **techradar:** bootstrap data on install for fresh clones ([673b007](https://github.com/porscheofficial/porschedigital-technology-radar/commit/673b00783a7963285dff7be2143115beed558eee))
+* **techradar:** collapse stat-then-read in demo recorder static server ([ca30976](https://github.com/porscheofficial/porschedigital-technology-radar/commit/ca30976638d03e20ee58457387cadc82edb6e502))
+* **techradar:** exclude recordDemo.ts from package typecheck ([6741692](https://github.com/porscheofficial/porschedigital-technology-radar/commit/6741692558e045dbc1e468054f8b145d5ed66d38))
+* **techradar:** exclude recordDemo.ts from TypeScript compilation ([68506f5](https://github.com/porscheofficial/porschedigital-technology-radar/commit/68506f59df5f6ca83eb96754875ffbfaf8a5e89b))
+* **techradar:** exclude scripts/record*.ts from shadow tsconfig in techradar build ([c37e913](https://github.com/porscheofficial/porschedigital-technology-radar/commit/c37e913ce364841d2958e54a7cbba7d7a445d7e0))
+* **techradar:** improve deprecation warning for quadrants shim ([1451829](https://github.com/porscheofficial/porschedigital-technology-radar/commit/14518297040372ef9421e4e03110adbfb710256f))
+* **techradar:** improve MobileSegmentNav layout and show ring counts ([8e7b098](https://github.com/porscheofficial/porschedigital-technology-radar/commit/8e7b09851ac457ea24a79248a293ed18c26f0f3f))
+* **techradar:** make SpotlightSearch usable on touch devices ([0d341cb](https://github.com/porscheofficial/porschedigital-technology-radar/commit/0d341cb8a3b12075394ce16d9fcbdf8144814f55))
+* **techradar:** suppress sonarjs/todo-tag on v7.0.0 shim comment ([1e7ad53](https://github.com/porscheofficial/porschedigital-technology-radar/commit/1e7ad533b906ae9b7154eed170e5deacb1329e16))
+* **techradar:** update scanner test spy to use consola after logging refactor ([326de53](https://github.com/porscheofficial/porschedigital-technology-radar/commit/326de53c51052cd0a796e3553f75265ce113ec97))
+
+
+### Code Refactoring
+
+* **techradar:** extract typed getThemes loader ([703b690](https://github.com/porscheofficial/porschedigital-technology-radar/commit/703b6901bf26d2a12f675c0a8f5b01d856721db4))
+* **techradar:** replace dangerouslySetInnerHTML in _document ([83ce45f](https://github.com/porscheofficial/porschedigital-technology-radar/commit/83ce45f150a4bbf56cd511a2881eb90273e814ae))
+* **techradar:** standardize script logging on consola ([3ec6bdc](https://github.com/porscheofficial/porschedigital-technology-radar/commit/3ec6bdc7b55ce5e729d0e8394165502e6bec99bc))
+
+
+### Build System
+
+* **techradar:** bump CSS budget to 76 KB for mobile spotlight + nav styles ([26c5cdb](https://github.com/porscheofficial/porschedigital-technology-radar/commit/26c5cdb9b923ac7395d1feb82853ea4e3080ace9))
+
 ## [2.0.2](https://github.com/porscheofficial/porschedigital-technology-radar/compare/porschedigital-technology-radar-v2.0.1...porschedigital-technology-radar-v2.0.2) (2026-05-06)
 
 

@@ -111,7 +111,6 @@
     "cmdk": "^1.1.1",
     "consola": "^3.4.2",
     "execa": "^9.6.1",
-    "hast": "^1.0.0",
     "html-react-parser": "^6.0.1",
     "jsonc-parser": "^3.3.1",
     "next": "^16.2.3",

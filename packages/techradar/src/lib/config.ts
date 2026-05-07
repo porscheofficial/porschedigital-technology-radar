@@ -23,6 +23,7 @@ type UserConfig = DeepPartial<Config> & {
 const userConfig = _userConfig as UserConfig;
 
 // ADR-0028: Rename quadrant to segment.
+// TODO(v7.0.0): remove this shim — see ADR-0028
 // This shim MUST run at module top-level (synchronously) because consumers
 // like scripts/validateFrontmatter.ts read config.segments at their own module load time.
 if (userConfig.quadrants !== undefined && userConfig.segments === undefined) {
@@ -30,7 +31,7 @@ if (userConfig.quadrants !== undefined && userConfig.segments === undefined) {
     userConfig.quadrants as unknown as DeepPartial<Segment>[];
   delete userConfig.quadrants;
   console.warn(
-    '[deprecated] config key "quadrants" is renamed to "segments". Please update your config.json.',
+    "[techradar] 'quadrants' is deprecated and will be removed in v7.0.0. Use 'segments' instead. See ADR-0028.",
   );
 } else if (
   userConfig.quadrants !== undefined &&

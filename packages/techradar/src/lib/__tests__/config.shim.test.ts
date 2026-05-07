@@ -79,7 +79,7 @@ describe("config back-compat shim", () => {
     expect((config as Record<string, unknown>).quadrants).toBeUndefined();
     expect(console.warn).toHaveBeenCalledTimes(1);
     expect(console.warn).toHaveBeenCalledWith(
-      '[deprecated] config key "quadrants" is renamed to "segments". Please update your config.json.',
+      "[techradar] 'quadrants' is deprecated and will be removed in v7.0.0. Use 'segments' instead. See ADR-0028.",
     );
   });
 

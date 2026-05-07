@@ -5,7 +5,7 @@
 A **100% statically exported** Next.js site that visualizes the Porsche Digital technology radar. No server, no API calls, no runtime data fetching. Everything is baked at build time.
 
 - **Framework**: Next.js 16 (Pages Router, NOT App Router)
-- **UI**: React 19, TypeScript 5, SCSS Modules, Porsche Design System (PDS)
+- **UI**: React 19, TypeScript 6, SCSS Modules, Porsche Design System (PDS)
 - **Output**: `next build` produces a flat static site in `out/` for GitHub Pages
 - **Linter/Formatter**: Biome (replaces ESLint + Prettier)
 - **Tests**: Vitest + React Testing Library

@@ -31,11 +31,9 @@ function runSensor(args: string[] = []): { code: number; output: string } {
 }
 
 function writeChunk(name: string, content: string): void {
-  writeFileSync(
-    path.join(workdir, ".next/static/chunks", name),
-    content,
-    "utf8",
-  );
+  const fullPath = path.join(workdir, ".next/static/chunks", name);
+  mkdirSync(path.dirname(fullPath), { recursive: true });
+  writeFileSync(fullPath, content, "utf8");
 }
 
 function gzipBytesFor(value: string): number {
@@ -98,5 +96,35 @@ describe("check-bundle-budget sensor", () => {
 
     expect(result.code).toBe(0);
     expect(baseline.totalGzipBytes).toBeGreaterThan(1);
+  });
+
+  it("includes chunks in subdirectories (pages/, polyfills/) in the total", () => {
+    writeChunk("main.js", "console.log('top');");
+    writeChunk("pages/index.js", "console.log('page');");
+    writeChunk("polyfills/polyfill.js", "console.log('poly');");
+
+    const topLevelOnly = gzipBytesFor("console.log('top');");
+    writeFileSync(
+      path.join(workdir, ".bundle-baseline.json"),
+      `${JSON.stringify({ totalGzipBytes: topLevelOnly * 10 }, null, 2)}\n`,
+      "utf8",
+    );
+
+    const passResult = runSensor();
+    expect(passResult.code).toBe(0);
+
+    const total =
+      gzipBytesFor("console.log('top');") +
+      gzipBytesFor("console.log('page');") +
+      gzipBytesFor("console.log('poly');");
+    writeFileSync(
+      path.join(workdir, ".bundle-baseline.json"),
+      `${JSON.stringify({ totalGzipBytes: Math.floor(total * 0.9) }, null, 2)}\n`,
+      "utf8",
+    );
+
+    const regressResult = runSensor();
+    expect(regressResult.code).toBe(1);
+    expect(regressResult.output).toContain("REGRESSION:");
   });
 });

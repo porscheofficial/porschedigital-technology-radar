@@ -81,6 +81,11 @@ Adding a new script: if it operates on workspace-wide artifacts
 a package's own files it belongs in that package's `package.json` and
 should be exposed at root only via `pnpm -r --if-present run …`.
 
+## Git hooks
+
+- **pre-commit**: lint-staged (Biome) + `check:sec:sanitize`
+- **pre-push**: `pnpm run check:quality`
+
 ## Commits
 
 Use conventional commits. When a scope is present, it must be one of:

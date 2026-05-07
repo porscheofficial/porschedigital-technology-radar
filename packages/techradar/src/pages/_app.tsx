@@ -8,15 +8,14 @@ import config from "@/lib/config";
 import { getJsUrl } from "@/lib/data";
 import { RadarHighlightProvider } from "@/lib/RadarHighlightContext";
 import { ThemeProvider } from "@/lib/ThemeContext";
-import type { ThemeManifest } from "@/lib/theme/schema";
+import { getThemes } from "@/lib/themeManifest";
 import "@porsche-design-system/components-react/index.css";
 import "@/styles/_globals.scss";
 import "@/styles/_hljs.css";
 import "@/styles/custom.scss";
 import { PorscheDesignSystemProvider } from "@porsche-design-system/components-react/ssr";
-import rawThemes from "../../data/themes.generated.json";
 
-const themes = rawThemes as unknown as ThemeManifest[];
+const themes = getThemes();
 
 export type CustomPage<P = Record<string, never>, InitialProps = P> = NextPage<
   P,

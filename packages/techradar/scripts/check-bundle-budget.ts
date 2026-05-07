@@ -34,10 +34,16 @@ function writeBaseline(filePath: string, totalGzipBytes: number): void {
 }
 
 function getChunkPaths(directory: string): string[] {
-  return readdirSync(directory, { withFileTypes: true })
-    .filter((entry) => entry.isFile() && entry.name.endsWith(".js"))
-    .map((entry) => path.join(directory, entry.name))
-    .sort();
+  const results: string[] = [];
+  for (const entry of readdirSync(directory, { withFileTypes: true })) {
+    const fullPath = path.join(directory, entry.name);
+    if (entry.isDirectory()) {
+      results.push(...getChunkPaths(fullPath));
+    } else if (entry.isFile() && entry.name.endsWith(".js")) {
+      results.push(fullPath);
+    }
+  }
+  return results.sort();
 }
 
 function getTotalGzipBytes(directory: string): number {

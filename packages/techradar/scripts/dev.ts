@@ -1,6 +1,7 @@
 import { spawn } from "node:child_process";
 import path from "node:path";
 import { watch } from "chokidar";
+import consola from "consola";
 import { buildThemes, THEMES_SOURCE_DIR } from "./buildThemes";
 
 const DEBOUNCE_MS = 100;
@@ -25,9 +26,9 @@ async function main(): Promise<void> {
     clearTimeout(timer);
     timer = setTimeout(() => {
       const rel = path.relative(THEMES_SOURCE_DIR, changedPath);
-      console.log(`[dev] theme change: ${rel}, rebuilding themes…`);
+      consola.info(`[dev] theme change: ${rel}, rebuilding themes…`);
       buildThemes().catch((err) => {
-        console.error("[dev] theme rebuild failed:", err);
+        consola.error("[dev] theme rebuild failed:", err);
       });
     }, DEBOUNCE_MS);
   };
@@ -49,6 +50,6 @@ async function main(): Promise<void> {
 }
 
 main().catch((err) => {
-  console.error(err);
+  consola.error(err);
   process.exit(1);
 });

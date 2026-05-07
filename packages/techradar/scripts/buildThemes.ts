@@ -4,6 +4,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import consola from "consola";
 import config from "@/lib/config";
 import {
   normalizeThemePreferenceMode,
@@ -66,7 +67,7 @@ export async function buildThemes(): Promise<void> {
 
   fs.mkdirSync(path.dirname(OUTPUT_PATH), { recursive: true });
   fs.writeFileSync(OUTPUT_PATH, JSON.stringify(themes, null, 2), "utf-8");
-  console.log(
+  consola.info(
     `[build:themes] Written ${themes.length} theme(s) to data/themes.generated.json`,
   );
 }
@@ -105,7 +106,7 @@ function validateDefaultTheme(
 }
 
 main().catch((err) => {
-  console.error(err);
+  consola.error(err);
   process.exit(1);
 });
 

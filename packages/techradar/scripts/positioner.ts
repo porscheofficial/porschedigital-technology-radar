@@ -1,3 +1,4 @@
+import consola from "consola";
 import type { Ring, Segment } from "@/lib/types";
 
 type Position = [x: number, y: number];
@@ -87,7 +88,7 @@ export default class Positioner {
     );
 
     if (tries >= MAX_PLACEMENT_ATTEMPTS) {
-      console.warn(
+      consola.warn(
         `Could not find a non-overlapping position for ${segmentId} in ring ${ringId}`,
       );
     }

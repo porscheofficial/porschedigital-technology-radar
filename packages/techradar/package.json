@@ -1,6 +1,6 @@
 {
   "name": "@porscheofficial/porschedigital-technology-radar",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "description": "Static site generator for building and publishing your own Technology Radar.",
   "keywords": [
     "technology-radar",
@@ -82,7 +82,6 @@
     "check:quality:sonar": "eslint --config sonar.eslint.config.mjs src scripts bin",
     "check:quality:coverage": "vitest run --coverage",
     "check:quality:spell": "cspell --no-progress --no-summary --no-must-find-files '**/*.md'",
-
     "check:a11y": "pnpm run check:a11y:source && pnpm run check:a11y:axe",
     "check:a11y:source": "eslint --config a11y.eslint.config.mjs src",
     "check:a11y:axe": "tsx scripts/checkA11y.ts",

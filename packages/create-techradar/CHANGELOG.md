@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.2](https://github.com/porscheofficial/porschedigital-technology-radar/compare/create-techradar-v1.0.1...create-techradar-v1.0.2) (2026-05-07)
+
+
+### Bug Fixes
+
+* **create-techradar:** add pnpm.onlyBuiltDependencies to scaffolded app ([b74c37b](https://github.com/porscheofficial/porschedigital-technology-radar/commit/b74c37baef6824179f4093a4441dfadadd354feb))
+* **create-techradar:** write pnpm-workspace.yaml with allowBuilds for v10.26+ ([c350c3e](https://github.com/porscheofficial/porschedigital-technology-radar/commit/c350c3e0ce760f350c0ce532db34a3bebde4786b))
+* **harness:** move bundle-budget sensor to check:build phase ([b74c37b](https://github.com/porscheofficial/porschedigital-technology-radar/commit/b74c37baef6824179f4093a4441dfadadd354feb))
+
 ## [1.0.1](https://github.com/porscheofficial/porschedigital-technology-radar/compare/create-techradar-v1.0.0...create-techradar-v1.0.1) (2026-05-06)
 
 

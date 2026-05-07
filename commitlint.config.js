@@ -4,7 +4,17 @@ module.exports = {
     "scope-enum": [
       2,
       "always",
-      ["techradar", "create-techradar", "deps", "release"],
+      [
+        "techradar",
+        "create-techradar",
+        "deps",
+        "release",
+        "docs",
+        "ci",
+        "harness",
+        "chore",
+        "commitlint",
+      ],
     ],
     "type-enum": [
       2,
@@ -22,6 +32,7 @@ module.exports = {
         "cd",
         "build",
         "doc",
+        "docs",
         "perf",
         "chore",
         "update",

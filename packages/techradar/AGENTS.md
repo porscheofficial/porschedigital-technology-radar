@@ -290,6 +290,10 @@ If the harness gains an inferential sensor (skill, LLM judge), update Section 7 
 Conventional commits enforced by commitlint. Allowed types:
 `feat`, `sec`, `fix`, `bug`, `test`, `refactor`, `rework`, `ops`, `ci`, `cd`, `build`, `doc`, `perf`, `chore`, `update`
 
+### Security exemptions
+
+`src/pages/_document.tsx` may keep the one `THEME_INIT_SCRIPT` inline injection: it runs pre-hydration to prevent theme FOUC, is sourced from an in-file constant, and must keep the adjacent Biome exemption comment.
+
 ### Components
 
 - One component per folder: `ComponentName/ComponentName.tsx` + `ComponentName.module.scss`

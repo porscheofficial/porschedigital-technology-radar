@@ -145,7 +145,13 @@ export default function Document() {
         <link rel="icon" type="image/svg+xml" href={assetUrl("/favicon.svg")} />
         <link rel="icon" sizes="any" href={assetUrl("/favicon.ico")} />
         <style id="theme-vars">{themeStyleBlock}</style>
-        {/* biome-ignore lint/security/noDangerouslySetInnerHtml: intentional blocking theme-init script — string literal, no user data */}
+        {/*
+          Security exemption: this blocking inline script must run before
+          hydration to prevent theme FOUC, its source is the in-file constant
+          THEME_INIT_SCRIPT, and it never includes user-controlled input. Keep
+          the biome-ignore below with this exemption.
+        */}
+        {/* biome-ignore lint/security/noDangerouslySetInnerHtml: pre-hydration theme init exemption; THEME_INIT_SCRIPT is an in-file constant with no user input */}
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </Head>
       <body>

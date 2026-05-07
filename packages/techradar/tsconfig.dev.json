@@ -7,5 +7,10 @@
     ".next-dev/types/**/*.ts",
     ".next-dev/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules", ".next", ".next-dev/cache"]
+  "exclude": [
+    "node_modules",
+    ".next",
+    ".next-dev/cache",
+    "scripts/recordDemo.ts"
+  ]
 }

@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import consola from "consola";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { scanThemes } from "../scanner";
 
@@ -90,7 +91,7 @@ describe("scanThemes", () => {
         label: "Consumer",
       });
 
-      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+      const warnSpy = vi.spyOn(consola, "warn").mockImplementation(() => {});
       const result = scanThemes({
         ...BASE_OPTS,
         builtinDir: tmpDir,

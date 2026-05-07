@@ -283,6 +283,10 @@ The rule for this project: **when a violation slips past every sensor and a huma
 
 ## 9. Quick reference
 
+### CI Bootstrap
+
+`.github/workflows/ci.yml` includes `bootstrap-fresh-clone`, a no-cache Ubuntu/Node 22 + pnpm job that proves a brand-new clone can `pnpm install`, test, and build the framework package without a manual `build:data` step.
+
 ```bash
 pnpm run check:arch          # source-only sensors (~3s)
   ├─ check:arch:depcruise   # import graph

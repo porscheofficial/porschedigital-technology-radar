@@ -119,7 +119,7 @@ guard that mirrors staged blobs into a tmpdir and scans them with
 
 ## 3. The invariant buckets
 
-The regulator's variety. Each row is one architectural property the harness preserves; the columns show which sensor enforces it, which doc teaches it, and which phase introduced it. Twenty-nine buckets and counting — every time review catches a new class of issue, a row is added (see § 8).
+The regulator's variety. Each row is one architectural property the harness preserves; the columns show which sensor enforces it, which doc teaches it, and which phase introduced it. Thirty buckets and counting — every time review catches a new class of issue, a row is added (see § 8).
 
 | #  | Invariant                                              | Feedback sensor                                                                 | Feedforward doc            | Phase |
 |----|--------------------------------------------------------|----------------------------------------------------------------------------------|----------------------------|-------|

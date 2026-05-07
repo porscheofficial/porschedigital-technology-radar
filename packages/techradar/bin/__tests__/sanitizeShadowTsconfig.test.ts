@@ -12,6 +12,7 @@ describe("sanitizeShadowTsconfig", () => {
     expect(result.exclude).toContain("node_modules");
     expect(result.exclude).toContain("scripts/check*.ts");
     expect(result.exclude).toContain("scripts/preCommit*.ts");
+    expect(result.exclude).toContain("scripts/record*.ts");
     expect(result.exclude).toContain("scripts/__tests__/**");
     expect(result.exclude).toContain("src/**/__tests__/**");
     expect(result.exclude).toContain("src/**/*.test.ts");

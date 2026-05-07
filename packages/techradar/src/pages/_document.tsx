@@ -15,10 +15,10 @@ import {
   type ThemeManifest,
   type ThemeModeValue,
 } from "@/lib/theme/schema";
+import { getThemes } from "@/lib/themeManifest";
 import { assetUrl, readableTextOn } from "@/lib/utils";
-import rawThemes from "../../data/themes.generated.json";
 
-const themes = rawThemes as unknown as ThemeManifest[];
+const themes = getThemes();
 const defaultTheme = getDefaultTheme(themes, config.defaultTheme);
 const defaultThemeId = defaultTheme.id;
 const defaultMode = getDefaultMode(defaultTheme, config.defaultTheme);

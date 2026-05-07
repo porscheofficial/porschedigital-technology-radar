@@ -61,6 +61,7 @@ flowchart LR
             S5["architecture.test.ts<br/>(vitest, fs invariants)"]
             S6["check:arch:wikilinks<br/>(scripts/checkWikiLinks.ts)"]
             S7["check:arch:adr<br/>(scripts/checkAdrUnique.ts)"]
+            S8["check:arch:version-literals<br/>(scripts/check-version-literals.ts)"]
         end
         subgraph BUILD["Build-output (pnpm run check:build)"]
             B1["check:build:routes<br/>(scripts/checkBuildOutput.ts)"]
@@ -117,7 +118,7 @@ guard that mirrors staged blobs into a tmpdir and scans them with
 
 ## 3. The invariant buckets
 
-The regulator's variety. Each row is one architectural property the harness preserves; the columns show which sensor enforces it, which doc teaches it, and which phase introduced it. Twenty-six buckets and counting — every time review catches a new class of issue, a row is added (see § 8).
+The regulator's variety. Each row is one architectural property the harness preserves; the columns show which sensor enforces it, which doc teaches it, and which phase introduced it. Twenty-nine buckets and counting — every time review catches a new class of issue, a row is added (see § 8).
 
 | #  | Invariant                                              | Feedback sensor                                                                 | Feedforward doc            | Phase |
 |----|--------------------------------------------------------|----------------------------------------------------------------------------------|----------------------------|-------|
@@ -149,6 +150,7 @@ The regulator's variety. Each row is one architectural property the harness pres
 | 26 | No serious/critical axe violations in built HTML       | `check:a11y:axe` (`scripts/checkA11y.ts`, axe-core via jsdom)                   | `AGENTS.md` (package)      | 8     |
 | 27 | ADR file numbers in `docs/decisions/` are unique and match their `# ADR-NNNN` heading | `check:arch:adr` (`scripts/checkAdrUnique.ts`) | `../../docs/decisions/README.md` (workspace root) | 9     |
 | 28 | No Node.js built-ins leaked into client JS chunks      | `check:build:no-node-builtins` (`scripts/checkNoNodeBuiltins.ts`)               | `AGENTS.md` (package)      | 9     |
+| 29 | Allowlisted `@porscheofficial/<name>@<version>` literals stay aligned with each package's canonical version | `check:arch:version-literals` (`scripts/check-version-literals.ts`) | `AGENTS.md` (package) | 10    |
 
 **Notes on #12** — catches two failure modes at once: helper duplication across components (e.g. multiple components copy-pasting `stripHtml` instead of importing the canonical `@/lib/format` version) and component files accreting non-component logic. The fix is one of three: move pure helpers to `src/lib/`, convert JSX-returning helpers to PascalCase sub-components, or inline single-use render helpers as `const` arrows inside the component body.
 
@@ -175,6 +177,8 @@ The regulator's variety. Each row is one architectural property the harness pres
 **Notes on #25–#26** — the accessibility arm. #25 catches JSX-level a11y patterns at edit time (alt text, focusable interactive roles, click handlers without keyboard handlers). It loads through a *dedicated* flat config `a11y.eslint.config.mjs`, mirroring the SonarJS split (#19) so a11y findings stay separate from architectural-ban findings. #26 runs the same `axe-core` engine that DevTools and Pa11y wrap, but in-process via JSDOM against `out/**/*.html` — no real browser, no server, no Playwright. Failure policy is **serious + critical only**; minor/moderate findings surface as info (anti-aspirational, same principle as #17 jscpd threshold and #23 coverage floors). Disabled rules are documented inline in `scripts/checkA11y.ts` and split into two buckets: browser-only signals jsdom cannot provide (`color-contrast`, `target-size`, `scrollable-region-focusable`) and pre-hydration noise from PDS web-component shells (`landmark-one-main`, `region`, `page-has-heading-one`, `aria-required-parent`, plus framework-emitted not-found pages for `html-has-lang`, plus the radar SVG's intentional nested-interactive structure). The remaining axe rule set works fine on pre-hydration HTML — the WCAG cluster ADR-0014 deferred to "a future a11y arm" lands here. See ADR-0018.
 
 Plus framework-aware lints from `@next/eslint-plugin-next` (recommended set, with `no-img-element` and `no-html-link-for-pages` disabled per ADRs / our `assetUrl()` convention — see `eslint.config.mjs` header).
+
+**Notes on #29** — this source-only drift guard closes the release-please gap called out in `packages/techradar/AGENTS.md`: `package.json.version` is the only field release-please updates automatically because `release-please-config.json` currently keeps `extra-files` empty. The sensor reads the canonical `name` + `version` from both workspace package manifests, scans every configured `extra-files` path plus a tiny hardcoded allowlist (including a scratch path for forced-failure verification), and fails with a `DRIFT:` diagnostic if an embedded `@porscheofficial/<name>@<version>` literal disagrees. Today it usually exits 0 with an informational message because ADR-0013 Amendment 2 removed the live literal; that no-op state is intentional future-proofing, not dead code. In practice, `pnpm run check:arch` now treats this as the last source-only arm: if a future script or doc reintroduces a pinned package literal, the harness catches the next release bump before it silently ships stale text.
 
 A non-gating advisory workflow — **OpenSSF Scorecard** (`.github/workflows/scorecard.yml`) — runs weekly and uploads SARIF to GitHub's code-scanning UI. Findings are a posture metric, not a blocking check.
 
@@ -286,7 +290,8 @@ pnpm run check:arch          # source-only sensors (~3s)
   ├─ check:arch:readme      # config ↔ README
   ├─ check:arch:doccoverage # AGENTS.md (Checked: …) refs resolve
   ├─ check:arch:wikilinks   # data/radar/**/*.md [[id]] refs resolve
-  └─ check:arch:adr         # docs/decisions/ ADR numbers unique + heading matches
+  ├─ check:arch:adr         # docs/decisions/ ADR numbers unique + heading matches
+  └─ check:arch:version-literals # allowlisted package-version literals do not drift
 
 pnpm run check:sec           # security sensors
   ├─ check:sec:sanitize     # rehype-sanitize wired in buildData.ts

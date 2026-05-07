@@ -59,3 +59,41 @@ jobs:
       - run: pnpm install
       - run: pnpm --filter @porscheofficial/porschedigital-technology-radar test
       - run: pnpm --filter @porscheofficial/porschedigital-technology-radar build
+
+  scaffolder-e2e:
+    name: Scaffolder to framework e2e
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      # Pinned to commit SHA per OpenSSF Scorecard PinnedDependenciesID.
+      # See ADR-0017.
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: 22
+      - uses: pnpm/action-setup@903f9c1a6ebcba6cf41d87230be49611ac97822e # v6.0.3
+      - run: pnpm install
+      - run: pnpm --filter @porscheofficial/porschedigital-technology-radar run build:bin
+      - run: pnpm --filter @porscheofficial/create-techradar run build
+      - run: pnpm --filter @porscheofficial/create-techradar pack --pack-destination "$RUNNER_TEMP/create-techradar-pack"
+      - name: Scaffold app and run full pipeline
+        shell: bash
+        run: |
+          set -euo pipefail
+          sandbox="$(mktemp -d "$RUNNER_TEMP/scaffolder-e2e-XXXXXX")"
+          cd "$sandbox"
+          export npm_config_user_agent="pnpm/10.29.2 npm/? node/v22.21.1 linux x64"
+          pnpm dlx "$RUNNER_TEMP/create-techradar-pack/"*.tgz test-app --yes
+          cd test-app
+          pnpm add "link:$GITHUB_WORKSPACE/packages/techradar"
+          node <<'EOF'
+          const fs = require("node:fs");
+          const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
+          pkg.scripts["build:data"] = "techradar validate";
+          fs.writeFileSync("package.json", `${JSON.stringify(pkg, null, 2)}\n`);
+          EOF
+          pnpm install
+          pnpm run build:data
+          rm -f .techradar/tsup.config.ts .techradar/vitest.config.ts
+          pnpm run build

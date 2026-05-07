@@ -75,6 +75,12 @@ export function buildPackageJson(
     dependencies: {
       [inputs.frameworkPackage]: inputs.frameworkVersionRange,
     },
+    pnpm: {
+      // pnpm v10+ blocks native addon build scripts by default.
+      // Approve the packages that Next.js requires so `pnpm install` succeeds
+      // out of the box without manual `pnpm approve-builds`.
+      onlyBuiltDependencies: ["@parcel/watcher", "esbuild", "sharp"],
+    },
   };
 }
 

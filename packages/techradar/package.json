@@ -87,7 +87,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "prepare": "pnpm run build:icons && pnpm run build:bin"
+    "prepare": "pnpm run build:icons && pnpm run build:bin",
+    "postinstall": "node -e \"process.exit(require('node:fs').existsSync('data/data.json') ? 0 : 1)\" || pnpm run build:data"
   },
   "dependencies": {
     "@11ty/gray-matter": "^2.0.1",

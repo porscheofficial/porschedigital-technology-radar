@@ -114,3 +114,24 @@ export function writeReadme(targetDir: string, projectName: string): void {
     "utf8",
   );
 }
+
+export function buildPnpmWorkspace(): string {
+  return [
+    "# pnpm v10.26+ reads build-script approvals from this file.",
+    "# The three packages below are native addons required by Next.js.",
+    "# There are no workspace member packages — this is a standalone project.",
+    "allowBuilds:",
+    '  "@parcel/watcher": true',
+    "  esbuild: true",
+    "  sharp: true",
+    "",
+  ].join("\n");
+}
+
+export function writePnpmWorkspace(targetDir: string): void {
+  writeFileSync(
+    resolve(targetDir, "pnpm-workspace.yaml"),
+    buildPnpmWorkspace(),
+    "utf8",
+  );
+}

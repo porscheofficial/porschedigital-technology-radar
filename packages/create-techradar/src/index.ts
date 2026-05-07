@@ -4,7 +4,12 @@ import { ScaffoldError } from "./errors.ts";
 import { detectPackageManager, type PackageManager } from "./packageManager.ts";
 import { fetchLatestVersion } from "./registry.ts";
 import { runGitInit, runInstall, runTechradarInit } from "./runners.ts";
-import { resolveTargetDir, writePackageJson, writeReadme } from "./scaffold.ts";
+import {
+  resolveTargetDir,
+  writePackageJson,
+  writePnpmWorkspace,
+  writeReadme,
+} from "./scaffold.ts";
 
 export const FRAMEWORK_PACKAGE =
   "@porscheofficial/porschedigital-technology-radar";
@@ -43,12 +48,13 @@ export async function runCreateTechradar(
       `Resolved ${FRAMEWORK_PACKAGE}@${latest} (pinning ${versionRange})`,
     );
 
-    consola.start("Writing package.json and README.md");
+    consola.start("Writing package.json, pnpm-workspace.yaml and README.md");
     writePackageJson(target.absolutePath, {
       projectName: target.projectName,
       frameworkPackage: FRAMEWORK_PACKAGE,
       frameworkVersionRange: versionRange,
     });
+    writePnpmWorkspace(target.absolutePath);
     writeReadme(target.absolutePath, target.projectName);
 
     consola.start(`Installing dependencies with ${pm}`);

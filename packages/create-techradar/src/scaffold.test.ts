@@ -13,11 +13,13 @@ import { afterEach, beforeEach, describe, it } from "node:test";
 import { ScaffoldError } from "./errors.ts";
 import {
   buildPackageJson,
+  buildPnpmWorkspace,
   buildReadme,
   deriveProjectName,
   isDirectoryUsable,
   resolveTargetDir,
   writePackageJson,
+  writePnpmWorkspace,
   writeReadme,
 } from "./scaffold.ts";
 
@@ -200,6 +202,24 @@ describe("scaffold helpers", () => {
     });
   });
 
+  describe("buildPnpmWorkspace", () => {
+    it("approves @parcel/watcher", () => {
+      assert.match(buildPnpmWorkspace(), /"@parcel\/watcher": true/);
+    });
+
+    it("approves esbuild", () => {
+      assert.match(buildPnpmWorkspace(), /esbuild: true/);
+    });
+
+    it("approves sharp", () => {
+      assert.match(buildPnpmWorkspace(), /sharp: true/);
+    });
+
+    it("ends with a trailing newline", () => {
+      assert.ok(buildPnpmWorkspace().endsWith("\n"));
+    });
+  });
+
   describe("writePackageJson + writeReadme", () => {
     it("writes package.json with trailing newline", () => {
       writePackageJson(workspace, {
@@ -217,6 +237,15 @@ describe("scaffold helpers", () => {
       const readme = readFileSync(join(workspace, "README.md"), "utf8");
       assert.match(readme, /^# demo/);
       assert.equal(readme, buildReadme("demo"));
+    });
+
+    it("writePnpmWorkspace writes a valid pnpm-workspace.yaml", () => {
+      writePnpmWorkspace(workspace);
+      const raw = readFileSync(join(workspace, "pnpm-workspace.yaml"), "utf8");
+      assert.match(raw, /"@parcel\/watcher": true/);
+      assert.match(raw, /esbuild: true/);
+      assert.match(raw, /sharp: true/);
+      assert.ok(raw.endsWith("\n"));
     });
   });
 });

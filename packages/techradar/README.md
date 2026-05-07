@@ -88,7 +88,6 @@ npx techradar serve   # Start dev server without file watching
 
 After `npx techradar build`, the static site is in `build/`. Deploy it to GitHub Pages, Vercel, Netlify, or any static hosting provider.
 
-## Project Structure
 
 ```
 my-technology-radar/
@@ -496,40 +495,15 @@ Unresolved wiki-links (referencing a non-existent item) are rendered as plain te
 
 Pass `--strict` to turn warnings into errors during the data build step.
 
+## Development
+
 ```bash
-npx techradar --strict build
-npx techradar --strict dev
+pnpm run dev            # Dev server (portless)
 ```
 
-In strict mode, the build fails on:
+> See [AGENTS.md](./AGENTS.md) for development rules, constraints, and context.
 
-- Invalid frontmatter (missing or invalid `ring`, `segment`, etc.)
-- Unresolved wiki-links (e.g., `[[nonexistent-item]]`)
+## Checks & Harness
 
-> [!TIP]
-> Add `npx techradar --strict build` to your CI pipeline to catch frontmatter issues and broken wiki-links before deployment.
-
-## Custom Styling
-
-You can add custom SCSS rules in `custom.scss`.
-
-> [!NOTE]
-> The project uses CSS Modules with hashed class names. Use element or attribute selectors to target components.
-
-```scss
-/* Example: change headline fonts */
-h1,
-h2,
-h3 {
-  font-family: "Times New Roman", Times, serif;
-}
-```
-
-Changes to `custom.scss` are picked up automatically in `dev` mode (with file watching).
-
-## License
-
-This project is open source under the [Apache License 2.0](./LICENSE).
-
-Originally based on the [AOE Technology Radar](https://github.com/AOEpeople/aoe_technology_radar).
-Maintained and developed by [Porsche Digital](https://www.porsche.digital/).
+This project enforces architectural and clean-code invariants automatically.
+> See [docs/HARNESS.md](../../docs/HARNESS.md) for the full harness suite.

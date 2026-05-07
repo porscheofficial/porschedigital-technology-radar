@@ -168,6 +168,11 @@ describe("scaffold helpers", () => {
         build: "techradar build",
         validate: "techradar validate",
       });
+      assert.deepEqual(
+        (json.pnpm as { onlyBuiltDependencies: string[] })
+          .onlyBuiltDependencies,
+        ["@parcel/watcher", "esbuild", "sharp"],
+      );
     });
   });
 

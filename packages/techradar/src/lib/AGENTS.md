@@ -22,6 +22,10 @@ The single source of truth for types, data accessors, config, and helpers. Pages
 - **No `as any` / `@ts-ignore` / `@ts-expect-error`.** Use `unknown` + narrowing or fix the type. (Checked: `eslint.config.mjs`.)
 - **All `href`/`src` literals starting with `/`** must go through `assetUrl()`, **EXCEPT** for `<Link>` (next/link) hrefs and `useRouter().push()` targets — Next.js auto-prepends `basePath` to those, so wrapping with `assetUrl()` would double the prefix in production. Use `assetUrl()` for raw `<a>`, `<img>`, PDS components (`PCrest`, `PLinkPure`, `PLinkTile`), and CSS asset URLs constructed here. (Checked: `eslint.config.mjs`.)
 
+## Type Cast Exemptions
+
+- **Test Doubles:** While type casting (`as any`, `as unknown as T`) is banned in production code, using `as unknown as T` is explicitly **permitted in test files** (`__tests__/`) for constructing mock, stub, or spy objects. The ESLint config deliberately exempts test files from the no-cast rule to simplify test setup without requiring exhaustive type coverage on partial mock objects.
+
 ## Tests
 
 Lib tests live in `src/lib/__tests__/{name}.test.ts`. Mock heavyweight modules (`@/lib/data`, `@/lib/config`) with `vi.mock()`.

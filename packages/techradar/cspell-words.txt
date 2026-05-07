@@ -669,3 +669,4 @@ synthwave
 rgba
 libwebp
 muxing
+FOUC

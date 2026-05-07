@@ -83,6 +83,7 @@ flowchart LR
             Q4["check:quality:sonar<br/>(eslint-plugin-sonarjs, dedicated config)"]
             Q5["check:quality:coverage<br/>(vitest v8 thresholds)"]
             Q6["check:quality:spell<br/>(cspell on **/*.md)"]
+            Q7["check:quality:bundle-budget<br/>(scripts/check-bundle-budget.ts)"]
         end
         subgraph A11Y["Accessibility (pnpm run check:a11y)"]
             A1["check:a11y:source<br/>(eslint-plugin-jsx-a11y, dedicated config)"]
@@ -151,6 +152,7 @@ The regulator's variety. Each row is one architectural property the harness pres
 | 27 | ADR file numbers in `docs/decisions/` are unique and match their `# ADR-NNNN` heading | `check:arch:adr` (`scripts/checkAdrUnique.ts`) | `../../docs/decisions/README.md` (workspace root) | 9     |
 | 28 | No Node.js built-ins leaked into client JS chunks      | `check:build:no-node-builtins` (`scripts/checkNoNodeBuiltins.ts`)               | `AGENTS.md` (package)      | 9     |
 | 29 | Allowlisted `@porscheofficial/<name>@<version>` literals stay aligned with each package's canonical version | `check:arch:version-literals` (`scripts/check-version-literals.ts`) | `AGENTS.md` (package) | 10    |
+| 30 | Gzipped `.next/static/chunks/*.js` total stays within +5% of the committed baseline | `check:quality:bundle-budget` (`scripts/check-bundle-budget.ts`, `.bundle-baseline.json`) | `AGENTS.md` (package) | 10    |
 
 **Notes on #12** — catches two failure modes at once: helper duplication across components (e.g. multiple components copy-pasting `stripHtml` instead of importing the canonical `@/lib/format` version) and component files accreting non-component logic. The fix is one of three: move pure helpers to `src/lib/`, convert JSX-returning helpers to PascalCase sub-components, or inline single-use render helpers as `const` arrows inside the component body.
 
@@ -179,6 +181,8 @@ The regulator's variety. Each row is one architectural property the harness pres
 Plus framework-aware lints from `@next/eslint-plugin-next` (recommended set, with `no-img-element` and `no-html-link-for-pages` disabled per ADRs / our `assetUrl()` convention — see `eslint.config.mjs` header).
 
 **Notes on #29** — this source-only drift guard closes the release-please gap called out in `packages/techradar/AGENTS.md`: `package.json.version` is the only field release-please updates automatically because `release-please-config.json` currently keeps `extra-files` empty. The sensor reads the canonical `name` + `version` from both workspace package manifests, scans every configured `extra-files` path plus a tiny hardcoded allowlist (including a scratch path for forced-failure verification), and fails with a `DRIFT:` diagnostic if an embedded `@porscheofficial/<name>@<version>` literal disagrees. Today it usually exits 0 with an informational message because ADR-0013 Amendment 2 removed the live literal; that no-op state is intentional future-proofing, not dead code. In practice, `pnpm run check:arch` now treats this as the last source-only arm: if a future script or doc reintroduces a pinned package literal, the harness catches the next release bump before it silently ships stale text.
+
+**Notes on #30** — this clean-code sensor is regression-only on purpose: it gzips every `.next/static/chunks/*.js` file, sums the compressed bytes, and compares the result to the committed `.bundle-baseline.json` snapshot. First run bootstraps the baseline and exits 0; normal runs fail only when the gzipped total grows by at least 5%, printing `REGRESSION: ...`. `--update-baseline` is the explicit escape hatch for deliberate increases after reviewers accept the cost.
 
 A non-gating advisory workflow — **OpenSSF Scorecard** (`.github/workflows/scorecard.yml`) — runs weekly and uploads SARIF to GitHub's code-scanning UI. Findings are a posture metric, not a blocking check.
 
@@ -309,7 +313,8 @@ pnpm run check:quality       # clean-code sensors
   ├─ check:quality:naming   # Biome useNamingConvention (src + scripts)
   ├─ check:quality:sonar    # eslint-plugin-sonarjs (dedicated config)
   ├─ check:quality:coverage # vitest --coverage with v8 thresholds
-  └─ check:quality:spell    # cspell on **/*.md
+  ├─ check:quality:spell    # cspell on **/*.md
+  └─ check:quality:bundle-budget # gzipped JS total must stay within +5% of baseline
 
 pnpm run check:a11y          # accessibility sensors
   ├─ check:a11y:source      # eslint-plugin-jsx-a11y on src/**/*.{jsx,tsx}

@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import consola from "consola";
 import { type ParseError, parse as parseJsonc } from "jsonc-parser";
 import type { ThemeJson, ThemeManifest } from "@/lib/theme/schema";
 import { ThemeJsonSchema } from "@/lib/theme/schema";
@@ -120,7 +121,7 @@ export function scanThemes(opts: ScannerOptions): ThemeManifest[] {
     const consumers = readThemeDir(consumerDir, segmentsCount, ringsCount);
     for (const [id, themeJson] of consumers) {
       if (builtins.has(id)) {
-        console.warn(
+        consola.warn(
           `[theme-scanner] Consumer theme '${id}' overrides builtin`,
         );
       }

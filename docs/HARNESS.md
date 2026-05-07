@@ -291,6 +291,8 @@ The rule for this project: **when a violation slips past every sensor and a huma
 
 `.github/workflows/ci.yml` includes `bootstrap-fresh-clone`, a no-cache Ubuntu/Node 22 + pnpm job that proves a brand-new clone can `pnpm install`, test, and build the framework package without a manual `build:data` step.
 
+The same workflow also includes `scaffolder-e2e`, which packs the local scaffolder, scaffolds a fresh app, swaps its framework dependency to the local workspace package, then runs `pnpm install && pnpm run build:data && pnpm run build` in the generated project.
+
 ```bash
 pnpm run check:arch          # source-only sensors (~3s)
   ├─ check:arch:depcruise   # import graph

@@ -94,6 +94,10 @@ Use conventional commits. When a scope is present, it must be one of:
 - `create-techradar`
 - `deps`
 - `release`
+- `docs`
+- `ci`
+- `harness`
+- `chore`
 
 ## Pitfalls
 

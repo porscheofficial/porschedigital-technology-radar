@@ -3,44 +3,12 @@ import os from "node:os";
 import path from "node:path";
 import { consola } from "consola";
 
-type ExecaFunction = typeof import("execa")["execa"];
-
-class TrufflehogMissingError extends Error {
-  constructor() {
-    super("trufflehog binary not found");
-    this.name = "TrufflehogMissingError";
-  }
-}
-
-let cachedExeca: ExecaFunction | undefined;
-
-async function getExeca() {
-  if (!cachedExeca) {
-    ({ execa: cachedExeca } = await import("execa"));
-  }
-
-  return cachedExeca;
-}
-
-function getCombinedOutput(stdout: string, stderr: string) {
-  return [stdout, stderr].filter(Boolean).join("\n");
-}
-
-function getMirroredPath(stagedPath: string, temporaryDirectory: string) {
-  const destinationPath = path.resolve(temporaryDirectory, stagedPath);
-  const normalizedTemporaryDirectory = `${path.resolve(temporaryDirectory)}${path.sep}`;
-
-  if (
-    destinationPath !== path.resolve(temporaryDirectory) &&
-    !destinationPath.startsWith(normalizedTemporaryDirectory)
-  ) {
-    throw new Error(
-      `Refusing to write staged path outside tmpdir: ${stagedPath}`,
-    );
-  }
-
-  return destinationPath;
-}
+import {
+  getExeca,
+  getMirroredPath,
+  runTrufflehogFilesystem,
+  TrufflehogMissingError,
+} from "./secretsScan";
 
 export async function getStagedFiles(): Promise<string[]> {
   const execa = await getExeca();
@@ -79,33 +47,7 @@ export async function materializeStagedContent(
 export async function runTrufflehog(
   temporaryDirectory: string,
 ): Promise<{ ok: boolean; output: string }> {
-  const execa = await getExeca();
-
-  try {
-    const result = await execa(
-      "trufflehog",
-      [
-        "filesystem",
-        temporaryDirectory,
-        "--fail",
-        "--results=verified,unknown",
-        "--no-update",
-        "--json",
-      ],
-      { reject: false },
-    );
-
-    return {
-      ok: result.exitCode === 0,
-      output: getCombinedOutput(result.stdout, result.stderr),
-    };
-  } catch (error) {
-    if (error instanceof Error && "code" in error && error.code === "ENOENT") {
-      throw new TrufflehogMissingError();
-    }
-
-    throw error;
-  }
+  return runTrufflehogFilesystem(temporaryDirectory);
 }
 
 export async function main(): Promise<number> {

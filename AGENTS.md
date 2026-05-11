@@ -62,9 +62,8 @@ is intentional and tracks ownership:
   `lint:fix`, `format` (Biome is a single-config tool by design — one pass
   covers both packages plus the workspace meta files like `AGENTS.md`,
   `docs/`, `.github/`, `commitlint.config.js`); `check:sec:deps`,
-  `check:sec:secrets`, `check:sec:licenses` (whole-workspace lockfile,
-  git-history and dependency-tree scans that would be wrong to run
-  per-package).
+  `check:sec:licenses` (whole-workspace lockfile and dependency-tree scans
+  that would be wrong to run per-package).
 - **Package-delegated (via `pnpm -r --if-present run …`)**: `test`,
   `typecheck`, `build`, `check:arch`, `check:quality`, `check:a11y`,
   `check:build`, and the package-local `check:sec:sanitize` arm.
@@ -72,9 +71,20 @@ is intentional and tracks ownership:
   `tsconfig.json` — TypeScript is per-package by design (each tsconfig
   declares its own `target`/`lib`/`jsx`), so there is no workspace-root
   `tsconfig.json`.
+- **Package-delegated to a single package (via `pnpm --filter …`)**:
+  `precommit:secrets` and `check:sec:secrets`. Both are conceptually
+  workspace-wide scans but live in `packages/techradar/scripts/` because
+  they share trufflehog plumbing (`secretsScan.ts`); the entry script
+  chdirs to the repo top-level before running so the scan covers the
+  whole workspace. `check:sec:secrets` additionally branches between
+  `trufflehog git` (fresh checkouts, CI) and `trufflehog filesystem` on a
+  `git ls-files` mirror (Git worktrees), working around upstream
+  `trufflesecurity/trufflehog#4553` — see ADR-0011.
 - **Hybrid**: `check:sec` runs `pnpm -r --if-present run check:sec` first
-  (delegates `:sanitize` into `packages/techradar/`), then runs the three
-  root-only `check:sec:{deps,secrets,licenses}` scans.
+  (delegates `:sanitize` into `packages/techradar/`), then runs the
+  root-only `check:sec:deps` and `check:sec:licenses` scans, plus
+  `check:sec:secrets` which delegates to `packages/techradar/` via
+  `pnpm --filter`.
 
 Adding a new script: if it operates on workspace-wide artifacts
 (lockfile, git history, root config) keep it root-only; if it operates on

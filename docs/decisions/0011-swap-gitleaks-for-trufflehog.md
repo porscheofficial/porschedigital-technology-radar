@@ -122,3 +122,63 @@ developers a fail-fast local guard before a secret lands in history.
   partial staging via `git add -p`.
 - When PR #4690 lands and is released, we can revisit whether local hooks can
   switch back to `git` mode without the tmpdir mirror workaround.
+
+## Update — 2026-05-11: Worktree-aware `check:sec:secrets`
+
+### Context
+
+The 2026-04-21 amendment only fixed the pre-commit path. The DoD-level
+`pnpm run check:sec:secrets` at the workspace root still shelled out to
+`trufflehog git file://.` directly, which crashes inside a `git worktree`
+with `failed to read index file: open .git/index: not a directory` (the
+same upstream bug, `trufflesecurity/trufflehog#4553`). Contributors using
+worktrees could not run the harness locally.
+
+PR #4690 has been approved by maintainers but remains unmerged months
+after the 2026-04-21 entry was written. Waiting on upstream is not a
+plan.
+
+### Decision
+
+Replace the inline `trufflehog git file://.` invocation at the workspace
+root with a thin TypeScript wrapper (`packages/techradar/scripts/checkSecrets.ts`)
+that branches on `isGitWorktree()`:
+
+- **Regular checkout (CI, fresh clones)**: run `trufflehog git file://.`
+  against history. Behaviour is byte-for-byte identical to the previous
+  inline command.
+- **Git worktree**: mirror the working tree (`git ls-files -z` →
+  `fs.copyFile` into a `mkdtemp` sandbox) and run
+  `trufflehog filesystem <tmpdir> --fail --results=verified,unknown --no-update --json`.
+
+The wrapper chdirs to `git rev-parse --show-toplevel` first so the scan
+always covers the whole workspace, regardless of how pnpm resolved the
+cwd. Trufflehog plumbing shared with `preCommitSecrets.ts` was
+extracted into `packages/techradar/scripts/secretsScan.ts` to avoid
+duplication.
+
+Root `package.json` now delegates `check:sec:secrets` to the techradar
+package via `pnpm --filter`, mirroring the existing `precommit:secrets`
+delegation pattern. The script is conceptually workspace-owned (it
+scans the entire repo) but lives in `packages/techradar/scripts/`
+because that is where the shared trufflehog helpers and tsx tooling
+already live.
+
+Missing-binary handling differs from pre-commit on purpose:
+`check:sec:secrets` **fails hard** when trufflehog is absent. Pre-commit
+nudges developers; the harness must never silently pass.
+
+### Consequences
+
+- Local DoD (`pnpm run check:sec` / `pnpm run check:sec:secrets`) now
+  works from worktrees. Contributors no longer need to switch to a
+  primary checkout to validate before pushing.
+- The worktree path scans the current working tree only, not history.
+  Anything that lives only in unpushed local commits is caught by the
+  pre-commit hook before the commit lands and by CI on push. The local
+  DoD gate is a defence-in-depth layer, not the sole barrier.
+- Tests cover both modes (`packages/techradar/scripts/__tests__/checkSecrets.test.ts`).
+- When PR #4690 ships in a `trufflehog` release, the wrapper can be
+  collapsed back to a single-line invocation. The branching is isolated
+  to `checkSecrets.ts`; the public script name and root contract stay
+  the same.

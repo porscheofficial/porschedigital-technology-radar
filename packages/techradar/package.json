@@ -74,6 +74,7 @@
     "check:build:bundle-budget": "tsx scripts/check-bundle-budget.ts",
     "check:sec": "pnpm run check:sec:sanitize",
     "check:sec:sanitize": "tsx scripts/checkSanitize.ts",
+    "check:sec:secrets": "tsx scripts/checkSecrets.ts",
     "precommit:secrets": "tsx scripts/preCommitSecrets.ts",
     "check:quality": "pnpm run check:quality:knip && pnpm run check:quality:jscpd && pnpm run check:quality:naming && pnpm run check:quality:sonar && pnpm run check:quality:coverage && pnpm run check:quality:spell",
     "check:quality:knip": "knip",

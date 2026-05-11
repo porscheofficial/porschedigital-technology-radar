@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/porscheofficial/porschedigital-technology-radar/compare/create-techradar-v1.0.2...create-techradar-v1.0.3) (2026-05-11)
+
+
+### Bug Fixes
+
+* **create-techradar:** approve framework build scripts in scaffolded apps ([c838afc](https://github.com/porscheofficial/porschedigital-technology-radar/commit/c838afc28f438889307fe684b73a298cdcd3c8f4))
+
 ## [1.0.2](https://github.com/porscheofficial/porschedigital-technology-radar/compare/create-techradar-v1.0.1...create-techradar-v1.0.2) (2026-05-07)
 
 

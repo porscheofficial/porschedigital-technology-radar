@@ -58,11 +58,11 @@ importers:
         specifier: ^5.2.8
         version: 5.2.8
       '@porsche-design-system/components-js':
-        specifier: 4.0.0
-        version: 4.0.0
+        specifier: 4.1.0
+        version: 4.1.0
       '@porsche-design-system/components-react':
-        specifier: ^4.0.0
-        version: 4.0.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: ^4.1.0
+        version: 4.1.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@radix-ui/react-dialog':
         specifier: ^1.1.15
         version: 1.1.15(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -1987,8 +1987,8 @@ packages:
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
 
-  '@porsche-design-system/components-js@4.0.0':
-    resolution: {integrity: sha512-JOC/s/6YBRgd99dBHwF7qE/VInRYDHNkdPhYnqYSuPfuRcBpuDL05BDNVxC/LLlj+XBTPlMxjwfhfmBUoRYo+A==}
+  '@porsche-design-system/components-js@4.1.0':
+    resolution: {integrity: sha512-LYj/y14pLN1y3y2ztD6Ueu8nxc5O29HWZRC/Y7CEuS/sPef0ftatkv3iKnUIpjoPrVBHNt3415OYeB0oBzZSnw==}
     peerDependencies:
       ag-grid-community: '>= 35.0.0 <36.0.0'
       ag-grid-enterprise: '>= 35.0.0 <36.0.0'
@@ -2001,8 +2001,8 @@ packages:
       tailwindcss:
         optional: true
 
-  '@porsche-design-system/components-react@4.0.0':
-    resolution: {integrity: sha512-UIPpwXvq5qr8khVpj8DWuak9EA2kY2VThrL+dMqH9LHPbUnKi9GEPGCDntJDCt2izj1+If3Vcdmd5iOemPK/nw==}
+  '@porsche-design-system/components-react@4.1.0':
+    resolution: {integrity: sha512-pLk0A/RW5aKqLNCUZy6b9j5BoQPwamVF4VrdcWJ49kWKsg41F6Dd9t+bmH8dMK3Uz283IVM5pGBfSJkqO7VDIQ==}
     hasBin: true
     peerDependencies:
       ag-grid-community: '>= 35.0.0 <36.0.0'
@@ -7492,11 +7492,11 @@ snapshots:
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
-  '@porsche-design-system/components-js@4.0.0': {}
+  '@porsche-design-system/components-js@4.1.0': {}
 
-  '@porsche-design-system/components-react@4.0.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
+  '@porsche-design-system/components-react@4.1.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
-      '@porsche-design-system/components-js': 4.0.0
+      '@porsche-design-system/components-js': 4.1.0
       react: 19.2.6
       react-dom: 19.2.6(react@19.2.6)
 

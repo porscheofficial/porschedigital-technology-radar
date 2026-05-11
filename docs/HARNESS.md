@@ -115,6 +115,16 @@ guard that mirrors staged blobs into a tmpdir and scans them with
 `trufflehog filesystem` to work around the current TruffleHog worktree bug
 (issue #4553, fix PR #4690 pending release).
 
+**Worktree-aware `check:sec:secrets`:** the DoD `check:sec:secrets` arm is a
+TypeScript wrapper (`packages/techradar/scripts/checkSecrets.ts`) that branches
+on whether the current checkout is a `git worktree`. Regular checkouts (CI,
+fresh clones) run `trufflehog git file://.` against history unchanged.
+Worktrees fall back to `trufflehog filesystem` over a `git ls-files` mirror of
+the working tree — the same workaround as the pre-commit gate. Root delegates
+to the techradar package via `pnpm --filter`; shared trufflehog plumbing lives
+in `packages/techradar/scripts/secretsScan.ts`. Can be collapsed once PR #4690
+ships.
+
 ---
 
 ## 3. The invariant buckets

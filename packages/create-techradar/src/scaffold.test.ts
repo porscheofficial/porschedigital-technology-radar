@@ -173,7 +173,7 @@ describe("scaffold helpers", () => {
       assert.deepEqual(
         (json.pnpm as { onlyBuiltDependencies: string[] })
           .onlyBuiltDependencies,
-        ["@parcel/watcher", "esbuild", "sharp"],
+        ["@x/y", "@parcel/watcher", "esbuild", "sharp"],
       );
     });
   });
@@ -203,20 +203,24 @@ describe("scaffold helpers", () => {
   });
 
   describe("buildPnpmWorkspace", () => {
+    it("approves the framework package", () => {
+      assert.match(buildPnpmWorkspace("@x/y"), /"@x\/y": true/);
+    });
+
     it("approves @parcel/watcher", () => {
-      assert.match(buildPnpmWorkspace(), /"@parcel\/watcher": true/);
+      assert.match(buildPnpmWorkspace("@x/y"), /"@parcel\/watcher": true/);
     });
 
     it("approves esbuild", () => {
-      assert.match(buildPnpmWorkspace(), /esbuild: true/);
+      assert.match(buildPnpmWorkspace("@x/y"), /esbuild: true/);
     });
 
     it("approves sharp", () => {
-      assert.match(buildPnpmWorkspace(), /sharp: true/);
+      assert.match(buildPnpmWorkspace("@x/y"), /sharp: true/);
     });
 
     it("ends with a trailing newline", () => {
-      assert.ok(buildPnpmWorkspace().endsWith("\n"));
+      assert.ok(buildPnpmWorkspace("@x/y").endsWith("\n"));
     });
   });
 
@@ -240,8 +244,9 @@ describe("scaffold helpers", () => {
     });
 
     it("writePnpmWorkspace writes a valid pnpm-workspace.yaml", () => {
-      writePnpmWorkspace(workspace);
+      writePnpmWorkspace(workspace, "@x/y");
       const raw = readFileSync(join(workspace, "pnpm-workspace.yaml"), "utf8");
+      assert.match(raw, /"@x\/y": true/);
       assert.match(raw, /"@parcel\/watcher": true/);
       assert.match(raw, /esbuild: true/);
       assert.match(raw, /sharp: true/);

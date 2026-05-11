@@ -76,10 +76,17 @@ export function buildPackageJson(
       [inputs.frameworkPackage]: inputs.frameworkVersionRange,
     },
     pnpm: {
-      // pnpm v10+ blocks native addon build scripts by default.
-      // Approve the packages that Next.js requires so `pnpm install` succeeds
-      // out of the box without manual `pnpm approve-builds`.
-      onlyBuiltDependencies: ["@parcel/watcher", "esbuild", "sharp"],
+      // pnpm v10+ blocks build scripts by default — both native addon installs
+      // and lifecycle scripts of external deps. Approve the framework (whose
+      // postinstall bootstraps `data/data.json`) plus the native-addon trio
+      // Next.js requires, so `pnpm install` succeeds out of the box without
+      // manual `pnpm approve-builds`.
+      onlyBuiltDependencies: [
+        inputs.frameworkPackage,
+        "@parcel/watcher",
+        "esbuild",
+        "sharp",
+      ],
     },
   };
 }
@@ -115,12 +122,13 @@ export function writeReadme(targetDir: string, projectName: string): void {
   );
 }
 
-export function buildPnpmWorkspace(): string {
+export function buildPnpmWorkspace(frameworkPackage: string): string {
   return [
     "# pnpm v10.26+ reads build-script approvals from this file.",
-    "# The three packages below are native addons required by Next.js.",
+    "# Approves the framework's postinstall plus the native addons Next.js needs.",
     "# There are no workspace member packages — this is a standalone project.",
     "allowBuilds:",
+    `  "${frameworkPackage}": true`,
     '  "@parcel/watcher": true',
     "  esbuild: true",
     "  sharp: true",
@@ -128,10 +136,13 @@ export function buildPnpmWorkspace(): string {
   ].join("\n");
 }
 
-export function writePnpmWorkspace(targetDir: string): void {
+export function writePnpmWorkspace(
+  targetDir: string,
+  frameworkPackage: string,
+): void {
   writeFileSync(
     resolve(targetDir, "pnpm-workspace.yaml"),
-    buildPnpmWorkspace(),
+    buildPnpmWorkspace(frameworkPackage),
     "utf8",
   );
 }

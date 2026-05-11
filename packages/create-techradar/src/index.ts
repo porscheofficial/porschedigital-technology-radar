@@ -54,7 +54,7 @@ export async function runCreateTechradar(
       frameworkPackage: FRAMEWORK_PACKAGE,
       frameworkVersionRange: versionRange,
     });
-    writePnpmWorkspace(target.absolutePath);
+    writePnpmWorkspace(target.absolutePath, FRAMEWORK_PACKAGE);
     writeReadme(target.absolutePath, target.projectName);
 
     consola.start(`Installing dependencies with ${pm}`);

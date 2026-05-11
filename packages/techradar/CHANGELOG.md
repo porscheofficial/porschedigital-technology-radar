@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.2.0](https://github.com/porscheofficial/porschedigital-technology-radar/compare/porschedigital-technology-radar-v2.1.0...porschedigital-technology-radar-v2.2.0) (2026-05-11)
+
+
+### Features
+
+* **harness:** worktree-aware check:sec:secrets gate ([d568ca2](https://github.com/porscheofficial/porschedigital-technology-radar/commit/d568ca24d598785a2f9806790b16859debff0956))
+* **techradar:** richer demo recorder with synthetic cursor and 7 scenes ([4ea98bf](https://github.com/porscheofficial/porschedigital-technology-radar/commit/4ea98bfc0f876a5f2d8f71c33a7adf47b481c12d))
+
+
+### Build System
+
+* **deps-dev:** bump eslint from 10.2.1 to 10.3.0 ([ce3b34a](https://github.com/porscheofficial/porschedigital-technology-radar/commit/ce3b34a1da3a0b82fe9eb5d9212e11a7cea8fd36))
+* **deps-dev:** bump html-validate from 10.15.0 to 10.16.0 ([054c879](https://github.com/porscheofficial/porschedigital-technology-radar/commit/054c879911452799c5a517622b33354e34be5c85))
+* **deps:** bump the next group across 1 directory with 2 updates ([5b4d25a](https://github.com/porscheofficial/porschedigital-technology-radar/commit/5b4d25a451fec877cc3c133c90fe61d8e76f9cf0))
+* **deps:** bump the porsche-design-system group across 1 directory with 2 updates ([d32b770](https://github.com/porscheofficial/porschedigital-technology-radar/commit/d32b770a971d56adde866db04899a8a68f59afab))
+* **deps:** bump the react group across 1 directory with 2 updates ([9263fe9](https://github.com/porscheofficial/porschedigital-technology-radar/commit/9263fe968bfc7be451e24ffdd3076ade51a94bfd))
+* **deps:** bump tsx from 4.19.3 to 4.21.0 ([6b3d27e](https://github.com/porscheofficial/porschedigital-technology-radar/commit/6b3d27e21c90fe8bd69571ec48b7371680995c3c))
+
 ## [2.1.0](https://github.com/porscheofficial/porschedigital-technology-radar/compare/porschedigital-technology-radar-v2.0.2...porschedigital-technology-radar-v2.1.0) (2026-05-07)
 
 

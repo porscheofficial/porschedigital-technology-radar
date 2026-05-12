@@ -4,17 +4,24 @@ import {
   copyFileSync,
   cpSync,
   existsSync,
-  readdirSync,
+  mkdirSync,
   readFileSync,
   renameSync,
   rmSync,
   writeFileSync,
 } from "node:fs";
-import { basename, join } from "node:path";
+import { basename, dirname, join } from "node:path";
 import { watch } from "chokidar";
 import { defineCommand, runMain } from "citty";
 import consola from "consola";
 import { execa, execaSync } from "execa";
+import {
+  buildConfigJson,
+  collectAnswers,
+  generateStarterBlips,
+  type InitAnswers,
+  loadInitContext,
+} from "./initFlow";
 import { applyMechanicalRenames } from "./migrateApply";
 import { detectAll, type Finding } from "./migrateDetect";
 import { extractThemeFromConfig, type ThemeMode } from "./migrateThemes";
@@ -249,7 +256,61 @@ function ensureBuildDir(): void {
   consola.success("Build environment ready.");
 }
 
-function bootstrap(): void {
+function writeFileIfMissing(
+  target: string,
+  content: string,
+  label: string,
+): boolean {
+  mkdirSync(dirname(target), { recursive: true });
+  try {
+    writeFileSync(target, content, { flag: "wx" });
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "EEXIST") {
+      consola.info(`${label} already exists, skipping`);
+      return false;
+    }
+    throw err;
+  }
+  consola.success(`Created ${label}`);
+  return true;
+}
+
+function scaffoldCustomTheme(
+  slug: string,
+  label: string,
+  themesSourceDir: string,
+): void {
+  const target = join(CWD, "themes", slug);
+  if (existsSync(target)) {
+    consola.info(`themes/${slug}/ already exists, skipping custom theme`);
+    return;
+  }
+  const exampleDir = join(themesSourceDir, ".example");
+  if (!existsSync(exampleDir)) {
+    consola.warn(
+      `.example theme not found at ${exampleDir} — cannot scaffold custom theme.`,
+    );
+    return;
+  }
+  cpSync(exampleDir, target, { recursive: true });
+  const manifestPath = join(target, "manifest.jsonc");
+  try {
+    const raw = readFileSync(manifestPath, "utf8");
+    const escapedLabel = JSON.stringify(label).slice(1, -1);
+    const patched = raw.replace(
+      /"label":\s*"[^"]*"/,
+      `"label": "${escapedLabel}"`,
+    );
+    writeFileSync(manifestPath, patched);
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code !== "ENOENT") throw err;
+  }
+  consola.success(`Created themes/${slug}/ (from .example/)`);
+}
+
+async function bootstrap(
+  opts: { yes: boolean } = { yes: false },
+): Promise<void> {
   if (!existsSync(SOURCE_DIR)) {
     consola.fatal(
       `Package "${PACKAGE_NAME}" not found at ${SOURCE_DIR}.\n` +
@@ -258,19 +319,18 @@ function bootstrap(): void {
     process.exit(1);
   }
 
+  const interactive = !opts.yes && process.stdin.isTTY === true;
+  const ctx = loadInitContext({
+    cwd: CWD,
+    sourceDir: SOURCE_DIR,
+    interactive,
+  });
+  const answers: InitAnswers = await collectAnswers(ctx, basename(CWD));
+
   consola.start("Initializing Technology Radar project…");
-  scaffold(
-    join(CWD, "radar"),
-    join(SOURCE_DIR, "data", "radar"),
-    "radar/",
-    true,
-  );
+
+  // Static assets that always come straight from the package (idempotent).
   scaffold(join(CWD, "public"), join(SOURCE_DIR, "public"), "public/", true);
-  scaffold(
-    join(CWD, "config.json"),
-    join(SOURCE_DIR, "data", "config.default.json"),
-    "config.json",
-  );
   scaffold(
     join(CWD, "about.md"),
     join(SOURCE_DIR, "data", "about.md"),
@@ -286,13 +346,19 @@ function bootstrap(): void {
     join(SOURCE_DIR, ".markdownlint-cli2.jsonc"),
     ".markdownlint-cli2.jsonc",
   );
+
+  writeFileIfMissing(
+    join(CWD, "config.json"),
+    `${JSON.stringify(buildConfigJson(answers), null, 2)}\n`,
+    "config.json",
+  );
+
+  // The literal `scaffold(join(CWD, "themes", theme)` shape below is asserted
+  // by init-theme-copy.test.ts as a guard against the historical bug where
+  // themes were misrouted into <consumer>/data/themes/.
   const themesSourceDir = join(SOURCE_DIR, "data", "themes");
   if (existsSync(themesSourceDir)) {
-    const themeDirs = readdirSync(themesSourceDir, { withFileTypes: true })
-      .filter((entry) => entry.isDirectory())
-      .map((entry) => entry.name)
-      .sort();
-    for (const theme of themeDirs) {
+    for (const theme of answers.themes) {
       scaffold(
         join(CWD, "themes", theme),
         join(themesSourceDir, theme),
@@ -300,7 +366,33 @@ function bootstrap(): void {
         true,
       );
     }
+    if (answers.customTheme) {
+      scaffoldCustomTheme(
+        answers.customTheme.slug,
+        answers.customTheme.label,
+        themesSourceDir,
+      );
+    }
   }
+
+  const radarDirTarget = join(CWD, "radar");
+  if (
+    answers.taxonomy === "standard" &&
+    answers.examples &&
+    !existsSync(radarDirTarget)
+  ) {
+    scaffold(radarDirTarget, join(SOURCE_DIR, "data", "radar"), "radar/", true);
+  } else {
+    mkdirSync(radarDirTarget, { recursive: true });
+    for (const file of generateStarterBlips(answers)) {
+      writeFileIfMissing(
+        join(radarDirTarget, file.path),
+        file.content,
+        `radar/${file.path}`,
+      );
+    }
+  }
+
   ensureGitignore();
   consola.success(
     "Project initialized. Edit config.json and add items to radar/.\n" +
@@ -361,8 +453,16 @@ const initCommand = defineCommand({
     description:
       "Scaffold a new Technology Radar project in the current directory",
   },
-  run() {
-    bootstrap();
+  args: {
+    yes: {
+      type: "boolean",
+      description:
+        "Skip interactive prompts and accept all defaults (use in CI / scaffolders).",
+      default: false,
+    },
+  },
+  async run({ args }) {
+    await bootstrap({ yes: args.yes === true });
   },
 });
 

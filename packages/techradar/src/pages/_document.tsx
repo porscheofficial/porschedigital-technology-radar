@@ -11,6 +11,8 @@ import {
   CHIP_KINDS,
   CHROME_CSS_VARIABLE_KEYS,
   isModeValueObject,
+  type PaletteCounts,
+  paletteAt,
   resolveModeValue,
   type ThemeManifest,
   type ThemeModeValue,
@@ -23,13 +25,20 @@ const defaultTheme = getDefaultTheme(themes, config.defaultTheme);
 const defaultThemeId = defaultTheme.id;
 const defaultMode = getDefaultMode(defaultTheme, config.defaultTheme);
 const defaultSchemeClass = getSchemeClassForMode(defaultMode);
+const paletteCounts: PaletteCounts = {
+  segments: config.segments.length,
+  rings: config.rings.length,
+};
 const THEME_INIT_SCRIPT = `(function(){try{var d=document.documentElement;var b=localStorage.getItem('techradar-theme')||'${defaultThemeId}';var m=localStorage.getItem('techradar-mode')||'${defaultMode}';d.setAttribute('data-theme',b);d.classList.remove('scheme-light','scheme-dark','scheme-light-dark');if(m==='light'){d.classList.add('scheme-light');}else if(m==='dark'){d.classList.add('scheme-dark');}else{d.classList.add('scheme-light-dark');}}catch(e){}})();`;
 
-export function buildThemeStyleBlock(allThemes: ThemeManifest[]): string {
-  return allThemes.map((theme) => buildThemeBlock(theme)).join("\n");
+export function buildThemeStyleBlock(
+  allThemes: ThemeManifest[],
+  counts: PaletteCounts,
+): string {
+  return allThemes.map((theme) => buildThemeBlock(theme, counts)).join("\n");
 }
 
-function buildThemeBlock(theme: ThemeManifest): string {
+function buildThemeBlock(theme: ThemeManifest, counts: PaletteCounts): string {
   // Color vars use `light-dark()` because the CSS function only accepts <color>
   // arguments. Image (url/none) and opacity (number) are NOT colors, so they
   // are emitted via per-scheme-class selectors below — wrapping them in
@@ -42,15 +51,25 @@ function buildThemeBlock(theme: ThemeManifest): string {
     baseVars.push(`${cssKey}: ${toCssValue(theme.cssVariables[key])}`);
   }
 
-  theme.radar.segments.forEach((value, index) => {
+  // Palette cycling contract: when the consumer's config.json declares more
+  // segments/rings than this theme's manifest defines colors for, we cycle
+  // through the manifest palette via paletteAt(). Theme authors only need to
+  // ship a representative palette (4 entries is typical) — the framework
+  // handles arbitrary taxonomy sizes. See data/themes/.example/manifest.jsonc.
+  const segmentCount = Math.max(theme.radar.segments.length, counts.segments);
+  const ringCount = Math.max(theme.radar.rings.length, counts.rings);
+
+  for (let index = 0; index < segmentCount; index += 1) {
+    const value = paletteAt(theme.radar.segments, index);
     baseVars.push(`--rtk-segment-${index + 1}: ${toCssValue(value)}`);
     baseVars.push(
       `--rtk-segment-${index + 1}-fg: ${toReadableForegroundCssValue(value)}`,
     );
-  });
-  theme.radar.rings.forEach((value, index) => {
+  }
+  for (let index = 0; index < ringCount; index += 1) {
+    const value = paletteAt(theme.radar.rings, index);
     baseVars.push(`--rtk-ring-${index + 1}: ${toCssValue(value)}`);
-  });
+  }
 
   if (theme.chips) {
     for (const kind of CHIP_KINDS) {
@@ -116,7 +135,7 @@ function backgroundVarsForMode(
   return `--background-image: ${imageValue}; --background-opacity: ${opacityValue}`;
 }
 
-const themeStyleBlock = buildThemeStyleBlock(themes);
+const themeStyleBlock = buildThemeStyleBlock(themes, paletteCounts);
 
 export default function Document() {
   return (

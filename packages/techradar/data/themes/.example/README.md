@@ -111,8 +111,15 @@ relative to the theme folder and copied into `public/themes/<theme>/`.
 
 ## `radar` (required)
 
-`radar.segments` and `radar.rings` must match the counts from `config.segments`
-and `config.rings`. Each entry may be single-value or per-mode.
+`radar.segments` and `radar.rings` define the palette used by the radar
+visualization. Each entry may be single-value or per-mode.
+
+These arrays are **palettes, not strict 1:1 mappings** to
+`config.segments` / `config.rings`. If the consumer declares more segments
+or rings than your manifest provides colors for, the framework cycles back
+to the start of the palette — position N uses color
+`palette[N % palette.length]`. Ship a representative palette (4 entries is
+typical) and the framework adapts to arbitrary taxonomy sizes.
 
 ## Dual-mode example
 

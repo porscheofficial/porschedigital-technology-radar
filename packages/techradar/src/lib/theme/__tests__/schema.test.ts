@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  paletteAt,
   resolveTheme,
   ringColorVar,
   segmentColorVar,
@@ -171,5 +172,58 @@ describe("resolveTheme radar palette", () => {
     expect(light.radar.segments[0]).toBe("var(--rtk-segment-1)");
     expect(light.radar.rings[0]).toBe("var(--rtk-ring-1)");
     expect(light.radar.segments).toHaveLength(4);
+  });
+});
+
+describe("paletteAt", () => {
+  it("returns the element at the given index when within range", () => {
+    expect(paletteAt(["a", "b", "c", "d"], 0)).toBe("a");
+    expect(paletteAt(["a", "b", "c", "d"], 3)).toBe("d");
+  });
+
+  it("cycles back to the start when the index exceeds palette length", () => {
+    expect(paletteAt(["a", "b", "c", "d"], 4)).toBe("a");
+    expect(paletteAt(["a", "b", "c", "d"], 5)).toBe("b");
+    expect(paletteAt(["a", "b", "c", "d"], 9)).toBe("b");
+  });
+
+  it("works for single-element palettes", () => {
+    expect(paletteAt(["only"], 0)).toBe("only");
+    expect(paletteAt(["only"], 42)).toBe("only");
+  });
+
+  it("throws when the palette is empty", () => {
+    expect(() => paletteAt([], 0)).toThrow();
+  });
+});
+
+describe("resolveTheme palette extension", () => {
+  it("extends segment/ring arrays when paletteCounts exceed manifest length", () => {
+    const theme = {
+      ...ThemeJsonSchema.parse(dualModeTheme),
+      id: "porsche",
+      assetsResolved: {},
+    } satisfies ThemeManifest;
+
+    const resolved = resolveTheme(theme, "light", { segments: 6, rings: 5 });
+
+    expect(resolved.radar.segments).toHaveLength(6);
+    expect(resolved.radar.rings).toHaveLength(5);
+    expect(resolved.radar.segments[4]).toBe("var(--rtk-segment-5)");
+    expect(resolved.radar.segments[5]).toBe("var(--rtk-segment-6)");
+    expect(resolved.radar.rings[4]).toBe("var(--rtk-ring-5)");
+  });
+
+  it("does not shrink arrays when paletteCounts are smaller than manifest length", () => {
+    const theme = {
+      ...ThemeJsonSchema.parse(dualModeTheme),
+      id: "porsche",
+      assetsResolved: {},
+    } satisfies ThemeManifest;
+
+    const resolved = resolveTheme(theme, "dark", { segments: 2, rings: 2 });
+
+    expect(resolved.radar.segments).toHaveLength(4);
+    expect(resolved.radar.rings).toHaveLength(4);
   });
 });

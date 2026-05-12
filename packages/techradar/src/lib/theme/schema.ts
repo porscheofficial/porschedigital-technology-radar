@@ -246,6 +246,20 @@ export function segmentForegroundVar(index: number): string {
   return `var(--rtk-segment-${index + 1}-fg)`;
 }
 
+/**
+ * Read a value from a palette by index, cycling back to the start when the
+ * requested index exceeds the palette length. This lets themes ship a small,
+ * curated radar palette (the built-ins ship 4 entries) while still rendering
+ * correctly when a consumer's `config.json` declares a larger segments/rings
+ * taxonomy. See `data/themes/.example/manifest.jsonc` for the contract.
+ */
+export function paletteAt<T>(palette: readonly T[], index: number): T {
+  if (palette.length === 0) {
+    throw new Error("paletteAt: cannot index into an empty palette");
+  }
+  return palette[index % palette.length];
+}
+
 export function resolveRadarHexPalette(
   manifest: ThemeManifest,
   mode: ThemeMode,
@@ -260,10 +274,27 @@ export function resolveRadarHexPalette(
   };
 }
 
+export type PaletteCounts = {
+  segments: number;
+  rings: number;
+};
+
 export function resolveTheme(
   manifest: ThemeManifest,
   mode: ThemeMode,
+  paletteCounts?: PaletteCounts,
 ): ResolvedTheme {
+  // Array lengths must stay in lockstep with the CSS-var emission in
+  // _document.tsx (which cycles via paletteAt()). See paletteAt() above.
+  const segmentCount = Math.max(
+    manifest.radar.segments.length,
+    paletteCounts?.segments ?? 0,
+  );
+  const ringCount = Math.max(
+    manifest.radar.rings.length,
+    paletteCounts?.rings ?? 0,
+  );
+
   return {
     id: manifest.id,
     label: manifest.label,
@@ -282,10 +313,12 @@ export function resolveTheme(
         }
       : undefined,
     radar: {
-      segments: manifest.radar.segments.map((_value, index) =>
+      segments: Array.from({ length: segmentCount }, (_, index) =>
         segmentColorVar(index),
       ),
-      rings: manifest.radar.rings.map((_value, index) => ringColorVar(index)),
+      rings: Array.from({ length: ringCount }, (_, index) =>
+        ringColorVar(index),
+      ),
     },
     assetsResolved: {
       image: resolveModeValue(manifest.assetsResolved.image, mode),

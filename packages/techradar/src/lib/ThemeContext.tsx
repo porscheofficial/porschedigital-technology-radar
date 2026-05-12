@@ -11,6 +11,7 @@ import {
 
 import {
   normalizeThemePreferenceMode,
+  type PaletteCounts,
   type ResolvedTheme,
   resolveTheme,
   type Theme,
@@ -37,12 +38,14 @@ interface ThemeProviderProps {
   children: ReactNode;
   themes: ThemeManifest[];
   initialThemeId: string;
+  paletteCounts?: PaletteCounts;
 }
 
 export const ThemeProvider: FC<ThemeProviderProps> = ({
   children,
   themes,
   initialThemeId,
+  paletteCounts,
 }) => {
   const { themeId: parsedThemeId, mode: initialMode } = parseInitialThemeId(
     initialThemeId,
@@ -83,8 +86,8 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({
   );
 
   const theme = useMemo<ResolvedTheme>(
-    () => resolveTheme(activeTheme, resolvedMode),
-    [activeTheme, resolvedMode],
+    () => resolveTheme(activeTheme, resolvedMode, paletteCounts),
+    [activeTheme, resolvedMode, paletteCounts],
   );
 
   const applyDomState = useCallback(

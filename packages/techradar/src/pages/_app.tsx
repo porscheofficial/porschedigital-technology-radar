@@ -16,6 +16,10 @@ import "@/styles/custom.scss";
 import { PorscheDesignSystemProvider } from "@porsche-design-system/components-react/ssr";
 
 const themes = getThemes();
+const paletteCounts = {
+  segments: config.segments.length,
+  rings: config.rings.length,
+};
 
 export type CustomPage<P = Record<string, never>, InitialProps = P> = NextPage<
   P,
@@ -32,7 +36,11 @@ type CustomAppProps = AppProps & {
 export default function App({ Component, pageProps }: CustomAppProps) {
   const jsUrl = getJsUrl();
   return (
-    <ThemeProvider themes={themes} initialThemeId={config.defaultTheme}>
+    <ThemeProvider
+      themes={themes}
+      initialThemeId={config.defaultTheme}
+      paletteCounts={paletteCounts}
+    >
       <PorscheDesignSystemProvider>
         <RadarHighlightProvider>
           <Head>

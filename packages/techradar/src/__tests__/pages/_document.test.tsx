@@ -58,26 +58,31 @@ const dualModeTheme: ThemeManifest = {
 };
 
 describe("buildThemeStyleBlock", () => {
+  const defaultCounts = { segments: 4, rings: 4 };
+
   it("emits per-theme light-dark css variables for dual-mode themes", () => {
-    const css = buildThemeStyleBlock([dualModeTheme]);
+    const css = buildThemeStyleBlock([dualModeTheme], defaultCounts);
     expect(css).toContain(':root[data-theme="porsche"]');
     expect(css).toContain("--link: light-dark(#0047FF, #88B5FF)");
   });
 
   it("emits concrete values for single-mode themes", () => {
-    const css = buildThemeStyleBlock([
-      {
-        ...dualModeTheme,
-        id: "acme",
-        label: "Acme",
-        supports: ["dark"],
-        cssVariables: {
-          ...dualModeTheme.cssVariables,
-          link: "#88B5FF",
+    const css = buildThemeStyleBlock(
+      [
+        {
+          ...dualModeTheme,
+          id: "acme",
+          label: "Acme",
+          supports: ["dark"],
+          cssVariables: {
+            ...dualModeTheme.cssVariables,
+            link: "#88B5FF",
+          },
+          background: undefined,
         },
-        background: undefined,
-      },
-    ]);
+      ],
+      defaultCounts,
+    );
 
     expect(css).toContain("--link: #88B5FF");
     expect(css).not.toContain("light-dark(#88B5FF");
@@ -85,18 +90,31 @@ describe("buildThemeStyleBlock", () => {
 
   // Regression: SSR/CSR hydration mismatch on radar fills + MobileSegmentNav swatches.
   it("emits --rtk-segment-N and --rtk-ring-N light-dark vars per theme", () => {
-    const css = buildThemeStyleBlock([dualModeTheme]);
+    const css = buildThemeStyleBlock([dualModeTheme], defaultCounts);
     expect(css).toContain("--rtk-segment-1: light-dark(#4A9E7E, #7EC9AA)");
     expect(css).toContain("--rtk-segment-4: light-dark(#B85B5B, #DA8A8A)");
     expect(css).toContain("--rtk-ring-1: light-dark(#4A9E7E, #7EC9AA)");
     expect(css).toContain("--rtk-ring-4: light-dark(#B85B5B, #DA8A8A)");
   });
 
+  // Cycling contract: when config declares more segments/rings than the
+  // manifest palette covers, paletteAt() wraps back to the first colour.
+  it("cycles palette colours when counts exceed manifest length", () => {
+    const css = buildThemeStyleBlock([dualModeTheme], {
+      segments: 6,
+      rings: 5,
+    });
+
+    expect(css).toContain("--rtk-segment-5: light-dark(#4A9E7E, #7EC9AA)");
+    expect(css).toContain("--rtk-segment-6: light-dark(#5B8DB8, #8AB6DB)");
+    expect(css).toContain("--rtk-ring-5: light-dark(#4A9E7E, #7EC9AA)");
+  });
+
   // Regression: dark-only background image was emitted with light-dark(), which
   // CSS rejects (light-dark accepts <color> only) → the whole `background`
   // shorthand on body::before fell back to none and the image disappeared.
   it("emits per-scheme rules for background image and opacity", () => {
-    const css = buildThemeStyleBlock([dualModeTheme]);
+    const css = buildThemeStyleBlock([dualModeTheme], defaultCounts);
     expect(css).toContain(
       ':root.scheme-light[data-theme="porsche"] { --background-image: none; --background-opacity: 0 }',
     );
@@ -118,7 +136,7 @@ describe("buildThemeStyleBlock", () => {
   // readableTextOn() couldn't parse → black text on saturated segment colors.
   // Now the contrast colour is precomputed at build time per segment per mode.
   it("emits --rtk-segment-N-fg with readableTextOn results per mode", () => {
-    const css = buildThemeStyleBlock([dualModeTheme]);
+    const css = buildThemeStyleBlock([dualModeTheme], defaultCounts);
     // segment 1: light #4A9E7E and dark #7EC9AA — both saturated mid-tones,
     // both readable as #FFFFFF under the 0.5 luminance cutoff.
     expect(css).toContain("--rtk-segment-1-fg: light-dark(#FFFFFF, #FFFFFF)");
@@ -130,7 +148,7 @@ describe("buildThemeStyleBlock", () => {
   // (which has no ::part hooks in v4) into theme.json. The fg is precomputed
   // via readableTextOn at build time per mode, identical to segment fg vars.
   it("emits --rtk-chip-{kind}-{bg,fg} light-dark vars per theme", () => {
-    const css = buildThemeStyleBlock([dualModeTheme]);
+    const css = buildThemeStyleBlock([dualModeTheme], defaultCounts);
 
     expect(css).toContain("--rtk-chip-status-bg: light-dark(#6B6D70, #88898C)");
     expect(css).toContain("--rtk-chip-tag-bg: light-dark(#2762EC, #178BFF)");

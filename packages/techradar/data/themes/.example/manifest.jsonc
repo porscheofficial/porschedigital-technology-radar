@@ -264,12 +264,17 @@
   // -----------------------------------------------------------------------
   //  radar  (required, object with `segments` and `rings` arrays)
   // -----------------------------------------------------------------------
-  //  Per-position colors for the radar visualization itself.
+  //  Per-position colors for the radar visualization itself. The first
+  //  array entry colors segment/ring index 0 (north / innermost), and so
+  //  on clockwise / outward.
   //
-  //  Both arrays MUST have EXACTLY as many entries as `data/config.json`
-  //  defines segments and rings (default: 4 each). The first array entry
-  //  colors segment/ring index 0 (north / innermost), and so on clockwise
-  //  / outward.
+  //  Palette cycling: these arrays are treated as palettes, not strict
+  //  1:1 mappings to `data/config.json#segments` / `#rings`. If the
+  //  consumer declares more segments or rings than this manifest defines
+  //  colors for, the framework cycles back to the start of the palette
+  //  (i.e. position N uses color `palette[N % palette.length]`). You only
+  //  need to ship a representative palette — 4 entries is typical — and
+  //  the framework adapts to arbitrary taxonomy sizes.
   //
   //  Pick high-contrast, distinguishable hues — these are the colors a
   //  user sees first when looking at the radar.

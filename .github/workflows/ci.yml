@@ -100,6 +100,16 @@ jobs:
           cd test-app
           techradar_tarball="$(ls "$RUNNER_TEMP/techradar-pack/"*.tgz | head -n1)"
           pnpm add "file:${techradar_tarball}"
+          # `create-techradar` fetches the framework from the npm registry at
+          # scaffold time and writes the seed `radar/` content plus
+          # `.markdownlint-cli2.jsonc` from THAT registry copy. The
+          # `pnpm add file:` above only swaps `node_modules/...`, so any fix
+          # to seed content or bundled config in this PR would still be
+          # masked by the already-scaffolded stale copies in CWD. Wipe and
+          # re-scaffold from the local tarball so the e2e actually exercises
+          # what's in this PR. See ADR-0033.
+          rm -rf radar/ .markdownlint-cli2.jsonc
+          pnpm exec techradar init
           node <<'EOF'
           const fs = require("node:fs");
           const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));

@@ -26,6 +26,7 @@ import {
 import { applyMechanicalRenames } from "./migrateApply";
 import { detectAll, type Finding } from "./migrateDetect";
 import { extractThemeFromConfig, type ThemeMode } from "./migrateThemes";
+import { resizeThemeManifestFile } from "./resizeThemePalette";
 import { sanitizeShadowTsconfig } from "./sanitizeShadowTsconfig";
 
 // ---------------------------------------------------------------------------
@@ -288,6 +289,8 @@ function scaffoldCustomTheme(
   slug: string,
   label: string,
   themesSourceDir: string,
+  segmentsCount: number,
+  ringsCount: number,
 ): void {
   const target = join(CWD, "themes", slug);
   if (existsSync(target)) {
@@ -314,7 +317,33 @@ function scaffoldCustomTheme(
   } catch (err) {
     if ((err as NodeJS.ErrnoException).code !== "ENOENT") throw err;
   }
+  resizeScaffoldedThemeManifest(manifestPath, segmentsCount, ringsCount, slug);
   consola.success(`Created themes/${slug}/ (from .example/)`);
+}
+
+function resizeScaffoldedThemeManifest(
+  manifestPath: string,
+  segmentsCount: number,
+  ringsCount: number,
+  themeId: string,
+): void {
+  if (!existsSync(manifestPath)) return;
+  try {
+    const outcome = resizeThemeManifestFile(
+      manifestPath,
+      segmentsCount,
+      ringsCount,
+    );
+    if (outcome.changed) {
+      consola.info(
+        `themes/${themeId}/: resized palette to segments=${outcome.segments.after} (was ${outcome.segments.before}), rings=${outcome.rings.after} (was ${outcome.rings.before})`,
+      );
+    }
+  } catch (err) {
+    consola.warn(
+      `themes/${themeId}/: could not resize palette (${(err as Error).message}); runtime cycling will still render correctly.`,
+    );
+  }
 }
 
 async function bootstrap(
@@ -368,18 +397,28 @@ async function bootstrap(
   const themesSourceDir = join(SOURCE_DIR, "data", "themes");
   if (existsSync(themesSourceDir)) {
     for (const theme of answers.themes) {
-      scaffold(
+      const created = scaffold(
         join(CWD, "themes", theme),
         join(themesSourceDir, theme),
         `themes/${theme}/`,
         true,
       );
+      if (created) {
+        resizeScaffoldedThemeManifest(
+          join(CWD, "themes", theme, "manifest.jsonc"),
+          answers.segments.length,
+          answers.rings.length,
+          theme,
+        );
+      }
     }
     if (answers.customTheme) {
       scaffoldCustomTheme(
         answers.customTheme.slug,
         answers.customTheme.label,
         themesSourceDir,
+        answers.segments.length,
+        answers.rings.length,
       );
     }
   }

@@ -2,24 +2,6 @@ import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 
-const BIN_SOURCE = readFileSync(path.resolve("bin", "techradar.ts"), "utf8");
-
-describe("shadow build dereferences symlinks (ADR-0033)", () => {
-  it("passes dereference: true to cpSync(SOURCE_DIR, BUILDER_DIR)", () => {
-    // Match cpSync call across multiple lines without the `s` flag (which
-    // requires ES2018+). `[\s\S]` is the portable any-char equivalent.
-    expect(BIN_SOURCE).toMatch(
-      /cpSync\(SOURCE_DIR,\s*BUILDER_DIR,\s*\{[\s\S]*?dereference:\s*true/,
-    );
-  });
-
-  it("keeps the nested-node_modules filter (ADR-0024)", () => {
-    expect(BIN_SOURCE).toMatch(
-      /filter:\s*\(src\)\s*=>\s*!src\.includes\(`\$\{PACKAGE_NAME\}\/node_modules`\)/,
-    );
-  });
-});
-
 describe("consumer-build scripts must not use the @/ path alias", () => {
   const SCRIPTS_DIR = path.resolve("scripts");
 

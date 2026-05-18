@@ -15,6 +15,7 @@ import { watch } from "chokidar";
 import { defineCommand, runMain } from "citty";
 import consola from "consola";
 import { execa, execaSync } from "execa";
+import { copyPackageToBuilder } from "./copyPackageToBuilder";
 import {
   buildConfigJson,
   collectAnswers,
@@ -210,11 +211,11 @@ function ensureBuildDir(): void {
   // without dereferencing, every file inside `.techradar/` realpath()s back
   // into the store. `tsx scripts/buildThemes.ts` then walks up from the
   // store path for `tsconfig.json`, and Node 26's CJS loader rejects the
-  // store-relative `@/lib/config` resolution it produces. See ADR-0029.
-  cpSync(SOURCE_DIR, BUILDER_DIR, {
-    recursive: true,
-    dereference: true,
-    filter: (src) => !src.includes(`${PACKAGE_NAME}/node_modules`),
+  // store-relative `@/lib/config` resolution it produces. See ADR-0033.
+  copyPackageToBuilder({
+    sourceDir: SOURCE_DIR,
+    builderDir: BUILDER_DIR,
+    packageName: PACKAGE_NAME,
   });
 
   // Strip maintainer-only lifecycle scripts and QA-only devDependencies from

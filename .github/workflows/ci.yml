@@ -61,32 +61,45 @@ jobs:
       - run: pnpm --filter @porscheofficial/porschedigital-technology-radar build
 
   scaffolder-e2e:
-    name: Scaffolder to framework e2e
+    name: Scaffolder to framework e2e (Node ${{ matrix.node }})
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [22, 24, 26]
     steps:
       # Pinned to commit SHA per OpenSSF Scorecard PinnedDependenciesID.
       # See ADR-0017.
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
-          node-version: 22
+          node-version: ${{ matrix.node }}
       - uses: pnpm/action-setup@739bfe42ca9233c5e6aca07c1a25a9d34aca49b0 # v6.0.7
       - run: pnpm install
       - run: pnpm --filter @porscheofficial/porschedigital-technology-radar run build:bin
       - run: pnpm --filter @porscheofficial/create-techradar run build
       - run: pnpm --filter @porscheofficial/create-techradar pack --pack-destination "$RUNNER_TEMP/create-techradar-pack"
+      # Pack the framework into a real tarball and install it via `file:` in
+      # the scaffolded app. This forces pnpm to fetch and unpack the tarball
+      # into its content-addressed `node_modules/.pnpm/` store with the same
+      # symlinked layout a real consumer gets. The previous `link:` form
+      # short-circuited the store (direct directory link) and so could not
+      # reproduce shadow-build bugs that only manifest under that layout —
+      # ADR-0033 documents one such bug shipped to 2.2.0.
+      - run: pnpm --filter @porscheofficial/porschedigital-technology-radar pack --pack-destination "$RUNNER_TEMP/techradar-pack"
       - name: Scaffold app and run full pipeline
         shell: bash
         run: |
           set -euo pipefail
           sandbox="$(mktemp -d "$RUNNER_TEMP/scaffolder-e2e-XXXXXX")"
           cd "$sandbox"
-          export npm_config_user_agent="pnpm/10.29.2 npm/? node/v22.21.1 linux x64"
+          export npm_config_user_agent="pnpm/10.29.2 npm/? node/v${{ matrix.node }}.0.0 linux x64"
           pnpm dlx "$RUNNER_TEMP/create-techradar-pack/"*.tgz test-app --yes
           cd test-app
-          pnpm add "link:$GITHUB_WORKSPACE/packages/techradar"
+          techradar_tarball="$(ls "$RUNNER_TEMP/techradar-pack/"*.tgz | head -n1)"
+          pnpm add "file:${techradar_tarball}"
           node <<'EOF'
           const fs = require("node:fs");
           const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));

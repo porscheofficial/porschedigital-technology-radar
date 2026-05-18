@@ -114,10 +114,15 @@ the `@/*` alias: they run via Vitest only inside the dev repo (the shadow
 build excludes them via `sanitizeShadowTsconfig()`), and Vitest's resolver
 is configured against the dev-repo `tsconfig.json` independently.
 
-A regression test in `bin/__tests__/shadow-build-symlinks.test.ts`
-table-tests every `scripts/**/*.ts` (excluding `__tests__/`) for absence of
-`from "@/…"` imports, and asserts the `cpSync` call in `bin/techradar.ts`
-still carries `dereference: true`.
+A behavioural regression test in
+`bin/__tests__/copyPackageToBuilder.test.ts` builds a pnpm-shaped tmpdir
+(scoped install symlinking per-entry into a `.pnpm/<name>/` store), runs
+`copyPackageToBuilder()`, and asserts every copied file is a real file
+whose `realpath()` stays inside the builder dir and that nested
+`node_modules/` is filtered out. A second test in
+`bin/__tests__/shadow-build-symlinks.test.ts` table-tests every
+`scripts/**/*.ts` (excluding `__tests__/`) for absence of `from "@/…"`
+imports.
 
 The `.dependency-cruiser.cjs` rule `no-deep-relative-imports` is unaffected:
 it only flags `from: { path: "^src" }`, not `^scripts`, and only blocks
@@ -175,9 +180,43 @@ than enumerating which downstream code paths assume it.
 
 **Followups (not part of this ADR)**
 
-- Consider a sensor that asserts `realpathSync('.techradar/scripts/buildData.ts')`
-  starts with `BUILDER_DIR` after `ensureBuildDir()` runs, as a runtime
-  check complementing the string-match regression test.
+- None outstanding. The behavioural test on `copyPackageToBuilder()`
+  already asserts `realpath()` of copied entries stays inside the builder
+  dir, which subsumes the originally-planned runtime sensor.
+
+## CI gap and closure
+
+The bug shipped in 2.2.0 despite an existing `scaffolder-e2e` job in
+`.github/workflows/ci.yml` because the job had two blind spots that, combined,
+made the failure mode invisible:
+
+1. **`link:` instead of `file:` install.** The job did
+   `pnpm add "link:$GITHUB_WORKSPACE/packages/techradar"`. pnpm treats `link:`
+   as a direct directory link — no tarball, no content-addressed store, no
+   symlinked layout. `ensureBuildDir()` therefore saw real files at the
+   source and `cpSync` produced real files at the destination. The pnpm
+   shape that breaks `realpath()`-based resolution simply never existed in
+   CI.
+2. **Single Node version.** The job pinned `node-version: 22`. The
+   tsx-resolver-vs-CJS-loader interaction documented above only crashes on
+   Node ≥26. Even if the layout had been correct, Node 22 would not have
+   reproduced the failure.
+
+Both gaps are closed in the same change:
+
+- The job now packs the framework with
+  `pnpm --filter @porscheofficial/porschedigital-technology-radar pack` and
+  installs it as `file:<tarball>` in the scaffolded sandbox. pnpm fetches,
+  unpacks into `.pnpm/<name>/`, and produces the same symlinked surface a
+  real consumer gets.
+- The job runs across `node-version: [22, 24, 26]` with `fail-fast: false`,
+  so any future Node-major-induced regression in shadow-build resolution
+  fails CI on the affected version before publish.
+
+Together with the behavioural test on `copyPackageToBuilder()`, the
+`@/`-import sensor on `scripts/`, and the dereferencing fix itself, this
+covers the three places a future regression could enter: the helper
+implementation, the script imports, and the consumer-install shape.
 
 ## References
 

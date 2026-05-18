@@ -105,7 +105,7 @@
     "@types/node": "^25",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "chokidar": "^4.0.3",
+    "chokidar": "^5.0.0",
     "citty": "^0.2.2",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",

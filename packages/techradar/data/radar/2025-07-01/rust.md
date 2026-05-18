@@ -51,12 +51,14 @@ Rust has a steep learning curve. Our approach:
 ## Where Rust Fits (and Doesn't)
 
 We use Rust for:
+
 - High-throughput data processing
 - Latency-sensitive real-time services
 - [[webassembly]] compilation targets
 - CLI tools that need fast startup
 
 We don't use Rust for:
+
 - CRUD APIs (TypeScript + Node.js is faster to develop)
 - Frontend applications
 - Scripts and automation (too much ceremony)

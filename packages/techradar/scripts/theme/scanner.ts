@@ -66,15 +66,30 @@ function loadThemeJson(
 
   const themeJson = parseResult.data;
 
-  if (themeJson.radar.segments.length !== segmentsCount) {
-    throw new Error(
-      `theme '${id}': radar.segments has ${themeJson.radar.segments.length} entries but config.segments has ${segmentsCount}`,
+  // Palette length and config taxonomy length are decoupled by design.
+  // `resolveTheme()` in src/lib/theme/schema.ts cycles palettes via
+  // `palette[index % palette.length]` and extends arrays to
+  // `Math.max(manifest.length, configCount)`, so a palette of N entries
+  // renders a radar with M segments/rings (M ≠ N) without error — the
+  // built-ins ship a fixed 4-entry palette intentionally. Zod already
+  // enforces `.min(1)` on each palette, which is the only hard invariant
+  // the renderer needs. We log a friendly hint when palette < count so
+  // consumers know their colours will cycle, but never block the build.
+  if (
+    themeJson.radar.segments.length > 0 &&
+    themeJson.radar.segments.length < segmentsCount
+  ) {
+    consola.info(
+      `[theme-scanner] theme '${id}': radar.segments has ${themeJson.radar.segments.length} entries for ${segmentsCount} segments — colours will cycle (palette[index % ${themeJson.radar.segments.length}]).`,
     );
   }
 
-  if (themeJson.radar.rings.length !== ringsCount) {
-    throw new Error(
-      `theme '${id}': radar.rings has ${themeJson.radar.rings.length} entries but config.rings has ${ringsCount}`,
+  if (
+    themeJson.radar.rings.length > 0 &&
+    themeJson.radar.rings.length < ringsCount
+  ) {
+    consola.info(
+      `[theme-scanner] theme '${id}': radar.rings has ${themeJson.radar.rings.length} entries for ${ringsCount} rings — colours will cycle (palette[index % ${themeJson.radar.rings.length}]).`,
     );
   }
 

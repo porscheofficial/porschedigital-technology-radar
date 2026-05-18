@@ -125,10 +125,40 @@ describe("scanThemes", () => {
     );
   });
 
-  it("still validates radar array lengths", () => {
+  it("accepts a palette shorter than the configured taxonomy (runtime cycles)", () => {
     writeTheme(tmpDir, "my-theme");
-    expect(() =>
-      scanThemes({ ...BASE_OPTS, builtinDir: tmpDir, segmentsCount: 3 }),
-    ).toThrow(/radar\.segments has 4 entries but config\.segments has 3/);
+    const infoSpy = vi.spyOn(consola, "info").mockImplementation(() => {});
+    const result = scanThemes({
+      ...BASE_OPTS,
+      builtinDir: tmpDir,
+      segmentsCount: 7,
+      ringsCount: 7,
+    });
+    expect(result).toHaveLength(1);
+    expect(result[0].radar.segments).toHaveLength(4);
+    expect(infoSpy).toHaveBeenCalled();
+    infoSpy.mockRestore();
+  });
+
+  it("accepts a palette longer than the configured taxonomy (extras unused)", () => {
+    writeTheme(tmpDir, "my-theme");
+    const result = scanThemes({
+      ...BASE_OPTS,
+      builtinDir: tmpDir,
+      segmentsCount: 2,
+      ringsCount: 2,
+    });
+    expect(result).toHaveLength(1);
+    expect(result[0].radar.segments).toHaveLength(4);
+  });
+
+  it("rejects an empty palette via the Zod schema", () => {
+    writeTheme(tmpDir, "my-theme", {
+      ...VALID_THEME_JSON,
+      radar: { segments: [], rings: [] },
+    });
+    expect(() => scanThemes({ ...BASE_OPTS, builtinDir: tmpDir })).toThrow(
+      /too small|>=1/i,
+    );
   });
 });

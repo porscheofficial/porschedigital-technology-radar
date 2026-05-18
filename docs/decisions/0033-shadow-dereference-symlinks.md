@@ -218,6 +218,26 @@ Together with the behavioural test on `copyPackageToBuilder()`, the
 covers the three places a future regression could enter: the helper
 implementation, the script imports, and the consumer-install shape.
 
+### Second-order gap: scaffolded seed sourced from the registry
+
+After closing the two gaps above, the e2e job still missed PR-local changes
+to **seed content shipped by the framework** (e.g. `data/radar/*.md`,
+`.markdownlint-cli2.jsonc`). `create-techradar` resolves the framework
+version via `fetchLatestVersion()` against the npm registry, writes
+`package.json` with `^<latest>`, installs that version, then runs
+`techradar init` which scaffolds seed files from **that registry copy**
+into the consumer CWD. The subsequent `pnpm add file:<tarball>` swaps
+`node_modules/...` but leaves the already-written `radar/` and
+`.markdownlint-cli2.jsonc` untouched. The next `pnpm run build:data`
+therefore lints the registry's stale seed against the registry's stale
+config — both can be wrong while the local PR is correct, with CI green.
+
+The job now wipes the scaffolded seed (`rm -rf radar/ .markdownlint-cli2.jsonc`)
+and re-runs `pnpm exec techradar init` after the `file:` install, forcing
+the scaffold step to source seed content and config from the local
+tarball. A YAML comment in `ci.yml` explains the trap so a future
+contributor doesn't simplify the rm+init step away.
+
 ## References
 
 - ADR-0021 (strip devDependencies from shadow `package.json`).

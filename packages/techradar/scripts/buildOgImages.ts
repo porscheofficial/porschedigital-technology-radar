@@ -5,14 +5,13 @@ import { Resvg } from "@resvg/resvg-js";
 import { consola } from "consola";
 import React from "react";
 import satori from "satori";
-
-import type { Item } from "@/lib/types";
 import config from "../src/lib/config";
 import {
   resolveRadarHexPalette,
   resolveTheme,
   type ThemeManifest,
 } from "../src/lib/theme/schema";
+import type { Item } from "../src/lib/types";
 
 const OG_WIDTH = 1200;
 const OG_HEIGHT = 630;

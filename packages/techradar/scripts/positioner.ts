@@ -1,5 +1,5 @@
 import consola from "consola";
-import type { Ring, Segment } from "@/lib/types";
+import type { Ring, Segment } from "../src/lib/types";
 
 type Position = [x: number, y: number];
 type RingDimension = [innerRadius: number, outerRadius: number];

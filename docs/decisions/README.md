@@ -65,6 +65,8 @@ ADRs cite the *decisions behind those rules*.
 | 0029 | Per-package licensing: techradar Apache-2.0, create-techradar MIT | accepted |
 | 0030 | `create-techradar` is a one-shot bootstrapper, not a template owner | accepted |
 | 0031 | Gate `next.config.js` dev-only branches on monorepo execution context | accepted |
+| 0032 | `create-techradar` peer version policy | accepted |
+| 0033 | Dereference symlinks when copying the package into the shadow workspace | accepted |
 
 ## When to write a new ADR
 

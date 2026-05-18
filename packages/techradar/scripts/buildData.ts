@@ -10,9 +10,9 @@ import remarkGfm from "remark-gfm";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import { unified } from "unified";
-import { Flag, type Item } from "@/lib/types";
 import nextConfig from "../next.config.js";
 import config from "../src/lib/config";
+import { Flag, type Item } from "../src/lib/types";
 import Positioner from "./positioner";
 import {
   type BlipLookup,

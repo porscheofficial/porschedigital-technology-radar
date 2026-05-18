@@ -8,8 +8,14 @@
     "MD024": false,
     // Allow inline HTML (common in radar descriptions)
     "MD033": false,
+    // Allow fenced code blocks without a language tag — radar items frequently
+    // include short illustrative snippets where forcing a language is noise.
+    "MD040": false,
     // First line needn't be a heading (frontmatter comes first)
-    "MD041": false
+    "MD041": false,
+    // Allow either compact or padded table cell style — radar items use both
+    // forms interchangeably and the rendered output is identical.
+    "MD060": false
   },
   "globs": ["radar/**/*.md"]
 }

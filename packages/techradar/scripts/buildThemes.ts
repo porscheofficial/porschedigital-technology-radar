@@ -5,12 +5,12 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import consola from "consola";
-import config from "@/lib/config";
+import config from "../src/lib/config";
 import {
   normalizeThemePreferenceMode,
   THEME_PREFERENCE_MODES,
   type ThemeManifest,
-} from "@/lib/theme/schema";
+} from "../src/lib/theme/schema";
 import { materializeThemeAssets } from "./theme/assets";
 import { scanThemes } from "./theme/scanner";
 

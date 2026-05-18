@@ -204,8 +204,16 @@ function ensureBuildDir(): void {
   //
   // Letting `npm install` populate `node_modules/` from scratch guarantees
   // every binary, dependency, and bin-link lives strictly inside `.techradar/`.
+  //
+  // `dereference: true` copies symlink targets as real files. Under pnpm the
+  // installed package is itself a symlink into the content-addressed store;
+  // without dereferencing, every file inside `.techradar/` realpath()s back
+  // into the store. `tsx scripts/buildThemes.ts` then walks up from the
+  // store path for `tsconfig.json`, and Node 26's CJS loader rejects the
+  // store-relative `@/lib/config` resolution it produces. See ADR-0029.
   cpSync(SOURCE_DIR, BUILDER_DIR, {
     recursive: true,
+    dereference: true,
     filter: (src) => !src.includes(`${PACKAGE_NAME}/node_modules`),
   });
 

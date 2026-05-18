@@ -5,7 +5,7 @@ import {
   type ThemeManifest,
   type ThemeManifestAssetsResolved,
   type ThemeModeValue,
-} from "@/lib/theme/schema";
+} from "../../src/lib/theme/schema";
 
 export interface AssetOptions {
   themes: ThemeManifest[];

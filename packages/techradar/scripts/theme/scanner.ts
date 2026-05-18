@@ -2,8 +2,8 @@ import fs from "node:fs";
 import path from "node:path";
 import consola from "consola";
 import { type ParseError, parse as parseJsonc } from "jsonc-parser";
-import type { ThemeJson, ThemeManifest } from "@/lib/theme/schema";
-import { ThemeJsonSchema } from "@/lib/theme/schema";
+import type { ThemeJson, ThemeManifest } from "../../src/lib/theme/schema";
+import { ThemeJsonSchema } from "../../src/lib/theme/schema";
 
 export interface ScannerOptions {
   builtinDir: string;

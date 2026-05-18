@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.2.2](https://github.com/porscheofficial/porschedigital-technology-radar/compare/porschedigital-technology-radar-v2.2.1...porschedigital-technology-radar-v2.2.2) (2026-05-18)
+
+
+### Bug Fixes
+
+* **techradar:** align theme palette with user-chosen segments and rings count ([c69e52d](https://github.com/porscheofficial/porschedigital-technology-radar/commit/c69e52d0db7bd6719e3d1a08498124a834883f20))
+
 ## [2.2.1](https://github.com/porscheofficial/porschedigital-technology-radar/compare/porschedigital-technology-radar-v2.2.0...porschedigital-technology-radar-v2.2.1) (2026-05-18)
 
 

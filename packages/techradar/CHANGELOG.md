@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.2.1](https://github.com/porscheofficial/porschedigital-technology-radar/compare/porschedigital-technology-radar-v2.2.0...porschedigital-technology-radar-v2.2.1) (2026-05-18)
+
+
+### Bug Fixes
+
+* **techradar:** dereference symlinks when copying package to shadow build dir ([f32d1ed](https://github.com/porscheofficial/porschedigital-technology-radar/commit/f32d1ed60e3a9cb36533309cbba59363c3f04a92))
+* **techradar:** make scaffolded seed content lint-clean for consumers ([8ed852c](https://github.com/porscheofficial/porschedigital-technology-radar/commit/8ed852cba30fd376c735511799a04bc4aac53f8c))
+
+
+### Tests
+
+* **techradar:** cover shadow-build symlink dereferencing end-to-end ([f3256b3](https://github.com/porscheofficial/porschedigital-technology-radar/commit/f3256b3f4a38aab89d4e4922cd28c3949a956747))
+
 ## [2.2.0](https://github.com/porscheofficial/porschedigital-technology-radar/compare/porschedigital-technology-radar-v2.1.0...porschedigital-technology-radar-v2.2.0) (2026-05-18)
 
 

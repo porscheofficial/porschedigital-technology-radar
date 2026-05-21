@@ -11,7 +11,11 @@ import {
 import { Blip } from "@/components/Radar/Blip";
 import { getItemChangeDirection, getToggle } from "@/lib/data";
 import { useRadarHighlight } from "@/lib/RadarHighlightContext";
-import { describeFilledArc } from "@/lib/radarGeometry";
+import {
+  computeSegmentStartAngle,
+  describeFilledArc,
+  describePieWedge,
+} from "@/lib/radarGeometry";
 import { useTheme } from "@/lib/ThemeContext";
 import { segmentForegroundVar } from "@/lib/theme/schema";
 import { Flag, type Item, type Ring, type Segment } from "@/lib/types";
@@ -161,12 +165,8 @@ const ChartInner: FC<ChartProps> = ({
     return map;
   }, [items]);
 
-  // Compute start angle for each segment position (1-indexed).
-  // Position 1 starts at 270° (top-left for 4 segments), each subsequent
-  // segment advances by `sweep` degrees clockwise.
-  const getStartAngle = (position: number): number => {
-    return (270 + (position - 1) * sweep) % 360;
-  };
+  const getStartAngle = (position: number): number =>
+    computeSegmentStartAngle(position, numSegments);
 
   const polarToCartesian = (
     radius: number,
@@ -208,17 +208,14 @@ const ChartInner: FC<ChartProps> = ({
   const renderGlow = (position: number, color: string) => {
     const gradientId = `glow-${position}`;
     const startAngle = getStartAngle(position);
-    const midAngle = startAngle + sweep / 2;
-    const midRad = ((midAngle - 90) * Math.PI) / 180;
-
-    const dirX = Math.cos(midRad);
-    const dirY = Math.sin(midRad);
-
-    // Rect from SVG edge to radar center; gradient radiates from center outward
-    const rectW = viewBoxCenter;
-    const rectH = viewBoxCenter;
-    const rectX = dirX >= 0 ? viewBoxCenter : 0;
-    const rectY = dirY >= 0 ? viewBoxCenter : 0;
+    const endAngle = startAngle + sweep;
+    const wedgeD = describePieWedge(
+      viewBoxCenter,
+      viewBoxCenter,
+      center,
+      startAngle,
+      endAngle,
+    );
     return (
       <>
         <defs>
@@ -233,13 +230,7 @@ const ChartInner: FC<ChartProps> = ({
             <stop offset="100%" stopColor={color} stopOpacity={0} />
           </radialGradient>
         </defs>
-        <rect
-          width={rectW}
-          height={rectH}
-          x={rectX}
-          y={rectY}
-          fill={`url(#${gradientId})`}
-        />
+        <path d={wedgeD} fill={`url(#${gradientId})`} />
       </>
     );
   };
@@ -289,11 +280,8 @@ const ChartInner: FC<ChartProps> = ({
   };
 
   const renderRingLabels = () => {
-    // Place ring labels along each segment boundary line.
-    // For N segments we place labels on the first boundary (position 1 start angle).
-    // We also place a mirrored set on the opposite boundary for readability.
-    const labelAngle = getStartAngle(1);
-    const oppositeAngle = (labelAngle + 180) % 360;
+    const labelAngle = 270;
+    const oppositeAngle = 90;
 
     return rings.map((ring, index) => {
       const outerRadius = ring.radius || 1;

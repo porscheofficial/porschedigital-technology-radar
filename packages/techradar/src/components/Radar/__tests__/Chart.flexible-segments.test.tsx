@@ -89,7 +89,9 @@ describe("Chart with flexible segment counts", () => {
       const segmentGroups = container.querySelectorAll("g[data-segment]");
       expect(segmentGroups).toHaveLength(n);
 
-      const arcPaths = container.querySelectorAll("g[data-segment] > path");
+      const arcPaths = container.querySelectorAll(
+        "g[data-segment] > path[data-key]",
+      );
       expect(arcPaths).toHaveLength(n * rings.length);
 
       const gradients = container.querySelectorAll("radialGradient");
@@ -111,7 +113,7 @@ describe("Chart with flexible segment counts", () => {
     const { container } = render(
       <Chart size={800} segments={segments} rings={rings} items={items} />,
     );
-    const firstArc = container.querySelector("g[data-segment] path");
+    const firstArc = container.querySelector("g[data-segment] path[data-key]");
     expect(firstArc?.getAttribute("d")).toMatch(/A \d+ \d+ 0 1 0/);
   });
 
@@ -120,7 +122,24 @@ describe("Chart with flexible segment counts", () => {
     const { container } = render(
       <Chart size={800} segments={segments} rings={rings} items={items} />,
     );
-    const firstArc = container.querySelector("g[data-segment] path");
+    const firstArc = container.querySelector("g[data-segment] path[data-key]");
     expect(firstArc?.getAttribute("d")).toMatch(/A \d+ \d+ 0 0 0/);
+  });
+
+  it("places ring labels on the horizontal axis regardless of segment count", () => {
+    const segments = makeSegments(5);
+    const { container } = render(
+      <Chart size={800} segments={segments} rings={rings} items={items} />,
+    );
+    const ringLabels = Array.from(container.querySelectorAll("text")).filter(
+      (node) => {
+        const text = node.textContent ?? "";
+        return text === "Adopt" || text === "Trial";
+      },
+    );
+    expect(ringLabels.length).toBeGreaterThan(0);
+    for (const label of ringLabels) {
+      expect(Number(label.getAttribute("y"))).toBeCloseTo(472, 5);
+    }
   });
 });

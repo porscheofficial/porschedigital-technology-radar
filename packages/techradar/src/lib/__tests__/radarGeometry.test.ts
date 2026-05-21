@@ -1,4 +1,9 @@
-import { describeFilledArc, polarToCartesian } from "@/lib/radarGeometry";
+import {
+  computeSegmentStartAngle,
+  describeFilledArc,
+  describePieWedge,
+  polarToCartesian,
+} from "@/lib/radarGeometry";
 
 describe("polarToCartesian", () => {
   it("places 0° at the top of the circle", () => {
@@ -88,5 +93,78 @@ describe("describeFilledArc", () => {
     const outerEndXIdx = tokens.indexOf("A") + 6;
     expect(tokens[outerEndXIdx]).toBe("100");
     expect(tokens[outerEndXIdx + 1]).toBe("0");
+  });
+});
+
+describe("describePieWedge", () => {
+  it("starts at the centre, traces out to the arc, and closes with Z", () => {
+    const d = describePieWedge(100, 100, 50, 0, 90);
+    const tokens = d.split(" ");
+    expect(tokens[0]).toBe("M");
+    expect(tokens[1]).toBe("100");
+    expect(tokens[2]).toBe("100");
+    expect(tokens[3]).toBe("L");
+    expect(d).toContain("A 50 50");
+    expect(d).toMatch(/ Z$/);
+  });
+
+  it("covers a six-segment top wedge that straddles 0°/360° as one continuous shape", () => {
+    // Six segments => sweep 60°. The "AI" segment in the user-reported bug
+    // spans 330°→390° (i.e. midAngle = 0° / straight up). The pie wedge must
+    // include both the upper-left point (at 330°) and the upper-right point
+    // (at 30°) — proving the glow no longer collapses onto one half-plane.
+    const cx = 100;
+    const cy = 100;
+    const r = 50;
+    const d = describePieWedge(cx, cy, r, 330, 390);
+
+    const left = polarToCartesian(cx, cy, r, 330);
+    const right = polarToCartesian(cx, cy, r, 390);
+
+    expect(d).toContain(`L ${left.x} ${left.y}`);
+    expect(d).toContain(`${right.x} ${right.y} Z`);
+    expect(left.x).toBeLessThan(cx);
+    expect(right.x).toBeGreaterThan(cx);
+  });
+});
+
+describe("computeSegmentStartAngle", () => {
+  it("keeps the historical 4-segment layout (boundaries on cardinal axes)", () => {
+    expect(computeSegmentStartAngle(1, 4)).toBe(270);
+    expect(computeSegmentStartAngle(2, 4)).toBe(0);
+    expect(computeSegmentStartAngle(3, 4)).toBe(90);
+    expect(computeSegmentStartAngle(4, 4)).toBe(180);
+  });
+
+  it("places a boundary at 12 o'clock for even segment counts (N=6)", () => {
+    const start = computeSegmentStartAngle(1, 6);
+    expect((start + 60) % 360).toBe(0);
+  });
+
+  it("centres segment 1 at 12 o'clock for odd segment counts (N=5)", () => {
+    const sweep = 360 / 5;
+    const start = computeSegmentStartAngle(1, 5);
+    const mid = (start + sweep / 2) % 360;
+    expect(mid).toBe(0);
+  });
+
+  it("places a vertical boundary at the bottom for N=5", () => {
+    const sweep = 360 / 5;
+    const boundaries = [1, 2, 3, 4, 5].flatMap((p) => [
+      computeSegmentStartAngle(p, 5),
+      (computeSegmentStartAngle(p, 5) + sweep) % 360,
+    ]);
+    expect(boundaries).toContain(180);
+  });
+
+  it("centres segment 1 at 12 o'clock for N=3", () => {
+    const sweep = 360 / 3;
+    const start = computeSegmentStartAngle(1, 3);
+    const mid = (start + sweep / 2) % 360;
+    expect(mid).toBe(0);
+  });
+
+  it("returns 0 when there are no segments", () => {
+    expect(computeSegmentStartAngle(1, 0)).toBe(0);
   });
 });

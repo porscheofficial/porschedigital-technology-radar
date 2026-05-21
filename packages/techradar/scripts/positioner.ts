@@ -1,4 +1,5 @@
 import consola from "consola";
+import { computeSegmentStartAngle } from "../src/lib/radarGeometry";
 import type { Ring, Segment } from "../src/lib/types";
 
 type Position = [x: number, y: number];
@@ -21,9 +22,10 @@ export default class Positioner {
     this.sweep = segments.length > 0 ? 360 / segments.length : 90;
 
     segments.forEach((segment) => {
-      // Position 1 starts at 270°, each subsequent advances by sweep degrees
-      this.segmentAngles[segment.id] =
-        (270 + (segment.position - 1) * this.sweep) % 360;
+      this.segmentAngles[segment.id] = computeSegmentStartAngle(
+        segment.position,
+        segments.length,
+      );
     });
 
     rings.forEach((ring, index) => {

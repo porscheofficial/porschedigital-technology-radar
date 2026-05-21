@@ -3,7 +3,11 @@ import { type FC, memo, useMemo } from "react";
 import { Blip } from "@/components/Radar/Blip";
 import { getItemChangeDirection, getToggle } from "@/lib/data";
 import { useRadarHighlight } from "@/lib/RadarHighlightContext";
-import { describeFilledArc } from "@/lib/radarGeometry";
+import {
+  computeSegmentStartAngle,
+  describeFilledArc,
+  describePieWedge,
+} from "@/lib/radarGeometry";
 import { useTheme } from "@/lib/ThemeContext";
 import { segmentForegroundVar } from "@/lib/theme/schema";
 import { Flag, type Item, type Ring, type Segment } from "@/lib/types";
@@ -49,9 +53,8 @@ const SegmentChartInner: FC<SegmentChartProps> = ({
   const sweep = numSegments > 0 ? 360 / numSegments : 90;
   const position = segment.position;
 
-  const getStartAngle = (pos: number): number => {
-    return (270 + (pos - 1) * sweep) % 360;
-  };
+  const getStartAngle = (pos: number): number =>
+    computeSegmentStartAngle(pos, numSegments);
 
   const startAngle = getStartAngle(position);
   const endAngle = startAngle + sweep;
@@ -135,14 +138,13 @@ const SegmentChartInner: FC<SegmentChartProps> = ({
 
   const renderGlow = () => {
     const gradientId = `qc-glow-${position}`;
-    const midRad = toRad(midAngle);
-    const dirX = Math.cos(midRad);
-    const dirY = Math.sin(midRad);
-
-    const rectW = center;
-    const rectH = center;
-    const rectX = dirX >= 0 ? center : 0;
-    const rectY = dirY >= 0 ? center : 0;
+    const wedgeD = describePieWedge(
+      center,
+      center,
+      center,
+      startAngle,
+      endAngle,
+    );
 
     return (
       <>
@@ -158,13 +160,7 @@ const SegmentChartInner: FC<SegmentChartProps> = ({
             <stop offset="100%" stopColor={segmentColor} stopOpacity={0} />
           </radialGradient>
         </defs>
-        <rect
-          width={rectW}
-          height={rectH}
-          x={rectX}
-          y={rectY}
-          fill={`url(#${gradientId})`}
-        />
+        <path d={wedgeD} fill={`url(#${gradientId})`} />
       </>
     );
   };

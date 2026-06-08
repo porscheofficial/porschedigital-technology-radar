@@ -227,8 +227,8 @@ importers:
         specifier: ^1.60.0
         version: 1.60.0
       portless:
-        specifier: ^0.12.0
-        version: 0.12.0
+        specifier: ^0.14.0
+        version: 0.14.0
       tsup:
         specifier: ^8.5.1
         version: 8.5.1(jiti@2.6.1)(postcss@8.5.15)(tsx@4.22.4)(typescript@6.0.3)(yaml@2.9.0)
@@ -4887,9 +4887,9 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  portless@0.12.0:
-    resolution: {integrity: sha512-zE8EYJ5xIEtKEBu1wnD+FavOE90/GNxRixF4Mu2hxMvDuVx1ftUbA6VbjbxI9sP9LUt0L26l6OiENGo4EFtLfw==}
-    engines: {node: '>=20'}
+  portless@0.14.0:
+    resolution: {integrity: sha512-kKxmxB1DQ9gI8t+V13VhuwTXu31io5nbFubvZAE82AxzXBsvcJV7qQJbmomrQUpbVxo2UVHqs14iX4YK0BClmQ==}
+    engines: {node: '>=24'}
     os: [darwin, linux, win32]
     hasBin: true
 
@@ -10668,7 +10668,7 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.2
 
-  portless@0.12.0: {}
+  portless@0.14.0: {}
 
   possible-typed-array-names@1.1.0: {}
 

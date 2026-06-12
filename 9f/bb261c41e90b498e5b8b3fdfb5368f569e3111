@@ -1,0 +1,19 @@
+packages/create-techradar/package.json
+  s_5bbc385f354aab::t_55285a680a5141 45
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "9fbb261c41e90b498e5b8b3fdfb5368f569e3111",
+  "prompts": {},
+  "sessions": {
+    "s_5bbc385f354aab": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "349fb077-82e6-4096-afd7-439f6bdcde9e",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Sebastian Dellwig <sebastian.dellwig@porsche.digital>"
+    }
+  }
+}

@@ -28,6 +28,7 @@
     "empty-heading": "off",
     "text-content": "off",
     "no-autoplay": "off",
-    "input-missing-label": "off"
+    "input-missing-label": "off",
+    "attribute-allowed-values": "off"
   }
 }

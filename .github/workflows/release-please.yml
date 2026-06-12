@@ -90,7 +90,9 @@ jobs:
       # Both packages are configured for OIDC Trusted Publishing on npmjs.org —
       # no NPM_TOKEN secret needed.
       - if: ${{ github.event_name == 'workflow_dispatch' || needs.release-please.outputs.techradar_release_created == 'true' }}
-        run: pnpm --filter @porscheofficial/porschedigital-technology-radar publish --no-git-checks --provenance
+        working-directory: packages/techradar
+        run: npm publish --provenance --access public
 
       - if: ${{ github.event_name == 'workflow_dispatch' || needs.release-please.outputs.create_techradar_release_created == 'true' }}
-        run: pnpm --filter @porscheofficial/create-techradar publish --no-git-checks --provenance
+        working-directory: packages/create-techradar
+        run: npm publish --provenance --access public

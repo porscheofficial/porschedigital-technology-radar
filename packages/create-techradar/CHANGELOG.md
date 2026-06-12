@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.0.5](https://github.com/porscheofficial/porschedigital-technology-radar/compare/create-techradar-v1.0.4...create-techradar-v1.0.5) (2026-06-12)
+
+
+### Bug Fixes
+
+* **create-techradar:** add prepublishOnly to guarantee dist is built before publish ([ef7f321](https://github.com/porscheofficial/porschedigital-technology-radar/commit/ef7f3215011c984b22666b9a7695db2036a9b546)), closes [#142](https://github.com/porscheofficial/porschedigital-technology-radar/issues/142)
+
+
+### Build System
+
+* **deps:** bump @types/node from 25.9.1 to 25.9.2 in the types group ([8307e1a](https://github.com/porscheofficial/porschedigital-technology-radar/commit/8307e1a53dbf3a88d426e7ff97ca01aaa9b70bf8))
+* **deps:** bump the types group across 1 directory with 2 updates ([2ade01f](https://github.com/porscheofficial/porschedigital-technology-radar/commit/2ade01f7df5159827720d838a9a856756b134ddc))
+
 ## [1.0.4](https://github.com/porscheofficial/porschedigital-technology-radar/compare/create-techradar-v1.0.3...create-techradar-v1.0.4) (2026-05-18)
 
 

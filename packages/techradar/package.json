@@ -141,7 +141,7 @@
     "@types/jsdom": "^28.0.3",
     "@vitejs/plugin-react": "^6.0.2",
     "@vitest/coverage-v8": "^4.1.8",
-    "axe-core": "^4.11.4",
+    "axe-core": "^4.12.1",
     "cspell": "^10.0.1",
     "dependency-cruiser": "^17.3.10",
     "eslint": "^10.6.0",

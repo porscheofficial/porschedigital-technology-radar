@@ -94,7 +94,7 @@
     "postinstall": "node -e \"process.exit(require('node:fs').existsSync('data/data.json') ? 0 : 1)\" || pnpm run build:data"
   },
   "dependencies": {
-    "@11ty/gray-matter": "^2.0.1",
+    "@11ty/gray-matter": "^2.1.0",
     "@fontsource/inter": "^5.2.8",
     "@porsche-design-system/components-js": "4.1.0",
     "@porsche-design-system/components-react": "^4.1.0",

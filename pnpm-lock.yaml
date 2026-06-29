@@ -52,8 +52,8 @@ importers:
   packages/techradar:
     dependencies:
       '@11ty/gray-matter':
-        specifier: ^2.0.1
-        version: 2.0.2
+        specifier: ^2.1.0
+        version: 2.1.0
       '@fontsource/inter':
         specifier: ^5.2.8
         version: 5.2.8
@@ -241,8 +241,8 @@ importers:
 
 packages:
 
-  '@11ty/gray-matter@2.0.2':
-    resolution: {integrity: sha512-+sbmr+BPzzi0z4lFvruKiGQ3D/d5zBssavhH9SzXmWkf7rStnB4gfeEMgz6k1Ac8bpN5NAFCH5GyR3xHk1BGPA==}
+  '@11ty/gray-matter@2.1.0':
+    resolution: {integrity: sha512-fNdBOb3MgDz/1UCIoeY4wDuGbp+/3s5y6UrsyfMabECbh/CVycj7Er33JXqSxRwxrRKXcGE1Jipuq/1mODInsQ==}
     engines: {node: '>=11'}
 
   '@adobe/css-tools@4.4.4':
@@ -4306,8 +4306,8 @@ packages:
     resolution: {integrity: sha512-qQKT4zQxXl8lLwBtHMWwaTcGfFOZviOJet3Oy/xmGk2gZH677CJM9EvtfdSkgWcATZhj/55JZ0rmy3myCT5lsA==}
     hasBin: true
 
-  js-yaml@4.2.0:
-    resolution: {integrity: sha512-ePWsvanv0DWuDRsW8dnt+R4jQ31SCRCQ7hhNcPXZPsoBZiemuZNYGf7adZdqX2D86j6rvKp3RpCxVTSb8WQlOw==}
+  js-yaml@4.3.0:
+    resolution: {integrity: sha512-1td788aAnnZ5qs7V2QIRl1owjtYpbKt749Y3xauqQgwIIGF/xXWz1wMTEBx5O3LK3lXLVuqXPdPxj2BoFHaW9Q==}
     hasBin: true
 
   jscpd@5.0.7:
@@ -6201,9 +6201,9 @@ packages:
 
 snapshots:
 
-  '@11ty/gray-matter@2.0.2':
+  '@11ty/gray-matter@2.1.0':
     dependencies:
-      js-yaml: 4.1.1
+      js-yaml: 4.3.0
       section-matter: 1.0.0
 
   '@adobe/css-tools@4.4.4': {}
@@ -8759,7 +8759,7 @@ snapshots:
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.1
-      js-yaml: 4.2.0
+      js-yaml: 4.3.0
       parse-json: 5.2.0
     optionalDependencies:
       typescript: 6.0.3
@@ -9933,7 +9933,7 @@ snapshots:
     dependencies:
       argparse: 2.0.1
 
-  js-yaml@4.2.0:
+  js-yaml@4.3.0:
     dependencies:
       argparse: 2.0.1
 

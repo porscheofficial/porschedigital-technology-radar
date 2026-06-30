@@ -58,11 +58,11 @@ importers:
         specifier: ^5.2.8
         version: 5.2.8
       '@porsche-design-system/components-js':
-        specifier: 4.1.0
-        version: 4.1.0
+        specifier: 4.3.0
+        version: 4.3.0
       '@porsche-design-system/components-react':
-        specifier: ^4.1.0
-        version: 4.1.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        specifier: ^4.3.0
+        version: 4.3.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@radix-ui/react-dialog':
         specifier: ^1.1.16
         version: 1.1.16(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -2060,8 +2060,8 @@ packages:
     resolution: {integrity: sha512-tmmZ3lQxAe/k/+rNnXQRawJ4NjxO2hqiOLTHvWchtGZULp4RyFeh6aU4XdOYBFe2KE1oShQTv4AblOs2iOrNnQ==}
     engines: {node: '>= 10.0.0'}
 
-  '@porsche-design-system/components-js@4.1.0':
-    resolution: {integrity: sha512-LYj/y14pLN1y3y2ztD6Ueu8nxc5O29HWZRC/Y7CEuS/sPef0ftatkv3iKnUIpjoPrVBHNt3415OYeB0oBzZSnw==}
+  '@porsche-design-system/components-js@4.3.0':
+    resolution: {integrity: sha512-U0stuVsSBMs4roqDHSawE8Ifdw41JZ1Vt2cuFXEZiWfqdCYnUHA5yTDmAIPPQ/jIwx7KQVuHZC1dO4jgzHlT/g==}
     peerDependencies:
       ag-grid-community: '>= 35.0.0 <36.0.0'
       ag-grid-enterprise: '>= 35.0.0 <36.0.0'
@@ -2074,8 +2074,8 @@ packages:
       tailwindcss:
         optional: true
 
-  '@porsche-design-system/components-react@4.1.0':
-    resolution: {integrity: sha512-pLk0A/RW5aKqLNCUZy6b9j5BoQPwamVF4VrdcWJ49kWKsg41F6Dd9t+bmH8dMK3Uz283IVM5pGBfSJkqO7VDIQ==}
+  '@porsche-design-system/components-react@4.3.0':
+    resolution: {integrity: sha512-qF+SNJAbpZ80sa/puaFnrQ7bhuDI+aTWGOJPwe9X/4RvypW4VIz7e6GzavaWtZxnDZ7v5rq4x188azaYP65MXA==}
     hasBin: true
     peerDependencies:
       ag-grid-community: '>= 35.0.0 <36.0.0'
@@ -3874,6 +3874,7 @@ packages:
   git-raw-commits@5.0.1:
     resolution: {integrity: sha512-Y+csSm2GD/PCSh6Isd/WiMjNAydu0VBiG9J7EdQsNA5P9uXvLayqjmTsNlK5Gs9IhblFZqOU0yid5Il5JPoLiQ==}
     engines: {node: '>=18'}
+    deprecated: Deprecated and no longer maintained. Use @conventional-changelog/git-client instead.
     hasBin: true
 
   github-slugger@2.0.0:
@@ -7709,11 +7710,11 @@ snapshots:
       '@parcel/watcher-win32-x64': 2.5.6
     optional: true
 
-  '@porsche-design-system/components-js@4.1.0': {}
+  '@porsche-design-system/components-js@4.3.0': {}
 
-  '@porsche-design-system/components-react@4.1.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@porsche-design-system/components-react@4.3.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
-      '@porsche-design-system/components-js': 4.1.0
+      '@porsche-design-system/components-js': 4.3.0
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
 

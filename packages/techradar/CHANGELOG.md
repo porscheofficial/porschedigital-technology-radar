@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.2.5](https://github.com/porscheofficial/porschedigital-technology-radar/compare/porschedigital-technology-radar-v2.2.4...porschedigital-technology-radar-v2.2.5) (2026-06-30)
+
+
+### Build System
+
+* **deps-dev:** bump axe-core from 4.11.4 to 4.12.1 ([8c0f0e2](https://github.com/porscheofficial/porschedigital-technology-radar/commit/8c0f0e2a0650f828cdd39988aec9d37178d69608))
+* **deps-dev:** bump cspell from 10.0.0 to 10.0.1 ([674c98c](https://github.com/porscheofficial/porschedigital-technology-radar/commit/674c98ce9600c95e9b7849e6ad14bc5c6652a6cf))
+* **deps-dev:** bump eslint from 10.4.1 to 10.6.0 ([4bb3af1](https://github.com/porscheofficial/porschedigital-technology-radar/commit/4bb3af1654db3089012d24e3a4d6fc5c3fc8639f))
+* **deps-dev:** bump typescript-eslint from 8.60.1 to 8.61.0 ([1f11fd9](https://github.com/porscheofficial/porschedigital-technology-radar/commit/1f11fd959731ef2150085bf865fd92c96a683443))
+* **deps:** bump @11ty/gray-matter from 2.0.2 to 2.1.0 ([02ab2b5](https://github.com/porscheofficial/porschedigital-technology-radar/commit/02ab2b556a887568cb4f38cb0907fbc8f8609352))
+* **deps:** bump @radix-ui/react-dialog from 1.1.15 to 1.1.16 ([66638c1](https://github.com/porscheofficial/porschedigital-technology-radar/commit/66638c19d69bfc4a948a7341a411b57281572ebe))
+* **deps:** bump postcss-preset-env from 11.3.0 to 11.3.2 ([814fe12](https://github.com/porscheofficial/porschedigital-technology-radar/commit/814fe12cf20456cfa03b59ed6677dc74814a9ee7))
+
 ## [2.2.4](https://github.com/porscheofficial/porschedigital-technology-radar/compare/porschedigital-technology-radar-v2.2.3...porschedigital-technology-radar-v2.2.4) (2026-06-12)
 
 

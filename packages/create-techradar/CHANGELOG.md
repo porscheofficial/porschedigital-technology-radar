@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.6](https://github.com/porscheofficial/porschedigital-technology-radar/compare/create-techradar-v1.0.5...create-techradar-v1.0.6) (2026-06-30)
+
+
+### Build System
+
+* **deps:** bump @types/node from 25.9.2 to 25.9.3 in the types group ([916ba2d](https://github.com/porscheofficial/porschedigital-technology-radar/commit/916ba2da3bfacf9d274eabb6e0b44b019ab6b0a6))
+
 ## [1.0.5](https://github.com/porscheofficial/porschedigital-technology-radar/compare/create-techradar-v1.0.4...create-techradar-v1.0.5) (2026-06-12)
 
 

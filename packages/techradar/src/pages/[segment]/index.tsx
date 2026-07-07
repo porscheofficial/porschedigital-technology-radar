@@ -11,6 +11,7 @@ import { SegmentRadar } from "@/components/SegmentRadar/SegmentRadar";
 import { SeoHead } from "@/components/SeoHead/SeoHead";
 import { blipSvgMap } from "@/lib/blipIcons";
 import {
+  getChartConfig,
   getItems,
   getRings,
   getSegment,
@@ -34,6 +35,7 @@ const SegmentPage: CustomPage<SegmentPageProps> = ({ segmentId }) => {
   const segment = getSegment(segmentId);
   const allSegments = getSegments();
   const rings = getRings();
+  const chartConfig = getChartConfig();
   const { setHighlight } = useRadarHighlight();
   const { theme } = useTheme();
 
@@ -147,6 +149,7 @@ const SegmentPage: CustomPage<SegmentPageProps> = ({ segmentId }) => {
               </PText>
             )}
             <SegmentRadar
+              size={chartConfig.size}
               segment={segment}
               allSegments={allSegments}
               rings={rings}

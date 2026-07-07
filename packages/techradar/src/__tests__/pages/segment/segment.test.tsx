@@ -17,6 +17,7 @@ const mockState = vi.hoisted(() => ({
     clearFilters: vi.fn(),
   },
   getAppName: vi.fn(),
+  getChartConfig: vi.fn(),
   getItems: vi.fn(),
   getSegment: vi.fn(),
   getSegments: vi.fn(),
@@ -113,6 +114,7 @@ vi.mock("@/lib/ThemeContext", () => ({
 
 vi.mock("@/lib/data", () => ({
   getAppName: mockState.getAppName,
+  getChartConfig: mockState.getChartConfig,
   getItems: mockState.getItems,
   getSegment: mockState.getSegment,
   getSegments: mockState.getSegments,
@@ -219,6 +221,7 @@ describe("Segment detail page", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockState.getAppName.mockReturnValue("Test Radar");
+    mockState.getChartConfig.mockReturnValue({ size: 1200, blipSize: 12 });
     mockState.getSegment.mockImplementation((id: string) =>
       segments.find((entry) => entry.id === id),
     );
@@ -263,6 +266,16 @@ describe("Segment detail page", () => {
         allSegments: segments,
         rings,
         items: [items[0]], // Only featured items (React)
+      }),
+    );
+  });
+
+  it("passes the configured chart size to SegmentRadar", () => {
+    render(<SegmentPage segmentId={segment.id} />);
+
+    expect(mockState.segmentRadarProps).toHaveBeenCalledWith(
+      expect.objectContaining({
+        size: 1200,
       }),
     );
   });

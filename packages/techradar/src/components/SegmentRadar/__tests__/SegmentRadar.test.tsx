@@ -124,6 +124,7 @@ describe("SegmentRadar", () => {
 
     render(
       <SegmentRadar
+        size={1200}
         segment={segment}
         allSegments={allSegments}
         rings={rings}
@@ -158,6 +159,7 @@ describe("SegmentRadar", () => {
     expect(tooltipState.handleMouseLeave).toHaveBeenCalledTimes(1);
     expect(segmentChartMock).toHaveBeenCalledWith(
       expect.objectContaining({
+        size: 1200,
         segment,
         allSegments,
         rings,

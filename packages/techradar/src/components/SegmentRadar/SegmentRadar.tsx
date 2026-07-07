@@ -6,6 +6,8 @@ import { cn } from "@/lib/utils";
 import styles from "./SegmentRadar.module.scss";
 
 interface SegmentRadarProps {
+  /** Full radar size used during position generation (default 800). */
+  size?: number;
   segment: Segment;
   allSegments: Segment[];
   rings: Ring[];
@@ -14,6 +16,7 @@ interface SegmentRadarProps {
 }
 
 export const SegmentRadar: FC<SegmentRadarProps> = ({
+  size,
   segment,
   allSegments,
   rings,
@@ -41,6 +44,7 @@ export const SegmentRadar: FC<SegmentRadarProps> = ({
     >
       <SegmentChart
         className={styles.chart}
+        size={size}
         segment={segment}
         allSegments={allSegments}
         rings={rings}

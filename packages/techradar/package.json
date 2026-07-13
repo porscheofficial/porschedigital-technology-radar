@@ -143,7 +143,7 @@
     "@vitest/coverage-v8": "^4.1.9",
     "axe-core": "^4.12.1",
     "cspell": "^10.0.1",
-    "dependency-cruiser": "^17.3.10",
+    "dependency-cruiser": "^18.1.0",
     "eslint": "^10.6.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-sonarjs": "^4.0.3",

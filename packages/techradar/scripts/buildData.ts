@@ -83,7 +83,7 @@ export function rehypeExternalLinkRel() {
         node.properties.target === "_blank" &&
         typeof node.properties.href === "string"
       ) {
-        node.properties.rel = "noopener noreferrer";
+        node.properties.rel = ["noopener", "noreferrer"];
       }
     });
   };

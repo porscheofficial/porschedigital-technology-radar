@@ -243,7 +243,7 @@ export function loadInitContext(opts: {
   const configExists = cfg !== null;
 
   const existingTitle =
-    cfg && cfg.labels && typeof cfg.labels.title === "string"
+    cfg?.labels && typeof cfg.labels.title === "string"
       ? cfg.labels.title
       : null;
 
@@ -289,7 +289,7 @@ export function defaultAnswers(
   ctx: InitContext,
   basenameDir: string,
 ): InitAnswers {
-  const title = ctx.existingTitle ?? titleCase(basenameDir) + " Tech Radar";
+  const title = ctx.existingTitle ?? `${titleCase(basenameDir)} Tech Radar`;
 
   const rings = ctx.existingRings ?? STANDARD_RINGS;
   const segments = ctx.existingSegments ?? STANDARD_SEGMENTS;

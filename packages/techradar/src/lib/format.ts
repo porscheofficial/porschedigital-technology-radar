@@ -102,6 +102,7 @@ export function searchableTextFor(item: Item): string {
     item.title,
     item.summary ?? "",
     ...(item.tags ?? []),
+    ...(item.products ?? []),
     ...(item.teams ?? []),
   ]
     .join(" ")

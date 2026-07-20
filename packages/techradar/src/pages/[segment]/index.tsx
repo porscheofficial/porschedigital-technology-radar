@@ -7,6 +7,7 @@ import type { GetStaticPaths, GetStaticProps } from "next";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { RadarFilters } from "@/components/RadarFilters/RadarFilters";
 import { SegmentRadar } from "@/components/SegmentRadar/SegmentRadar";
 import { SeoHead } from "@/components/SeoHead/SeoHead";
 import { blipSvgMap } from "@/lib/blipIcons";
@@ -16,6 +17,7 @@ import {
   getRings,
   getSegment,
   getSegments,
+  getToggle,
   groupItemsByRing,
   sortByFeaturedAndTitle,
 } from "@/lib/data";
@@ -36,7 +38,8 @@ const SegmentPage: CustomPage<SegmentPageProps> = ({ segmentId }) => {
   const allSegments = getSegments();
   const rings = getRings();
   const chartConfig = getChartConfig();
-  const { setHighlight } = useRadarHighlight();
+  const showFiltersOnSegmentPage = getToggle("showFilterOnSegmentPage");
+  const { filterMatchIds, hasFilter, setHighlight } = useRadarHighlight();
   const { theme } = useTheme();
 
   const items = segment
@@ -44,7 +47,11 @@ const SegmentPage: CustomPage<SegmentPageProps> = ({ segmentId }) => {
     : [];
   const featuredItems = items.filter((item) => item.featured);
 
-  const ringGroups = groupItemsByRing(items);
+  const visibleItems =
+    showFiltersOnSegmentPage && hasFilter
+      ? items.filter((item) => filterMatchIds.has(item.id))
+      : items;
+  const ringGroups = groupItemsByRing(visibleItems);
 
   const [activeRings, setActiveRings] = useState<Set<string>>(new Set());
   const ringRefs = useRef<Map<string, HTMLElement>>(new Map());
@@ -156,6 +163,11 @@ const SegmentPage: CustomPage<SegmentPageProps> = ({ segmentId }) => {
               items={featuredItems}
               activeRings={activeRings}
             />
+            {showFiltersOnSegmentPage && (
+              <div className={styles.filters}>
+                <RadarFilters />
+              </div>
+            )}
           </div>
         </div>
 

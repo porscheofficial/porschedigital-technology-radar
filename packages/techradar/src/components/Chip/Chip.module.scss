@@ -46,6 +46,11 @@ $rtk-chip-compact-min-height: 22px;
     color: var(--rtk-chip-tag-fg);
   }
 
+  &[data-chip-kind="product"] {
+    background-color: color-mix(in srgb, var(--rtk-chip-product-bg) 85%, transparent);
+    color: var(--rtk-chip-product-fg);
+  }
+
   &[data-chip-kind="team"] {
     background-color: color-mix(in srgb, var(--rtk-chip-team-bg) 85%, transparent);
     color: var(--rtk-chip-team-fg);

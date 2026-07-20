@@ -10,6 +10,7 @@ import { type CSSProperties, type ReactNode, useState } from "react";
 
 import { RingBadge } from "@/components/Badge/Badge";
 import { DescriptionEdit, RingChange, RingInitial } from "@/components/Icons";
+import { Product } from "@/components/Products/Products";
 import { SafeHtml } from "@/components/SafeHtml/SafeHtml";
 import { Tag } from "@/components/Tags/Tags";
 import { Team, Teams } from "@/components/Teams/Teams";
@@ -43,9 +44,14 @@ export function ItemDetail({ item, segmentTitle }: ItemProps) {
     .includes(item.release);
 
   const tagFilterEnabled = getToggle("showTagFilter");
+  const productFilterEnabled = getToggle("showProductFilter");
   const teamFilterEnabled = getToggle("showTeamFilter");
   const tagHref = (tag: string) =>
     tagFilterEnabled ? `/?tags=${encodeURIComponent(tag)}` : undefined;
+  const productHref = (product: string) =>
+    productFilterEnabled
+      ? `/?products=${encodeURIComponent(product)}`
+      : undefined;
   const getTeamHref = (team: string) =>
     teamFilterEnabled ? `/?teams=${encodeURIComponent(team)}` : undefined;
 
@@ -126,6 +132,13 @@ export function ItemDetail({ item, segmentTitle }: ItemProps) {
             <div className={styles.tags}>
               {item.tags?.map((tag) => (
                 <Tag key={tag} tag={tag} href={tagHref(tag)} />
+              ))}
+              {item.products?.map((product) => (
+                <Product
+                  key={product}
+                  product={product}
+                  href={productHref(product)}
+                />
               ))}
             </div>
             {!!item.teams && item.teams.length > 0 && (

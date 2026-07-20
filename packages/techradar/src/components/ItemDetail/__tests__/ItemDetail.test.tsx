@@ -160,6 +160,7 @@ function createItem(overrides: Partial<Item> = {}): Item {
     segment: "languages-and-frameworks",
     flag: Flag.Default,
     tags: ["frontend", "typescript"],
+    products: ["v2"],
     release: "2025-07-01",
     revisions: [],
     position: [0.1, 0.2],
@@ -198,12 +199,13 @@ describe("ItemDetail", () => {
     mockState.getRings.mockReturnValue(Object.values(rings));
     mockState.getToggle.mockImplementation((key: string) => {
       if (key === "showTagFilter") return true;
+      if (key === "showProductFilter") return true;
       if (key === "showTeamFilter") return true;
       return false;
     });
   });
 
-  it("renders the item title, ring, segment link, tags, teams, body, and edit link", () => {
+  it("renders the item title, ring, segment link, tags, products, teams, body, and edit link", () => {
     renderItemDetail();
 
     expect(screen.getByText("React")).toBeInTheDocument();
@@ -213,6 +215,7 @@ describe("ItemDetail", () => {
     ).toHaveAttribute("href", "/languages-and-frameworks");
     expect(screen.getByText("frontend")).toBeInTheDocument();
     expect(screen.getByText("typescript")).toBeInTheDocument();
+    expect(screen.getByText("v2")).toBeInTheDocument();
     expect(screen.getByText("Team Alpha")).toBeInTheDocument();
     expect(screen.getByText("Team Beta")).toBeInTheDocument();
     expect(
@@ -468,7 +471,7 @@ describe("ItemDetail", () => {
     });
   });
 
-  describe("tag and team filter links", () => {
+  describe("tag, product, and team filter links", () => {
     it("renders tag badges as links to the home page with the tag filter when showTagFilter is enabled", () => {
       renderItemDetail({ tags: ["frontend"] });
 
@@ -481,6 +484,13 @@ describe("ItemDetail", () => {
 
       const teamLink = screen.getByRole("link", { name: /team alpha/i });
       expect(teamLink).toHaveAttribute("href", "/?teams=Team%20Alpha");
+    });
+
+    it("renders product badges as links to the home page with the product filter when showProductFilter is enabled", () => {
+      renderItemDetail({ products: ["v2"] });
+
+      const productLink = screen.getByRole("link", { name: /v2/i });
+      expect(productLink).toHaveAttribute("href", "/?products=v2");
     });
 
     it("renders tag badges as plain (non-link) when showTagFilter is disabled", () => {
@@ -498,7 +508,7 @@ describe("ItemDetail", () => {
 
     it("renders team badges as plain (non-link) when showTeamFilter is disabled", () => {
       mockState.getToggle.mockImplementation(
-        (key: string) => key === "showTagFilter",
+        (key: string) => key === "showTagFilter" || key === "showProductFilter",
       );
 
       renderItemDetail({ tags: [], teams: ["Team Alpha"] });
@@ -507,6 +517,19 @@ describe("ItemDetail", () => {
         screen.queryByRole("link", { name: /team alpha/i }),
       ).not.toBeInTheDocument();
       expect(screen.getByText("Team Alpha")).toBeInTheDocument();
+    });
+
+    it("renders product badges as plain (non-link) when showProductFilter is disabled", () => {
+      mockState.getToggle.mockImplementation(
+        (key: string) => key === "showTagFilter" || key === "showTeamFilter",
+      );
+
+      renderItemDetail({ products: ["v2"] });
+
+      expect(
+        screen.queryByRole("link", { name: /v2/i }),
+      ).not.toBeInTheDocument();
+      expect(screen.getByText("v2")).toBeInTheDocument();
     });
   });
 });

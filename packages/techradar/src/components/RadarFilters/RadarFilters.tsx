@@ -2,7 +2,13 @@ import { PIcon, PTag } from "@porsche-design-system/components-react/ssr";
 import type { CSSProperties } from "react";
 import { Chip } from "@/components/Chip/Chip";
 import { blipSvgMap } from "@/lib/blipIcons";
-import { getFlags, getTags, getTeams, getToggle } from "@/lib/data";
+import {
+  getFlags,
+  getProducts,
+  getTags,
+  getTeams,
+  getToggle,
+} from "@/lib/data";
 import { useRadarHighlight } from "@/lib/RadarHighlightContext";
 import { cn } from "@/lib/utils";
 import styles from "./RadarFilters.module.scss";
@@ -11,19 +17,23 @@ export function RadarFilters() {
   const {
     activeFlags,
     activeTags,
+    activeProducts,
     activeTeams,
     hasFilter,
     toggleFlag,
     toggleTag,
+    toggleProduct,
     toggleTeam,
     clearFilters,
   } = useRadarHighlight();
 
   const flags = getFlags();
   const tags = getTags();
+  const products = getProducts();
   const teams = getTeams();
 
   const showTags = getToggle("showTagFilter") && tags.length > 0;
+  const showProducts = getToggle("showProductFilter") && products.length > 0;
   const showTeams = getToggle("showTeamFilter") && teams.length > 0;
   const isMultiSelect = getToggle("multiSelectFilters");
 
@@ -106,6 +116,41 @@ export function RadarFilters() {
                     }
                   >
                     {tag}
+                  </Chip>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {showProducts && (
+        <div className={styles.row}>
+          <span className={styles.rowLabel}>
+            <PIcon name="filter" size="x-small" aria-hidden="true" />
+            Product
+          </span>
+          <div className={styles.pills}>
+            {products.map((product) => {
+              const isActive = activeProducts.has(product);
+              return (
+                <button
+                  key={product}
+                  type="button"
+                  onClick={() => toggleProduct(product)}
+                  className={cn(styles.pill, isActive && styles.active)}
+                >
+                  <Chip
+                    kind="product"
+                    iconSlot={
+                      <PIcon
+                        name={isActive ? "close" : "stack"}
+                        size="x-small"
+                        aria-hidden="true"
+                      />
+                    }
+                  >
+                    {product}
                   </Chip>
                 </button>
               );

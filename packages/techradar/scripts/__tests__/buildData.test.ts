@@ -854,10 +854,11 @@ describe("buildData", () => {
       expect(revisions[2]).toMatchObject({ removedTeams: ["alpha"] });
     });
 
-    it("collects unique releases and tags", () => {
+    it("collects unique releases, tags, and products", () => {
       const items: Item[] = [
         createItem({
           tags: ["frontend", "language"],
+          products: ["v2"],
           revisions: [
             createRevision({ release: "2024-01" }),
             createRevision({ release: "2024-03" }),
@@ -867,6 +868,7 @@ describe("buildData", () => {
           id: "item-2",
           title: "Item 2",
           tags: ["frontend", "runtime"],
+          products: ["v2", "v3"],
           revisions: [createRevision({ release: "2024-02" })],
         }),
       ];
@@ -883,6 +885,8 @@ describe("buildData", () => {
         "language",
         "runtime",
       ]);
+      expect(buildData.getUniqueProducts([])).toEqual([]);
+      expect(buildData.getUniqueProducts(items)).toEqual(["v2", "v3"]);
     });
 
     it("assigns flags based on latest release membership", () => {

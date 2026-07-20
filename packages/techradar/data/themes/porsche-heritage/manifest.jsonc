@@ -50,6 +50,8 @@
     "status": { "light": "#6B6D70", "dark": "#88898C" },
     // Riviera Blue for tags — the flagship special-order shade.
     "tag": { "light": "#0078C8", "dark": "#3DA0E0" },
+    // Guards Red for products — the signature Porsche highlight color.
+    "product": { "light": "#E11D48", "dark": "#FB7185" },
     // Lava Orange for teams — modern PTS hero color.
     "team": { "light": "#C45A00", "dark": "#E16C0B" },
     // Acid Green — the signature GT caliper green.

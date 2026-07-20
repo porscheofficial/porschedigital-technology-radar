@@ -194,6 +194,11 @@
       "light": "#0047FF",
       "dark": "#88B5FF"
     },
+    // Pill for products (free-form taxonomy on products).
+    "product": {
+      "light": "#E11D48",
+      "dark": "#FB7185"
+    },
     // Pill for team attribution. Usually a warm secondary brand color.
     "team": {
       "light": "#C45A00",

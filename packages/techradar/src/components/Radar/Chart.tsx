@@ -36,6 +36,9 @@ export interface ChartProps {
 
 interface WedgeProps {
   segmentId: string;
+  href:
+    | string
+    | { pathname: string; query?: Record<string, string>; hash?: string };
   segmentColor: string;
   ringId: string;
   d: string;
@@ -47,6 +50,7 @@ interface WedgeProps {
 
 const Wedge: FC<WedgeProps> = ({
   segmentId,
+  href,
   segmentColor,
   ringId,
   d,
@@ -81,7 +85,7 @@ const Wedge: FC<WedgeProps> = ({
   };
   return (
     <Link
-      href={`/${segmentId}#ring-${ringId}`}
+      href={href}
       aria-label={ariaLabel}
       className={styles.wedge}
       onMouseEnter={enter}
@@ -109,8 +113,20 @@ const ChartInner: FC<ChartProps> = ({
   className,
   onWedgeCommit,
 }) => {
-  const { highlightedIds, filterMatchIds, filterActive, setHighlightPreview } =
-    useRadarHighlight();
+  const {
+    highlightedIds,
+    filterMatchIds,
+    filterActive,
+    activeFlags,
+    activeTags,
+    activeProducts,
+    activeTeams,
+    setHighlightPreview,
+  } = useRadarHighlight();
+  const resolvedActiveFlags = activeFlags ?? new Set<string>();
+  const resolvedActiveTags = activeTags ?? new Set<string>();
+  const resolvedActiveProducts = activeProducts ?? new Set<string>();
+  const resolvedActiveTeams = activeTeams ?? new Set<string>();
   const { theme } = useTheme();
   const segmentColor = (seg: Segment) => theme.radar.segments[seg.position - 1];
   const liveHighlightSet = useMemo(
@@ -150,6 +166,7 @@ const ChartInner: FC<ChartProps> = ({
   const centerX = viewBoxCenter;
   const centerY = viewBoxCenter;
   const showBlipChange = getToggle("showBlipChange");
+  const showFilterOnSegmentPage = getToggle("showFilterOnSegmentPage");
 
   const numSegments = segments.length;
   const sweep = numSegments > 0 ? 360 / numSegments : 90;
@@ -164,6 +181,53 @@ const ChartInner: FC<ChartProps> = ({
     }
     return map;
   }, [items]);
+
+  const activeFilterQuery = useMemo(() => {
+    const query: Record<string, string> = {};
+
+    if (resolvedActiveFlags.size > 0) {
+      query.flags = [...resolvedActiveFlags].join(",");
+    }
+    if (resolvedActiveTags.size > 0) {
+      query.tags = [...resolvedActiveTags].join(",");
+    }
+    if (resolvedActiveProducts.size > 0) {
+      query.products = [...resolvedActiveProducts].join(",");
+    }
+    if (resolvedActiveTeams.size > 0) {
+      query.teams = [...resolvedActiveTeams].join(",");
+    }
+
+    return query;
+  }, [
+    resolvedActiveFlags,
+    resolvedActiveTags,
+    resolvedActiveProducts,
+    resolvedActiveTeams,
+  ]);
+
+  const buildSegmentHref = useCallback(
+    (
+      segmentId: string,
+      hash?: string,
+    ):
+      | string
+      | { pathname: string; query?: Record<string, string>; hash?: string } => {
+      if (
+        !showFilterOnSegmentPage ||
+        Object.keys(activeFilterQuery).length === 0
+      ) {
+        return hash ? `/${segmentId}#${hash}` : `/${segmentId}`;
+      }
+
+      return {
+        pathname: `/${segmentId}`,
+        query: activeFilterQuery,
+        hash,
+      };
+    },
+    [activeFilterQuery, showFilterOnSegmentPage],
+  );
 
   const getStartAngle = (position: number): number =>
     computeSegmentStartAngle(position, numSegments);
@@ -348,7 +412,10 @@ const ChartInner: FC<ChartProps> = ({
           <defs>
             <path id={pathId} d={d} fill="none" />
           </defs>
-          <Link href={`/${segment.id}`} className={styles.segmentLabel}>
+          <Link
+            href={buildSegmentHref(segment.id)}
+            className={styles.segmentLabel}
+          >
             <text>
               <textPath
                 href={`#${pathId}`}
@@ -390,6 +457,7 @@ const ChartInner: FC<ChartProps> = ({
           <Wedge
             key={`wedge-${segment.id}-${ring.id}`}
             segmentId={segment.id}
+            href={buildSegmentHref(segment.id, `ring-${ring.id}`)}
             segmentColor={segmentColor(segment)}
             ringId={ring.id}
             d={d}

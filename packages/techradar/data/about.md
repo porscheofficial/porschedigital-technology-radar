@@ -17,7 +17,7 @@ Every entry on the radar is a **blip**. Each blip has two coordinates:
     - **Assess**: interesting; explore in spikes or proofs of concept.
     - **Hold**: do not start new work with this; migrate away when practical.
 
-Click a blip to open its detail page with the full description, tags, teams, links, and a complete revision history. Use the **search** and **filter** controls to narrow things down by name, tag, team, or status. The **changelog** shows what moved between releases at a glance.
+Click a blip to open its detail page with the full description, tags, products, teams, links, and a complete revision history. Use the **search** and **filter** controls to narrow things down by name, tag, product, team, or status. The **changelog** shows what moved between releases at a glance.
 
 The structure of the radar (segments, rings, labels, colors, branding) is fully configurable per instance and may evolve over time.
 
@@ -38,7 +38,7 @@ The Technology Radar Generator is an open-source tool for teams who want their o
 - 🌗 **Theme × mode** — light/dark variants where the theme provides them, plus header toggle and Spotlight controls
 - 📡 **Radar visualization** — interactive overview with segment and ring layout
 - 📄 **Technology detail pages** — each entry gets its own page with full context
-- 🔍 **Search and filters** — find technologies by name, tag, team, or status
+- 🔍 **Search and filters** — find technologies by name, tag, product, team, or status
 - 📜 **Revision history** — track how assessments change across releases
 - 📋 **Changelog** — see what moved between releases at a glance
 - 🖼️ **Open Graph images** — every radar entry gets a shareable preview card

@@ -38,7 +38,6 @@ export function getExecCommand(
       return { command: "yarn", args: [binary, ...binaryArgs] };
     case "bun":
       return { command: "bun", args: ["x", binary, ...binaryArgs] };
-    case "npm":
     default:
       return { command: "npx", args: [binary, ...binaryArgs] };
   }

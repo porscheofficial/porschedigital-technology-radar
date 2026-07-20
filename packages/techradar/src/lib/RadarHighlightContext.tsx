@@ -39,6 +39,7 @@ interface HighlightState {
   isPreview: boolean;
   activeFlags: ReadonlySet<string>;
   activeTags: ReadonlySet<string>;
+  activeProducts: ReadonlySet<string>;
   activeTeams: ReadonlySet<string>;
 }
 
@@ -48,6 +49,7 @@ const initialState: HighlightState = {
   isPreview: false,
   activeFlags: emptySet,
   activeTags: emptySet,
+  activeProducts: emptySet,
   activeTeams: emptySet,
 };
 
@@ -56,11 +58,13 @@ type Action =
   | { type: "SET_DIRECT_PREVIEW"; ids: string[] }
   | { type: "TOGGLE_FLAG"; flag: string }
   | { type: "TOGGLE_TAG"; tag: string }
+  | { type: "TOGGLE_PRODUCT"; product: string }
   | { type: "TOGGLE_TEAM"; team: string }
   | {
       type: "SET_FILTERS";
       flags: ReadonlySet<string>;
       tags: ReadonlySet<string>;
+      products: ReadonlySet<string>;
       teams: ReadonlySet<string>;
     }
   | { type: "CLEAR_FILTERS" };
@@ -91,6 +95,11 @@ function reducer(state: HighlightState, action: Action): HighlightState {
         ...state,
         activeTags: toggleValue(state.activeTags, action.tag),
       };
+    case "TOGGLE_PRODUCT":
+      return {
+        ...state,
+        activeProducts: toggleValue(state.activeProducts, action.product),
+      };
     case "TOGGLE_TEAM":
       return {
         ...state,
@@ -101,6 +110,7 @@ function reducer(state: HighlightState, action: Action): HighlightState {
         ...state,
         activeFlags: emptySet,
         activeTags: emptySet,
+        activeProducts: emptySet,
         activeTeams: emptySet,
       };
     case "SET_FILTERS":
@@ -108,6 +118,7 @@ function reducer(state: HighlightState, action: Action): HighlightState {
         ...state,
         activeFlags: action.flags,
         activeTags: action.tags,
+        activeProducts: action.products,
         activeTeams: action.teams,
       };
     default:
@@ -119,11 +130,14 @@ function matchesFilters(
   item: Item,
   flags: ReadonlySet<string>,
   tags: ReadonlySet<string>,
+  products: ReadonlySet<string>,
   teams: ReadonlySet<string>,
 ): boolean {
   // OR within each dimension, AND across dimensions
   if (flags.size > 0 && !flags.has(item.flag)) return false;
   if (tags.size > 0 && !item.tags?.some((t) => tags.has(t))) return false;
+  if (products.size > 0 && !item.products?.some((p) => products.has(p)))
+    return false;
   if (teams.size > 0 && !item.teams?.some((t) => teams.has(t))) return false;
   return true;
 }
@@ -136,11 +150,13 @@ interface RadarHighlightContextValue {
   suppressTooltips: boolean;
   activeFlags: ReadonlySet<string>;
   activeTags: ReadonlySet<string>;
+  activeProducts: ReadonlySet<string>;
   activeTeams: ReadonlySet<string>;
   setHighlight: (ids: string[], active: boolean) => void;
   setHighlightPreview: (ids: string[]) => void;
   toggleFlag: (flag: string) => void;
   toggleTag: (tag: string) => void;
+  toggleProduct: (product: string) => void;
   toggleTeam: (team: string) => void;
   clearFilters: () => void;
 }
@@ -153,11 +169,13 @@ const RadarHighlightContext = createContext<RadarHighlightContextValue>({
   suppressTooltips: false,
   activeFlags: emptySet,
   activeTags: emptySet,
+  activeProducts: emptySet,
   activeTeams: emptySet,
   setHighlight: () => {},
   setHighlightPreview: () => {},
   toggleFlag: () => {},
   toggleTag: () => {},
+  toggleProduct: () => {},
   toggleTeam: () => {},
   clearFilters: () => {},
 });
@@ -179,6 +197,7 @@ function setsEqual(a: ReadonlySet<string>, b: ReadonlySet<string>): boolean {
 
 const PARAM_FLAGS = "flags";
 const PARAM_TAGS = "tags";
+const PARAM_PRODUCTS = "products";
 const PARAM_TEAMS = "teams";
 
 export const RadarHighlightProvider: FC<{ children: ReactNode }> = ({
@@ -198,18 +217,20 @@ export const RadarHighlightProvider: FC<{ children: ReactNode }> = ({
 
     const flags = parseParam(router.query[PARAM_FLAGS]);
     const tags = parseParam(router.query[PARAM_TAGS]);
+    const products = parseParam(router.query[PARAM_PRODUCTS]);
     const teams = parseParam(router.query[PARAM_TEAMS]);
 
     const s = stateRef.current;
     if (
       setsEqual(flags, s.activeFlags) &&
       setsEqual(tags, s.activeTags) &&
+      setsEqual(products, s.activeProducts) &&
       setsEqual(teams, s.activeTeams)
     ) {
       return;
     }
 
-    dispatch({ type: "SET_FILTERS", flags, tags, teams });
+    dispatch({ type: "SET_FILTERS", flags, tags, products, teams });
   }, [router.isReady, router.query]);
 
   useEffect(() => {
@@ -222,6 +243,7 @@ export const RadarHighlightProvider: FC<{ children: ReactNode }> = ({
     for (const [param, set] of [
       [PARAM_FLAGS, state.activeFlags],
       [PARAM_TAGS, state.activeTags],
+      [PARAM_PRODUCTS, state.activeProducts],
       [PARAM_TEAMS, state.activeTeams],
     ] as const) {
       const current = query[param];
@@ -245,11 +267,17 @@ export const RadarHighlightProvider: FC<{ children: ReactNode }> = ({
     }).then(() => {
       isUpdatingUrl.current = false;
     });
-  }, [state.activeFlags, state.activeTags, state.activeTeams]);
+  }, [
+    state.activeFlags,
+    state.activeTags,
+    state.activeProducts,
+    state.activeTeams,
+  ]);
 
   const hasFilter =
     state.activeFlags.size > 0 ||
     state.activeTags.size > 0 ||
+    state.activeProducts.size > 0 ||
     state.activeTeams.size > 0;
 
   const filterMatchIds = useMemo(() => {
@@ -260,6 +288,7 @@ export const RadarHighlightProvider: FC<{ children: ReactNode }> = ({
           item,
           state.activeFlags,
           state.activeTags,
+          state.activeProducts,
           state.activeTeams,
         ),
       )
@@ -269,6 +298,7 @@ export const RadarHighlightProvider: FC<{ children: ReactNode }> = ({
     hasFilter,
     state.activeFlags,
     state.activeTags,
+    state.activeProducts,
     state.activeTeams,
   ]);
 
@@ -320,6 +350,10 @@ export const RadarHighlightProvider: FC<{ children: ReactNode }> = ({
     (tag: string) => dispatch({ type: "TOGGLE_TAG", tag }),
     [],
   );
+  const toggleProduct = useCallback(
+    (product: string) => dispatch({ type: "TOGGLE_PRODUCT", product }),
+    [],
+  );
   const toggleTeam = useCallback(
     (team: string) => dispatch({ type: "TOGGLE_TEAM", team }),
     [],
@@ -338,11 +372,13 @@ export const RadarHighlightProvider: FC<{ children: ReactNode }> = ({
       suppressTooltips,
       activeFlags: state.activeFlags,
       activeTags: state.activeTags,
+      activeProducts: state.activeProducts,
       activeTeams: state.activeTeams,
       setHighlight,
       setHighlightPreview,
       toggleFlag,
       toggleTag,
+      toggleProduct,
       toggleTeam,
       clearFilters,
     }),
@@ -354,11 +390,13 @@ export const RadarHighlightProvider: FC<{ children: ReactNode }> = ({
       suppressTooltips,
       state.activeFlags,
       state.activeTags,
+      state.activeProducts,
       state.activeTeams,
       setHighlight,
       setHighlightPreview,
       toggleFlag,
       toggleTag,
+      toggleProduct,
       toggleTeam,
       clearFilters,
     ],

@@ -1,10 +1,32 @@
 import { fireEvent, render } from "@testing-library/react";
 
 import { Chart } from "@/components/Radar/Chart";
+import { getToggle } from "@/lib/data";
 import { useRadarHighlight } from "@/lib/RadarHighlightContext";
 import { Flag, type Item, type Ring, type Segment } from "@/lib/types";
 
 const setHighlightPreview = vi.fn();
+
+function createDefaultHighlightState() {
+  return {
+    highlightedIds: [],
+    filterMatchIds: new Set<string>(),
+    filterActive: false,
+    hasFilter: false,
+    suppressTooltips: false,
+    activeFlags: new Set<string>(),
+    activeTags: new Set<string>(),
+    activeProducts: new Set<string>(),
+    activeTeams: new Set<string>(),
+    setHighlight: vi.fn(),
+    setHighlightPreview,
+    toggleFlag: vi.fn(),
+    toggleTag: vi.fn(),
+    toggleProduct: vi.fn(),
+    toggleTeam: vi.fn(),
+    clearFilters: vi.fn(),
+  };
+}
 
 vi.mock("@/lib/data", () => ({
   getToggle: vi.fn(() => false),
@@ -40,12 +62,7 @@ vi.mock("@/lib/ThemeContext", () => ({
 }));
 
 vi.mock("@/lib/RadarHighlightContext", () => ({
-  useRadarHighlight: vi.fn(() => ({
-    highlightedIds: [],
-    filterMatchIds: new Set<string>(),
-    filterActive: false,
-    setHighlightPreview,
-  })),
+  useRadarHighlight: vi.fn(() => createDefaultHighlightState()),
 }));
 
 const segments: Segment[] = [
@@ -148,6 +165,11 @@ const items: Item[] = [
 describe("Chart wedges", () => {
   beforeEach(() => {
     setHighlightPreview.mockClear();
+    vi.mocked(useRadarHighlight).mockReset();
+    vi.mocked(useRadarHighlight).mockReturnValue(createDefaultHighlightState());
+    vi.mocked(getToggle).mockImplementation(
+      (key: string) => key === "showFilterOnSegmentPage",
+    );
   });
 
   it("renders one wedge per (segment, ring) pair", () => {
@@ -166,20 +188,131 @@ describe("Chart wedges", () => {
     expect(wedge).not.toBeNull();
   });
 
-  it("wedge aria-label includes segment title, ring title, and item count", () => {
+  it("preserves active filter query params in wedge hrefs", () => {
+    const mockUseRadarHighlight = vi.mocked(useRadarHighlight);
+    mockUseRadarHighlight.mockReturnValue({
+      highlightedIds: ["react", "vue"],
+      filterMatchIds: new Set(["react", "vue"]),
+      filterActive: true,
+      hasFilter: true,
+      suppressTooltips: false,
+      activeFlags: new Set(["new"]),
+      activeTags: new Set(["frontend"]),
+      activeProducts: new Set(["v2"]),
+      activeTeams: new Set(["platform"]),
+      setHighlight: vi.fn(),
+      setHighlightPreview,
+      toggleFlag: vi.fn(),
+      toggleTag: vi.fn(),
+      toggleProduct: vi.fn(),
+      toggleTeam: vi.fn(),
+      clearFilters: vi.fn(),
+    });
+
+    const { container } = render(
+      <Chart size={800} segments={segments} rings={rings} items={items} />,
+    );
+    const wedge = container.querySelector(
+      'a[href*="/tools?"][href*="#ring-adopt"]',
+    );
+    expect(wedge).not.toBeNull();
+    expect(wedge?.getAttribute("href")).toContain("flags=new");
+    expect(wedge?.getAttribute("href")).toContain("tags=frontend");
+    expect(wedge?.getAttribute("href")).toContain("products=v2");
+    expect(wedge?.getAttribute("href")).toContain("teams=platform");
+  });
+
+  it("preserves active filter query params in segment label hrefs", () => {
+    const mockUseRadarHighlight = vi.mocked(useRadarHighlight);
+    mockUseRadarHighlight.mockReturnValue({
+      highlightedIds: ["react"],
+      filterMatchIds: new Set(["react"]),
+      filterActive: true,
+      hasFilter: true,
+      suppressTooltips: false,
+      activeFlags: new Set<string>(),
+      activeTags: new Set(["frontend"]),
+      activeProducts: new Set<string>(),
+      activeTeams: new Set<string>(),
+      setHighlight: vi.fn(),
+      setHighlightPreview,
+      toggleFlag: vi.fn(),
+      toggleTag: vi.fn(),
+      toggleProduct: vi.fn(),
+      toggleTeam: vi.fn(),
+      clearFilters: vi.fn(),
+    });
+
+    const { container } = render(
+      <Chart size={800} segments={segments} rings={rings} items={items} />,
+    );
+    const labelLinks = Array.from(
+      container.querySelectorAll('a[href*="/tools?"]'),
+    );
+    const labelLink = labelLinks.find(
+      (link) => !(link.getAttribute("href") ?? "").includes("#ring-"),
+    );
+    expect(labelLink).toBeDefined();
+    expect(labelLink?.getAttribute("href")).toContain("tags=frontend");
+  });
+
+  it("does not preserve active filter query params when segment-page filtering is disabled", () => {
+    vi.mocked(getToggle).mockImplementation(() => false);
+
+    const mockUseRadarHighlight = vi.mocked(useRadarHighlight);
+    mockUseRadarHighlight.mockReturnValue({
+      highlightedIds: ["react", "vue"],
+      filterMatchIds: new Set(["react", "vue"]),
+      filterActive: true,
+      hasFilter: true,
+      suppressTooltips: false,
+      activeFlags: new Set(["new"]),
+      activeTags: new Set(["frontend"]),
+      activeProducts: new Set(["v2"]),
+      activeTeams: new Set(["platform"]),
+      setHighlight: vi.fn(),
+      setHighlightPreview,
+      toggleFlag: vi.fn(),
+      toggleTag: vi.fn(),
+      toggleProduct: vi.fn(),
+      toggleTeam: vi.fn(),
+      clearFilters: vi.fn(),
+    });
+
     const { container } = render(
       <Chart size={800} segments={segments} rings={rings} items={items} />,
     );
     const wedge = container.querySelector('a[href$="/tools#ring-adopt"]');
     expect(wedge).not.toBeNull();
+    expect(wedge?.getAttribute("href")).not.toContain("?");
+
+    const labelLink = Array.from(
+      container.querySelectorAll('a[href="/tools"]'),
+    ).find((link) => !(link.getAttribute("href") ?? "").includes("#ring-"));
+    expect(labelLink).toBeDefined();
+    expect(labelLink?.getAttribute("href")).toBe("/tools");
+  });
+
+  it("wedge aria-label includes segment title, ring title, and item count", () => {
+    const { container } = render(
+      <Chart size={800} segments={segments} rings={rings} items={items} />,
+    );
+    const wedge = container.querySelector(
+      'a[href*="/tools"][href*="#ring-adopt"]',
+    );
+    expect(wedge).not.toBeNull();
     expect(wedge?.getAttribute("aria-label")).toBe("Tools, Adopt (2 items)");
 
-    const empty = container.querySelector('a[href$="/platforms#ring-adopt"]');
+    const empty = container.querySelector(
+      'a[href*="/platforms"][href*="#ring-adopt"]',
+    );
     expect(empty?.getAttribute("aria-label")).toBe(
       "Platforms, Adopt (0 items)",
     );
 
-    const single = container.querySelector('a[href$="/languages#ring-trial"]');
+    const single = container.querySelector(
+      'a[href*="/languages"][href*="#ring-trial"]',
+    );
     expect(single?.getAttribute("aria-label")).toBe(
       "Languages, Trial (1 item)",
     );
@@ -189,7 +322,9 @@ describe("Chart wedges", () => {
     const { container } = render(
       <Chart size={800} segments={segments} rings={rings} items={items} />,
     );
-    const wedge = container.querySelector('a[href$="/tools#ring-adopt"]');
+    const wedge = container.querySelector(
+      'a[href*="/tools"][href*="#ring-adopt"]',
+    );
     expect(wedge).not.toBeNull();
     if (!wedge) return;
 
@@ -204,7 +339,9 @@ describe("Chart wedges", () => {
     const { container } = render(
       <Chart size={800} segments={segments} rings={rings} items={items} />,
     );
-    const wedge = container.querySelector('a[href$="/tools#ring-adopt"]');
+    const wedge = container.querySelector(
+      'a[href*="/tools"][href*="#ring-adopt"]',
+    );
     expect(wedge).not.toBeNull();
     if (!wedge) return;
 
@@ -216,7 +353,9 @@ describe("Chart wedges", () => {
     const { container } = render(
       <Chart size={800} segments={segments} rings={rings} items={items} />,
     );
-    const wedge = container.querySelector('a[href$="/tools#ring-adopt"]');
+    const wedge = container.querySelector(
+      'a[href*="/tools"][href*="#ring-adopt"]',
+    );
     expect(wedge).not.toBeNull();
     if (!wedge) return;
 
@@ -233,7 +372,9 @@ describe("Chart wedges", () => {
     const { container } = render(
       <Chart size={800} segments={segments} rings={rings} items={items} />,
     );
-    const wedge = container.querySelector('a[href$="/tools#ring-adopt"]');
+    const wedge = container.querySelector(
+      'a[href*="/tools"][href*="#ring-adopt"]',
+    );
     const path = wedge?.querySelector("path");
     expect(path).not.toBeNull();
     expect(path?.getAttribute("d")?.length ?? 0).toBeGreaterThan(0);
@@ -259,11 +400,13 @@ describe("Chart wedges", () => {
       suppressTooltips: false,
       activeFlags: new Set(),
       activeTags: new Set(),
+      activeProducts: new Set(),
       activeTeams: new Set(),
       setHighlight: vi.fn(),
       setHighlightPreview,
       toggleFlag: vi.fn(),
       toggleTag: vi.fn(),
+      toggleProduct: vi.fn(),
       toggleTeam: vi.fn(),
       clearFilters: vi.fn(),
     });
@@ -271,7 +414,9 @@ describe("Chart wedges", () => {
     const { container, rerender } = render(
       <Chart size={800} segments={segments} rings={rings} items={items} />,
     );
-    const wedge = container.querySelector('a[href$="/tools#ring-adopt"]');
+    const wedge = container.querySelector(
+      'a[href*="/tools"][href*="#ring-adopt"]',
+    );
     expect(wedge).not.toBeNull();
     if (!wedge) return;
 
@@ -289,11 +434,13 @@ describe("Chart wedges", () => {
       suppressTooltips: false,
       activeFlags: new Set(),
       activeTags: new Set(),
+      activeProducts: new Set(),
       activeTeams: new Set(),
       setHighlight: vi.fn(),
       setHighlightPreview,
       toggleFlag: vi.fn(),
       toggleTag: vi.fn(),
+      toggleProduct: vi.fn(),
       toggleTeam: vi.fn(),
       clearFilters: vi.fn(),
     });
@@ -323,11 +470,13 @@ describe("Chart wedges", () => {
       suppressTooltips: false,
       activeFlags: new Set(),
       activeTags: new Set(),
+      activeProducts: new Set(),
       activeTeams: new Set(),
       setHighlight: vi.fn(),
       setHighlightPreview,
       toggleFlag: vi.fn(),
       toggleTag: vi.fn(),
+      toggleProduct: vi.fn(),
       toggleTeam: vi.fn(),
       clearFilters: vi.fn(),
     });

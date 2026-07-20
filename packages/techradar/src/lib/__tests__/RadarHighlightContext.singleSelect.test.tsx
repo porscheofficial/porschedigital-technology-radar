@@ -23,24 +23,28 @@ vi.mock("@/lib/data", () => ({
       id: "ts",
       flag: "new",
       tags: ["lang", "frontend"],
+      products: ["v2"],
       teams: ["platform"],
     },
     {
       id: "react",
       flag: "default",
       tags: ["frontend"],
+      products: ["v2"],
       teams: ["frontend"],
     },
     {
       id: "k8s",
       flag: "changed",
       tags: ["infra"],
+      products: ["v3"],
       teams: ["platform"],
     },
     {
       id: "docker",
       flag: "new",
       tags: ["infra"],
+      products: ["v3"],
       teams: ["devops"],
     },
   ]),
@@ -106,6 +110,19 @@ describe("RadarHighlightContext (single-select mode)", () => {
     expect(result.current.activeTags.has("infra")).toBe(true);
     expect(result.current.activeTags.has("frontend")).toBe(false);
     expect(result.current.activeTags.size).toBe(1);
+  });
+
+  it("replaces the active product instead of accumulating", () => {
+    const { result } = renderHook(() => useRadarHighlight(), { wrapper });
+
+    act(() => {
+      result.current.toggleProduct("v2");
+      result.current.toggleProduct("v3");
+    });
+
+    expect(result.current.activeProducts.has("v3")).toBe(true);
+    expect(result.current.activeProducts.has("v2")).toBe(false);
+    expect(result.current.activeProducts.size).toBe(1);
   });
 
   it("replaces the active team instead of accumulating", () => {

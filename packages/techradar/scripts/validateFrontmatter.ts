@@ -29,6 +29,7 @@ export const FrontmatterSchema = z.object({
   segment: z.enum(segmentIds),
   featured: z.boolean().default(true),
   tags: z.array(z.string()).default([]),
+  products: z.array(z.string()).default([]),
   teams: z.array(z.string()).default([]),
   links: z.array(LinkSchema).default([]),
 });

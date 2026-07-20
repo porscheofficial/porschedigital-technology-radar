@@ -25,6 +25,7 @@
   "chips": {
     "status": "#7BC78F",
     "tag": "#39FF14",
+    "product": "#E11D48",
     "team": "#00FF66",
     "team-added": "#A6FF4D",
     "team-removed": "#FF5555"

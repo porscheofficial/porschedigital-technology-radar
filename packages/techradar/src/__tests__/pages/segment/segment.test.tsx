@@ -7,6 +7,8 @@ const mockState = vi.hoisted(() => ({
   highlight: {
     highlightedIds: [],
     filterActive: false,
+    filterMatchIds: new Set<string>(),
+    hasFilter: false,
     activeFlags: new Set<string>(),
     activeTags: new Set<string>(),
     activeTeams: new Set<string>(),
@@ -21,6 +23,7 @@ const mockState = vi.hoisted(() => ({
   getItems: vi.fn(),
   getSegment: vi.fn(),
   getSegments: vi.fn(),
+  getToggle: vi.fn(),
   getRing: vi.fn(),
   getRings: vi.fn(),
   groupItemsByRing: vi.fn(),
@@ -67,6 +70,10 @@ vi.mock("@/components/SegmentRadar/SegmentRadar", () => ({
     mockState.segmentRadarProps(props);
     return <div data-testid="segment-radar" />;
   },
+}));
+
+vi.mock("@/components/RadarFilters/RadarFilters", () => ({
+  RadarFilters: () => <div data-testid="radar-filters" />,
 }));
 
 vi.mock("@/components/SeoHead/SeoHead", () => ({
@@ -118,6 +125,7 @@ vi.mock("@/lib/data", () => ({
   getItems: mockState.getItems,
   getSegment: mockState.getSegment,
   getSegments: mockState.getSegments,
+  getToggle: mockState.getToggle,
   getRing: mockState.getRing,
   getRings: mockState.getRings,
   groupItemsByRing: mockState.groupItemsByRing,
@@ -220,8 +228,11 @@ describe("Segment detail page", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    mockState.highlight.filterMatchIds = new Set<string>();
+    mockState.highlight.hasFilter = false;
     mockState.getAppName.mockReturnValue("Test Radar");
     mockState.getChartConfig.mockReturnValue({ size: 1200, blipSize: 12 });
+    mockState.getToggle.mockReturnValue(true);
     mockState.getSegment.mockImplementation((id: string) =>
       segments.find((entry) => entry.id === id),
     );
@@ -280,11 +291,61 @@ describe("Segment detail page", () => {
     );
   });
 
+  it("renders radar filters on the segment page", () => {
+    render(<SegmentPage segmentId={segment.id} />);
+
+    expect(screen.getByTestId("radar-filters")).toBeInTheDocument();
+  });
+
   it("renders ring sections with items grouped by ring", () => {
     render(<SegmentPage segmentId={segment.id} />);
 
     expect(screen.getByRole("heading", { name: "Adopt" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Trial" })).toBeInTheDocument();
+    expect(screen.getByText("React")).toBeInTheDocument();
+    expect(screen.getByText("Deno")).toBeInTheDocument();
+    expect(screen.getByText("Ember")).toBeInTheDocument();
+  });
+
+  it("groups only filter-matched items when filters are active", () => {
+    mockState.highlight.filterMatchIds = new Set(["deno"]);
+    mockState.highlight.hasFilter = true;
+    mockState.groupItemsByRing.mockReturnValue({
+      adopt: [],
+      trial: [items[1]],
+      assess: [],
+    });
+
+    render(<SegmentPage segmentId={segment.id} />);
+
+    expect(mockState.groupItemsByRing).toHaveBeenCalledWith([items[1]]);
+    expect(screen.queryByText("React")).not.toBeInTheDocument();
+    expect(screen.getByText("Deno")).toBeInTheDocument();
+    expect(screen.queryByText("Ember")).not.toBeInTheDocument();
+  });
+
+  it("does not render radar filters when showFilterOnSegmentPage is disabled", () => {
+    mockState.getToggle.mockImplementation(
+      (key: string) => key !== "showFilterOnSegmentPage",
+    );
+
+    render(<SegmentPage segmentId={segment.id} />);
+
+    expect(screen.queryByTestId("radar-filters")).not.toBeInTheDocument();
+  });
+
+  it("does not filter ring groups when showFilterOnSegmentPage is disabled", () => {
+    mockState.getToggle.mockImplementation(
+      (key: string) => key !== "showFilterOnSegmentPage",
+    );
+    mockState.highlight.filterMatchIds = new Set(["deno"]);
+    mockState.highlight.hasFilter = true;
+
+    render(<SegmentPage segmentId={segment.id} />);
+
+    expect(mockState.groupItemsByRing).toHaveBeenCalledWith(
+      expect.arrayContaining(items),
+    );
     expect(screen.getByText("React")).toBeInTheDocument();
     expect(screen.getByText("Deno")).toBeInTheDocument();
     expect(screen.getByText("Ember")).toBeInTheDocument();

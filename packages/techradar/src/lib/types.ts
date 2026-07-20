@@ -34,6 +34,7 @@ export interface Item {
   segment: string;
   flag: Flag;
   tags?: string[];
+  products?: string[];
   release: Release;
   revisions?: Revision[];
   position: [x: number, y: number];

@@ -73,7 +73,7 @@ function buildThemeBlock(theme: ThemeManifest, counts: PaletteCounts): string {
 
   if (theme.chips) {
     for (const kind of CHIP_KINDS) {
-      const chipValue = theme.chips[kind];
+      const chipValue = theme.chips[kind] ?? theme.chips.tag;
       baseVars.push(`--rtk-chip-${kind}-bg: ${toCssValue(chipValue)}`);
       baseVars.push(
         `--rtk-chip-${kind}-fg: ${toReadableForegroundCssValue(chipValue)}`,

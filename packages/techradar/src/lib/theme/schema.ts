@@ -26,6 +26,7 @@ export type ThemeCssVariableKey = (typeof CHROME_CSS_VARIABLE_KEYS)[number];
 export const CHIP_KINDS = [
   "status",
   "tag",
+  "product",
   "team",
   "team-added",
   "team-removed",
@@ -101,6 +102,7 @@ export const ThemeJsonSchema = z
       .object({
         status: cssVariableValueSchema,
         tag: cssVariableValueSchema,
+        product: cssVariableValueSchema.optional(),
         team: cssVariableValueSchema,
         "team-added": cssVariableValueSchema,
         "team-removed": cssVariableValueSchema,
@@ -148,7 +150,7 @@ export const ThemeJsonSchema = z
     if (theme.chips) {
       for (const kind of CHIP_KINDS) {
         assertModeCoverage(
-          theme.chips[kind],
+          theme.chips[kind] ?? theme.chips.tag,
           theme.supports,
           ["chips", kind],
           ctx,

@@ -11,9 +11,10 @@ import { assetUrl } from "@/lib/utils";
 import rawData from "../../data/data.json";
 import config from "./config";
 
-const data = rawData as {
+const data = rawData as unknown as {
   releases: string[];
   tags: string[];
+  products?: string[];
   items: Item[];
 };
 
@@ -62,6 +63,20 @@ export function getTags(): string[] {
   return data.tags;
 }
 
+export function getProducts(): string[] {
+  if (data.products) return data.products;
+
+  const productsSet = new Set<string>();
+  data.items.forEach((item) => {
+    if (item.products) {
+      item.products.forEach((product) => {
+        productsSet.add(product);
+      });
+    }
+  });
+  return Array.from(productsSet).sort();
+}
+
 export function getTeams(): string[] {
   const teamsSet = new Set<string>();
   data.items.forEach((item) => {
@@ -98,12 +113,14 @@ export function getFilteredItems(
   tag?: string,
   team?: string,
   flag?: string,
+  product?: string,
 ): Item[] {
   return getItems().filter(
     (item) =>
       (!tag || item.tags?.includes(tag)) &&
       (!team || item.teams?.includes(team)) &&
-      (!flag || item.flag === flag),
+      (!flag || item.flag === flag) &&
+      (!product || item.products?.includes(product)),
   );
 }
 

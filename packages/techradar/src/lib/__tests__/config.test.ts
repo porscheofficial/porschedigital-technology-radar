@@ -49,6 +49,9 @@ describe("config module", () => {
       expect(config.toggles.showSearch).toBe(true);
       expect(config.toggles.showChart).toBe(true);
       expect(config.toggles.showTagFilter).toBe(true);
+      expect(config.toggles.showFilterOnSegmentPage).toBe(
+        defaultConfig.toggles.showFilterOnSegmentPage,
+      );
       expect(config.toggles.showTeamFilter).toBe(true);
     });
 
@@ -150,6 +153,9 @@ describe("config deep merge (with partial user config)", () => {
     expect(result.toggles.showChart).toBe(false);
     expect(result.toggles.showSearch).toBe(true);
     expect(result.toggles.showTagFilter).toBe(true);
+    expect(result.toggles.showFilterOnSegmentPage).toBe(
+      defaultConfig.toggles.showFilterOnSegmentPage,
+    );
   });
 
   it("partial labels override preserves other labels", () => {

@@ -11,6 +11,7 @@ const _mockItems: Item[] = [
     segment: "languages-and-frameworks",
     flag: Flag.Default,
     tags: ["language"],
+    products: ["v2"],
     release: "2024-03",
     position: [0.3, 0.2],
     teams: ["platform", "frontend"],
@@ -28,6 +29,7 @@ const _mockItems: Item[] = [
     segment: "languages-and-frameworks",
     flag: Flag.New,
     tags: ["frontend"],
+    products: ["v2", "v3"],
     release: "2024-03",
     position: [0.5, 0.6],
     teams: ["frontend"],
@@ -42,6 +44,7 @@ const _mockItems: Item[] = [
     segment: "platforms-and-operations",
     flag: Flag.Changed,
     tags: ["infrastructure"],
+    products: ["v3"],
     release: "2024-01",
     position: [0.7, 0.8],
     teams: ["platform"],
@@ -72,6 +75,7 @@ vi.mock("../../../data/data.json", () => ({
         segment: "languages-and-frameworks",
         flag: "default",
         tags: ["language"],
+        products: ["v2"],
         release: "2024-03",
         position: [0.3, 0.2],
         teams: ["platform", "frontend"],
@@ -89,6 +93,7 @@ vi.mock("../../../data/data.json", () => ({
         segment: "languages-and-frameworks",
         flag: "new",
         tags: ["frontend"],
+        products: ["v2", "v3"],
         release: "2024-03",
         position: [0.5, 0.6],
         teams: ["frontend"],
@@ -103,6 +108,7 @@ vi.mock("../../../data/data.json", () => ({
         segment: "platforms-and-operations",
         flag: "changed",
         tags: ["infrastructure"],
+        products: ["v3"],
         release: "2024-01",
         position: [0.7, 0.8],
         teams: ["platform"],
@@ -220,6 +226,7 @@ import {
   getItemTrajectories,
   getJsUrl,
   getLabel,
+  getProducts,
   getReleases,
   getRing,
   getRings,
@@ -309,6 +316,12 @@ describe("getTags", () => {
   });
 });
 
+describe("getProducts", () => {
+  it("derives a sorted unique product list for legacy generated data", () => {
+    expect(getProducts()).toEqual(["v2", "v3"]);
+  });
+});
+
 describe("getTeams", () => {
   it("returns sorted unique teams", () => {
     const teams = getTeams();
@@ -391,6 +404,11 @@ describe("getFilteredItems", () => {
     const items = getFilteredItems(undefined, undefined, "new");
     expect(items).toHaveLength(1);
     expect(items[0].id).toBe("react");
+  });
+
+  it("filters by product", () => {
+    const items = getFilteredItems(undefined, undefined, undefined, "v3");
+    expect(items.map((item) => item.id)).toEqual(["react", "kubernetes"]);
   });
 });
 

@@ -23,24 +23,28 @@ vi.mock("@/lib/data", () => ({
       id: "ts",
       flag: "new",
       tags: ["lang", "frontend"],
+      products: ["v2"],
       teams: ["platform"],
     },
     {
       id: "react",
       flag: "default",
       tags: ["frontend"],
+      products: ["v2"],
       teams: ["frontend"],
     },
     {
       id: "k8s",
       flag: "changed",
       tags: ["infra"],
+      products: ["v3"],
       teams: ["platform"],
     },
     {
       id: "docker",
       flag: "new",
       tags: ["infra"],
+      products: ["v3"],
       teams: ["devops"],
     },
   ]),
@@ -67,6 +71,7 @@ describe("RadarHighlightContext", () => {
     expect(result.current.filterActive).toBe(false);
     expect(result.current.activeFlags.size).toBe(0);
     expect(result.current.activeTags.size).toBe(0);
+    expect(result.current.activeProducts.size).toBe(0);
     expect(result.current.activeTeams.size).toBe(0);
   });
 
@@ -130,6 +135,22 @@ describe("RadarHighlightContext", () => {
     expect(result.current.activeTags.size).toBe(0);
   });
 
+  it("toggleProduct adds and removes a product from the active set", () => {
+    const { result } = renderHook(() => useRadarHighlight(), { wrapper });
+
+    act(() => {
+      result.current.toggleProduct("v2");
+    });
+
+    expect(result.current.activeProducts.has("v2")).toBe(true);
+
+    act(() => {
+      result.current.toggleProduct("v2");
+    });
+
+    expect(result.current.activeProducts.size).toBe(0);
+  });
+
   it("toggleTeam adds and removes a team from the active set", () => {
     const { result } = renderHook(() => useRadarHighlight(), { wrapper });
 
@@ -165,6 +186,16 @@ describe("RadarHighlightContext", () => {
     });
 
     expect(result.current.highlightedIds).toEqual(["ts", "react"]);
+  });
+
+  it("derives highlighted ids from a single active product", () => {
+    const { result } = renderHook(() => useRadarHighlight(), { wrapper });
+
+    act(() => {
+      result.current.toggleProduct("v3");
+    });
+
+    expect(result.current.highlightedIds).toEqual(["k8s", "docker"]);
   });
 
   it("derives highlighted ids from a single active team", () => {
@@ -252,6 +283,7 @@ describe("RadarHighlightContext", () => {
     act(() => {
       result.current.toggleFlag("new");
       result.current.toggleTag("frontend");
+      result.current.toggleProduct("v2");
       result.current.toggleTeam("platform");
     });
 
@@ -263,6 +295,7 @@ describe("RadarHighlightContext", () => {
 
     expect(result.current.activeFlags.size).toBe(0);
     expect(result.current.activeTags.size).toBe(0);
+    expect(result.current.activeProducts.size).toBe(0);
     expect(result.current.activeTeams.size).toBe(0);
     expect(result.current.highlightedIds).toEqual([]);
   });
@@ -289,6 +322,7 @@ describe("RadarHighlightContext", () => {
     act(() => {
       result.current.toggleFlag("new");
       result.current.toggleTag("frontend");
+      result.current.toggleProduct("v2");
     });
 
     // The state→URL effect runs asynchronously after render
@@ -301,16 +335,22 @@ describe("RadarHighlightContext", () => {
     const query = lastCall[0].query;
     expect(query.flags).toBe("new");
     expect(query.tags).toBe("frontend");
+    expect(query.products).toBe("v2");
     expect(query.teams).toBeUndefined();
   });
 
   it("hydrates filter state from URL query params on mount", () => {
-    mockRouter.query = { flags: "changed", teams: "platform" };
+    mockRouter.query = {
+      flags: "changed",
+      products: "v3",
+      teams: "platform",
+    };
 
     const { result } = renderHook(() => useRadarHighlight(), { wrapper });
 
     // URL→state effect fires synchronously on mount with the initial query
     expect(result.current.activeFlags.has("changed")).toBe(true);
+    expect(result.current.activeProducts.has("v3")).toBe(true);
     expect(result.current.activeTeams.has("platform")).toBe(true);
     expect(result.current.activeTags.size).toBe(0);
     expect(result.current.highlightedIds).toEqual(["k8s"]);

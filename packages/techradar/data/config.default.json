@@ -8,6 +8,8 @@
     "showSearch": true,
     "showChart": true,
     "showTagFilter": true,
+    "showProductFilter": false,
+    "showFilterOnSegmentPage": false,
     "showTeamFilter": true,
     "showBlipChange": true,
     "showDemoDisclaimer": false,

@@ -140,6 +140,8 @@ All configuration lives in `data/config.json`. Any key you omit falls back to th
 | `showSearch`     | Show the search bar in the header.            | `true`  |
 | `showChart`      | Show the radar visualization on the homepage. | `true`  |
 | `showTagFilter`  | Show the tag filter below the radar.          | `true`  |
+| `showProductFilter` | Show the product filter below the radar.   | `false`  |
+| `showFilterOnSegmentPage` | Show segment-page filters and allow filtering on the segment detail page. | `false`  |
 | `showTeamFilter` | Show the team filter below the radar.         | `true`  |
 | `showBlipChange` | Show a directional arc on Changed blips indicating promotion (inward) or demotion (outward). | `true` |
 | `showDemoDisclaimer` | Show the demo-data disclaimer banner on the homepage. | `false` |
@@ -409,6 +411,8 @@ segment: languages-and-frameworks
 tags:
   - frontend
   - javascript
+products:
+  - v2
 teams:
   - web-platform
   - mobile
@@ -432,6 +436,7 @@ Supports full **Markdown** formatting.
 | `summary`  | No       | Custom summary used for meta descriptions and link previews. Falls back to the first 160 characters of the item body. |
 | `ogImage`  | No       | Custom Open Graph image. Use a relative path under `public/` (for example `/images/react-card.png`) or a full `https://...` URL. |
 | `tags`     | No       | List of tags for filtering.                                                                             |
+| `products` | No       | List of products for filtering, for example `v2` or `v3`.                                               |
 | `teams`    | No       | List of teams currently using this technology.                                                          |
 | `links`    | No       | List of external links. Each entry has a `url` (required) and optional `name`. Shown on the detail page. |
 | `featured` | No       | Set to `false` to hide from the radar chart while keeping the item in the overview. Defaults to `true`. |

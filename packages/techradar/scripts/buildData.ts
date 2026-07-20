@@ -254,6 +254,7 @@ export async function parseDirectory(
           existing.ring = item.ring || existing.ring;
           existing.segment = item.segment || existing.segment;
           existing.tags = item.tags;
+          existing.products = item.products;
           existing.teams = item.teams;
           existing.links = item.links;
           existing.featured = item.featured;
@@ -300,6 +301,7 @@ export async function parseDirectory(
           featured: frontmatter.featured,
           flag: Flag.Default,
           tags: frontmatter.tags,
+          products: frontmatter.products,
           revisions: [
             {
               release: releaseDate,
@@ -322,6 +324,7 @@ export async function parseDirectory(
         existing.ring = frontmatter.ring;
         existing.segment = frontmatter.segment;
         existing.tags = frontmatter.tags;
+        existing.products = frontmatter.products;
         existing.teams = teams;
         existing.links = frontmatter.links;
         existing.featured = frontmatter.featured;
@@ -384,6 +387,16 @@ export function getUniqueTags(items: Item[]): string[] {
   return Array.from(tags).sort();
 }
 
+export function getUniqueProducts(items: Item[]): string[] {
+  const products = new Set<string>();
+  for (const item of items) {
+    for (const product of item.products ?? []) {
+      products.add(product);
+    }
+  }
+  return Array.from(products).sort();
+}
+
 export function getFlag(item: Item, allReleases: string[]): Flag {
   if (allReleases.length === 1) return Flag.Default;
 
@@ -401,6 +414,7 @@ export function getFlag(item: Item, allReleases: string[]): Flag {
 export function postProcessItems(items: Item[]): {
   releases: string[];
   tags: string[];
+  products: string[];
   items: Item[];
 } {
   const filteredItems =
@@ -412,6 +426,7 @@ export function postProcessItems(items: Item[]): {
 
   const releases = getUniqueReleases(filteredItems);
   const uniqueTags = getUniqueTags(filteredItems);
+  const uniqueProducts = getUniqueProducts(filteredItems);
 
   for (const item of filteredItems) {
     computeRevisionDiffs(item.revisions);
@@ -454,13 +469,19 @@ export function postProcessItems(items: Item[]): {
 
     if (!processedItem.revisions?.length) delete processedItem.revisions;
     if (!processedItem.tags?.length) delete processedItem.tags;
+    if (!processedItem.products?.length) delete processedItem.products;
     if (!processedItem.teams?.length) delete processedItem.teams;
     if (!processedItem.links?.length) delete processedItem.links;
 
     return processedItem;
   });
 
-  return { releases, tags: uniqueTags, items: processedItems };
+  return {
+    releases,
+    tags: uniqueTags,
+    products: uniqueProducts,
+    items: processedItems,
+  };
 }
 
 // ---------------------------------------------------------------------------

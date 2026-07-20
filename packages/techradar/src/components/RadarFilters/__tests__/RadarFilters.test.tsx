@@ -1,12 +1,19 @@
 import { render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 
-import { getFlags, getTags, getTeams, getToggle } from "@/lib/data";
+import {
+  getFlags,
+  getProducts,
+  getTags,
+  getTeams,
+  getToggle,
+} from "@/lib/data";
 import { useRadarHighlight } from "@/lib/RadarHighlightContext";
 import { RadarFilters } from "../RadarFilters";
 
 vi.mock("@/lib/data", () => ({
   getFlags: vi.fn(),
+  getProducts: vi.fn(),
   getTags: vi.fn(),
   getTeams: vi.fn(),
   getToggle: vi.fn(),
@@ -48,6 +55,7 @@ vi.mock("@porsche-design-system/components-react/ssr", () => ({
 }));
 
 const mockGetFlags = getFlags as ReturnType<typeof vi.fn>;
+const mockGetProducts = getProducts as ReturnType<typeof vi.fn>;
 const mockGetTags = getTags as ReturnType<typeof vi.fn>;
 const mockGetTeams = getTeams as ReturnType<typeof vi.fn>;
 const mockGetToggle = getToggle as ReturnType<typeof vi.fn>;
@@ -59,17 +67,20 @@ describe("RadarFilters", () => {
       new: { title: "New" },
       changed: { title: "Changed" },
     });
+    mockGetProducts.mockReturnValue(["v2"]);
     mockGetTags.mockReturnValue(["frontend"]);
     mockGetTeams.mockReturnValue(["platform"]);
     mockGetToggle.mockImplementation((key: string) => key !== "showChart");
     mockUseRadarHighlight.mockReturnValue({
       activeFlags: new Set(["new"]),
       activeTags: new Set(["frontend"]),
+      activeProducts: new Set(["v2"]),
       activeTeams: new Set(["platform"]),
       filterActive: true,
       hasFilter: true,
       toggleFlag: vi.fn(),
       toggleTag: vi.fn(),
+      toggleProduct: vi.fn(),
       toggleTeam: vi.fn(),
       clearFilters: vi.fn(),
     });
@@ -95,6 +106,16 @@ describe("RadarFilters", () => {
       .find((el) => el.textContent === "frontend");
     expect(tagChip).toBeDefined();
     expect(tagChip).toHaveAttribute("data-kind", "tag");
+  });
+
+  it("renders the product pill as Chip kind=product", () => {
+    render(<RadarFilters />);
+
+    const productChip = screen
+      .getAllByTestId("chip")
+      .find((el) => el.textContent === "v2");
+    expect(productChip).toBeDefined();
+    expect(productChip).toHaveAttribute("data-kind", "product");
   });
 
   it("renders the team pill as Chip kind=team", () => {
@@ -124,11 +145,13 @@ describe("RadarFilters", () => {
     mockUseRadarHighlight.mockReturnValue({
       activeFlags: new Set<string>(),
       activeTags: new Set<string>(),
+      activeProducts: new Set<string>(),
       activeTeams: new Set<string>(),
       filterActive: true,
       hasFilter: false,
       toggleFlag: vi.fn(),
       toggleTag: vi.fn(),
+      toggleProduct: vi.fn(),
       toggleTeam: vi.fn(),
       clearFilters: vi.fn(),
     });

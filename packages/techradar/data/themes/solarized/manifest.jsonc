@@ -70,6 +70,10 @@
       "light": "#268BD2",
       "dark": "#268BD2"
     },
+    "product": {
+      "light": "#E11D48",
+      "dark": "#FB7185"
+    },
     "team": {
       "light": "#CB4B16",
       "dark": "#CB4B16"

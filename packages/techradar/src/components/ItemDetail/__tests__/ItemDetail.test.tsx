@@ -227,6 +227,18 @@ describe("ItemDetail", () => {
     );
   });
 
+  it("renders products in a dedicated row below tags", () => {
+    renderItemDetail({ tags: ["frontend"], products: ["v2"] });
+
+    const tagsContainer = screen.getByText("frontend").closest("div");
+    const productsContainer = screen.getByText("v2").closest("div");
+
+    expect(tagsContainer).toHaveClass("tags");
+    expect(productsContainer).toHaveClass("productsContainer");
+    expect(productsContainer).not.toBe(tagsContainer);
+    expect(tagsContainer?.nextElementSibling).toBe(productsContainer);
+  });
+
   it("shows the not maintained notification when the release is older than the last three releases", () => {
     renderItemDetail({ release: "2024-01-15" });
 

@@ -62,6 +62,7 @@ describe("Product", () => {
 
     const link = screen.getByRole("link");
     expect(link).toHaveAttribute("href", "/?products=v2");
+    expect(link).toHaveClass("productLink");
     expect(link).toContainElement(screen.getByTestId("chip"));
   });
 });

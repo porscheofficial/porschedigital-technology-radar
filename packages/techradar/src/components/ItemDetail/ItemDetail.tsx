@@ -133,14 +133,18 @@ export function ItemDetail({ item, segmentTitle }: ItemProps) {
               {item.tags?.map((tag) => (
                 <Tag key={tag} tag={tag} href={tagHref(tag)} />
               ))}
-              {item.products?.map((product) => (
-                <Product
-                  key={product}
-                  product={product}
-                  href={productHref(product)}
-                />
-              ))}
             </div>
+            {!!item.products && item.products.length > 0 && (
+              <div className={styles.productsContainer}>
+                {item.products.map((product) => (
+                  <Product
+                    key={product}
+                    product={product}
+                    href={productHref(product)}
+                  />
+                ))}
+              </div>
+            )}
             {!!item.teams && item.teams.length > 0 && (
               <div className={styles.teamsContainer}>
                 <Teams teams={item.teams} getTeamHref={getTeamHref} />

@@ -119,6 +119,17 @@
   margin: 0;
 }
 
+.productsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $pds-spacing-static-x-small;
+  margin-top: $pds-spacing-static-small;
+}
+
+.productsContainer :global(a) {
+  margin: 0;
+}
+
 .teamsContainer {
   display: flex;
   flex-wrap: wrap;

@@ -111,6 +111,7 @@ describe("RadarFilters", () => {
   it("renders the product pill as Chip kind=product", () => {
     render(<RadarFilters />);
 
+    expect(screen.getByText("Products")).toBeInTheDocument();
     const productChip = screen
       .getAllByTestId("chip")
       .find((el) => el.textContent === "v2");

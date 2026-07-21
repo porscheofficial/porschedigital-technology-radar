@@ -128,7 +128,7 @@ export function RadarFilters() {
         <div className={styles.row}>
           <span className={styles.rowLabel}>
             <PIcon name="filter" size="x-small" aria-hidden="true" />
-            Product
+            Products
           </span>
           <div className={styles.pills}>
             {products.map((product) => {

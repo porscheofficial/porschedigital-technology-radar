@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/porscheofficial/porschedigital-technology-radar/compare/create-techradar-v1.0.6...create-techradar-v1.1.0) (2026-07-22)
+
+
+### Features
+
+* **techradar:** add product and segment filters ([b5cd859](https://github.com/porscheofficial/porschedigital-technology-radar/commit/b5cd85959685feffa8c417d1eb8bdab5de882773))
+
 ## [1.0.6](https://github.com/porscheofficial/porschedigital-technology-radar/compare/create-techradar-v1.0.5...create-techradar-v1.0.6) (2026-07-08)
 
 

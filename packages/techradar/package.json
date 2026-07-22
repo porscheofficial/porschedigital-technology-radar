@@ -100,7 +100,7 @@
     "@porsche-design-system/components-react": "^4.1.0",
     "@radix-ui/react-dialog": "^1.1.16",
     "@resvg/resvg-js": "^2.6.2",
-    "@types/hast": "^3.0.4",
+    "@types/hast": "^3.0.5",
     "@types/mdast": "^4.0.4",
     "@types/node": "^26",
     "@types/react": "^19.2.17",

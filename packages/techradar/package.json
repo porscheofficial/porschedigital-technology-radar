@@ -146,7 +146,7 @@
     "dependency-cruiser": "^17.3.10",
     "eslint": "^10.6.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
-    "eslint-plugin-sonarjs": "^4.0.3",
+    "eslint-plugin-sonarjs": "^4.2.0",
     "html-validate": "^11.5.3",
     "jscpd": "^5.0.12",
     "jsdom": "^29.1.1",

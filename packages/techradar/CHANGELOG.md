@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.3.0](https://github.com/porscheofficial/porschedigital-technology-radar/compare/porschedigital-technology-radar-v2.2.5...porschedigital-technology-radar-v2.3.0) (2026-07-22)
+
+
+### Features
+
+* **techradar:** add product and segment filters ([b5cd859](https://github.com/porscheofficial/porschedigital-technology-radar/commit/b5cd85959685feffa8c417d1eb8bdab5de882773))
+
+
+### Bug Fixes
+
+* **techradar:** align product link interaction styles ([ba213b9](https://github.com/porscheofficial/porschedigital-technology-radar/commit/ba213b9a601cce909631df0a0286f5de499536ff))
+* **techradar:** pluralize products filter label ([722ff8a](https://github.com/porscheofficial/porschedigital-technology-radar/commit/722ff8a0a11567021465ca82a70d426f3e4d605b))
+* **techradar:** separate product chips from tags ([5c947b2](https://github.com/porscheofficial/porschedigital-technology-radar/commit/5c947b2e5fa049c5dab8065eb297acd9c5c4c39a))
+* **techradar:** type external-link rel as string array ([bd1d127](https://github.com/porscheofficial/porschedigital-technology-radar/commit/bd1d127ded7b7534f237d1bac428a07b7cb5e8ac))
+
+
+### Build System
+
+* **deps-dev:** bump jscpd from 5.0.7 to 5.0.12 ([e6386ed](https://github.com/porscheofficial/porschedigital-technology-radar/commit/e6386ed21b7e8a3f7f135398fa20ee32a1372c68))
+* **techradar:** raise CSS budget for product styles ([8e79a07](https://github.com/porscheofficial/porschedigital-technology-radar/commit/8e79a07696bacc23a09d06a6a462bd1f6de9813c))
+
 ## [2.2.5](https://github.com/porscheofficial/porschedigital-technology-radar/compare/porschedigital-technology-radar-v2.2.4...porschedigital-technology-radar-v2.2.5) (2026-07-08)
 
 

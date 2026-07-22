@@ -98,7 +98,7 @@
     "@fontsource/inter": "^5.2.8",
     "@porsche-design-system/components-js": "4.1.0",
     "@porsche-design-system/components-react": "^4.1.0",
-    "@radix-ui/react-dialog": "^1.1.16",
+    "@radix-ui/react-dialog": "^1.1.20",
     "@resvg/resvg-js": "^2.6.2",
     "@types/hast": "^3.0.4",
     "@types/mdast": "^4.0.4",

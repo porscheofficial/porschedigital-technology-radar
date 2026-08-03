@@ -201,8 +201,8 @@ const Changelog: CustomPage = () => {
 
         <div className={styles.matrixFooter}>
           <div className={styles.matrixLegend}>
-            {["adopt", "trial", "assess", "hold"].map((ringId) => {
-              const ring = getRing(ringId);
+            {allRings.map((ring) => {
+              const ringId = ring.id;
               if (!ring) return null;
               return (
                 <span key={ringId} className={styles.legendItem}>

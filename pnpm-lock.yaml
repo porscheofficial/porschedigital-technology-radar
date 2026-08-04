@@ -15,19 +15,19 @@ importers:
         specifier: 2.4.16
         version: 2.4.16
       '@commitlint/cli':
-        specifier: ^21.2.0
+        specifier: 21.2.0
         version: 21.2.0(@types/node@26.1.0)(conventional-commits-parser@6.4.0)(typescript@6.0.3)
       '@commitlint/config-conventional':
-        specifier: ^21.1.0
+        specifier: 21.1.0
         version: 21.1.0
       husky:
-        specifier: ^9.0.11
+        specifier: 9.1.7
         version: 9.1.7
       license-checker-rseidelsohn:
-        specifier: ^5.0.1
+        specifier: 5.0.1
         version: 5.0.1
       lint-staged:
-        specifier: ^17.0.7
+        specifier: 17.0.7
         version: 17.0.7
 
   packages/create-techradar:
@@ -43,10 +43,10 @@ importers:
         specifier: ^26.1.0
         version: 26.1.0
       tsup:
-        specifier: ^8.5.1
+        specifier: 8.5.1
         version: 8.5.1(jiti@2.7.0)(postcss@8.5.25)(tsx@4.22.4)(typescript@6.0.3)(yaml@2.9.0)
       typescript:
-        specifier: ^6
+        specifier: 6.0.3
         version: 6.0.3
 
   packages/techradar:
@@ -182,34 +182,34 @@ importers:
         specifier: ^28.0.3
         version: 28.0.3
       '@vitejs/plugin-react':
-        specifier: ^6.0.3
+        specifier: 6.0.3
         version: 6.0.3(vite@8.0.8(@types/node@26.1.0)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.101.0)(tsx@4.22.4)(yaml@2.9.0))
       '@vitest/coverage-v8':
         specifier: ^4.1.9
         version: 4.1.9(vitest@4.1.9)
       axe-core:
-        specifier: ^4.12.1
+        specifier: 4.12.1
         version: 4.12.1
       cspell:
-        specifier: ^10.0.1
+        specifier: 10.0.1
         version: 10.0.1
       dependency-cruiser:
-        specifier: ^17.3.10
+        specifier: 17.3.10
         version: 17.3.10
       eslint:
-        specifier: ^10.6.0
+        specifier: 10.6.0
         version: 10.6.0(jiti@2.7.0)
       eslint-plugin-jsx-a11y:
-        specifier: ^6.10.2
+        specifier: 6.10.2
         version: 6.10.2(eslint@10.6.0(jiti@2.7.0))
       eslint-plugin-sonarjs:
-        specifier: ^4.0.3
+        specifier: 4.0.3
         version: 4.0.3(eslint@10.6.0(jiti@2.7.0))
       html-validate:
-        specifier: ^11.5.3
+        specifier: 11.5.3
         version: 11.5.3(@vitest/expect@4.1.9)(vitest@4.1.9)
       jscpd:
-        specifier: ^5.0.12
+        specifier: 5.0.12
         version: 5.0.12
       jsdom:
         specifier: ^29.1.1
@@ -218,22 +218,22 @@ importers:
         specifier: 6.16.1
         version: 6.16.1
       linkinator:
-        specifier: ^7.6.1
+        specifier: 7.6.1
         version: 7.6.1
       markdownlint-cli2:
-        specifier: ^0.23.0
+        specifier: 0.23.0
         version: 0.23.0
       playwright:
-        specifier: ^1.61.1
+        specifier: 1.61.1
         version: 1.61.1
       portless:
-        specifier: ^0.14.0
+        specifier: 0.14.0
         version: 0.14.0
       tsup:
-        specifier: ^8.5.1
+        specifier: 8.5.1
         version: 8.5.1(jiti@2.7.0)(postcss@8.5.25)(tsx@4.22.4)(typescript@6.0.3)(yaml@2.9.0)
       typescript-eslint:
-        specifier: ^8.62.1
+        specifier: 8.62.1
         version: 8.62.1(eslint@10.6.0(jiti@2.7.0))(typescript@6.0.3)
       vitest:
         specifier: ^4.1.9
@@ -428,10 +428,6 @@ packages:
 
   '@commitlint/top-level@21.2.0':
     resolution: {integrity: sha512-Y5gmQ+KxzqCrBFJfLvFEPvvwD3LDiNZoTT2yeFBm96M8qhmqSzQc5DvX3rheAaAMjyIvMXOCLS/mWfdpONsjyQ==}
-    engines: {node: '>=22.12.0'}
-
-  '@commitlint/types@21.1.0':
-    resolution: {integrity: sha512-YodnnnH1Cp+08nP8HGNJAIuB6L3/vdCTHVRTfF8Ik/wRCLOTsU9zwv3yO1cSPQRDa9CLYtE+UJ2K67r7CwMSFw==}
     engines: {node: '>=22.12.0'}
 
   '@commitlint/types@21.2.0':
@@ -5512,11 +5508,6 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
-  semver@7.8.4:
-    resolution: {integrity: sha512-rUCObTnP32Q08R2uuIrt7r9PlEonuTmtuXYcW6s5kjdlj3xbnwe+21yXptAUYcMAABLkYYTtnmzb3w3EDZfueA==}
-    engines: {node: '>=10'}
-    hasBin: true
-
   semver@7.8.5:
     resolution: {integrity: sha512-Y7/KDsb8LjooZpwaqGyulO6DQlksgCncchHGk+sZIY4SBvUocMBEFH5Ur1fI4dV+Jvl0w6cjvucaIi40puRioA==}
     engines: {node: '>=10'}
@@ -5777,10 +5768,6 @@ packages:
   tinyexec@1.2.4:
     resolution: {integrity: sha512-SHf/r48b7vOrjve9PxJo3MN5v5yuyjHvdUcrQffT3WXMUfnGmHDVbC4k3sHJaJTgZCwpUplIaAo5ANtMyp3YHg==}
     engines: {node: '>=18'}
-
-  tinyglobby@0.2.16:
-    resolution: {integrity: sha512-pn99VhoACYR8nFHhxqix+uvsbXineAasWm5ojXoN8xEwK5Kd3/TrhNn1wByuD52UxWRLy8pu+kRMniEi6Eq9Zg==}
-    engines: {node: '>=12.0.0'}
 
   tinyglobby@0.2.17:
     resolution: {integrity: sha512-wXR/dYpcqKmfWpEdZjiKJOwCNFndD0DMnrW/cYjVGttEkBfVgcLFHoNrlj47mjOVic9yyNu65alsgF4NQyTa2g==}
@@ -6340,7 +6327,7 @@ snapshots:
 
   '@commitlint/config-conventional@21.1.0':
     dependencies:
-      '@commitlint/types': 21.1.0
+      '@commitlint/types': 21.2.0
       conventional-changelog-conventionalcommits: 9.3.1
 
   '@commitlint/config-conventional@21.2.0':
@@ -6430,11 +6417,6 @@ snapshots:
   '@commitlint/top-level@21.2.0':
     dependencies:
       escalade: 3.2.0
-
-  '@commitlint/types@21.1.0':
-    dependencies:
-      conventional-commits-parser: 6.4.0
-      picocolors: 1.1.1
 
   '@commitlint/types@21.2.0':
     dependencies:
@@ -7480,7 +7462,7 @@ snapshots:
       proggy: 4.0.0
       promise-all-reject-late: 1.0.1
       promise-call-limit: 3.0.2
-      semver: 7.8.4
+      semver: 7.8.5
       ssri: 13.0.1
       treeverse: 3.0.0
       walk-up-path: 4.0.0
@@ -7535,7 +7517,7 @@ snapshots:
       hosted-git-info: 9.0.3
       json-parse-even-better-errors: 5.0.0
       proc-log: 6.1.0
-      semver: 7.8.4
+      semver: 7.8.5
       spdx-expression-parse: 4.0.0
 
   '@npmcli/promise-spawn@9.0.1':
@@ -8447,11 +8429,11 @@ snapshots:
 
   acorn-loose@8.5.2:
     dependencies:
-      acorn: 8.16.0
+      acorn: 8.17.0
 
   acorn-walk@8.3.5:
     dependencies:
-      acorn: 8.16.0
+      acorn: 8.17.0
 
   acorn@8.16.0: {}
 
@@ -8784,6 +8766,7 @@ snapshots:
     dependencies:
       '@simple-libs/stream-utils': 1.2.0
       meow: 13.2.0
+    optional: true
 
   conventional-commits-parser@7.0.1:
     dependencies:
@@ -8838,7 +8821,7 @@ snapshots:
   cspell-glob@10.0.1:
     dependencies:
       '@cspell/url': 10.0.1
-      picomatch: 4.0.4
+      picomatch: 4.0.5
 
   cspell-grammar@10.0.1:
     dependencies:
@@ -8901,7 +8884,7 @@ snapshots:
       cspell-lib: 10.0.1
       fast-json-stable-stringify: 2.1.0
       flatted: 3.4.2
-      semver: 7.8.4
+      semver: 7.8.5
       tinyglobby: 0.2.17
 
   css-background-parser@0.1.0: {}
@@ -9293,7 +9276,7 @@ snapshots:
       lodash.merge: 4.6.2
       minimatch: 10.2.5
       scslre: 0.3.0
-      semver: 7.7.4
+      semver: 7.8.5
       ts-api-utils: 2.5.0(typescript@6.0.3)
       typescript: 6.0.3
 
@@ -9433,6 +9416,10 @@ snapshots:
   fdir@6.5.0(picomatch@4.0.4):
     optionalDependencies:
       picomatch: 4.0.4
+
+  fdir@6.5.0(picomatch@4.0.5):
+    optionalDependencies:
+      picomatch: 4.0.5
 
   fflate@0.7.4: {}
 
@@ -9691,7 +9678,7 @@ snapshots:
       ajv: 8.20.0
       kleur: 4.1.5
       prompts: 2.4.2
-      semver: 7.8.4
+      semver: 7.8.5
     optionalDependencies:
       '@vitest/expect': 4.1.9
       vitest: 4.1.9(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.0.8(@types/node@26.1.0)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.101.0)(tsx@4.22.4)(yaml@2.9.0))
@@ -10099,7 +10086,7 @@ snapshots:
       lodash.clonedeep: 4.5.0
       mkdirp: 1.0.4
       nopt: 7.2.1
-      semver: 7.8.4
+      semver: 7.8.5
       spdx-correct: 3.2.0
       spdx-expression-parse: 4.0.0
       spdx-satisfies: 6.0.0
@@ -10185,7 +10172,7 @@ snapshots:
   lint-staged@17.0.7:
     dependencies:
       listr2: 10.2.1
-      picomatch: 4.0.4
+      picomatch: 4.0.5
       string-argv: 0.3.2
       tinyexec: 1.2.4
     optionalDependencies:
@@ -10762,7 +10749,7 @@ snapshots:
       graceful-fs: 4.2.11
       nopt: 9.0.0
       proc-log: 6.1.0
-      semver: 7.8.4
+      semver: 7.8.5
       tar: 7.5.16
       tinyglobby: 0.2.17
       undici: 6.26.0
@@ -11619,8 +11606,6 @@ snapshots:
 
   semver@7.7.4: {}
 
-  semver@7.8.4: {}
-
   semver@7.8.5: {}
 
   set-function-length@1.2.2:
@@ -11933,15 +11918,10 @@ snapshots:
 
   tinyexec@1.2.4: {}
 
-  tinyglobby@0.2.16:
-    dependencies:
-      fdir: 6.5.0(picomatch@4.0.4)
-      picomatch: 4.0.4
-
   tinyglobby@0.2.17:
     dependencies:
-      fdir: 6.5.0(picomatch@4.0.4)
-      picomatch: 4.0.4
+      fdir: 6.5.0(picomatch@4.0.5)
+      picomatch: 4.0.5
 
   tinyrainbow@3.1.0: {}
 
@@ -12011,7 +11991,7 @@ snapshots:
       source-map: 0.7.6
       sucrase: 3.35.1
       tinyexec: 0.3.2
-      tinyglobby: 0.2.16
+      tinyglobby: 0.2.17
       tree-kill: 1.2.2
     optionalDependencies:
       postcss: 8.5.25

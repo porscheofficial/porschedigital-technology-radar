@@ -41,7 +41,7 @@ importers:
     devDependencies:
       '@types/node':
         specifier: 26.1.0
-        version: 26.1.2
+        version: 26.1.0
       tsup:
         specifier: 8.5.1
         version: 8.5.1(jiti@2.7.0)(postcss@8.5.25)(tsx@4.22.4)(typescript@6.0.3)(yaml@2.9.0)
@@ -2745,6 +2745,9 @@ packages:
 
   '@types/ms@2.1.0':
     resolution: {integrity: sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==}
+
+  '@types/node@26.1.0':
+    resolution: {integrity: sha512-O0A1G3xPGy4w7AgQdAQYUlQ+BKk2Oovw8eRpofyp5KdBZULnbe+WqaOVNrm705SHphCiG4XHsACrSmPu1f+Kgw==}
 
   '@types/node@26.1.2':
     resolution: {integrity: sha512-Vu4a5UFA9rIIFJ7rB/Vaafh9lrCQszopTCx6KjFboXTGQbPNasehVR5TEiithSDGyd1DEiUByggTZsg8jukeIg==}
@@ -8107,7 +8110,7 @@ snapshots:
 
   '@types/jsdom@28.0.3':
     dependencies:
-      '@types/node': 26.1.2
+      '@types/node': 26.1.0
       '@types/tough-cookie': 4.0.5
       parse5: 8.0.1
       undici-types: 7.26.0
@@ -8121,6 +8124,10 @@ snapshots:
       '@types/unist': 3.0.3
 
   '@types/ms@2.1.0': {}
+
+  '@types/node@26.1.0':
+    dependencies:
+      undici-types: 8.3.0
 
   '@types/node@26.1.2':
     dependencies:

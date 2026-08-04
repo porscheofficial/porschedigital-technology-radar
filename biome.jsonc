@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.4.16/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.5.6/schema.json",
 
   "vcs": {
     "enabled": true,
@@ -33,7 +33,7 @@
 
   "linter": {
     "rules": {
-      "recommended": true,
+      "preset": "recommended",
       "correctness": { "useUniqueElementIds": "off" },
       "performance": { "noImgElement": "off" },
       "security": { "noBlankTarget": "off" },
@@ -95,6 +95,18 @@
         "rules": {
           "suspicious": { "noExplicitAny": "off" },
           "style": { "useNamingConvention": "off" }
+        }
+      }
+    },
+    {
+      // Biome 2.5.6 started applying this JSX rule to standalone .svg assets.
+      // These are served as images or compiled into Icon components, so their
+      // accessible name comes from the consuming element, not an inline
+      // <title>. The rule stays on for SVG written inline in JSX.
+      "includes": ["**/*.svg"],
+      "linter": {
+        "rules": {
+          "a11y": { "noSvgWithoutTitle": "off" }
         }
       }
     }

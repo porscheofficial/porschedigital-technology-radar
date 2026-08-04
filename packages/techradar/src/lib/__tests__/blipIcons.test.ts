@@ -18,12 +18,13 @@ describe("blipSvgMap", () => {
     expect(value).toMatch(/^data:image\/svg\+xml,/);
   });
 
-  it.each(
-    Object.values(Flag),
-  )("Flag.%s SVG contains a shape element", (flag) => {
-    const svg = decodeURIComponent(blipSvgMap[flag]);
-    expect(svg).toMatch(/<(path|rect|circle)\s/);
-  });
+  it.each(Object.values(Flag))(
+    "Flag.%s SVG contains a shape element",
+    (flag) => {
+      const svg = decodeURIComponent(blipSvgMap[flag]);
+      expect(svg).toMatch(/<(path|rect|circle)\s/);
+    },
+  );
 
   it("New flag uses a path (triangle)", () => {
     const svg = decodeURIComponent(blipSvgMap[Flag.New]);

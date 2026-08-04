@@ -304,13 +304,14 @@ describe("ItemDetail", () => {
   it.each([
     { revisions: undefined, label: "undefined" },
     { revisions: [], label: "empty" },
-  ])("does not render the revision history timeline when revisions are $label", ({
-    revisions,
-  }) => {
-    const { container } = renderItemDetail({ revisions });
+  ])(
+    "does not render the revision history timeline when revisions are $label",
+    ({ revisions }) => {
+      const { container } = renderItemDetail({ revisions });
 
-    expect(container.querySelector(".timeline")).not.toBeInTheDocument();
-  });
+      expect(container.querySelector(".timeline")).not.toBeInTheDocument();
+    },
+  );
 
   it("renders ring changes, initial entries, body changes, and team changes in history groups", () => {
     renderItemDetail({

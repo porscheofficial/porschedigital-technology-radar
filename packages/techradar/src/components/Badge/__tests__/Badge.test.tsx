@@ -51,15 +51,14 @@ describe("Badge", () => {
     expect(screen.getByText("Adopt")).toBeInTheDocument();
   });
 
-  it.each([
-    "small",
-    "medium",
-    "large",
-  ] as const)("applies the %s size class", (size) => {
-    render(<Badge size={size}>Sized</Badge>);
+  it.each(["small", "medium", "large"] as const)(
+    "applies the %s size class",
+    (size) => {
+      render(<Badge size={size}>Sized</Badge>);
 
-    expect(screen.getByText("Sized")).toHaveClass(`size-${size}`);
-  });
+      expect(screen.getByText("Sized")).toHaveClass(`size-${size}`);
+    },
+  );
 
   it("applies the badge color CSS variable", () => {
     render(<Badge color="#93c47d">Colored</Badge>);

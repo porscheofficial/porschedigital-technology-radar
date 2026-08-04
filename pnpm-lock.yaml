@@ -206,8 +206,8 @@ importers:
         specifier: 4.2.0
         version: 4.2.0(eslint@10.6.0(jiti@2.7.0))
       html-validate:
-        specifier: 11.5.3
-        version: 11.5.3(@vitest/expect@4.1.9)(vitest@4.1.9)
+        specifier: 11.6.0
+        version: 11.6.0(@vitest/expect@4.1.9)(vitest@4.1.9)
       jscpd:
         specifier: 5.0.12
         version: 5.0.12
@@ -3918,8 +3918,8 @@ packages:
       '@types/react':
         optional: true
 
-  html-validate@11.5.3:
-    resolution: {integrity: sha512-YJAqUomHuND2ppz4QoRoWMm4tLHFxGTkqoBDiMjBm9pzictNkEB78q0yT3U9s6oiy9XoEmVC2QEQcube+fMw5g==}
+  html-validate@11.6.0:
+    resolution: {integrity: sha512-VKoRiWBqV9g5M1sb3H0WimxAM6UCNTv6JbovEmNEtBWKVK/W5fKCY++EM4shkS92FypBwnGMlBymeo9Tlyiqxw==}
     engines: {node: ^22.22.0 || >= 24.8.0}
     hasBin: true
     peerDependencies:
@@ -9541,7 +9541,7 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.2.18
 
-  html-validate@11.5.3(@vitest/expect@4.1.9)(vitest@4.1.9):
+  html-validate@11.6.0(@vitest/expect@4.1.9)(vitest@4.1.9):
     dependencies:
       '@html-validate/stylish': 6.0.0
       '@sidvind/better-ajv-errors': 7.0.0(ajv@8.20.0)

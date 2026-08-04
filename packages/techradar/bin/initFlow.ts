@@ -127,8 +127,8 @@ export function slugify(input: string): string {
     .trim()
     .replace(/[\s_]+/g, "-")
     .replace(SLUG_RE, "")
-    .replace(/^-+|-+$/g, "")
-    .replace(/-{2,}/g, "-");
+    .replace(/-{2,}/g, "-")
+    .replace(/^-|-$/g, "");
 }
 
 export function titleCase(input: string): string {

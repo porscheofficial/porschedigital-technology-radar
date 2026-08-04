@@ -7,7 +7,7 @@ import type {
   Segment,
   VersionDiff,
 } from "@/lib/types";
-import { assetUrl } from "@/lib/utils";
+import { assetUrl, stripTrailingSlashes } from "@/lib/utils";
 import rawData from "../../data/data.json";
 import config from "./config";
 
@@ -131,7 +131,7 @@ export function getImprintUrl() {
 export function getAbsoluteUrl(path: string = "/") {
   if (/^https?:\/\//.test(path)) return path;
   const envBaseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-  const baseUrl = (envBaseUrl ?? config.baseUrl ?? "").replace(/\/+$/, "");
+  const baseUrl = stripTrailingSlashes(envBaseUrl ?? config.baseUrl ?? "");
   return `${baseUrl}${assetUrl(path)}`;
 }
 

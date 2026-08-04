@@ -70,6 +70,14 @@ function parseHex(hex: string): [number, number, number] | null {
   ];
 }
 
+// Scans backwards instead of using /\/+$/, whose backtracking is quadratic on
+// slash-heavy input (sonarjs/super-linear-regex).
+export function stripTrailingSlashes(value: string): string {
+  let end = value.length;
+  while (end > 0 && value[end - 1] === "/") end--;
+  return value.slice(0, end);
+}
+
 export function assetUrl(path: string) {
   if (/^https?:/.test(path)) return path;
   if (!path.startsWith("/")) path = `/${path}`;
@@ -82,6 +90,6 @@ export function assetUrl(path: string) {
   // tree-shook it by accident).
   const envBase = process.env.NEXT_PUBLIC_BASE_PATH;
   const rawBase = envBase != null ? envBase : config.basePath;
-  const base = rawBase?.replace(/\/+$/, "") || "";
+  const base = rawBase ? stripTrailingSlashes(rawBase) : "";
   return `${base}${path}`;
 }

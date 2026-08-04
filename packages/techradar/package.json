@@ -154,7 +154,7 @@
     "linkinator": "7.6.1",
     "markdownlint-cli2": "0.23.0",
     "playwright": "1.61.1",
-    "portless": "0.14.0",
+    "portless": "0.15.5",
     "tsup": "8.5.1",
     "typescript-eslint": "8.62.1",
     "vitest": "^4.1.9"

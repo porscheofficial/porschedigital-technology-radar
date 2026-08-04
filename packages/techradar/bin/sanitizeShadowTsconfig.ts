@@ -5,7 +5,7 @@ const SHADOW_TSCONFIG_EXCLUDES: readonly string[] = [
   "scripts/check*.ts",
   "scripts/preCommit*.ts",
   "scripts/record*.ts",
-  "scripts/__tests__/**",
+  "scripts/**/__tests__/**",
   "src/**/__tests__/**",
   "src/**/*.test.ts",
   "src/**/*.test.tsx",

@@ -39,7 +39,7 @@ export function resetUnresolvedCount(): void {
 // Plugin
 // ---------------------------------------------------------------------------
 
-const WIKI_LINK_RE = /\[\[([^\]|]+?)(?:\|([^\]]+?))?\]\]/g;
+const WIKI_LINK_RE = /\[\[([^[\]|]+)(?:\|([^[\]]+))?\]\]/g;
 
 /**
  * Remark plugin: resolve `[[id]]` and `[[id|label]]` wiki-links to internal

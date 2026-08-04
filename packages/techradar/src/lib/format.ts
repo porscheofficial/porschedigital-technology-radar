@@ -44,7 +44,7 @@ export function stripHtml(html: string): string {
   let next = html;
   do {
     prev = next;
-    next = prev.replace(/<[^>]*>/g, "");
+    next = prev.replace(/<[^<>]*>/g, "");
   } while (next !== prev);
   return next.trim();
 }

@@ -61,7 +61,7 @@ const npmScripts = new Set(Object.keys(pkg.scripts ?? {}));
 const agentsFiles = walk(walkRoot).filter((f) => /AGENTS\.md$/.test(f));
 
 const errors: string[] = [];
-const checkedRe = /\(Checked:\s*([^)]+?)\)/g;
+const checkedRe = /\(Checked:([^)]+)\)/g;
 const fileArrowRe =
   /`(\.?[\w./-]+\.(?:cjs|js|ts|tsx))`\s*(?:→|->)\s*`([^`]+)`/g;
 const npmRe = /`pnpm run ([\w:-]+)`/g;

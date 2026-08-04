@@ -22,7 +22,7 @@ import { preScanBlipLookup } from "./buildData";
 const root = path.resolve(__dirname, "..");
 const radarDir = path.join(root, "data/radar");
 
-const WIKI_LINK_RE = /\[\[([^\]|]+?)(?:\|[^\]]+?)?\]\]/g;
+const WIKI_LINK_RE = /\[\[([^[\]|]+)(?:\|[^[\]]+)?\]\]/g;
 
 const lookup = preScanBlipLookup(radarDir);
 const errors: string[] = [];

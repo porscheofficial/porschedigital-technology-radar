@@ -58,11 +58,11 @@ importers:
         specifier: ^5.2.8
         version: 5.2.8
       '@porsche-design-system/components-js':
-        specifier: 4.1.0
-        version: 4.1.0
+        specifier: 4.5.0
+        version: 4.5.0
       '@porsche-design-system/components-react':
         specifier: ^4.1.0
-        version: 4.1.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        version: 4.5.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@radix-ui/react-dialog':
         specifier: ^1.1.16
         version: 1.1.23(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -2068,11 +2068,11 @@ packages:
     resolution: {integrity: sha512-tmmZ3lQxAe/k/+rNnXQRawJ4NjxO2hqiOLTHvWchtGZULp4RyFeh6aU4XdOYBFe2KE1oShQTv4AblOs2iOrNnQ==}
     engines: {node: '>= 10.0.0'}
 
-  '@porsche-design-system/components-js@4.1.0':
-    resolution: {integrity: sha512-LYj/y14pLN1y3y2ztD6Ueu8nxc5O29HWZRC/Y7CEuS/sPef0ftatkv3iKnUIpjoPrVBHNt3415OYeB0oBzZSnw==}
+  '@porsche-design-system/components-js@4.5.0':
+    resolution: {integrity: sha512-8DxC4TIJuim0lt1vTLmn0eR8zmRSA7cbB335sUmqygHFSvFTHlijpuquelsVgoaL8O9JED1S+PObUEH8LKrO5w==}
     peerDependencies:
-      ag-grid-community: '>= 35.0.0 <36.0.0'
-      ag-grid-enterprise: '>= 35.0.0 <36.0.0'
+      ag-grid-community: '>= 36.0.0 <37.0.0'
+      ag-grid-enterprise: '>= 36.0.0 <37.0.0'
       tailwindcss: '>= 4.0.0 <5.0.0'
     peerDependenciesMeta:
       ag-grid-community:
@@ -2082,13 +2082,13 @@ packages:
       tailwindcss:
         optional: true
 
-  '@porsche-design-system/components-react@4.1.0':
-    resolution: {integrity: sha512-pLk0A/RW5aKqLNCUZy6b9j5BoQPwamVF4VrdcWJ49kWKsg41F6Dd9t+bmH8dMK3Uz283IVM5pGBfSJkqO7VDIQ==}
+  '@porsche-design-system/components-react@4.5.0':
+    resolution: {integrity: sha512-0bDnL3EisQhVQDU0Jomo+2Z4fT/uyLbBC66O40HSQVUOA/S6Wm1ocJLjfFQ2OQ4gCJ68RkX8WE5LvJz5ikY2YQ==}
     hasBin: true
     peerDependencies:
-      ag-grid-community: '>= 35.0.0 <36.0.0'
-      ag-grid-enterprise: '>= 35.0.0 <36.0.0'
-      ag-grid-react: '>= 35.0.0 <36.0.0'
+      ag-grid-community: '>= 36.0.0 <37.0.0'
+      ag-grid-enterprise: '>= 36.0.0 <37.0.0'
+      ag-grid-react: '>= 36.0.0 <37.0.0'
       react: '>=19.0.0 <20.0.0'
       react-dom: '>=19.0.0 <20.0.0'
       tailwindcss: '>= 4.0.0 <5.0.0'
@@ -7719,11 +7719,11 @@ snapshots:
       '@parcel/watcher-win32-x64': 2.5.6
     optional: true
 
-  '@porsche-design-system/components-js@4.1.0': {}
+  '@porsche-design-system/components-js@4.5.0': {}
 
-  '@porsche-design-system/components-react@4.1.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@porsche-design-system/components-react@4.5.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
-      '@porsche-design-system/components-js': 4.1.0
+      '@porsche-design-system/components-js': 4.5.0
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
 

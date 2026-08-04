@@ -150,7 +150,7 @@
     "html-validate": "11.6.0",
     "jscpd": "5.0.12",
     "jsdom": "29.1.1",
-    "knip": "6.16.1",
+    "knip": "6.31.0",
     "linkinator": "7.6.1",
     "markdownlint-cli2": "0.23.0",
     "playwright": "1.61.1",

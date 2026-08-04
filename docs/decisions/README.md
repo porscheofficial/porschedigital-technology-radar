@@ -50,7 +50,7 @@ ADRs cite the *decisions behind those rules*.
 | 0014 | Build harness: HTML structural validation      | accepted |
 | 0015 | Quality harness: test coverage floor           | accepted |
 | 0016 | Quality harness: spell-check on documentation  | accepted |
-| 0017 | Pin GitHub Actions to commit SHAs and tighten `GITHUB_TOKEN` permissions | accepted (amends 0006, amended by 0025) |
+| 0017 | Pin GitHub Actions to commit SHAs and tighten `GITHUB_TOKEN` permissions | accepted (amends 0006, amended by 0025, 0034) |
 | 0018 | A11y harness: jsx-a11y on source + axe-core on built HTML | accepted |
 | 0019 | Package manager: pnpm via Corepack             | accepted |
 | 0020 | Per-item Open Graph image generation           | accepted |
@@ -67,6 +67,7 @@ ADRs cite the *decisions behind those rules*.
 | 0031 | Gate `next.config.js` dev-only branches on monorepo execution context | accepted |
 | 0032 | `create-techradar` peer version policy | accepted |
 | 0033 | Dereference symlinks when copying the package into the shadow workspace | accepted |
+| 0034 | Migrate dependency updates from Dependabot to Renovate | accepted (amends 0017) |
 
 ## When to write a new ADR
 

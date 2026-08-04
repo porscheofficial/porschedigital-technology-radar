@@ -1,0 +1,122 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+
+  // ADR-0034 — replaces .github/dependabot.yml.
+  //
+  // `config:best-practices` = config:recommended
+  //   + docker:pinDigests
+  //   + helpers:pinGitHubActionDigests  (keeps ADR-0017's SHA + `# vX.Y.Z` idiom)
+  //   + :configMigration
+  //   + :pinDevDependencies             (rewrites caret devDep ranges to exact)
+  //   + abandonments:recommended
+  //   + security:minimumReleaseAgeNpm   (3-day npm cooldown; supply-chain guard)
+  //   + :maintainLockFilesWeekly
+  "extends": ["config:best-practices"],
+
+  // Carried over from dependabot.yml: weekly, Monday 08:00 Europe/Berlin.
+  // `schedule` must stay a single clause — multiple array entries are OR'd, not AND'd.
+  "timezone": "Europe/Berlin",
+  "schedule": ["before 8am on monday"],
+  "prConcurrentLimit": 10,
+  "labels": ["dependencies"],
+
+  // commitlint (commitlint.config.js) enforces `scope-enum` at error level and does
+  // NOT allow `deps-dev`. A flat `build(deps):` for every npm update satisfies it, and
+  // keeps release-please from cutting a release per dependency bump — the default
+  // `:semanticPrefixFixDepsChoreOthers` would emit `fix(deps):` for runtime deps,
+  // which release-please treats as releasable.
+  "semanticCommits": "enabled",
+  "semanticCommitType": "build",
+  "semanticCommitScope": "deps",
+
+  // Align lockfile maintenance with the same Monday window (the preset uses 05:00).
+  "lockFileMaintenance": {
+    "schedule": ["before 8am on monday"],
+  },
+
+  "packageRules": [
+    // ---------------------------------------------------------------------
+    // Groups translated 1:1 from .github/dependabot.yml.
+    // `matchPackageNames` takes minimatch globs; `!` negates within the array.
+    // (`matchPackagePatterns` / `excludePackagePatterns` are deprecated.)
+    // ---------------------------------------------------------------------
+    {
+      "groupName": "porsche-design-system",
+      "matchPackageNames": ["@porsche-design-system/**"],
+    },
+    {
+      "groupName": "next",
+      "matchPackageNames": ["next", "@next/**", "eslint-config-next"],
+    },
+    {
+      "groupName": "react",
+      "matchPackageNames": ["react", "react-dom", "@types/react", "@types/react-dom"],
+    },
+    {
+      "groupName": "unified-rehype",
+      "matchPackageNames": ["unified", "rehype**", "remark**", "hast**", "mdast**", "unist**"],
+    },
+    {
+      "groupName": "testing",
+      "matchPackageNames": ["vitest", "@vitest/**", "@testing-library/**", "jsdom"],
+    },
+    {
+      "groupName": "biome",
+      "matchPackageNames": ["@biomejs/**"],
+    },
+    {
+      "groupName": "types",
+      // Mirrors dependabot's exclude-patterns: @types/react{,-dom} stay in the react group.
+      "matchPackageNames": ["@types/**", "!@types/react", "!@types/react-dom"],
+    },
+
+    // ---------------------------------------------------------------------
+    // GitHub Actions
+    // ---------------------------------------------------------------------
+    {
+      "description": "Actions bumps are `ci(deps):`, matching the old dependabot prefix.",
+      "matchManagers": ["github-actions"],
+      "semanticCommitType": "ci",
+      "addLabels": ["github-actions"],
+    },
+
+    // ---------------------------------------------------------------------
+    // Node is a deliberate policy decision, not a dependency.
+    // `node-version:` in the workflows and `engines.node` in each package.json
+    // encode the *lowest supported* runtime (22). The CI matrix intentionally
+    // spans 22/24/26. Renovate would otherwise propose bumping 22 -> 24.
+    // ---------------------------------------------------------------------
+    {
+      "matchPackageNames": ["node"],
+      "enabled": false,
+    },
+
+    // ---------------------------------------------------------------------
+    // Automerge. `separateMajorMinor` (default true) takes priority over
+    // groups, so majors always land in their own PR and are never swept in.
+    // ---------------------------------------------------------------------
+    {
+      "description": "Automerge non-major updates once the harness passes.",
+      "matchUpdateTypes": ["minor", "patch", "pin", "lockFileMaintenance"],
+      "automerge": true,
+    },
+    {
+      "description":
+        "ADR-0017 requires a human to verify a proposed Action SHA against its tag comment before merge.",
+      "matchManagers": ["github-actions"],
+      "automerge": false,
+    },
+  ],
+
+  // Renovate has no scanner of its own here — it reads GitHub's Dependabot alert
+  // data, so "Dependabot alerts" must stay ENABLED in repo settings while
+  // "Dependabot security updates" is DISABLED. See ADR-0034.
+  //
+  // These PRs bypass the schedule, the 3-day cooldown and the concurrency limit
+  // by design, so they are not automerged — the cooldown is exactly the
+  // supply-chain guard we would be discarding.
+  "vulnerabilityAlerts": {
+    "labels": ["dependencies", "security"],
+    "automerge": false,
+  },
+}

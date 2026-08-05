@@ -52,7 +52,7 @@ jobs:
           fetch-depth: 0
       # TruffleHog is pinned to a release SHA (not @main) per Scorecard
       # PinnedDependenciesID. See ADR-0017.
-      - uses: trufflesecurity/trufflehog@00155c9dc586f34d189adc83d3ac2698c2ec551f # v3.95.8
+      - uses: trufflesecurity/trufflehog@6f3c981e7b77f235fd2702dd74af25fc4b72bf11 # v3.96.0
         with:
           extra_args: --results=verified,unknown
 

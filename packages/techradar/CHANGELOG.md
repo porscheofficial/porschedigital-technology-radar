@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.3.1](https://github.com/porscheofficial/porschedigital-technology-radar/compare/porschedigital-technology-radar-v2.3.0...porschedigital-technology-radar-v2.3.1) (2026-08-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @11ty/gray-matter to v3 ([a42712a](https://github.com/porscheofficial/porschedigital-technology-radar/commit/a42712a88f21163510b19154f5d80eabd43dea4f))
+* **deps:** update dependency execa to v10 ([dbb09c5](https://github.com/porscheofficial/porschedigital-technology-radar/commit/dbb09c5dd194671421c39924b4e5df6ba02c028b))
+* **deps:** update dependency postcss-nested to v8 ([8303d12](https://github.com/porscheofficial/porschedigital-technology-radar/commit/8303d12dfd21b26d185cd21cd443d9f14ee01b7a))
+* **deps:** update dependency satori to ^0.29.0 ([e4f6fb1](https://github.com/porscheofficial/porschedigital-technology-radar/commit/e4f6fb12deb6dafb834beb7117c4a656d4c1319d))
+* **deps:** update porsche-design-system to v4.5.0 ([4a31ce8](https://github.com/porscheofficial/porschedigital-technology-radar/commit/4a31ce897ae8fa4762b727ae6bf8ad045669f523))
+* **techradar:** exclude nested script tests from shadow type-check ([efbb7d7](https://github.com/porscheofficial/porschedigital-technology-radar/commit/efbb7d79ce63e6d6ffcaba4efeb93a7b3b245654))
+* **techradar:** remove super-linear backtracking from regexes ([41fe0f1](https://github.com/porscheofficial/porschedigital-technology-radar/commit/41fe0f181b97235b454ef654e3ba61224ad9b0ba))
+
+
+### Build System
+
+* **harness:** adopt biome 2.5.6 config and formatting ([fcd57c0](https://github.com/porscheofficial/porschedigital-technology-radar/commit/fcd57c079c3bf18ecba93d7c41b74b42eef1b662))
+* **techradar:** raise bundle budget for the CJK font-stack growth ([9632ad8](https://github.com/porscheofficial/porschedigital-technology-radar/commit/9632ad85613d041d83b1a11e8e66a4c8f0619708))
+
 ## [2.3.0](https://github.com/porscheofficial/porschedigital-technology-radar/compare/porschedigital-technology-radar-v2.2.5...porschedigital-technology-radar-v2.3.0) (2026-07-22)
 
 

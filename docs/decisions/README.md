@@ -67,7 +67,9 @@ ADRs cite the *decisions behind those rules*.
 | 0031 | Gate `next.config.js` dev-only branches on monorepo execution context | accepted |
 | 0032 | `create-techradar` peer version policy | accepted |
 | 0033 | Dereference symlinks when copying the package into the shadow workspace | accepted |
-| 0034 | Migrate dependency updates from Dependabot to Renovate | accepted (amends 0017) |
+| 0034 | Migrate dependency updates from Dependabot to Renovate | accepted (amends 0017, amended by 0035) |
+| 0035 | Renovate commit types track the published dependency range | accepted (amends 0034) |
+| 0036 | Require status checks on `main` and approve bot-authored release PRs | accepted |
 
 ## When to write a new ADR
 

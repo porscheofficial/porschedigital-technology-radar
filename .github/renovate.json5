@@ -21,10 +21,15 @@
   "labels": ["dependencies"],
 
   // commitlint (commitlint.config.js) enforces `scope-enum` at error level and does
-  // NOT allow `deps-dev`. A flat `build(deps):` for every npm update satisfies it, and
-  // keeps release-please from cutting a release per dependency bump — the default
-  // `:semanticPrefixFixDepsChoreOthers` would emit `fix(deps):` for runtime deps,
-  // which release-please treats as releasable.
+  // NOT allow `deps-dev`, so every update carries the flat `deps` scope.
+  //
+  // The commit *type* is mostly decided by `:semanticPrefixFixDepsChoreOthers`
+  // (via config:recommended), whose packageRules override this top-level value:
+  //   fix(deps)   — a shipped `dependencies` range moved, so consumers need a release
+  //   chore(deps) — devDependencies, or a runtime dep where only pnpm-lock.yaml moved
+  //   build(deps) — lock file maintenance; the one case this top-level value sets
+  // That mapping is deliberate: release-please cuts a release exactly when the
+  // published package.json changed. See ADR-0035 — do not flatten it to `build`.
   "semanticCommits": "enabled",
   "semanticCommitType": "build",
   "semanticCommitScope": "deps",
@@ -85,9 +90,12 @@
     // `node-version:` in the workflows and `engines.node` in each package.json
     // encode the *lowest supported* runtime (22). The CI matrix intentionally
     // spans 22/24/26. Renovate would otherwise propose bumping 22 -> 24.
+    //
+    // Must match on `depName`, not `packageName`: the github-runners datasource
+    // reports depName `node` but packageName `actions/node-versions`.
     // ---------------------------------------------------------------------
     {
-      "matchPackageNames": ["node"],
+      "matchDepNames": ["node"],
       "enabled": false,
     },
 

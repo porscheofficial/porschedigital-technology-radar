@@ -25,7 +25,7 @@ jobs:
       # All third-party and GitHub-owned actions are pinned to commit SHAs
       # to satisfy OpenSSF Scorecard PinnedDependenciesID. The trailing
       # comment records the human-readable tag at pin time. See ADR-0017.
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       # Corepack-managed pnpm. Version comes from `packageManager` in
       # package.json. See ADR-0019.

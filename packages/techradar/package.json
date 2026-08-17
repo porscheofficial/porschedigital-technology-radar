@@ -135,12 +135,12 @@
   "devDependencies": {
     "@next/eslint-plugin-next": "16.2.10",
     "@testing-library/dom": "10.4.1",
-    "@testing-library/jest-dom": "7.0.0",
+    "@testing-library/jest-dom": "7.0.1",
     "@testing-library/react": "16.3.2",
-    "@testing-library/user-event": "14.6.1",
+    "@testing-library/user-event": "14.6.4",
     "@types/jsdom": "28.0.3",
     "@vitejs/plugin-react": "6.0.3",
-    "@vitest/coverage-v8": "4.1.9",
+    "@vitest/coverage-v8": "4.1.10",
     "axe-core": "4.12.1",
     "cspell": "10.0.1",
     "dependency-cruiser": "18.1.0",
@@ -157,6 +157,6 @@
     "portless": "0.15.5",
     "tsup": "8.5.1",
     "typescript-eslint": "8.65.0",
-    "vitest": "4.1.9"
+    "vitest": "4.1.10"
   }
 }

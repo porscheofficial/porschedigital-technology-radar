@@ -148,7 +148,7 @@
     "eslint-plugin-jsx-a11y": "6.10.2",
     "eslint-plugin-sonarjs": "4.2.0",
     "html-validate": "11.6.2",
-    "jscpd": "5.0.12",
+    "jscpd": "5.0.16",
     "jsdom": "30.0.1",
     "knip": "6.31.0",
     "linkinator": "8.0.3",

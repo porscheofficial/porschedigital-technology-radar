@@ -156,7 +156,7 @@
     "playwright": "1.61.1",
     "portless": "0.15.5",
     "tsup": "8.5.1",
-    "typescript-eslint": "8.65.0",
+    "typescript-eslint": "8.68.0",
     "vitest": "4.1.11"
   }
 }

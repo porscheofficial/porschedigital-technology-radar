@@ -152,7 +152,7 @@
     "jsdom": "30.0.1",
     "knip": "6.31.0",
     "linkinator": "8.0.3",
-    "markdownlint-cli2": "0.23.0",
+    "markdownlint-cli2": "0.23.2",
     "playwright": "1.61.1",
     "portless": "0.15.5",
     "tsup": "8.5.1",

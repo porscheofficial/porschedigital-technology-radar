@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.3.2](https://github.com/porscheofficial/porschedigital-technology-radar/compare/porschedigital-technology-radar-v2.3.1...porschedigital-technology-radar-v2.3.2) (2026-11-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency satori to ^0.33.0 [security] ([295ecbd](https://github.com/porscheofficial/porschedigital-technology-radar/commit/295ecbd1a3e3376cabcc500fb798054907297cfa))
+
 ## [2.3.1](https://github.com/porscheofficial/porschedigital-technology-radar/compare/porschedigital-technology-radar-v2.3.0...porschedigital-technology-radar-v2.3.1) (2026-08-05)
 
 

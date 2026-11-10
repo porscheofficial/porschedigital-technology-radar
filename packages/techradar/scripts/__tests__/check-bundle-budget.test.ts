@@ -18,11 +18,15 @@ const sensor = path.join(packageRoot, "scripts/check-bundle-budget.ts");
 let workdir: string;
 
 function runSensor(args: string[] = []): { code: number; output: string } {
-  const result = spawnSync("pnpm", ["exec", "tsx", sensor, ...args], {
-    cwd: packageRoot,
-    encoding: "utf8",
-    env: { ...process.env, BUNDLE_BUDGET_ROOT: workdir },
-  });
+  const result = spawnSync(
+    process.execPath,
+    ["--import", "tsx", sensor, ...args],
+    {
+      cwd: packageRoot,
+      encoding: "utf8",
+      env: { ...process.env, BUNDLE_BUDGET_ROOT: workdir },
+    },
+  );
 
   return {
     code: result.status ?? 1,

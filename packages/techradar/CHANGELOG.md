@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.3.3](https://github.com/porscheofficial/porschedigital-technology-radar/compare/porschedigital-technology-radar-v2.3.2...porschedigital-technology-radar-v2.3.3) (2026-11-13)
+
+
+### Bug Fixes
+
+* **deps:** remediate dependency advisories ([2b31ef0](https://github.com/porscheofficial/porschedigital-technology-radar/commit/2b31ef05f65b4df96b27f49b797b0be6d3660ef0))
+* **deps:** restore Node 26.6.6 type compatibility ([73ff110](https://github.com/porscheofficial/porschedigital-technology-radar/commit/73ff110defb5075e492af9a715090e587b5fe184))
+* **deps:** target nested tooltip callback suppression ([12a9839](https://github.com/porscheofficial/porschedigital-technology-radar/commit/12a9839bf669fb0203fee386e3c9a756d2edcc43))
+
 ## [2.3.2](https://github.com/porscheofficial/porschedigital-technology-radar/compare/porschedigital-technology-radar-v2.3.1...porschedigital-technology-radar-v2.3.2) (2026-11-10)
 
 

@@ -93,7 +93,9 @@ vi.mock("node:fs", async (importOriginal) => {
       return "---\n---\nAbout";
     }
 
-    return actual.readFileSync(filePath, options);
+    return options === undefined
+      ? actual.readFileSync(filePath)
+      : actual.readFileSync(filePath, options);
   }
 
   function mockReaddirSync(

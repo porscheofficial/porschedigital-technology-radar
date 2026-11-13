@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/porscheofficial/porschedigital-technology-radar/compare/create-techradar-v1.1.0...create-techradar-v1.1.1) (2026-11-13)
+
+
+### Bug Fixes
+
+* **deps:** remediate dependency advisories ([2b31ef0](https://github.com/porscheofficial/porschedigital-technology-radar/commit/2b31ef05f65b4df96b27f49b797b0be6d3660ef0))
+
 ## [1.1.0](https://github.com/porscheofficial/porschedigital-technology-radar/compare/create-techradar-v1.0.6...create-techradar-v1.1.0) (2026-07-22)
 
 

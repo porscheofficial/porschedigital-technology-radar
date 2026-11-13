@@ -138,8 +138,8 @@ export function useRadarTooltip(
             // React state-cleanup pattern: closure captures id per loop
             // iteration. Refactoring would lose the per-id closure binding.
             // See ADR-0010.
-            // eslint-disable-next-line sonarjs/no-nested-functions
             setTimeout(() => {
+              // eslint-disable-next-line sonarjs/no-nested-functions
               setTooltipMap((current) => {
                 if (activeIdsRef.current.has(id)) return current;
                 const updated = new Map(current);

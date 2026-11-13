@@ -90,7 +90,9 @@ vi.mock("node:fs", async (importOriginal) => {
     if (resolved.endsWith(`${path.sep}data${path.sep}about.md`)) {
       return "---\n---\nAbout";
     }
-    return actual.readFileSync(p, options);
+    return options === undefined
+      ? actual.readFileSync(p)
+      : actual.readFileSync(p, options);
   }
 
   function mockWriteFileSync(

@@ -6,7 +6,7 @@ Source-of-truth content for the radar. Markdown items + JSON config.
 
 ```
 data/
-  radar/<period>/<segment>/<id>.md    Radar items (one per blip)
+  radar/<period>/<id>.md              Radar items (one per blip); segment is set in frontmatter
   config.json                          User config overrides (deep-merged ON TOP of default)
   config.default.json                  Project defaults — DO NOT EDIT for customization
   about.md                             About-page body content

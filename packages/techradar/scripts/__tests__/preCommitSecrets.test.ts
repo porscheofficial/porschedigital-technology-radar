@@ -9,6 +9,7 @@ import {
   materializeStagedContent,
   runTrufflehog,
 } from "../preCommitSecrets";
+import { TrufflehogMissingError } from "../secretsScan";
 
 const execaState = vi.hoisted(() => ({
   execa: vi.fn(),
@@ -122,6 +123,20 @@ describe("preCommitSecrets", () => {
       output:
         '{"SourceMetadata":{"Data":{"Filesystem":{"file":"tmp/file"}}}}\nscan failed',
     });
+  });
+
+  it("rejects with TrufflehogMissingError when execa reports ENOENT without throwing", async () => {
+    mockedExeca.mockResolvedValueOnce({
+      failed: true,
+      code: "ENOENT",
+      exitCode: undefined,
+      stdout: "",
+      stderr: "",
+    } as never);
+
+    await expect(runTrufflehog("/tmp/staged")).rejects.toBeInstanceOf(
+      TrufflehogMissingError,
+    );
   });
 
   it("warns and exits zero when trufflehog is missing locally", async () => {

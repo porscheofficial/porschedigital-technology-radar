@@ -76,6 +76,10 @@ export async function runGitHistoryScan(): Promise<TrufflehogResult> {
       { reject: false },
     );
 
+    if (result.failed && "code" in result && result.code === "ENOENT") {
+      throw new TrufflehogMissingError();
+    }
+
     return {
       ok: result.exitCode === 0,
       output: getCombinedOutput(result.stdout, result.stderr),

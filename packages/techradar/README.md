@@ -123,6 +123,7 @@ All configuration lives in `data/config.json`. Any key you omit falls back to th
 
 | Key                 | Description                                                                                        | Default |
 | ------------------- | -------------------------------------------------------------------------------------------------- | ------- |
+| `locale`            | Locale setting for date formatting.                                                                | `en-US` |
 | `basePath`          | URL path prefix. Set to `/` for root hosting, or `/techradar` for a sub-path.                      | `/`     |
 | `baseUrl`           | Full origin (scheme + host) where the radar is hosted, e.g. `https://opensource.porsche.com`. Used for `sitemap.xml`, canonical links, and Open Graph / Twitter meta tags. The runtime env var `NEXT_PUBLIC_BASE_URL` overrides this when set (useful for staging deploys). The `basePath` is appended automatically — do **not** include it here. | `""`    |
 | `editUrl`           | If set, shows an edit button on item pages. Supports `{id}` and `{release}` placeholders. Example: `https://github.dev/org/repo/blob/main/data/radar/{release}/{id}.md` | `"https://github.dev/porscheofficial/porschedigital-technology-radar/blob/main/data/radar/{release}/{id}.md"` |

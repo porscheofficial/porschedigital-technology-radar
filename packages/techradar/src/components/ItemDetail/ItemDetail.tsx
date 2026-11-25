@@ -21,7 +21,12 @@ import {
   getRings,
   getToggle,
 } from "@/lib/data";
-import { formatLinkLabel, stripHtml, truncate } from "@/lib/format";
+import {
+  formatLinkLabel,
+  formatReleaseShort,
+  stripHtml,
+  truncate,
+} from "@/lib/format";
 import { useTheme } from "@/lib/ThemeContext";
 import type { Item, Revision } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -69,10 +74,7 @@ export function ItemDetail({ item, segmentTitle }: ItemProps) {
     (r) => r.ring === item.ring,
   );
   const tenureDate = firstAssignedRevision
-    ? new Date(firstAssignedRevision.release).toLocaleDateString("en-US", {
-        month: "short",
-        year: "numeric",
-      })
+    ? formatReleaseShort(firstAssignedRevision.release)
     : null;
 
   // Last Transition
@@ -257,11 +259,7 @@ interface HistoryDateGroupProps {
 }
 
 function HistoryDateGroup({ revision, isFirstEntry }: HistoryDateGroupProps) {
-  const date = new Date(revision.release);
-  const formattedDate = date.toLocaleDateString("en-US", {
-    month: "short",
-    year: "numeric",
-  });
+  const formattedDate = formatReleaseShort(revision.release);
 
   const hasRingChange = !!revision.previousRing;
   const previousRing = revision.previousRing ?? "";

@@ -1,3 +1,4 @@
+import config from "@/lib/config";
 import {
   deriveSummary,
   extractSnippet,
@@ -15,9 +16,11 @@ import {
 } from "@/lib/format";
 import { Flag, type Item } from "@/lib/types";
 
-vi.mock("@/lib/config", () => ({
-  default: { labels: { title: "Test Radar" } },
-}));
+vi.mock("@/lib/config", () => {
+  return {
+    default: { labels: { title: "Test Radar" }, locale: "en-US" },
+  };
+});
 
 describe("format", () => {
   it("replaces placeholders with context values", () => {
@@ -52,6 +55,11 @@ describe("formatTitle", () => {
 });
 
 describe("formatRelease", () => {
+  vi.spyOn(config, "locale", "get")
+    .mockReturnValueOnce("en-US")
+    .mockReturnValueOnce("en-US")
+    .mockReturnValueOnce("de-DE");
+
   it("formats as long month + full year", () => {
     const result = formatRelease("2024-03");
     expect(result).toContain("March");
@@ -63,22 +71,45 @@ describe("formatRelease", () => {
     expect(result).toContain("January");
     expect(result).toContain("2024");
   });
+
+  it("handles locale changes", () => {
+    const result = formatRelease("2024-03");
+    expect(result).toContain("März");
+  });
 });
 
 describe("formatReleaseShort", () => {
+  vi.spyOn(config, "locale", "get")
+    .mockReturnValueOnce("en-US")
+    .mockReturnValueOnce("de-DE");
+
   it("formats as short month + full year", () => {
     const result = formatReleaseShort("2024-03");
     expect(result).toContain("Mar");
     expect(result).toContain("2024");
   });
+
+  it("handles locale changes", () => {
+    const result = formatReleaseShort("2024-03");
+    expect(result).toContain("März");
+  });
 });
 
 describe("formatReleaseCompact", () => {
+  vi.spyOn(config, "locale", "get")
+    .mockReturnValueOnce("en-US")
+    .mockReturnValueOnce("de-DE");
+
   it("formats as short month + 2-digit year", () => {
     const result = formatReleaseCompact("2024-03");
     expect(result).toContain("Mar");
     expect(result).toContain("24");
     expect(result).not.toContain("2024");
+  });
+
+  it("handles locale changes", () => {
+    const result = formatReleaseCompact("2024-03");
+    expect(result).toContain("März");
   });
 });
 

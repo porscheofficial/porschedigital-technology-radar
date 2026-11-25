@@ -6,6 +6,7 @@ import defaultConfig from "../../../data/config.default.json";
 describe("config module", () => {
   describe("shape", () => {
     it("exports an object with all required top-level keys", () => {
+      expect(config).toHaveProperty("locale");
       expect(config).toHaveProperty("basePath");
       expect(config).toHaveProperty("baseUrl");
       expect(config).toHaveProperty("editUrl");

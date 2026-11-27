@@ -1,4 +1,5 @@
 {
+  "locale": "en-US",
   "basePath": "/",
   "baseUrl": "",
   "editUrl": "https://github.dev/porscheofficial/porschedigital-technology-radar/blob/main/data/radar/{release}/{id}.md",

@@ -16,21 +16,21 @@ function toSafeDate(release: string): Date {
 }
 
 export function formatRelease(release: string): string {
-  return toSafeDate(release).toLocaleDateString("en-US", {
+  return toSafeDate(release).toLocaleDateString(config.locale || "en-US", {
     month: "long",
     year: "numeric",
   });
 }
 
 export function formatReleaseShort(release: string): string {
-  return toSafeDate(release).toLocaleDateString("en-US", {
+  return toSafeDate(release).toLocaleDateString(config.locale || "en-US", {
     month: "short",
     year: "numeric",
   });
 }
 
 export function formatReleaseCompact(release: string): string {
-  return toSafeDate(release).toLocaleDateString("en-US", {
+  return toSafeDate(release).toLocaleDateString(config.locale || "en-US", {
     month: "short",
     year: "2-digit",
   });

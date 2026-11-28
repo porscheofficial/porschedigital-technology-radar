@@ -213,11 +213,13 @@ describe("checkSecrets", () => {
         return { stdout: sandbox } as never;
       }
 
-      const error = new Error("spawn trufflehog ENOENT") as Error & {
-        code: string;
-      };
-      error.code = "ENOENT";
-      throw error;
+      return {
+        failed: true,
+        code: "ENOENT",
+        exitCode: undefined,
+        stdout: "",
+        stderr: "",
+      } as never;
     }) as never);
 
     await expect(main()).resolves.toBe(1);

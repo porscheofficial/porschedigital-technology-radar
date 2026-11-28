@@ -61,24 +61,13 @@ export interface TrufflehogResult {
   output: string;
 }
 
-export async function runTrufflehogFilesystem(
-  targetDirectory: string,
+export async function runTrufflehogCommand(
+  args: string[],
 ): Promise<TrufflehogResult> {
   const execa = await getExeca();
 
   try {
-    const result = await execa(
-      "trufflehog",
-      [
-        "filesystem",
-        targetDirectory,
-        "--fail",
-        "--results=verified,unknown",
-        "--no-update",
-        "--json",
-      ],
-      { reject: false },
-    );
+    const result = await execa("trufflehog", args, { reject: false });
 
     if (result.failed && "code" in result && result.code === "ENOENT") {
       throw new TrufflehogMissingError();
@@ -95,4 +84,17 @@ export async function runTrufflehogFilesystem(
 
     throw error;
   }
+}
+
+export async function runTrufflehogFilesystem(
+  targetDirectory: string,
+): Promise<TrufflehogResult> {
+  return runTrufflehogCommand([
+    "filesystem",
+    targetDirectory,
+    "--fail",
+    "--results=verified,unknown",
+    "--no-update",
+    "--json",
+  ]);
 }

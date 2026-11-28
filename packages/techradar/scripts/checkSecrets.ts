@@ -4,10 +4,10 @@ import path from "node:path";
 import { consola } from "consola";
 
 import {
-  getCombinedOutput,
   getExeca,
   getMirroredPath,
   isGitWorktree,
+  runTrufflehogCommand,
   runTrufflehogFilesystem,
   TrufflehogMissingError,
   type TrufflehogResult,
@@ -61,32 +61,13 @@ export async function materializeTrackedContent(
 }
 
 export async function runGitHistoryScan(): Promise<TrufflehogResult> {
-  const execa = await getExeca();
-
-  try {
-    const result = await execa(
-      "trufflehog",
-      [
-        "git",
-        "file://.",
-        "--no-update",
-        "--fail",
-        "--results=verified,unknown",
-      ],
-      { reject: false },
-    );
-
-    return {
-      ok: result.exitCode === 0,
-      output: getCombinedOutput(result.stdout, result.stderr),
-    };
-  } catch (error) {
-    if (error instanceof Error && "code" in error && error.code === "ENOENT") {
-      throw new TrufflehogMissingError();
-    }
-
-    throw error;
-  }
+  return runTrufflehogCommand([
+    "git",
+    "file://.",
+    "--no-update",
+    "--fail",
+    "--results=verified,unknown",
+  ]);
 }
 
 export async function runWorkingTreeScan(): Promise<TrufflehogResult> {

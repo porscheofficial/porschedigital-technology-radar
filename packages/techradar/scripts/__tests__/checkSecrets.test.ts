@@ -11,6 +11,7 @@ import {
   runGitHistoryScan,
   runWorkingTreeScan,
 } from "../checkSecrets";
+import { TrufflehogMissingError } from "../secretsScan";
 
 const execaState = vi.hoisted(() => ({
   execa: vi.fn(),
@@ -180,6 +181,20 @@ describe("checkSecrets", () => {
     expect(mockedExeca).toHaveBeenCalledTimes(1);
   });
 
+  it("rejects with TrufflehogMissingError when execa reports ENOENT without throwing", async () => {
+    mockedExeca.mockResolvedValueOnce({
+      failed: true,
+      code: "ENOENT",
+      exitCode: undefined,
+      stdout: "",
+      stderr: "",
+    } as never);
+
+    await expect(runGitHistoryScan()).rejects.toBeInstanceOf(
+      TrufflehogMissingError,
+    );
+  });
+
   it("fails when trufflehog is missing in non-worktree mode", async () => {
     const sandbox = await fs.mkdtemp(
       path.join(os.tmpdir(), "check-secrets-missing-"),
@@ -198,11 +213,13 @@ describe("checkSecrets", () => {
         return { stdout: sandbox } as never;
       }
 
-      const error = new Error("spawn trufflehog ENOENT") as Error & {
-        code: string;
-      };
-      error.code = "ENOENT";
-      throw error;
+      return {
+        failed: true,
+        code: "ENOENT",
+        exitCode: undefined,
+        stdout: "",
+        stderr: "",
+      } as never;
     }) as never);
 
     await expect(main()).resolves.toBe(1);
